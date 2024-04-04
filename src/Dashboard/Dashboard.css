@@ -1,0 +1,16 @@
+.link_style {
+  text-decoration: none;
+}
+.MuiListItemText-primary {
+  color: rgb(29, 42, 48);
+  font-weight: 500 !important ;
+  letter-spacing: 1px !important;
+}
+/* .Mui-selected{
+  background-color: #8F00FF !important;
+  margin: 0.5;
+} */
+.active-link{
+  background-color:#8F00FF !important;
+  color:red !important;
+}

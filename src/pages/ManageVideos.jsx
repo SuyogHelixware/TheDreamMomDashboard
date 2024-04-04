@@ -1,0 +1,377 @@
+import AddIcon from "@mui/icons-material/Add";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import { Card, IconButton, Modal, Pagination, Paper } from "@mui/material";
+import Button from "@mui/material/Button";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import * as React from "react";
+import video from '../video/Heeriye.mp4'
+
+const styles = {
+  typography: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    height: 40,   
+  },
+};
+
+export default function ManageVideos() {
+  const [page, setPage] = React.useState(1);
+  const [uploadedVideo, setUploadedVideo] = React.useState("");
+  const [formData, setFormData] = React.useState("");
+  const [on, setOn] = React.useState(false);
+  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+  const cardsPerPage = 8;
+
+  React.useEffect(() => {
+    getAllVideoList();
+  }, []);
+  const handleClose = () => {
+    setOn(false);
+  };
+
+  const handleClick = (row) => {
+    setSaveUpdateButton("Update");
+    setOn(true);
+  };
+
+  const handleOnSave = () => {
+    setSaveUpdateButton("Save");
+    setOn(true);
+  };
+  const handleVideoUpload = (event) => {
+    const video = event.target.files[0];
+    console.log("Uploaded video:", video);
+    setUploadedVideo(video);
+  };
+  const handleInputChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+  const handleSubmitForm = () => {
+    const obj = {
+      title: formData.videoName,
+    };
+
+    axios
+      .request({
+        method: "POST",
+        url: "https://video.bunnycdn.com/library/222011/videos",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          AccessKey: "fff023aa-0097-4333-920f44dfeef3-eafe-4e47",
+        },
+        data: obj,
+      })
+      .then((response) => {
+        console.log("Insetance created");
+        uploadVideo(response.data.guid);
+        console.log(response);
+      });
+  };
+  const uploadVideo = (id) => {
+    axios
+      .request({
+        method: "PUT",
+        maxBodyLength: Infinity,
+        url: `https://video.bunnycdn.com/library/222011/videos/${id}`,
+        headers: {
+          "Content-Type": "video/mp4",
+          AccessKey: "fff023aa-0097-4333-920f44dfeef3-eafe-4e47",
+        },
+        data: uploadedVideo,
+      })
+      .then((response) => {
+        alert("video upload");
+        console.log("uploaded video response");
+        console.log(response);
+      });
+  };
+
+  const getAllVideoList = () => {
+    axios
+      .request({
+        method: "GET",
+        url: "https://video.bunnycdn.com/library/222011/videos",
+        headers: {
+          accept: "application/json",
+          AccessKey: "fff023aa-0097-4333-920f44dfeef3-eafe-4e47",
+        },
+      })
+      .then((response) => {
+      });
+  };
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const startIndex = (page - 1) * cardsPerPage;
+  const endIndex = startIndex + cardsPerPage;
+
+  return (
+    <>
+      <Modal open={on} onClose={handleClose}>
+        <Paper
+          elevation={10}
+          sx={{
+            width: "90%",
+            maxWidth: 400,
+            bgcolor: "#ccccff",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            padding: 4,
+            justifyContent: "center",
+            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
+          }}
+        >
+          <Grid
+            container
+            xs={12}
+            item
+            spacing={4}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+          >
+            <Grid container item justifyContent="center" textAlign="center">
+              <Grid item xs={12}>
+                <TextField
+                  margin="normal"
+                  size="small"
+                  spacing={"5"}
+                  required
+                  fullWidth
+                  id="name"
+                  label="Enter your Name"
+                  name="videoName"
+                  autoFocus
+                  style={{ borderRadius: 10, width: "100%" }}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} paddingTop={1}>
+                <TextField
+                  margin="normal"
+                  size="small"
+                  required
+                  fullWidth
+                  id="outlined-multiline-static"
+                  label="Enter Description"
+                  multiline
+                  name="videoDescription"
+                  rows={3}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={12} marginTop={3}>
+                <input
+                  accept="video/*"
+                  style={{ display: "none" }}
+                  id="video-upload"
+                  type="file"
+                  onChange={handleVideoUpload}
+                />
+
+                <label htmlFor="video-upload">
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    component="span"
+                    startIcon={<CloudUploadIcon />}
+                    sx={{
+                      backgroundColor: "#8F00FF",
+                      py: 1.5,
+                      "&:hover": {
+                        backgroundColor: "#3B444B",
+                      },
+                    }}
+                  >
+                    {uploadedVideo.name ? uploadedVideo.name : "Upload Video"}
+                  </Button>
+                </label>
+              </Grid>
+
+              <Grid item xs={12} md={12} textAlign={"end"} mt={5}>
+                <Button
+                  onClick={handleClose}
+                  type="reset"
+                  size="small"
+                  sx={{
+                    marginTop: 1,
+                    p: 1,
+                    width: 80,
+                    color: "white",
+                    backgroundColor: "#3B444B",
+                    mr: 1,
+                    "&:hover": {
+                      backgroundColor: "#3B444B",
+                    },
+                  }}
+                >
+                  Close
+                </Button>
+
+                <Button
+                  type="submit"
+                  size="small"
+                  sx={{
+                    marginTop: 1,
+                    p: 1,
+                    width: 80,
+                    color: "white",
+                    background: "linear-gradient(to right, #EE696B, #523A78)",
+                    "&:hover": {
+                      backgroundColor: "#673AB7",
+                    },
+                  }}
+                  onClick={handleSubmitForm}
+                >
+                  {SaveUpdateButton}
+                </Button>
+              </Grid>
+              <Grid />
+            </Grid>
+          </Grid>
+        </Paper>
+      </Modal>
+      <Grid
+        container
+        xs={12}
+        sm={12}
+        md={12}
+        lg={12}
+        component={Paper}
+        textAlign={"center"}
+        sx={{
+          width: "100%",
+          px: 5,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+        elevation="4"
+      >
+        <Typography
+          width={"100%"}
+          textAlign="center"
+          textTransform="uppercase"
+          fontWeight="bold"
+          color={"#673AB7"}
+          padding={1}
+          noWrap
+        >
+          Manage Videos
+        </Typography>
+      </Grid>
+
+      <Grid textAlign={"end"} marginBottom={1}>
+        <Button
+          onClick={handleOnSave}
+          type="text"
+          size="medium"
+          sx={{
+            pr: 2,
+            color: "white",
+            backgroundColor: "#8F00FF",
+            boxShadow: 5,
+            "&:hover": {
+              backgroundColor: "gray",
+            },
+            "& .MuiButton-label": {
+              display: "flex",
+              alignItems: "center",
+            },
+            "& .MuiSvgIcon-root": {
+              marginRight: "10px",
+            },
+          }}
+        >
+          <AddIcon />
+          Add Videos
+        </Button>
+      </Grid>
+
+      <Grid container spacing={3} justifyContent="start">
+        {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <Card sx={{ width: "100%" }}>
+              <video width="100%" height="auto" controls>
+                <source src={video} type="video/mp4" />
+              </video>
+
+             
+              <CardContent>
+                <Typography
+                  noWrap
+                  height={25}
+                  gutterBottom
+                  component="div"
+                  textAlign={"start"}
+                >
+                   <b>Title:Heeriye, a contemporary adaptation of Heer Ranjha, one of the four popular tragic
+                  </b>
+                </Typography>
+                <Typography
+                  textAlign={"start"}
+                  variant="body2"
+                  style={styles.typography}
+                  color="textSecondary"
+                  component="div"
+                >
+                  Description are a widespread group of squamate reptiles, with
+                  over 6,000 species, ranging across all continents except
+                  Antarctica
+                </Typography>
+              </CardContent>
+              <CardActions
+                sx={{
+                  pt: "0",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <IconButton color="primary" onClick={() => handleClick()}>
+                  <EditNoteIcon />
+                </IconButton>
+
+                <Button size="medium" sx={{ color: "red" }}>
+                  <DeleteForeverIcon />
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+
+      <Grid container spacing={3} width="100%" pt={5}>
+        <Grid item xs={12}>
+          <Pagination
+            count={Math.ceil(19 / 8)}
+            color="primary"
+            page={page}
+            onChange={handlePageChange}
+          />
+        </Grid>
+      </Grid>
+    </>
+  );
+}
