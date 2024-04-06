@@ -157,7 +157,7 @@ export default function ManageVideos() {
                   required
                   fullWidth
                   id="name"
-                  label="Enter your Name"
+                  label="Enter Title"
                   name="videoName"
                   autoFocus
                   style={{ borderRadius: 10, width: "100%" }}
@@ -171,7 +171,7 @@ export default function ManageVideos() {
                   size="small"
                   required
                   fullWidth
-                  id="outlined-multiline-static"
+                  id="Description"
                   label="Enter Description"
                   multiline
                   name="videoDescription"
@@ -290,6 +290,7 @@ export default function ManageVideos() {
           size="medium"
           sx={{
             pr: 2,
+            mb:2,
             color: "white",
             backgroundColor: "#8F00FF",
             boxShadow: 5,
@@ -314,7 +315,7 @@ export default function ManageVideos() {
         {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ width: "100%" }}>
-              <video width="100%" height="auto" controls>
+              <video width="100%" height="auto" controls muted>
                 <source src={video} type="video/mp4" />
               </video>
 
@@ -327,7 +328,7 @@ export default function ManageVideos() {
                   component="div"
                   textAlign={"start"}
                 >
-                   <b>Title:Heeriye, a contemporary adaptation of Heer Ranjha, one of the four popular tragic
+                   <b>Title : Heeriye, a contemporary adaptation of Heer Ranjha, one of the four popular tragic
                   </b>
                 </Typography>
                 <Typography

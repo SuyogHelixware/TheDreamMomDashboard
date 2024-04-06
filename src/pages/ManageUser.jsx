@@ -273,7 +273,6 @@ export default function ManageUsers() {
       headerName: "Action",
       width: 100,
       sortable: false,
-      
       renderCell: (params) => (
         <>
           <IconButton

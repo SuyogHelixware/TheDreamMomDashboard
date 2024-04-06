@@ -275,10 +275,10 @@ export default function ManageSubscription() {
           sx={{
             pr: 2,
             color: "white",
-            backgroundColor: "#673AB7",
+            backgroundColor: "#8F00FF",
             boxShadow: 5,
             "&:hover": {
-              backgroundColor: "#7360DF",
+              backgroundColor: "gray",
             },
 
             "& .MuiButton-label": {

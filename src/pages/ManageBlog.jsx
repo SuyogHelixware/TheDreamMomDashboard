@@ -278,6 +278,7 @@ const ManageBlog = () => {
           size="medium"
           sx={{
             pr: 2,
+            mb:2,
             color: "white",
             backgroundColor: "#8F00FF",
             boxShadow: 5,
