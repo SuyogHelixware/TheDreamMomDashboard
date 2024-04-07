@@ -182,7 +182,11 @@ export default function Dashboard() {
       setOpenProcessTransactions(!openProcessTransactions);
     }
     handleClickTransaction();
+    if (!open) {
+      setOpen(true);
+    }
   };
+  
   const handleClickTransaction = () => {
     setOpenProcessTransactions(!openProcessTransactions);
     if (openList) {
