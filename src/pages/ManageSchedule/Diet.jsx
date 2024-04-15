@@ -1,4 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
@@ -15,9 +16,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import * as React from "react";
 import { useEffect } from "react";
-import avatar from "../../assets/avtar.png";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { BASE_URL } from "../../Constant";
+import avatar from "../../assets/avtar.png";
 
 export default function Diet() {
   const [uploadedFileName, setUploadedFileName] = React.useState("");
@@ -66,7 +66,7 @@ export default function Diet() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 100 ,sortable: false,},
+    { field: "id", headerName: "ID", width: 100, sortable: false },
     {
       field: "Firstname",
       headerName: "Name",
@@ -146,7 +146,7 @@ export default function Diet() {
           elevation={10}
           sx={{
             width: "90%",
-            maxWidth:400,
+            maxWidth: 400,
             bgcolor: "#ccccff",
             position: "absolute",
             top: "50%",

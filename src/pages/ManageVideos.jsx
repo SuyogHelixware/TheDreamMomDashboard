@@ -11,7 +11,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import video from '../video/Heeriye.mp4'
+import video from "../video/Heeriye.mp4";
 
 const styles = {
   typography: {
@@ -20,7 +20,7 @@ const styles = {
     display: "-webkit-box",
     WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
-    height: 40,   
+    height: 40,
   },
 };
 
@@ -110,8 +110,7 @@ export default function ManageVideos() {
           AccessKey: "fff023aa-0097-4333-920f44dfeef3-eafe-4e47",
         },
       })
-      .then((response) => {
-      });
+      .then((response) => {});
   };
 
   const handlePageChange = (event, value) => {
@@ -134,7 +133,6 @@ export default function ManageVideos() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            padding: 4,
             justifyContent: "center",
             background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
           }}
@@ -146,108 +144,108 @@ export default function ManageVideos() {
             spacing={4}
             display={"flex"}
             flexDirection={"column"}
+            padding={4}
             justifyContent={"center"}
           >
-            <Grid container item justifyContent="center" textAlign="center">
-              <Grid item xs={12}>
-                <TextField
-                  margin="normal"
-                  size="small"
-                  spacing={"5"}
-                  required
-                  fullWidth
-                  id="name"
-                  label="Enter Title"
-                  name="videoName"
-                  autoFocus
-                  style={{ borderRadius: 10, width: "100%" }}
-                  onChange={handleInputChange}
-                />
-              </Grid>
+            <Grid item xs={12}>
+              <Typography fontWeight="bold">Add Video</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                size="small"
+                spacing={"5"}
+                required
+                fullWidth
+                id="name"
+                label="Enter Title"
+                name="videoName"
+                autoFocus
+                style={{ borderRadius: 10, width: "100%" }}
+                onChange={handleInputChange}
+              />
+            </Grid>
 
-              <Grid item xs={12} paddingTop={1}>
-                <TextField
-                  margin="normal"
-                  size="small"
-                  required
-                  fullWidth
-                  id="Description"
-                  label="Enter Description"
-                  multiline
-                  name="videoDescription"
-                  rows={3}
-                  onChange={handleInputChange}
-                />
-              </Grid>
+            <Grid item xs={12}>
+              <TextField
+                size="small"
+                required
+                fullWidth
+                id="Description"
+                label="Enter Description"
+                multiline
+                name="videoDescription"
+                rows={3}
+                onChange={handleInputChange}
+              />
+            </Grid>
 
-              <Grid item xs={12} md={6} lg={12} marginTop={3}>
-                <input
-                  accept="video/*"
-                  style={{ display: "none" }}
-                  id="video-upload"
-                  type="file"
-                  onChange={handleVideoUpload}
-                />
+            <Grid item xs={12} md={6} lg={12}>
+              <input
+                accept="video/*"
+                style={{ display: "none" }}
+                id="video-upload"
+                type="file"
+                onChange={handleVideoUpload}
+              />
 
-                <label htmlFor="video-upload">
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    component="span"
-                    startIcon={<CloudUploadIcon />}
-                    sx={{
-                      backgroundColor: "#8F00FF",
-                      py: 1.5,
-                      "&:hover": {
-                        backgroundColor: "#3B444B",
-                      },
-                    }}
-                  >
-                    {uploadedVideo.name ? uploadedVideo.name : "Upload Video"}
-                  </Button>
-                </label>
-              </Grid>
-
-              <Grid item xs={12} md={12} textAlign={"end"} mt={5}>
+              <label htmlFor="video-upload">
                 <Button
-                  onClick={handleClose}
-                  type="reset"
-                  size="small"
+                  fullWidth
+                  variant="contained"
+                  component="span"
+                  startIcon={<CloudUploadIcon />}
                   sx={{
-                    marginTop: 1,
-                    p: 1,
-                    width: 80,
-                    color: "white",
-                    backgroundColor: "#3B444B",
-                    mr: 1,
+                    backgroundColor: "#8F00FF",
+                    py: 1.5,
                     "&:hover": {
                       backgroundColor: "#3B444B",
                     },
                   }}
                 >
-                  Close
+                  {uploadedVideo.name ? uploadedVideo.name : "Upload Video"}
                 </Button>
-
-                <Button
-                  type="submit"
-                  size="small"
-                  sx={{
-                    marginTop: 1,
-                    p: 1,
-                    width: 80,
-                    color: "white",
-                    background: "linear-gradient(to right, #EE696B, #523A78)",
-                    "&:hover": {
-                      backgroundColor: "#673AB7",
-                    },
-                  }}
-                  onClick={handleSubmitForm}
-                >
-                  {SaveUpdateButton}
-                </Button>
-              </Grid>
-              <Grid />
+              </label>
             </Grid>
+
+            <Grid item xs={12} md={12} textAlign={"end"}>
+              <Button
+                onClick={handleClose}
+                type="reset"
+                size="small"
+                sx={{
+                  marginTop: 1,
+                  p: 1,
+                  width: 80,
+                  color: "white",
+                  backgroundColor: "#3B444B",
+                  mr: 1,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                Close
+              </Button>
+
+              <Button
+                type="submit"
+                size="small"
+                sx={{
+                  marginTop: 1,
+                  p: 1,
+                  width: 80,
+                  color: "white",
+                  background: "linear-gradient(to right, #EE696B, #523A78)",
+                  "&:hover": {
+                    backgroundColor: "#673AB7",
+                  },
+                }}
+                onClick={handleSubmitForm}
+              >
+                {SaveUpdateButton}
+              </Button>
+            </Grid>
+            <Grid />
           </Grid>
         </Paper>
       </Modal>
@@ -290,7 +288,7 @@ export default function ManageVideos() {
           size="medium"
           sx={{
             pr: 2,
-            mb:2,
+            mb: 2,
             color: "white",
             backgroundColor: "#8F00FF",
             boxShadow: 5,
@@ -319,7 +317,6 @@ export default function ManageVideos() {
                 <source src={video} type="video/mp4" />
               </video>
 
-             
               <CardContent>
                 <Typography
                   noWrap
@@ -328,7 +325,9 @@ export default function ManageVideos() {
                   component="div"
                   textAlign={"start"}
                 >
-                   <b>Title : Heeriye, a contemporary adaptation of Heer Ranjha, one of the four popular tragic
+                  <b>
+                    Title : Heeriye, a contemporary adaptation of Heer Ranjha,
+                    one of the four popular tragic
                   </b>
                 </Typography>
                 <Typography

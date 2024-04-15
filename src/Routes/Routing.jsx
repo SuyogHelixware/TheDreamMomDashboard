@@ -26,13 +26,14 @@ import PNExercise from "../pages/PostNatal/PNExercise";
 import PNPrecaution from "../pages/PostNatal/PNPrecaution";
 import PNMedication from "../pages/PostNatal/PNMedication";
 import PNVaccination from "../pages/PostNatal/PNVaccination";
+import MedicalCondition from "../pages/MedicalCondition";
 
 export default function Routing() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-        <Route path="/" element={<Signin />} />
+          <Route path="/" element={<Signin />} />
           <Route path="dashboard" element={<Dashboard />}>
             <Route path="home" element={<Home />} />
             <Route path="manage-user" element={<ManageUser />} />
@@ -49,26 +50,21 @@ export default function Routing() {
             <Route path="post-natal/pnexercise" element={<PNExercise />} />
             <Route path="post-natal/pnprecaution" element={<PNPrecaution />} />
             <Route path="post-natal/pnmedication" element={<PNMedication />} />
-            <Route
-              path="post-natal/pnvaccination"
-              element={<PNVaccination />}
-            />
+            <Route path="post-natal/pnvaccination" element={<PNVaccination />}/>
 
             <Route path="manage-assesment" element={<ManageAssesment />} />
             <Route path="manage-avoid-food" element={<ManageAvoidFood />} />
             <Route path="manage-videos" element={<ManageVideos />} />
             <Route path="manage-posts" element={<ManagePosts />} />
             <Route path="manage-faq" element={<ManageFAQ />} />
-            <Route
-              path="manage-subscription"
-              element={<ManageSubscription />}
-            />
+            <Route path="manage-subscription" element={<ManageSubscription />}/>
             <Route path="manage-blog" element={<ManageBlog />} />
             <Route path="manage-expert" element={<ManageExpert />} />
             <Route path="manage-comments" element={<ManageComment />} />
             <Route path="manage-doses" element={<ManageDoses />} />
             <Route path="manage-advertise" element={<ManageAdvertise />} />
             <Route path="manage-report" element={<ManageReport />} />
+            <Route path="medical-condition" element={<MedicalCondition/>}/>
             {/* <Route path="login" element={<Login />} /> */}
           </Route>
         </Routes>

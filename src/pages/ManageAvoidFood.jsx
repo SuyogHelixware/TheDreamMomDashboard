@@ -32,7 +32,7 @@ export default function ManageAvoidFood() {
   const columns = [
     {
       field: "id",
-      headerName: "Sr.No",
+      headerName: "ID",
       width: 100,
       sortable: false,
     },

@@ -1,24 +1,25 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Button, Grid, IconButton, Modal, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  IconButton,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import dayjs from "dayjs";
 import * as React from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
-import avatar from "../../src/assets/avtar.png";
 import { BASE_URL } from "../Constant";
-import InputTextField, {
-  DatePickerField,
-  InputSelectField,
-} from "../components/Component";
 import Loader from "../components/Loader";
 
-export default function ManageUsers() {
+export default function MedicalCondition() {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
@@ -26,33 +27,17 @@ export default function ManageUsers() {
 
   const [data, setData] = React.useState({
     id: "",
-    Password: "",
-    Firstname: "",
-    Middlename: "",
-    Lastname: "",
-    DOB: "",
-    Phone: "",
-    Address: "",
-    BloodGroup: "",
-    // UserType: "",
+    Name: "",
+    Description: "",
     Status: "",
-    Email: "",
   });
 
   const clearFormData = () => {
     setData({
       id: "",
-      Password: "",
-      Firstname: "",
-      Middlename: "",
-      Lastname: "",
-      DOB: "",
-      Phone: "",
-      Address: "",
-      BloodGroup: "",
-      // UserType: "",
+      Name: "",
+      Description: "",
       Status: "",
-      Email: "",
     });
   };
 
@@ -88,7 +73,7 @@ export default function ManageUsers() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${BASE_URL}Users/${id}`)
+          .delete(`${BASE_URL}medicalconditions/${id}`)
           .then((response) => {
             if (response.data.status === true) {
               setUserData(userData.filter((user) => user._id !== id));
@@ -108,6 +93,7 @@ export default function ManageUsers() {
       }
     });
   };
+
   const validationAlert = (message) => {
     Swal.fire({
       position: "center",
@@ -118,41 +104,22 @@ export default function ManageUsers() {
       timer: 2500,
     });
   };
+
   const updateUser = (id) => {
-    const requiredFields = [
-      "Firstname",
-      "Lastname",
-      "Password",
-      "Phone",
-      "Address",
-      "Email",
-      "Status",
-      "DOB",
-      "BloodGroup",
-    ];
+    const requiredFields = ["Name", "Description", "Status"];
+
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
 
     if (emptyRequiredFields.length > 0) {
-      // alert('Please fill in all required fields.');
       validationAlert("Please fill in all required fields");
-      return;
-    }
-
-    if (!isValidPhoneNumber(data.Phone)) {
-      validationAlert("Please enter a valid 10-digit phone number.");
-      return;
-    }
-
-    if (data.Password.length < 8) {
-      validationAlert("Password must be at least 8 characters long.");
       return;
     }
 
     setLoaderOpen(true);
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}Users`, data)
-        : axios.patch(`${BASE_URL}Users/${id}`, data);
+        ? axios.post(`${BASE_URL}medicalconditions`, data)
+        : axios.patch(`${BASE_URL}medicalconditions/${id}`, data);
 
     axiosRequest
       .then((response) => {
@@ -195,84 +162,31 @@ export default function ManageUsers() {
       });
   };
 
-  const isValidPhoneNumber = (phoneNumber) => {
-    const phoneRegex = /^[0-9]{10}$/;
-    return phoneRegex.test(phoneNumber);
-  };
-
   const columns = [
-    { field: "id", headerName: "ID", width: 90, sortable: false },
+    { field: "id", headerName: "ID", width: 150, sortable: false },
     {
-      field: "Firstname",
-      headerName: "First Name",
-      width: 150,
+      field: "Name",
+      headerName: "Name",
+      width: 200,
       sortable: false,
     },
     {
-      field: "Middlename",
-      headerName: "Middle Name",
-      width: 150,
+      field: "Description",
+      headerName: "Description",
+      width: 380,
       sortable: false,
     },
-    {
-      field: "Lastname",
-      headerName: "Last Name",
-      width: 150,
-      sortable: false,
-    },
-    {
-      field: "DOB",
-      headerName: "DOB",
-      width: 150,
-      sortable: false,
-      valueFormatter: (params) => dayjs(params.value).format("DD-MMM-YYYY"),
-    },
-    // {
-    //   field: "Password",
-    //   headerName: "Password",
-    //   width: 160,
-    //   sortable: false,
-    // },
-    {
-      field: "Phone",
-      headerName: "Phone",
-      width: 150,
-      sortable: false,
-    },
-    {
-      field: "Address",
-      headerName: "Address",
-      width: 150,
-      sortable: false,
-    },
-    {
-      field: "BloodGroup",
-      headerName: "BloodGroup",
-      width: 130,
-      sortable: false,
-    },
-    // {
-    //   field: "UserType",
-    //   headerName: "UserType",
-    //   width: 100,
-    //   sortable: false,
-    // },
     {
       field: "Status",
       headerName: "Status",
-      width: 100,
+      width: 200,
       sortable: false,
     },
-    {
-      field: "Email",
-      headerName: "Email",
-      width: 100,
-      sortable: false,
-    },
+
     {
       field: "Action",
       headerName: "Action",
-      width: 100,
+      width: 200,
       sortable: false,
       renderCell: (params) => (
         <>
@@ -304,7 +218,7 @@ export default function ManageUsers() {
     },
   ];
   const getUserData = () => {
-    axios.get(`${BASE_URL}Users/`).then((response) => {
+    axios.get(`${BASE_URL}medicalconditions/`).then((response) => {
       setUserData(response.data.values.flat());
     });
   };
@@ -316,150 +230,75 @@ export default function ManageUsers() {
     <>
       {/* =======================Modal================== */}
       {loaderOpen && <Loader open={loaderOpen} />}
+
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
           sx={{
             width: "90%",
-            maxWidth: 600,
-            height: 500,
+            maxWidth: 400,
             bgcolor: "#ccccff",
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            padding: 4,
             justifyContent: "center",
-            textAlign:"center",
             background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
-            overflowY: { xs: "scroll", md: "auto" },
-            "&::-webkit-scrollbar": {
-              display: "none",
-            },
-            msOverflowStyle: "none",
-            scrollbarWidth: "none",
           }}
         >
-          <Grid container rowSpacing={2.2} columnSpacing={2}>
-            <Grid container item md={12} justifyContent="center">
-              <center>
-                <img src={avatar} alt="img" height={"70"} width={"75"} />
-              </center>
+          <Grid
+            container
+            xs={12}
+            item
+            spacing={3}
+            display={"flex"}
+            flexDirection={"column"}
+            padding={4}
+            justifyContent={"center"}
+          >
+            <Grid item xs={12}>
+              <Typography fontWeight="bold">Add Medical Conditions</Typography>
             </Grid>
 
-            <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
-                label="First Name"
-                id="Firstname"
+            <Grid item xs={12}>
+              <TextField
+                name="name"
+                required
+                size="small"
+                id="name"
+                label="Enter Name"
+                style={{ borderRadius: 10, width: "100%" }}
+                autoFocus
                 onChange={onchangeHandler}
-                value={data.Firstname}
-                name="Firstname"
+                value={data.Name}
               />
             </Grid>
-            <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
-                label="Middle Name"
-                id="Middlename"
+            <Grid item xs={12}>
+              <TextField
+                required
+                label="Enter Description"
+                name="Description"
+                id="outlined-multiline-static"
+                style={{ borderRadius: 10, width: "100%" }}
+                value={data.Description}
+                multiline
+                rows={2}
                 onChange={onchangeHandler}
-                value={data.Middlename}
-                name="Middlename"
-              />
-            </Grid>
-
-            <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
-                label="Last Name"
-                id="Lastname"
-                onChange={onchangeHandler}
-                value={data.Lastname}
-                name="Lastname"
-              />
-            </Grid>
-            <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
-                label="Password"
-                id="Password"
-                onChange={onchangeHandler}
-                type="password"
-                value={data.Password}
-                name="Password"
-              />
-            </Grid>
-            <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
-                label="Phone No"
-                id="Phone"
-                onChange={onchangeHandler}
-                type="number"
-                value={data.Phone}
-                name="Phone"
-              />
-            </Grid>
-            <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
-                label="Address"
-                id="Address"
-                onChange={onchangeHandler}
-                value={data.Address}
-                name="Address"
-              />
-            </Grid>
-            <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
-                label="Email ID"
-                id="Email"
-                onChange={onchangeHandler}
-                type="email"
-                value={data.Email}
-                name="Email"
               />
             </Grid>
 
-            <Grid item md={6} sm={6} xs={12}>
-              <DatePickerField
-                id="DOB"
-                label="DOB"
-                value={dayjs(data.DOB)}
-                onChange={(date) =>
-                  onchangeHandler({
-                    target: {
-                      name: "DOB",
-                      value: dayjs(date),
-                    },
-                  })
-                }
-              />
-            </Grid>
-            {/* <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
-                label="User Type"
-                id="UserType"
-                name="UserType"
+            <Grid item md={12} sm={6} xs={12}>
+              <TextField
+                style={{ borderRadius: 10, width: "100%" }}
+                label="  Status"
+                id="Status"
                 onChange={onchangeHandler}
-                value={data.UserType}
-              />
-            </Grid> */}
-
-            <Grid item md={6} sm={6} xs={12}>
-              <InputSelectField
-                id="BloodGroup"
-                label="Blood Group"
-                onChange={onchangeHandler}
-                value={data.BloodGroup}
-                data={[
-                  { key: "A+", value: "A+" },
-                  { key: "A-", value: "A-" },
-                  { key: "B+", value: "B+" },
-                  { key: "B-", value: "B-" },
-                  { key: "O+", value: "O+" },
-                  { key: "O-", value: "O-" },
-                  { key: "AB+", value: "AB+" },
-                  { key: "AB-", value: "AB-" },
-                ]}
+                value={data.Status}
+                name="Status"
               />
             </Grid>
 
-            <Grid item xs={12} textAlign={"end"}>
+            <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
                 onClick={handleClose}
                 type="submit"
@@ -529,7 +368,7 @@ export default function ManageUsers() {
           padding={1}
           noWrap
         >
-          Manage Users
+          Manage Medical Conditons
         </Typography>
       </Grid>
       <Grid textAlign={"end"} marginBottom={1}>
@@ -555,7 +394,7 @@ export default function ManageUsers() {
           }}
         >
           <AddIcon />
-          Add User
+          Add Condition
         </Button>
       </Grid>
       <Paper

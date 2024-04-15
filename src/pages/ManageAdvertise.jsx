@@ -120,7 +120,6 @@ export default function ManageAdvertise() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            padding: 4,
             justifyContent: "center",
             background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
           }}
@@ -130,110 +129,110 @@ export default function ManageAdvertise() {
             xs={12}
             item
             spacing={4}
-            display={"flex"}
             flexDirection={"column"}
+            padding={4}
             justifyContent={"center"}
           >
-            <Grid container item justifyContent="center" textAlign="center">
-              <Grid item xs={12}>
-                <TextField
-                  margin="normal"
-                  size="small"
-                  spacing={"5"}
-                  required
-                  fullWidth
-                  id="name"
-                  label="Enter Title"
-                  name="name"
-                  onChange={handleInputChange}
-                  autoFocus
-                  style={{ borderRadius: 10, width: "100%" }}
-                />
-              </Grid>
+            <Grid item xs={12}>
+              <Typography fontWeight="bold">Add Advertise</Typography>
+            </Grid>
 
-              <Grid item xs={12} paddingTop={1}>
-                <TextField
-                  margin="normal"
-                  size="small"
-                  required
-                  fullWidth
-                  id="description"
-                  label="Enter Description"
-                  name="description"
-                  onChange={handleInputChange}
-                  multiline
-                  rows={3}
-                  placeholder="Enter your Description..."
-                />
-              </Grid>
+            <Grid item xs={12}>
+              <TextField
+                size="small"
+                spacing={"5"}
+                required
+                fullWidth
+                id="name"
+                label="Enter Title"
+                name="name"
+                onChange={handleInputChange}
+                autoFocus
+                style={{ borderRadius: 10, width: "100%" }}
+              />
+            </Grid>
 
-              <Grid item xs={12} md={6} lg={12} marginTop={3}>
-                <input
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  id="file-upload"
-                  type="file"
-                  onChange={handleFileUpload}
-                />
-                <label htmlFor="file-upload">
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    component="span"
-                    startIcon={<CloudUploadIcon />}
-                    sx={{
-                      backgroundColor: "#8F00FF",
-                      py: 1.5,
-                      "&:hover": {
-                        backgroundColor: "#3B444B",
-                      },
-                    }}
-                  >
-                    {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
-                  </Button>
-                </label>
-              </Grid>
+            <Grid item xs={12}>
+              <TextField
+                size="small"
+                required
+                fullWidth
+                id="description"
+                label="Enter Description"
+                name="description"
+                onChange={handleInputChange}
+                multiline
+                rows={3}
+                placeholder="Enter your Description..."
+              />
+            </Grid>
 
-              <Grid item xs={12} md={12} textAlign={"end"} mt={5}>
+            <Grid item xs={12} md={6} lg={12}>
+              <input
+                accept="image/*"
+                style={{ display: "none" }}
+                id="file-upload"
+                type="file"
+                onChange={handleFileUpload}
+              />
+              <label htmlFor="file-upload">
                 <Button
-                  onClick={handleClose}
-                  type="reset"
-                  size="small"
+                  fullWidth
+                  variant="contained"
+                  component="span"
+                  startIcon={<CloudUploadIcon />}
                   sx={{
-                    marginTop: 1,
-                    p: 1,
-                    width: 80,
-                    color: "white",
-                    backgroundColor: "#3B444B",
-                    mr: 1,
+                    backgroundColor: "#8F00FF",
+                    py: 1.5,
                     "&:hover": {
                       backgroundColor: "#3B444B",
                     },
                   }}
                 >
-                  Close
+                  {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
                 </Button>
-
-                <Button
-                  type="submit"
-                  size="small"
-                  onClick={handleSubmitForm}
-                  sx={{
-                    marginTop: 1,
-                    p: 1,
-                    width: 80,
-                    color: "white",
-                    background: "linear-gradient(to right, #EE696B, #523A78)",
-                    "&:hover": {
-                      backgroundColor: "#673AB7",
-                    },
-                  }}
-                >
-                  {SaveUpdateButton}
-                </Button>
-              </Grid>
-              <Grid />
+              </label>
             </Grid>
+
+            <Grid item xs={12} md={12} textAlign={"end"}>
+              <Button
+                onClick={handleClose}
+                type="reset"
+                size="small"
+                sx={{
+                  marginTop: 1,
+                  p: 1,
+                  width: 80,
+                  color: "white",
+                  backgroundColor: "#3B444B",
+                  mr: 1,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                Close
+              </Button>
+
+              <Button
+                type="submit"
+                size="small"
+                onClick={handleSubmitForm}
+                sx={{
+                  marginTop: 1,
+                  p: 1,
+                  width: 80,
+                  color: "white",
+                  background: "linear-gradient(to right, #EE696B, #523A78)",
+                  "&:hover": {
+                    backgroundColor: "#673AB7",
+                  },
+                }}
+              >
+                {SaveUpdateButton}
+              </Button>
+            </Grid>
+            <Grid />
           </Grid>
         </Paper>
       </Modal>
@@ -277,7 +276,7 @@ export default function ManageAdvertise() {
           size="medium"
           sx={{
             pr: 2,
-            mb:2,
+            mb: 2,
             color: "white",
             backgroundColor: "#8F00FF",
             boxShadow: 5,
@@ -306,7 +305,7 @@ export default function ManageAdvertise() {
                 sx={{ height: 140 }}
                 image={advertise}
                 alt="img"
-                title="green iguana"
+                title="Manage Advertise"
               />
               <CardContent>
                 <Typography

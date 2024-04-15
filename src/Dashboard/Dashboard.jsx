@@ -45,6 +45,7 @@ import * as React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../src/assets/logo.png";
 import "../Dashboard/Dashboard.css";
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import avatar from "../assets/avtar.png";
 
 const drawerWidth = 260;
@@ -186,7 +187,7 @@ export default function Dashboard() {
       setOpen(true);
     }
   };
-  
+
   const handleClickTransaction = () => {
     setOpenProcessTransactions(!openProcessTransactions);
     if (openList) {
@@ -765,6 +766,28 @@ export default function Dashboard() {
                   <NoteAltIcon />
                 </ListItemIcon>
                 <ListItemText primary="Manage Assestment" />
+              </ListItemButton>
+            </Link>
+
+            <Link to="medical-condition" className="link_style">
+              <ListItemButton
+                onClick={handleClickTransaction}
+                selected={location.pathname === "/dashboard/medical-condition"}
+                sx={{
+                  "&.Mui-selected": {
+                    backgroundColor: "#8F00FF",
+                    // m:0.5,
+                    borderRadius: 1,
+                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                      color: "#FFFFFF",
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <MonitorHeartIcon />
+                </ListItemIcon>
+                <ListItemText primary="Medical Condition" />
               </ListItemButton>
             </Link>
             <Link to="manage-avoid-food" className="link_style">
