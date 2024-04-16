@@ -1,6 +1,16 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Card, IconButton, Modal, Pagination, Paper } from "@mui/material";
+import {
+  Card,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Pagination,
+  Paper,
+  Select,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -76,7 +86,7 @@ const ManageMedication = () => {
       .then((response) => {
         console.log(response);
       });
-      handleClose();
+    handleClose();
   };
 
   // const getAllImgList = () => {
@@ -126,7 +136,7 @@ const ManageMedication = () => {
             container
             xs={12}
             item
-            spacing={4}
+            spacing={2}
             display={"flex"}
             flexDirection={"column"}
             padding={4}
@@ -148,6 +158,27 @@ const ManageMedication = () => {
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControl fullWidth size="small" required>
+                <InputLabel id="demo-select-small-label">
+                  Select Type
+                </InputLabel>
+
+                <Select
+                  labelId="ChooseType"
+                  id="ChooseType"
+                  label="Choose Type"
+                  onChange={handleInputChange}
+                  // value={data.name}
+                  style={{ textAlign: "left" }}
+                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                >
+                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
+                  <MenuItem value={20}>Videos</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
 
             <Grid item xs={12} paddingTop={1}>

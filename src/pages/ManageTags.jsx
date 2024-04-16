@@ -1,12 +1,10 @@
+import AddIcon from "@mui/icons-material/Add";
+import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
-  FormControl,
   IconButton,
-  InputLabel,
-  MenuItem,
   Modal,
-  Paper,
-  Select,
+  Paper
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -15,39 +13,42 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
 import * as React from "react";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
 
-export default function ManageUsers() {
+export default function ManageTags() {
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [formData, setFormData] = React.useState({
-    question: "",
-    answer: "",
+  const [data, setData] = React.useState({
+    id: "",
+    Password: "",
+    Firstname: "",
+    Middlename: "",
+    Lastname: "",
   });
 
-  const handleClick = (row) => {
-    setSaveUpdateButton("Update");
-    setOn(true);
-  };
-
-  const handleOnSave = () => {
-    setSaveUpdateButton("Save");
-    setOn(true);
+  const onchangeHandler = (event) => {
+    setData({
+      ...data,
+      [event.target.name]: event.target.value,
+    });
   };
 
   const columns = [
-    { field: "id", headerName: "Sr.No", width: 150, sortable: false },
+    {
+      field: "id",
+      headerName: " Sr.No",
+      width: 100,
+      sortable: false,
+    },
     {
       field: "firstName",
-      headerName: "Questions",
-      width: 450,
+      headerName: "Name",
+      width: 300,
       sortable: false,
     },
     {
       field: "lastName",
-      headerName: "Answer",
-      width: 250,
+      headerName: "Description",
+      width: 500,
       sortable: false,
     },
     {
@@ -60,7 +61,6 @@ export default function ManageUsers() {
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
             <FormatListNumberedIcon />
           </IconButton>
-
           <IconButton color="error">
             <DeleteForeverSharpIcon />
           </IconButton>
@@ -75,7 +75,7 @@ export default function ManageUsers() {
     { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
     { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
     { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
+    { id: 6, lastName: "Melisandre", firstName: "devin", age: 150 },
     { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
     { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
     { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
@@ -85,13 +85,18 @@ export default function ManageUsers() {
     setOn(false);
   };
 
-  const onchangeHandler = (event) => {
-    setFormData({
-      ...formData,
+  const handleClick = (row) => {
+    setSaveUpdateButton("Update");
 
-      [event.target.name]: event.target.value,
-    });
+    setOn(true);
   };
+
+  const handleOnSave = () => {
+    setSaveUpdateButton("Save");
+
+    setOn(true);
+  };
+
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -99,7 +104,7 @@ export default function ManageUsers() {
           elevation={10}
           sx={{
             width: "90%",
-            maxWidth: 400,
+            maxWidth:400,
             bgcolor: "#ccccff",
             position: "absolute",
             top: "50%",
@@ -113,64 +118,43 @@ export default function ManageUsers() {
             container
             xs={12}
             item
-            spacing={3}
+            spacing={4}
             display={"flex"}
             flexDirection={"column"}
             padding={4}
             justifyContent={"center"}
           >
             <Grid item xs={12}>
-              <Typography fontWeight="bold">Add FAQ</Typography>
+              <Typography fontWeight="bold">Add Tags</Typography>
             </Grid>
             <Grid item xs={12}>
               <TextField
-                name="question"
+                name="name"
                 required
                 size="small"
-                id="question"
-                label="Enter the question"
+                id="name"
+                label="Enter Name"
                 style={{ borderRadius: 10, width: "100%" }}
                 autoFocus
                 onChange={onchangeHandler}
-                value={formData.question}
+                value={data.name}
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
-
-                <Select
-                  labelId="ChooseType"
-                  id="ChooseType"
-                  label="Choose Type"
-                  onChange={onchangeHandler}
-                  // value={data.name}
-                  style={{ textAlign: "left" }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
-                >
-                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
-                  <MenuItem value={20}>Videos</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
             <Grid item xs={12}>
               <TextField
+                size="small"
                 required
-                label="Enter the Answer"
-                name="answer"
+                fullWidth
                 id="outlined-multiline-static"
-                style={{ borderRadius: 10, width: "100%" }}
-                value={formData.answer}
+                label="Enter Description"
                 multiline
-                rows={4}
-                onChange={onchangeHandler}
+                rows={3}
+                placeholder="Enter your Description..."
               />
             </Grid>
 
-            <Grid item xs={12} textAlign={"end"}>
+            <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
                 onClick={handleClose}
                 type="submit"
@@ -207,6 +191,8 @@ export default function ManageUsers() {
                 {SaveUpdateButton}
               </Button>
             </Grid>
+
+            <Grid />
           </Grid>
         </Paper>
       </Modal>
@@ -239,7 +225,7 @@ export default function ManageUsers() {
           padding={1}
           noWrap
         >
-          Manage FAQ's
+          Manage Tags
         </Typography>
       </Grid>
 
@@ -249,6 +235,7 @@ export default function ManageUsers() {
           type="text"
           size="medium"
           sx={{
+            pr: 2,
             color: "white",
             backgroundColor: "#8F00FF",
             boxShadow: 5,
@@ -265,10 +252,9 @@ export default function ManageUsers() {
           }}
         >
           <AddIcon />
-          Add Questions
+          Add Tags
         </Button>
       </Grid>
-
       <Paper
         sx={{
           marginTop: 3,
@@ -279,7 +265,7 @@ export default function ManageUsers() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%" }}>
+        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={rows}
@@ -287,7 +273,7 @@ export default function ManageUsers() {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 10,
+                  pageSize: 5,
                 },
               },
             }}

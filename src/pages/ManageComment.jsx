@@ -1,7 +1,15 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import { IconButton, Modal, Paper } from "@mui/material";
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Paper,
+  Select,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -23,8 +31,8 @@ export default function ManageComment() {
   const columns = [
     { field: "id", headerName: "Sr.No", width: 100, sortable: false },
     {
-      field: "CommentUserName",
-      headerName: "Comment UserName",
+      field: "Name",
+      headerName: "Name",
       width: 300,
       sortable: false,
     },
@@ -63,50 +71,50 @@ export default function ManageComment() {
     {
       id: 1,
       Comment: "hello the video is good",
-      CommentUserName: "Jelly",
+      Name: "Jelly",
       Type: "Blogs",
     },
     {
       id: 2,
       Comment: "Wow i loved the video",
-      CommentUserName: "Cersei",
+      Name: "Cersei",
       Type: "Video",
     },
-    { id: 3, Comment: "Great work", CommentUserName: "Jaime", Type: "Video" },
+    { id: 3, Comment: "Great work", Name: "Jaime", Type: "Video" },
     {
       id: 4,
       Comment: "Appreciate your work",
-      CommentUserName: "Arya",
+      Name: "Arya",
       Type: "Blogs",
     },
     {
       id: 5,
       Comment: "Hello your content is best",
-      CommentUserName: "Daenerys",
+      Name: "Daenerys",
       Type: "Blogs",
     },
     {
       id: 6,
       Comment: "Seriously Great Great Knowledge",
-      CommentUserName: "Shilla",
+      Name: "Shilla",
       Type: "Newsletter",
     },
     {
       id: 7,
       Comment: "Great worked and the content is very helpful Thankyou ",
-      CommentUserName: "Ferrara",
+      Name: "Ferrara",
       Type: "Video",
     },
     {
       id: 8,
       Comment: "Successfully worked the Exercise",
-      CommentUserName: "Rossini",
+      Name: "Rossini",
       Type: "Video",
     },
     {
       id: 9,
       Comment: "Just Wooooow",
-      CommentUserName: "Harvey",
+      Name: "Harvey",
       Type: "Video",
     },
   ];
@@ -155,27 +163,47 @@ export default function ManageComment() {
             container
             xs={12}
             item
-            spacing={4}
+            spacing={3}
             display={"flex"}
             flexDirection={"column"}
             padding={4}
             justifyContent={"center"}
           >
             <Grid item xs={12}>
-              <Typography fontWeight="bold">Update Comment</Typography>
+              <Typography fontWeight="bold">Add Comment</Typography>
             </Grid>
             <Grid item xs={12}>
               <TextField
-                name="CommentUsername"
+                name="Name"
                 required
                 size="small"
-                id="CommentUsername"
-                label="Enter CommentUsername"
+                id="Name"
+                label="Enter Name"
                 style={{ borderRadius: 10, width: "100%" }}
                 autoFocus
                 onChange={onchangeHandler}
                 value={data.name}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth size="small" required>
+                <InputLabel id="demo-select-small-label">
+                  Select Type
+                </InputLabel>
+
+                <Select
+                  labelId="ChooseType"
+                  id="ChooseType"
+                  label="Choose Type"
+                  onChange={onchangeHandler}
+                  value={data.name}
+                  style={{ textAlign: "left" }}
+                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                >
+                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
+                  <MenuItem value={20}>Videos</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
 
             <Grid item xs={12}>
@@ -189,19 +217,6 @@ export default function ManageComment() {
                 multiline
                 rows={4}
                 onChange={onchangeHandler}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                name="Choose Type"
-                required
-                size="small"
-                id="Choose Type"
-                label="Choose Type"
-                style={{ borderRadius: 10, width: "100%" }}
-                autoFocus
-                onChange={onchangeHandler}
-                value={data.name}
               />
             </Grid>
 
@@ -303,7 +318,7 @@ export default function ManageComment() {
           }}
         >
           <AddIcon />
-          Add Post
+          Add Comments
         </Button>
       </Grid>
 

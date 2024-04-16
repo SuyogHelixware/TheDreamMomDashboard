@@ -49,7 +49,7 @@ export default function ManageAssesment() {
   const handleSubmitForm = () => {};
 
   const columns = [
-    { field: "UserId", headerName: "ID", width: 90, sortable: false },
+    { field: "id", headerName: "ID", width: 90, sortable: false },
     {
       field: "Weight",
       headerName: "Weight",
@@ -131,7 +131,7 @@ export default function ManageAssesment() {
           elevation={10}
           sx={{
             width: "90%",
-            maxWidth: 350,
+            maxWidth: 400,
             bgcolor: "#ccccff",
             position: "absolute",
             top: "50%",
@@ -151,90 +151,78 @@ export default function ManageAssesment() {
             padding={4}
             justifyContent={"center"}
           >
-            <Grid
-              container
-              xs={12}
-              item
-              spacing={3}
-              display={"flex"}
-              flexDirection={"column"}
-              justifyContent={"center"}
-            >
-              <Grid item xs={12}>
-                <Typography fontWeight="bold">
-                  Add Assesment
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  size="small"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Enter Title"
-                  name="name"
-                  onChange={handleInputChange}
-                  autoFocus
-                  style={{ borderRadius: 10, width: "100%" }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  size="small"
-                  required
-                  fullWidth
-                  id="description"
-                  label="Enter Description"
-                  name="description"
-                  onChange={handleInputChange}
-                  multiline
-                  rows={3}
-                  placeholder="Enter your Description..."
-                />
-              </Grid>
-
-              <Grid item xs={12} md={12} textAlign={"end"}>
-                <Button
-                  onClick={handleClose}
-                  type="reset"
-                  size="small"
-                  sx={{
-                    marginTop: 1,
-                    p: 1,
-                    width: 80,
-                    color: "white",
-                    backgroundColor: "#3B444B",
-                    mr: 1,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                  }}
-                >
-                  Close
-                </Button>
-
-                <Button
-                  type="submit"
-                  size="small"
-                  onClick={handleSubmitForm}
-                  sx={{
-                    marginTop: 1,
-                    p: 1,
-                    width: 80,
-                    color: "white",
-                    background: "linear-gradient(to right, #EE696B, #523A78)",
-                    "&:hover": {
-                      backgroundColor: "#673AB7",
-                    },
-                  }}
-                >
-                  {SaveUpdateButton}
-                </Button>
-              </Grid>
-              <Grid />
+            <Grid item xs={12}>
+              <Typography fontWeight="bold">Add Assesment</Typography>
             </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                size="small"
+                required
+                fullWidth
+                id="name"
+                label="Enter Title"
+                name="name"
+                onChange={handleInputChange}
+                autoFocus
+                style={{ borderRadius: 10, width: "100%" }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                size="small"
+                required
+                fullWidth
+                id="description"
+                label="Enter Description"
+                name="description"
+                onChange={handleInputChange}
+                multiline
+                rows={3}
+                placeholder="Enter your Description..."
+              />
+            </Grid>
+
+            <Grid item xs={12} md={12} textAlign={"end"}>
+              <Button
+                onClick={handleClose}
+                type="reset"
+                size="small"
+                sx={{
+                  marginTop: 1,
+                  p: 1,
+                  width: 80,
+                  color: "white",
+                  backgroundColor: "#3B444B",
+                  mr: 1,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                Close
+              </Button>
+
+              <Button
+                type="submit"
+                size="small"
+                onClick={handleSubmitForm}
+                sx={{
+                  marginTop: 1,
+                  p: 1,
+                  width: 80,
+                  color: "white",
+                  background: "linear-gradient(to right, #EE696B, #523A78)",
+                  "&:hover": {
+                    backgroundColor: "#673AB7",
+                  },
+                }}
+              >
+                {SaveUpdateButton}
+              </Button>
+            </Grid>
+            <Grid />
           </Grid>
         </Paper>
       </Modal>
@@ -299,22 +287,33 @@ export default function ManageAssesment() {
         </Button>
       </Grid>
 
-      <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          className="datagrid-style"
-          getRowId={(row) => row.id}
-          rows={data.map((data, id) => ({ ...data, id: id + 1 }))}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+      <Paper
+        sx={{
+          marginTop: 3,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          bgcolor: "#",
+        }}
+        elevation={7}
+      >
+        <Box sx={{ height: 400, width: "100%" }}>
+          <DataGrid
+            className="datagrid-style"
+            getRowId={(row) => row.id}
+            rows={data.map((data, id) => ({ ...data, id: id + 1 }))}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          pageSizeOptions={[5]}
-        />
-      </Box>
+            }}
+            pageSizeOptions={[5]}
+          />
+        </Box>
+      </Paper>
     </>
   );
 }

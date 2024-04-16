@@ -20,6 +20,7 @@ import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import {
   Avatar,
   Button,
@@ -1022,6 +1023,27 @@ export default function Dashboard() {
                   <VaccinesIcon />
                 </ListItemIcon>
                 <ListItemText primary="Manage Dosage" />
+              </ListItemButton>
+            </Link>
+            <Link to="manage-tags" className="link_style">
+              <ListItemButton
+                onClick={handleClickTransaction}
+                selected={location.pathname === "/dashboard/manage-tags"}
+                sx={{
+                  "&.Mui-selected": {
+                    backgroundColor: "#8F00FF",
+                    // m:0.5,
+                    borderRadius: 1,
+                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                      color: "#FFFFFF",
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <LocalOfferIcon />
+                </ListItemIcon>
+                <ListItemText primary="Manage Tags" />
               </ListItemButton>
             </Link>
           </List>

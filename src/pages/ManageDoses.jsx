@@ -168,6 +168,7 @@ export default function ManageDoses() {
                   value={List}
                   onChange={handleChange}
                   style={{ textAlign: "left" }}
+                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
                   <MenuItem value={10}>First Dose</MenuItem>
                   <MenuItem value={20}>Second Dose</MenuItem>

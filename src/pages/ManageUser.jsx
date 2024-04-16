@@ -1,7 +1,15 @@
 import AddIcon from "@mui/icons-material/Add";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Button, Grid, IconButton, Modal, Typography } from "@mui/material";
+import {
+  Badge,
+  Button,
+  Grid,
+  IconButton,
+  Modal,
+  Typography,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
@@ -24,6 +32,18 @@ export default function ManageUsers() {
   const [userData, setUserData] = React.useState([]);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [on, setOn] = React.useState(false);
+  const [image, setImage] = React.useState(null);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const [data, setData] = React.useState({
     id: "",
@@ -31,7 +51,7 @@ export default function ManageUsers() {
     Firstname: "",
     Middlename: "",
     Lastname: "",
-    DOB: "",
+    DOB: dayjs(undefined),
     Phone: "",
     Address: "",
     BloodGroup: "",
@@ -47,7 +67,7 @@ export default function ManageUsers() {
       Firstname: "",
       Middlename: "",
       Lastname: "",
-      DOB: "",
+      DOB: dayjs(undefined),
       Phone: "",
       Address: "",
       BloodGroup: "",
@@ -128,7 +148,7 @@ export default function ManageUsers() {
       "Phone",
       "Address",
       "Email",
-      // "Status",
+      "Status",
       "DOB",
       "BloodGroup",
     ];
@@ -203,6 +223,39 @@ export default function ManageUsers() {
   };
 
   const columns = [
+    {
+      field: "Action",
+      headerName: "Action",
+      width: 150,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <IconButton
+            sx={{
+              "& .MuiButtonBase-root,": {
+                padding: 0,
+              },
+            }}
+            onClick={() => deluser(params.row._id)}
+            color="primary"
+          >
+            <DeleteForeverIcon style={{ color: "red" }} />
+          </IconButton>
+          <IconButton
+            onClick={() => handleClick(params.row)}
+            sx={{
+              "& .MuiButtonBase-root,": {
+                padding: 0,
+                marginLeft: 3,
+              },
+            }}
+            color="primary"
+          >
+            <EditNoteIcon />
+          </IconButton>
+        </>
+      ),
+    },
     { field: "id", headerName: "ID", width: 90, sortable: false },
     {
       field: "Firstname",
@@ -271,39 +324,6 @@ export default function ManageUsers() {
       width: 100,
       sortable: false,
     },
-    {
-      field: "Action",
-      headerName: "Action",
-      width: 100,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton
-            onClick={() => handleClick(params.row)}
-            sx={{
-              "& .MuiButtonBase-root,": {
-                padding: 0,
-              },
-            }}
-            color="primary"
-          >
-            <EditNoteIcon />
-          </IconButton>
-          <IconButton
-            sx={{
-              "& .MuiButtonBase-root,": {
-                padding: 0,
-                marginLeft: 3,
-              },
-            }}
-            onClick={() => deluser(params.row._id)}
-            color="primary"
-          >
-            <DeleteForeverIcon style={{ color: "red" }} />
-          </IconButton>
-        </>
-      ),
-    },
   ];
   const getUserData = () => {
     axios.get(`${BASE_URL}Users/`).then((response) => {
@@ -343,10 +363,40 @@ export default function ManageUsers() {
           }}
         >
           <Grid container rowSpacing={2.2} columnSpacing={2}>
-            <Grid container item md={12} justifyContent="center">
-              <center>
-                <img src={avatar} alt="img" height={"70"} width={"75"} />
-              </center>
+            <Grid
+              container
+              item
+              md={12}
+              justifyContent="center"
+              alignItems="flex-end"
+              style={{ position: "relative" }}
+            >
+              <Badge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                badgeContent={
+                  <label htmlFor="upload-image">
+                    <CameraAltIcon
+                      style={{ cursor: "pointer", color: "white" }}
+                    />
+                    <input
+                      accept="image/*"
+                      id="upload-image"
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={handleImageUpload}
+                    />
+                  </label>
+                }
+              >
+                <img
+                  src={image || avatar}
+                  alt="Uploaded"
+                  height={70}
+                  width={70}
+                  style={{ display: "block" }}
+                />
+              </Badge>
             </Grid>
 
             <Grid item md={6} sm={6} xs={12}>
@@ -432,15 +482,6 @@ export default function ManageUsers() {
                 }
               />
             </Grid>
-            {/* <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
-                label="User Type"
-                id="UserType"
-                name="UserType"
-                onChange={onchangeHandler}
-                value={data.UserType}
-              />
-            </Grid> */}
 
             <Grid item md={6} sm={6} xs={12}>
               <InputSelectField
@@ -462,7 +503,7 @@ export default function ManageUsers() {
             </Grid>
             <Grid item md={3} sm={3} xs={12} textAlign={"left"} ml={3}>
               <CheckboxInputs
-                label="Status"  
+                label="Status"
                 id="Status"
                 onChange={onchangeHandler}
                 value={data.Status}
