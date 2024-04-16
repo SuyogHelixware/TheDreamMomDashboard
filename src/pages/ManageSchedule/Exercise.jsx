@@ -60,16 +60,13 @@ export default function ManageExercise() {
   };
 
   const handleSubmitForm = () => {
-    console.log(formData);
-    console.log(uploadedImg);
-
     axios
       .request({
         method: "PUT",
         maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/${sessionStorage.getItem(
-          "userId"
-        )}/${uploadedImg.name}`,
+        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Exercise/${
+          new Date().getTime() + "_" + uploadedImg.name
+        }`,
         headers: {
           "Content-Type": "image/jpeg",
           AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
@@ -79,26 +76,27 @@ export default function ManageExercise() {
       .then((response) => {
         console.log(response);
       });
+    handleClose();
   };
 
-  const getAllImgList = () => {
-    axios
-      .request({
-        method: "GET",
-        url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
-        headers: {
-          AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
-        },
-      })
-      .then((response) => {
-        console.log("Insetance created");
-        console.log(response);
-      });
-  };
+  // const getAllImgList = () => {
+  //   axios
+  //     .request({
+  //       method: "GET",
+  //       url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
+  //       headers: {
+  //         AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log("Insetance created");
+  //       console.log(response);
+  //     });
+  // };
 
-  React.useEffect(() => {
-    getAllImgList();
-  }, []);
+  // React.useEffect(() => {
+  //   getAllImgList();
+  // }, []);
 
   const handlePageChange = (event, value) => {
     setPage(value);

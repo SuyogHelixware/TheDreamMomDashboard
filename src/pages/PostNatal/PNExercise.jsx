@@ -1,142 +1,109 @@
 import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import {
-  Button,
-  Grid,
-  IconButton,
-  Modal,
-  TextField,
-  Typography,
-} from "@mui/material";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import { DataGrid } from "@mui/x-data-grid";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { Card, IconButton, Modal, Pagination, Paper } from "@mui/material";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import { useEffect } from "react";
-import avatar from "../../assets/avtar.png";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { BASE_URL } from "../../Constant";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import exercise from "../../assets/exercises.jpg";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
-export default function Exercise() {
-  const [uploadedFileName, setUploadedFileName] = React.useState("");
-  const [userData, setUserData] = React.useState([]);
-  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+const styles = {
+  typography: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    height: 40,
+  },
+};
+
+export default function PNExercise() {
+  const [uploadedImg, setUploadedImg] = React.useState("");
+  const [formData, setFormData] = React.useState("");
   const [on, setOn] = React.useState(false);
-  const [data, setData] = React.useState({
-    id: "",
-    Password: "",
-    Firstname: "",
-    Middlename: "",
-    Lastname: "",
-  });
-
-  const onchangeHandler = (event) => {
-    setData({
-      ...data,
-      [event.target.name]: event.target.value,
-    });
-  };
-  const handleClose = () => {
-    setOn(false);
-  };
-
-  const handleClick = (row) => {
-    setSaveUpdateButton("UPDATE");
-    setOn(true);
-    setData(row);
-  };
-  const handleOnSave = () => {
-    setSaveUpdateButton("SAVE");
-    setOn(true);
-  };
-  const deluser = (id) => {
-    axios
-      .delete(`${BASE_URL}Users/${id}`)
-      .then((response) => {
-        if (response.data.status === true) {
-          alert("record deleted");
-        }
-      })
-      .catch((error) => {
-        alert("error");
-      });
-  };
-
-  const columns = [
-    { field: "id", headerName: "ID", width: 100, sortable: false },
-    {
-      field: "Firstname",
-      headerName: "Name",
-      width: 300,
-      sortable: false,
-    },
-    {
-      field: "Middlename",
-      headerName: "Description",
-      width: 500,
-      sortable: false,
-    },
-    {
-      field: "Image",
-      headerName: "Image",
-      width: 100,
-      sortable: false,
-      renderCell: (params) => (
-        <img src={avatar} alt="" style={{ width: 30, height: 30 }} />
-      ),
-    },
-    {
-      field: "Action",
-      headerName: "Action",
-      width: 100,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton
-            onClick={() => handleClick(params.row)}
-            sx={{
-              "& .MuiButtonBase-root,": {
-                padding: 0,
-              },
-            }}
-            color="primary"
-          >
-            <EditNoteIcon />
-          </IconButton>
-          <IconButton
-            sx={{
-              "& .MuiButtonBase-root,": {
-                padding: 0,
-                marginLeft: 3,
-              },
-            }}
-            onClick={() => deluser(params.row._id)}
-            color="primary"
-          >
-            <DeleteForeverIcon style={{ color: "red" }} />
-          </IconButton>
-        </>
-      ),
-    },
-  ];
+  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+  const [page, setPage] = React.useState(1);
+  const cardsPerPage = 8;
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     console.log("Uploaded file:", file);
-    setUploadedFileName(file.name);
+    setUploadedImg(file);
   };
 
-  useEffect(() => {
-    const getUserData = () => {
-      axios.get(`${BASE_URL}Users/`).then((response) => {
-        setUserData(response.data.values.flat());
-      });
-    };
+  const handleClose = () => {
+    setOn(false);
+  };
+  const handleClick = (row) => {
+    setSaveUpdateButton("Update");
+    setOn(true);
+  };
 
-    getUserData();
-  }, []);
+  const handleOnSave = () => {
+    setSaveUpdateButton("Save");
+    setOn(true);
+  };
+
+  const handleInputChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleSubmitForm = () => {
+    axios
+      .request({
+        method: "PUT",
+        maxBodyLength: Infinity,
+        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/PostNatal/Exercise/${
+          new Date().getTime() + "_" + uploadedImg.name
+        }`,
+        headers: {
+          "Content-Type": "image/jpeg",
+          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+        },
+        data: uploadedImg,
+      })
+      .then((response) => {
+        console.log(response);
+      });
+    handleClose();
+  };
+
+  // const getAllImgList = () => {
+  //   axios
+  //     .request({
+  //       method: "GET",
+  //       url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
+  //       headers: {
+  //         AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log("Insetance created");
+  //       console.log(response);
+  //     });
+  // };
+
+  // React.useEffect(() => {
+  //   getAllImgList();
+  // }, []);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const startIndex = (page - 1) * cardsPerPage;
+  const endIndex = startIndex + cardsPerPage;
 
   return (
     <>
@@ -168,31 +135,33 @@ export default function Exercise() {
             <Grid item xs={12}>
               <Typography fontWeight="bold">Add Exercise</Typography>
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+                size="small"
+                spacing={"5"}
+                required
+                fullWidth
+                id="name"
+                label="Enter Title"
+                name="name"
+                onChange={handleInputChange}
+                autoFocus
+                style={{ borderRadius: 10, width: "100%" }}
+              />
+            </Grid>
 
             <Grid item xs={12}>
               <TextField
-                name="name"
-                required
                 size="small"
-                id="name"
-                label="Enter Name"
-                style={{ borderRadius: 10, width: "100%" }}
-                autoFocus
-                onChange={onchangeHandler}
-                value={data.name}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
                 required
+                fullWidth
+                id="description"
                 label="Enter Description"
-                name="Description"
-                id="outlined-multiline-static"
-                style={{ borderRadius: 10, width: "100%" }}
-                value={data.Description}
+                name="description"
+                onChange={handleInputChange}
                 multiline
-                rows={2}
-                onChange={onchangeHandler}
+                rows={3}
+                placeholder="Enter your Description..."
               />
             </Grid>
 
@@ -204,7 +173,6 @@ export default function Exercise() {
                 type="file"
                 onChange={handleFileUpload}
               />
-
               <label htmlFor="file-upload">
                 <Button
                   fullWidth
@@ -219,7 +187,7 @@ export default function Exercise() {
                     },
                   }}
                 >
-                  {uploadedFileName ? uploadedFileName : "Upload Photo"}
+                  {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
                 </Button>
               </label>
             </Grid>
@@ -227,7 +195,7 @@ export default function Exercise() {
             <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
                 onClick={handleClose}
-                type="submit"
+                type="reset"
                 size="small"
                 sx={{
                   marginTop: 1,
@@ -247,6 +215,7 @@ export default function Exercise() {
               <Button
                 type="submit"
                 size="small"
+                onClick={handleSubmitForm}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -261,13 +230,15 @@ export default function Exercise() {
                 {SaveUpdateButton}
               </Button>
             </Grid>
+            <Grid />
           </Grid>
         </Paper>
       </Modal>
+
       <Grid
         container
         xs={12}
-        sm={12}
+        sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -295,6 +266,7 @@ export default function Exercise() {
           Manage Exercise
         </Typography>
       </Grid>
+
       <Grid textAlign={"end"} marginBottom={1}>
         <Button
           onClick={handleOnSave}
@@ -302,6 +274,7 @@ export default function Exercise() {
           size="medium"
           sx={{
             pr: 2,
+            mb: 2,
             color: "white",
             backgroundColor: "#8F00FF",
             boxShadow: 5,
@@ -321,33 +294,69 @@ export default function Exercise() {
           Add Exercise
         </Button>
       </Grid>
-      <Paper
-        sx={{
-          marginTop: 3,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          bgcolor: "#",
-        }}
-        elevation={7}
-      >
-        <Box sx={{ height: 400, width: "100%" }}>
-          <DataGrid
-            className="datagrid-style"
-            getRowId={(row) => row._id}
-            rows={userData.map((data, id) => ({ ...data, id: id + 1 }))}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            pageSizeOptions={[5]}
+
+      <Grid container spacing={3} justifyContent="start">
+        {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <Card sx={{ width: "100%" }}>
+              <CardMedia
+                sx={{ height: 170 }}
+                image={exercise}
+                alt="img"
+                title="Manage Advertise"
+              />
+              <CardContent>
+                <Typography
+                  noWrap
+                  height={25}
+                  gutterBottom
+                  component="div"
+                  textAlign={"start"}
+                >
+                  <b>Title:</b>
+                </Typography>
+                <Typography
+                  textAlign={"start"}
+                  variant="body2"
+                  style={styles.typography}
+                  color="textSecondary"
+                  component="div"
+                >
+                  Description are a widespread group of squamate reptiles, with
+                  over 6,000 species, ranging across all continents except
+                  Antarctica
+                </Typography>
+              </CardContent>
+              <CardActions
+                sx={{
+                  pt: "0",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <IconButton color="primary" onClick={() => handleClick()}>
+                  <EditNoteIcon />
+                </IconButton>
+
+                <Button size="medium" sx={{ color: "red" }}>
+                  <DeleteForeverIcon />
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+
+      <Grid container spacing={3} width="100%" pt={5}>
+        <Grid item xs={12}>
+          <Pagination
+            count={Math.ceil(19 / 8)}
+            color="primary"
+            page={page}
+            onChange={handlePageChange}
           />
-        </Box>
-      </Paper>
+        </Grid>
+      </Grid>
     </>
   );
 }

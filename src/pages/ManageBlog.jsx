@@ -74,6 +74,7 @@ const ManageBlog = () => {
       .then((response) => {
         console.log(response);
       });
+      handleClose();
   };
 
   // const getAllImgList = () => {

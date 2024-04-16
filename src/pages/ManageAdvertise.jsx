@@ -81,23 +81,23 @@ export default function ManageAdvertise() {
       });
   };
 
-  const getAllImgList = () => {
-    axios
-      .request({
-        method: "GET",
-        url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
-        headers: {
-          AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
-        },
-      })
-      .then((response) => {
-        console.log("Insetance created");
-        console.log(response);
-      });
-  };
+  // const getAllImgList = () => {
+  //   axios
+  //     .request({
+  //       method: "GET",
+  //       url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
+  //       headers: {
+  //         AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log("Insetance created");
+  //       console.log(response);
+  //     });
+  // };
 
   React.useEffect(() => {
-    getAllImgList();
+    // getAllImgList();
   }, []);
 
   const handlePageChange = (event, value) => {

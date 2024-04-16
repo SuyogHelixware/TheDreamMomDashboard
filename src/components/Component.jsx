@@ -78,7 +78,7 @@ export class InputSelectField extends React.Component {
           }}
           disabled={this.props.disabled}
         >
-          <InputLabel>{this.props.label}*</InputLabel>
+          <InputLabel>{this.props.label}</InputLabel>
           <Select
             id={this.props.id}
             name={this.props.id}
@@ -120,8 +120,10 @@ export class CheckboxInputs extends React.Component {
         <FormControlLabel
           sx={{
             "& .MuiTypography-root": {
-              fontSize: "15px",
+              fontSize: "16px",
             },
+            width: "100%",
+            maxWidth: 220,
           }}
           control={
             <Checkbox

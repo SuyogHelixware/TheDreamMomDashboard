@@ -13,6 +13,7 @@ import Swal from "sweetalert2";
 import avatar from "../../src/assets/avtar.png";
 import { BASE_URL } from "../Constant";
 import InputTextField, {
+  CheckboxInputs,
   DatePickerField,
   InputSelectField,
 } from "../components/Component";
@@ -35,7 +36,7 @@ export default function ManageUsers() {
     Address: "",
     BloodGroup: "",
     // UserType: "",
-    Status: "",
+    Status: 1,
     Email: "",
   });
 
@@ -51,7 +52,7 @@ export default function ManageUsers() {
       Address: "",
       BloodGroup: "",
       // UserType: "",
-      Status: "",
+      Status: 1,
       Email: "",
     });
   };
@@ -121,12 +122,13 @@ export default function ManageUsers() {
   const updateUser = (id) => {
     const requiredFields = [
       "Firstname",
+      "Middlename",
       "Lastname",
       "Password",
       "Phone",
       "Address",
       "Email",
-      "Status",
+      // "Status",
       "DOB",
       "BloodGroup",
     ];
@@ -330,7 +332,7 @@ export default function ManageUsers() {
             transform: "translate(-50%, -50%)",
             padding: 4,
             justifyContent: "center",
-            textAlign:"center",
+            textAlign: "center",
             background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
             overflowY: { xs: "scroll", md: "auto" },
             "&::-webkit-scrollbar": {
@@ -456,6 +458,15 @@ export default function ManageUsers() {
                   { key: "AB+", value: "AB+" },
                   { key: "AB-", value: "AB-" },
                 ]}
+              />
+            </Grid>
+            <Grid item md={3} sm={3} xs={12} textAlign={"left"} ml={3}>
+              <CheckboxInputs
+                label="Status"  
+                id="Status"
+                onChange={onchangeHandler}
+                value={data.Status}
+                name="Status"
               />
             </Grid>
 
