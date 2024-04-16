@@ -60,20 +60,23 @@ const ManageBlog = () => {
   };
 
   const handleSubmitForm = () => {
-    axios
-      .request({
-        method: "PUT",
-        maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Blogs/${new Date().getTime() +"_"+ uploadedImg.name}`,
-        headers: {
-          "Content-Type": "image/jpeg",
-          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-        },
-        data: uploadedImg,
-      })
-      .then((response) => {
-        console.log(response);
-      });
+    console.log('====================================');
+    console.log(uploadedImg);
+    console.log('====================================');
+    // axios
+    //   .request({
+    //     method: "PUT",
+    //     maxBodyLength: Infinity,
+    //     url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Blogs/${new Date().getTime() +"_"+ uploadedImg.name}`,
+    //     headers: {
+    //       "Content-Type": "image/jpeg",
+    //       AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+    //     },
+    //     data: uploadedImg,
+    //   })
+    //   .then((response) => {
+    //     console.log(response);
+    //   });
   };
 
   // const getAllImgList = () => {
