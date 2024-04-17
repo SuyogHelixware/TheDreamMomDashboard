@@ -13,6 +13,7 @@ import CardMedia from "@mui/material/CardMedia";
 import cardimg from "../assets/travel.jpg";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Bunny_Storage_Access_Key, Bunny_Storage_URL } from "../Constant";
 
 const styles = {
   typography: {
@@ -60,19 +61,24 @@ const ManageBlog = () => {
   };
 
   const handleSubmitForm = () => {
+    const filename = new Date().getTime() +"_"+ uploadedImg.name;
     axios
       .request({
         method: "PUT",
         maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Blogs/${new Date().getTime() +"_"+ uploadedImg.name}`,
+        url: `${Bunny_Storage_URL}/Blogs/${filename}`,
         headers: {
           "Content-Type": "image/jpeg",
-          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          AccessKey: Bunny_Storage_Access_Key,
         },
         data: uploadedImg,
       })
       .then((response) => {
+        console.log("Hello started the Blog uploading");
         console.log(response);
+        console.log("uploaded Successfully");
+        console.log(filename)
+
       });
       handleClose();
   };
