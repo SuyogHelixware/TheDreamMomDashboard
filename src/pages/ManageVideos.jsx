@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
 import video from "../video/Heeriye.mp4";
+import { Bunny_Stream_Access_Key } from "../Constant";
 
 const styles = {
   typography: {
@@ -76,9 +77,19 @@ export default function ManageVideos() {
         data: obj,
       })
       .then((response) => {
-        console.log("Insetance created");
+        console.log("Instance created");
         uploadVideo(response.data.guid);
         console.log(response);
+
+        // Name: Test2,
+        // Description: ,
+        // Link: ,
+        // StorageLabId: respo,
+        // StorageVideoId: ,
+
+
+
+
       });
   };
   const uploadVideo = (id) => {
@@ -89,7 +100,7 @@ export default function ManageVideos() {
         url: `https://video.bunnycdn.com/library/222011/videos/${id}`,
         headers: {
           "Content-Type": "video/mp4",
-          AccessKey: "fff023aa-0097-4333-920f44dfeef3-eafe-4e47",
+          AccessKey: Bunny_Stream_Access_Key,
         },
         data: uploadedVideo,
       })
