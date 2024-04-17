@@ -1,5 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Card,
   FormControl,
@@ -12,17 +14,15 @@ import {
   Select,
 } from "@mui/material";
 import Button from "@mui/material/Button";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import diet from "../../assets/diet.jpg";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { BASE_URL } from "../../Constant";
 
 const styles = {
   typography: {
@@ -37,11 +37,24 @@ const styles = {
 
 const ManageDiet = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [formData, setFormData] = React.useState("");
+  const [userData, setUserData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
   const cardsPerPage = 8;
+
+  const [data, setData] = React.useState([]);
+
+  const clearFormData = () => {
+    setData({
+      id: "",
+      Name: "",
+      Description: "",
+      Image: "",
+      TagsIds: [],
+      Status: 1,
+    });
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -58,13 +71,15 @@ const ManageDiet = () => {
   };
 
   const handleOnSave = () => {
-    setSaveUpdateButton("Save");
+    setSaveUpdateButton("SAVE");
     setOn(true);
+    clearFormData();
+    setData([]); // Reset 'data' to an empty array after saving
   };
 
-  const handleInputChange = (event) => {
-    setFormData({
-      ...formData,
+  const onchangeHandler = (event) => {
+    setData({
+      ...data,
       [event.target.name]: event.target.value,
     });
   };
@@ -89,23 +104,14 @@ const ManageDiet = () => {
     handleClose();
   };
 
-  // const getAllImgList = () => {
-  //   axios
-  //     .request({
-  //       method: "GET",
-  //       url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
-  //       headers: {
-  //         AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log("Instance created");
-  //       console.log(response);
-  //     });
-  // };
+  const getAllImgList = () => {
+    axios.get(`${BASE_URL}diet/`).then((response) => {
+      setUserData(response.data.values.flat());
+    });
+  };
 
   React.useEffect(() => {
-    // getAllImgList();
+    getAllImgList();
   }, []);
 
   const handlePageChange = (event, value) => {
@@ -154,7 +160,8 @@ const ManageDiet = () => {
                 id="name"
                 label="Enter Name"
                 name="blogName"
-                onChange={handleInputChange}
+                value={data.Name}
+                onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
@@ -170,7 +177,7 @@ const ManageDiet = () => {
                   labelId="ChooseType"
                   id="ChooseType"
                   label="Choose Type"
-                  onChange={handleInputChange}
+                  onChange={onchangeHandler}
                   // value={data.name}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
@@ -189,7 +196,8 @@ const ManageDiet = () => {
                 id="outlined-multiline-static"
                 label="Enter Description"
                 name="description"
-                onChange={handleInputChange}
+                value={data.Description}
+                onChange={onchangeHandler}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
@@ -328,14 +336,14 @@ const ManageDiet = () => {
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
+        {userData.slice(startIndex, endIndex).map((item, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ width: "100%" }}>
               <CardMedia
                 sx={{ height: 140 }}
-                image={diet}
+                image={item.Image}
                 alt="img"
-                title="green iguana"
+                title={item.Name}
               />
               <CardContent>
                 <Typography
@@ -345,7 +353,7 @@ const ManageDiet = () => {
                   component="div"
                   textAlign={"start"}
                 >
-                  <b>Title:</b>
+                  <b>Title:{item.Name}</b>
                 </Typography>
                 <Typography
                   textAlign={"start"}
@@ -354,9 +362,7 @@ const ManageDiet = () => {
                   color="textSecondary"
                   component="div"
                 >
-                  Description are a widespread group of squamate reptiles, with
-                  over 6,000 species, ranging across all continents except
-                  Antarctica
+                  <b>Description: </b> {item.Description}
                 </Typography>
               </CardContent>
               <CardActions
