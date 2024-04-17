@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
 import video from "../video/Heeriye.mp4";
-import { Bunny_Stream_Access_Key } from "../Constant";
+import { Bunny_Stream_Access_Key, Bunny_Stream_URL } from "../Constant";
 
 const styles = {
   typography: {
@@ -68,7 +68,7 @@ export default function ManageVideos() {
     axios
       .request({
         method: "POST",
-        url: "https://video.bunnycdn.com/library/222011/videos",
+        url: `${Bunny_Stream_URL}/222011/videos`,
         headers: {
           accept: "application/json",
           "content-type": "application/json",
@@ -81,14 +81,6 @@ export default function ManageVideos() {
         uploadVideo(response.data.guid);
         console.log(response);
 
-        // Name: Test2,
-        // Description: ,
-        // Link: ,
-        // StorageLabId: respo,
-        // StorageVideoId: ,
-
-
-
 
       });
   };
@@ -97,7 +89,7 @@ export default function ManageVideos() {
       .request({
         method: "PUT",
         maxBodyLength: Infinity,
-        url: `https://video.bunnycdn.com/library/222011/videos/${id}`,
+        url: `${Bunny_Stream_URL}/222011/videos/${id}`,
         headers: {
           "Content-Type": "video/mp4",
           AccessKey: Bunny_Stream_Access_Key,
@@ -115,7 +107,7 @@ export default function ManageVideos() {
     axios
       .request({
         method: "GET",
-        url: "https://video.bunnycdn.com/library/222011/videos",
+        url: `${Bunny_Stream_URL}/222011/videos`,
         headers: {
           accept: "application/json",
           AccessKey: "fff023aa-0097-4333-920f44dfeef3-eafe-4e47",

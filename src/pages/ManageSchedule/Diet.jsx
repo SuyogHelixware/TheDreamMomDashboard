@@ -85,12 +85,15 @@ const ManageDiet = () => {
   };
 
   const handleSubmitForm = () => {
+    
+    const filename = new Date().getTime() + "_" + uploadedImg.name;
+  
     axios
       .request({
         method: "PUT",
         maxBodyLength: Infinity,
         url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${
-          new Date().getTime() + "_" + uploadedImg.name
+          filename
         }`,
         headers: {
           "Content-Type": "image/jpeg",
@@ -100,6 +103,18 @@ const ManageDiet = () => {
       })
       .then((response) => {
         console.log(response);
+        axios
+          .post("http://192.168.1.12:3011/api/diet", {
+            Name: data.name,
+            Description: data.description,
+            Image: filename,
+          })
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       });
     handleClose();
   };
@@ -159,7 +174,7 @@ const ManageDiet = () => {
                 fullWidth
                 id="name"
                 label="Enter Name"
-                name="blogName"
+                name="name"
                 value={data.Name}
                 onChange={onchangeHandler}
                 autoFocus
