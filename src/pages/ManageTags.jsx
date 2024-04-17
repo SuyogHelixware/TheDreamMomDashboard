@@ -1,29 +1,37 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import {
-  IconButton,
-  Modal,
-  Paper
-} from "@mui/material";
+import { IconButton, Modal, Paper } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
 import * as React from "react";
+import Swal from "sweetalert2";
+import { BASE_URL } from "../Constant";
+import Loader from "../components/Loader";
 
 export default function ManageTags() {
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+  const [tagData, setTagsData] = React.useState([]);
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [data, setData] = React.useState({
     id: "",
-    Password: "",
-    Firstname: "",
-    Middlename: "",
-    Lastname: "",
+    Name: "",
+    Description: "",
   });
+
+  const clearFormData = () => {
+    setData({
+      id: "",
+      Name: "",
+      Description: "",
+    });
+  };
 
   const onchangeHandler = (event) => {
     setData({
@@ -40,13 +48,13 @@ export default function ManageTags() {
       sortable: false,
     },
     {
-      field: "firstName",
+      field: "Name",
       headerName: "Name",
       width: 300,
       sortable: false,
     },
     {
-      field: "lastName",
+      field: "Description",
       headerName: "Description",
       width: 500,
       sortable: false,
@@ -61,7 +69,7 @@ export default function ManageTags() {
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
             <FormatListNumberedIcon />
           </IconButton>
-          <IconButton color="error">
+          <IconButton color="error" onClick={() => deluser(params.row._id)}>
             <DeleteForeverSharpIcon />
           </IconButton>
         </>
@@ -69,42 +77,137 @@ export default function ManageTags() {
     },
   ];
 
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 14 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: "devin", age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
-
   const handleClose = () => {
     setOn(false);
   };
 
   const handleClick = (row) => {
-    setSaveUpdateButton("Update");
-
+    setSaveUpdateButton("UPDATE");
     setOn(true);
+    setData(row);
   };
 
   const handleOnSave = () => {
-    setSaveUpdateButton("Save");
-
+    setSaveUpdateButton("SAVE");
     setOn(true);
+    clearFormData();
+  };
+
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags/`).then((response) => {
+      setTagsData(response.data.values.flat());
+    });
+  };
+  React.useEffect(() => {
+    getTagData();
+  }, []);
+
+  const deluser = (id) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${BASE_URL}tags/${id}`)
+          .then((response) => {
+            if (response.data.status === true) {
+              setTagsData(tagData.filter((user) => user._id !== id));
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                toast: true,
+                title: "Tag deleted Successfully",
+                showConfirmButton: false,
+                timer: 2500,
+              });
+            }
+          })
+          .catch((error) => {
+            alert("error");
+          });
+      }
+    });
+  };
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 2500,
+    });
+  };
+  const updateUser = (id) => {
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
+    setLoaderOpen(true);
+    const axiosRequest =
+      SaveUpdateButton === "SAVE"
+        ? axios.post(`${BASE_URL}tags`, data)
+        : axios.patch(`${BASE_URL}tags/${id}`, data);
+
+    axiosRequest
+      .then((response) => {
+        setLoaderOpen(false);
+        if (response.data.status === true) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title:
+              SaveUpdateButton === "SAVE"
+                ? "Tag Added Successfully"
+                : "Tag Updated Successfully",
+            showConfirmButton: false,
+            timer: 2500,
+          });
+          getTagData();
+        } else if (response.data.status === false) {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: response.data.message,
+            showConfirmButton: false,
+            timer: 2500,
+          });
+        }
+        handleClose();
+      })
+      .catch((error) => {
+        setLoaderOpen(false);
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          toast: true,
+          title: "Error occurred while saving/updating user",
+          showConfirmButton: false,
+          timer: 2500,
+        });
+      });
   };
 
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
           sx={{
             width: "90%",
-            maxWidth:400,
+            maxWidth: 400,
             bgcolor: "#ccccff",
             position: "absolute",
             top: "50%",
@@ -129,15 +232,15 @@ export default function ManageTags() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                name="name"
+                name="Name"
                 required
                 size="small"
-                id="name"
+                id="Name"
                 label="Enter Name"
                 style={{ borderRadius: 10, width: "100%" }}
                 autoFocus
                 onChange={onchangeHandler}
-                value={data.name}
+                value={data.Name}
               />
             </Grid>
 
@@ -146,9 +249,12 @@ export default function ManageTags() {
                 size="small"
                 required
                 fullWidth
-                id="outlined-multiline-static"
+                id="Description"
                 label="Enter Description"
+                name="Description"
                 multiline
+                value={data.Description}
+                onChange={onchangeHandler}
                 rows={3}
                 placeholder="Enter your Description..."
               />
@@ -177,6 +283,7 @@ export default function ManageTags() {
               <Button
                 type="submit"
                 size="small"
+                onClick={() => updateUser(data._id)}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -268,7 +375,8 @@ export default function ManageTags() {
         <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
-            rows={rows}
+            getRowId={(row) => row._id}
+            rows={tagData.map((data, id) => ({ ...data, id: id + 1 }))}
             columns={columns}
             initialState={{
               pagination: {

@@ -196,21 +196,38 @@ export default function ManageAdvertise() {
                 type="file"
                 onChange={handleFileUpload}
               />
+
               <label htmlFor="file-upload">
                 <Button
                   fullWidth
                   variant="contained"
                   component="span"
-                  startIcon={<CloudUploadIcon />}
+                  // startIcon={<CloudUploadIcon />}
                   sx={{
                     backgroundColor: "#8F00FF",
                     py: 1.5,
                     "&:hover": {
                       backgroundColor: "#3B444B",
                     },
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
                   }}
                 >
-                  {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <CloudUploadIcon sx={{ marginRight: 1 }} />
+                    <Typography noWrap>
+                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
+                    </Typography>
+                  </div>
                 </Button>
               </label>
             </Grid>

@@ -1,5 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Card,
   FormControl,
@@ -12,17 +14,15 @@ import {
   Select,
 } from "@mui/material";
 import Button from "@mui/material/Button";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import vaccination from "../../assets/vaccine.jpg";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
 const styles = {
   typography: {
@@ -37,11 +37,24 @@ const styles = {
 
 const ManageVaccination = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [formData, setFormData] = React.useState("");
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
+  const [imgData, setImgData] = React.useState([]);
   const cardsPerPage = 8;
+
+  const [data, setData] = React.useState([]);
+
+  const clearFormData = () => {
+    setData({
+      id: "",
+      Name: "",
+      Description: "",
+      Image: "",
+      TagsIds: [],
+      Status: 1,
+    });
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -60,23 +73,24 @@ const ManageVaccination = () => {
   const handleOnSave = () => {
     setSaveUpdateButton("Save");
     setOn(true);
+    clearFormData();
+    setData([]);
   };
 
-  const handleInputChange = (event) => {
-    setFormData({
-      ...formData,
+  const onchangeHandler = (event) => {
+    setData({
+      ...data,
       [event.target.name]: event.target.value,
     });
   };
 
   const handleSubmitForm = () => {
+    const filename = new Date().getTime() + "_" + uploadedImg.name;
     axios
       .request({
         method: "PUT",
         maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/vaccination/${
-          new Date().getTime() + "_" + uploadedImg.name
-        }`,
+        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/vaccination/${filename}`,
         headers: {
           "Content-Type": "image/jpeg",
           AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
@@ -85,27 +99,30 @@ const ManageVaccination = () => {
       })
       .then((response) => {
         console.log(response);
+        axios
+          .post("http://192.168.1.12:3011/api/vaccination", {
+            Name: data.name,
+            Description: data.description,
+            Image: filename,
+          })
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       });
     handleClose();
   };
 
-  // const getAllImgList = () => {
-  //   axios
-  //     .request({
-  //       method: "GET",
-  //       url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
-  //       headers: {
-  //         AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log("Insetance created");
-  //       console.log(response);
-  //     });
-  // };
+  const getAllImgList = () => {
+    axios.get(`${BASE_URL}vaccination/`).then((response) => {
+      setImgData(response.data.values.flat());
+    });
+  };
 
   React.useEffect(() => {
-    // getAllImgList();
+    getAllImgList();
   }, []);
 
   const handlePageChange = (event, value) => {
@@ -153,8 +170,8 @@ const ManageVaccination = () => {
                 fullWidth
                 id="name"
                 label="Enter Blog Name"
-                name="blogName"
-                onChange={handleInputChange}
+                name="name"
+                onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
@@ -170,7 +187,7 @@ const ManageVaccination = () => {
                   labelId="ChooseType"
                   id="ChooseType"
                   label="Choose Type"
-                  onChange={handleInputChange}
+                  onChange={onchangeHandler}
                   // value={data.name}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
@@ -186,10 +203,10 @@ const ManageVaccination = () => {
                 size="small"
                 required
                 fullWidth
-                id="outlined-multiline-static"
+                id="description"
                 label="Enter Description"
                 name="description"
-                onChange={handleInputChange}
+                onChange={onchangeHandler}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
@@ -210,16 +227,32 @@ const ManageVaccination = () => {
                   fullWidth
                   variant="contained"
                   component="span"
-                  startIcon={<CloudUploadIcon />}
+                  // startIcon={<CloudUploadIcon />}
                   sx={{
                     backgroundColor: "#8F00FF",
                     py: 1.5,
                     "&:hover": {
                       backgroundColor: "#3B444B",
                     },
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
                   }}
                 >
-                  {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <CloudUploadIcon sx={{ marginRight: 1 }} />
+                    <Typography noWrap>
+                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
+                    </Typography>
+                  </div>
                 </Button>
               </label>
             </Grid>
@@ -328,14 +361,14 @@ const ManageVaccination = () => {
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
+        {imgData.slice(startIndex, endIndex).map((item, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ width: "100%" }}>
               <CardMedia
                 sx={{ height: 140 }}
-                image={vaccination}
+                image={`${Bunny_Image_URL}/Schedule/vaccination/${item.Image}`}
                 alt="img"
-                title="green iguana"
+                title={item.Name}
               />
               <CardContent>
                 <Typography
@@ -345,7 +378,7 @@ const ManageVaccination = () => {
                   component="div"
                   textAlign={"start"}
                 >
-                  <b>Title:</b>
+                  <b>Title:{item.Name}</b>
                 </Typography>
                 <Typography
                   textAlign={"start"}
@@ -354,9 +387,7 @@ const ManageVaccination = () => {
                   color="textSecondary"
                   component="div"
                 >
-                  Description are a widespread group of squamate reptiles, with
-                  over 6,000 species, ranging across all continents except
-                  Antarctica
+                  <b>Description: </b> {item.Description}
                 </Typography>
               </CardContent>
               <CardActions

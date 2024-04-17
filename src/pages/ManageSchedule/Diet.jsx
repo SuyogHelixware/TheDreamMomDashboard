@@ -22,7 +22,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import { BASE_URL } from "../../Constant";
+import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
 const styles = {
   typography: {
@@ -37,7 +37,7 @@ const styles = {
 
 const ManageDiet = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [userData, setUserData] = React.useState([]);
+  const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
@@ -74,7 +74,7 @@ const ManageDiet = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setData([]); // Reset 'data' to an empty array after saving
+    setData([]); 
   };
 
   const onchangeHandler = (event) => {
@@ -85,16 +85,13 @@ const ManageDiet = () => {
   };
 
   const handleSubmitForm = () => {
-    
     const filename = new Date().getTime() + "_" + uploadedImg.name;
-  
+
     axios
       .request({
         method: "PUT",
         maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${
-          filename
-        }`,
+        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${filename}`,
         headers: {
           "Content-Type": "image/jpeg",
           AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
@@ -121,7 +118,7 @@ const ManageDiet = () => {
 
   const getAllImgList = () => {
     axios.get(`${BASE_URL}diet/`).then((response) => {
-      setUserData(response.data.values.flat());
+      setImgData(response.data.values.flat());
     });
   };
 
@@ -233,16 +230,32 @@ const ManageDiet = () => {
                   fullWidth
                   variant="contained"
                   component="span"
-                  startIcon={<CloudUploadIcon />}
+                  // startIcon={<CloudUploadIcon />}
                   sx={{
                     backgroundColor: "#8F00FF",
                     py: 1.5,
                     "&:hover": {
                       backgroundColor: "#3B444B",
                     },
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
                   }}
                 >
-                  {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <CloudUploadIcon sx={{ marginRight: 1 }} />
+                    <Typography noWrap>
+                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
+                    </Typography>
+                  </div>
                 </Button>
               </label>
             </Grid>
@@ -351,12 +364,12 @@ const ManageDiet = () => {
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {userData.slice(startIndex, endIndex).map((item, index) => (
+        {imgData.slice(startIndex, endIndex).map((item, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ width: "100%" }}>
               <CardMedia
-                sx={{ height: 140 }}
-                image={item.Image}
+                sx={{ height: 140, objectFit: "cover" }}
+                image={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
                 alt="img"
                 title={item.Name}
               />

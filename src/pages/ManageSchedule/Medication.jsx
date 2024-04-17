@@ -37,11 +37,23 @@ const styles = {
 
 const ManageMedication = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [formData, setFormData] = React.useState("");
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
   const cardsPerPage = 8;
+
+  const [data, setData] = React.useState([]);
+
+  const clearFormData = () => {
+    setData({
+      id: "",
+      Name: "",
+      Description: "",
+      Image: "",
+      TagsIds: [],
+      Status: 1,
+    });
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -60,23 +72,24 @@ const ManageMedication = () => {
   const handleOnSave = () => {
     setSaveUpdateButton("Save");
     setOn(true);
+    clearFormData();
+    setData([]);
   };
 
-  const handleInputChange = (event) => {
-    setFormData({
-      ...formData,
+  const onchangeHandler = (event) => {
+    setData({
+      ...data,
       [event.target.name]: event.target.value,
     });
   };
 
   const handleSubmitForm = () => {
+    const filename = new Date().getTime() + "_" + uploadedImg.name;
     axios
       .request({
         method: "PUT",
         maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Medication/${
-          new Date().getTime() + "_" + uploadedImg.name
-        }`,
+        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Medication/${filename}`,
         headers: {
           "Content-Type": "image/jpeg",
           AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
@@ -85,6 +98,18 @@ const ManageMedication = () => {
       })
       .then((response) => {
         console.log(response);
+        axios
+          .post("http://192.168.1.12:3011/api/medications", {
+            Name: data.name,
+            Description: data.description,
+            Image: filename,
+          })
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       });
     handleClose();
   };
@@ -153,8 +178,8 @@ const ManageMedication = () => {
                 fullWidth
                 id="name"
                 label="Enter Blog Name"
-                name="blogName"
-                onChange={handleInputChange}
+                name="name"
+                onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
@@ -170,7 +195,7 @@ const ManageMedication = () => {
                   labelId="ChooseType"
                   id="ChooseType"
                   label="Choose Type"
-                  onChange={handleInputChange}
+                  onChange={onchangeHandler}
                   // value={data.name}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
@@ -186,10 +211,10 @@ const ManageMedication = () => {
                 size="small"
                 required
                 fullWidth
-                id="outlined-multiline-static"
+                id="description"
                 label="Enter Description"
                 name="description"
-                onChange={handleInputChange}
+                onChange={onchangeHandler}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
@@ -210,16 +235,32 @@ const ManageMedication = () => {
                   fullWidth
                   variant="contained"
                   component="span"
-                  startIcon={<CloudUploadIcon />}
+                  // startIcon={<CloudUploadIcon />}
                   sx={{
                     backgroundColor: "#8F00FF",
                     py: 1.5,
                     "&:hover": {
                       backgroundColor: "#3B444B",
                     },
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
                   }}
                 >
-                  {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <CloudUploadIcon sx={{ marginRight: 1 }} />
+                    <Typography noWrap>
+                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
+                    </Typography>
+                  </div>
                 </Button>
               </label>
             </Grid>
