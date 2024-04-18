@@ -2,7 +2,17 @@ import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Card, IconButton, Modal, Pagination, Paper } from "@mui/material";
+import {
+  Card,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Pagination,
+  Paper,
+  Select,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -11,8 +21,12 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import video from "../video/Heeriye.mp4";
-import { Bunny_Stream_Access_Key, Bunny_Stream_URL } from "../Constant";
+import {
+  BASE_URL,
+  Bunny_Stream_Access_Key,
+  Bunny_Stream_GET_URL,
+  Bunny_Stream_URL,
+} from "../Constant";
 
 const styles = {
   typography: {
@@ -28,13 +42,27 @@ const styles = {
 export default function ManageVideos() {
   const [page, setPage] = React.useState(1);
   const [uploadedVideo, setUploadedVideo] = React.useState("");
-  const [formData, setFormData] = React.useState("");
+  const [formData, setFormData] = React.useState({
+    videoName: "",
+    videoDescription: "",
+    tag: "",
+  });
+  const [Videos, setVideos] = React.useState([]);
+  const [tags, setTags] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const cardsPerPage = 8;
+  const [isPlaying, setIsPlaying] = React.useState(false);
 
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying);
+  };
   React.useEffect(() => {
     getAllVideoList();
+  }, []);
+
+  React.useEffect(() => {
+    getTagData();
   }, []);
   const handleClose = () => {
     setOn(false);
@@ -78,18 +106,16 @@ export default function ManageVideos() {
       })
       .then((response) => {
         console.log("Instance created");
-        uploadVideo(response.data.guid);
+        uploadVideo(response.data);
         console.log(response);
-
-
       });
   };
-  const uploadVideo = (id) => {
+  const uploadVideo = (data) => {
     axios
       .request({
         method: "PUT",
         maxBodyLength: Infinity,
-        url: `${Bunny_Stream_URL}/222011/videos/${id}`,
+        url: `${Bunny_Stream_URL}/222011/videos/${data.guid}`,
         headers: {
           "Content-Type": "video/mp4",
           AccessKey: Bunny_Stream_Access_Key,
@@ -100,20 +126,36 @@ export default function ManageVideos() {
         alert("video upload");
         console.log("uploaded video response");
         console.log(response);
+
+        axios
+          .post("http://192.168.1.12:3011/api/videos", {
+            Name: formData.videoName,
+            Description: formData.videoDescription,
+            Link: `${Bunny_Stream_GET_URL}/${data.videoLibraryId}/${data.guid}`,
+            StorageLabId: data.videoLibraryId,
+            StorageVideoId: data.guid,
+            TagsIds: formData.tag,
+          })
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       });
   };
 
   const getAllVideoList = () => {
-    axios
-      .request({
-        method: "GET",
-        url: `${Bunny_Stream_URL}/222011/videos`,
-        headers: {
-          accept: "application/json",
-          AccessKey: "fff023aa-0097-4333-920f44dfeef3-eafe-4e47",
-        },
-      })
-      .then((response) => {});
+    axios.get(`${BASE_URL}videos/`).then((response) => {
+      setVideos(response.data.values);
+      console.log(response.data.values.flat());
+    });
+  };
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+      console.log(response.data.values.flat());
+    });
   };
 
   const handlePageChange = (event, value) => {
@@ -122,6 +164,15 @@ export default function ManageVideos() {
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
+
+  const isSubmitDisabled = () => {
+    if (formData.videoName && formData.videoDescription && formData.tag) {
+      return false;
+    } else {
+      console.log("Please fill all fields");
+      return true;
+    }
+  };
 
   return (
     <>
@@ -159,7 +210,7 @@ export default function ManageVideos() {
                 spacing={"5"}
                 required
                 fullWidth
-                id="name"
+                id="videoName"
                 label="Enter Title"
                 name="videoName"
                 autoFocus
@@ -173,13 +224,37 @@ export default function ManageVideos() {
                 size="small"
                 required
                 fullWidth
-                id="Description"
+                id="videoDescription"
                 label="Enter Description"
                 multiline
                 name="videoDescription"
                 rows={3}
                 onChange={handleInputChange}
               />
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControl fullWidth size="small" required>
+                <InputLabel id="demo-select-small-label">
+                  Select Type
+                </InputLabel>
+
+                <Select
+                  labelId="ChooseType"
+                  id="tag"
+                  label="tag"
+                  name="tag"
+                  onChange={handleInputChange}
+                  style={{ textAlign: "left" }}
+                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                >
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
 
             <Grid item xs={12} md={6} lg={12}>
@@ -193,6 +268,7 @@ export default function ManageVideos() {
 
               <label htmlFor="video-upload">
                 <Button
+                  disabled={isSubmitDisabled()}
                   fullWidth
                   variant="contained"
                   component="span"
@@ -313,12 +389,19 @@ export default function ManageVideos() {
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
+        {Videos.slice(startIndex, endIndex).map((item, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ width: "100%" }}>
-              <video width="100%" height="auto" controls muted>
-                <source src={video} type="video/mp4" />
-              </video>
+              <iframe
+                src={`${Bunny_Stream_GET_URL}/${item.StorageLabId}/${item.StorageVideoId}`}
+                width="100%"
+                height="auto"
+                title="Video Player"
+                frameborder="0"
+                autoPlay={isPlaying}
+                onClick={togglePlay}
+                allowfullscreen
+              ></iframe>
 
               <CardContent>
                 <Typography
@@ -328,10 +411,8 @@ export default function ManageVideos() {
                   component="div"
                   textAlign={"start"}
                 >
-                  <b>
-                    Title : Heeriye, a contemporary adaptation of Heer Ranjha,
-                    one of the four popular tragic
-                  </b>
+                  {" "}
+                  {item.Name}
                 </Typography>
                 <Typography
                   textAlign={"start"}
@@ -340,9 +421,7 @@ export default function ManageVideos() {
                   color="textSecondary"
                   component="div"
                 >
-                  Description are a widespread group of squamate reptiles, with
-                  over 6,000 species, ranging across all continents except
-                  Antarctica
+                  {item.Description}
                 </Typography>
               </CardContent>
               <CardActions
