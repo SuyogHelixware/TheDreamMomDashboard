@@ -65,10 +65,20 @@ const ManageDiet = () => {
   const handleClose = () => {
     setOn(false);
   };
-  const handleClick = (row) => {
+  const handleClick = (item) => {
+    setData({
+      id: item.id,
+      Name: item.Name,
+      Description: item.Description,
+      Image: item.Image,
+      TagsIds: item.TagsIds,
+      Status: item.Status,
+    });
     setSaveUpdateButton("Update");
     setOn(true);
   };
+  
+  
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -400,7 +410,7 @@ const ManageDiet = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <IconButton color="primary" onClick={() => handleClick()}>
+                <IconButton color="primary" onClick={() => handleClick(item)}>
                   <EditNoteIcon />
                 </IconButton>
 
