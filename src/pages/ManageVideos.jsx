@@ -22,6 +22,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
+import Swal from "sweetalert2";
 import {
   BASE_URL,
   Bunny_Stream_Access_Key,
@@ -54,7 +55,6 @@ export default function ManageVideos() {
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const cardsPerPage = 8;
   const [isPlaying, setIsPlaying] = React.useState(false);
-  const [DisableButton, setDisableButton] = React.useState(false);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -81,7 +81,7 @@ export default function ManageVideos() {
   };
   const handleVideoUpload = (event) => {
     const video = event.target.files[0];
-    console.log("Uploaded video:", video);
+    // console.log("Uploaded video:", video);
     setUploadedVideo(video);
   };
   const handleInputChange = (event) => {
@@ -107,9 +107,9 @@ export default function ManageVideos() {
         data: obj,
       })
       .then((response) => {
-        console.log("Instance created");
+        // console.log("Instance created");
         uploadVideo(response.data);
-        console.log(response);
+        // console.log(response);
       });
   };
   const uploadVideo = (data) => {
@@ -126,8 +126,8 @@ export default function ManageVideos() {
       })
       .then((response) => {
         alert("video upload");
-        console.log("uploaded video response");
-        console.log(response);
+        // console.log("uploaded video response");
+        // console.log(response);
 
         axios
           .post("http://192.168.1.12:3011/api/videos", {
@@ -139,7 +139,7 @@ export default function ManageVideos() {
             TagsIds: formData.tag,
           })
           .then((response) => {
-            console.log(response.data);
+            // console.log(response.data);
           })
           .catch((error) => {
             console.error("Error:", error);
@@ -150,18 +150,50 @@ export default function ManageVideos() {
   const getAllVideoList = () => {
     axios.get(`${BASE_URL}videos/`).then((response) => {
       setVideos(response.data.values);
-      console.log(response.data.values.flat());
+      // console.log(response.data.values.flat());
     });
   };
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
-      console.log(response.data.values.flat());
+      // console.log(response.data.values.flat());
     });
   };
 
   const handlePageChange = (event, value) => {
     setPage(value);
+  };
+
+  const deluser = (id) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${BASE_URL}videos/${id}`)
+          .then((response) => {
+            if (response.data.status === true) {
+              setVideos(Videos.filter((video) => video._id !== id));
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                toast: true,
+                title: "Video deleted Successfully",
+                showConfirmButton: false,
+                timer: 2500,
+              });
+            }
+          })
+          .catch((error) => {
+            alert("error");
+          });
+      }
+    });
   };
 
   const startIndex = (page - 1) * cardsPerPage;
@@ -171,7 +203,7 @@ export default function ManageVideos() {
     if (formData.videoName && formData.videoDescription && formData.tag) {
       return false;
     } else {
-      console.log("Please fill all fields");
+      // console.log("Please fill all fields");
       return true;
     }
   };
@@ -208,7 +240,7 @@ export default function ManageVideos() {
             container
             xs={12}
             item
-            spacing={4}
+            spacing={3}
             display={"flex"}
             flexDirection={"column"}
             padding={4}
@@ -296,9 +328,10 @@ export default function ManageVideos() {
                   {uploadedVideo.name ? uploadedVideo.name : "Upload Video"}
                 </Button>
             </Grid> */}
-            <Grid item xs={12} md={6} lg={12}>
+            <Grid item xs={12}>
               <Button
-              fullWidth
+                fullWidth
+                onChange={handleVideoUpload}
                 component="label"
                 role={undefined}
                 disabled={isSubmitDisabled()}
@@ -319,7 +352,7 @@ export default function ManageVideos() {
               </Button>
             </Grid>
 
-            <Grid item xs={12} md={12} textAlign={"end"}>
+            <Grid item xs={12} textAlign={"end"}>
               <Button
                 onClick={handleClose}
                 type="reset"
@@ -363,12 +396,10 @@ export default function ManageVideos() {
       </Modal>
       <Grid
         container
-        xs={12}
-        sm={12}
-        md={12}
-        lg={12}
+        // xs={12}
         component={Paper}
         textAlign={"center"}
+        elevation={4}
         sx={{
           width: "100%",
           px: 5,
@@ -378,7 +409,6 @@ export default function ManageVideos() {
           justifyContent: "space-between",
           mb: 2,
         }}
-        elevation="4"
       >
         <Typography
           width={"100%"}
@@ -430,11 +460,11 @@ export default function ManageVideos() {
                 width="100%"
                 height="auto"
                 title="Video Player"
-                frameborder="0"
+                frameBorder="0"
                 autoPlay={isPlaying}
                 onClick={togglePlay}
-                allowfullscreen
-              ></iframe>
+                allowFullScreen
+              />
 
               <CardContent>
                 <Typography
@@ -468,7 +498,11 @@ export default function ManageVideos() {
                   <EditNoteIcon />
                 </IconButton>
 
-                <Button size="medium" sx={{ color: "red" }}>
+                <Button
+                  size="medium"
+                  sx={{ color: "red" }}
+                  onClick={() => deluser(item._id)}
+                >
                   <DeleteForeverIcon />
                 </Button>
               </CardActions>
