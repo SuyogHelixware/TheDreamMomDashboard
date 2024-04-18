@@ -12,6 +12,7 @@ import {
   Pagination,
   Paper,
   Select,
+  styled,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import CardActions from "@mui/material/CardActions";
@@ -53,6 +54,7 @@ export default function ManageVideos() {
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const cardsPerPage = 8;
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const [DisableButton, setDisableButton] = React.useState(false);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -174,6 +176,17 @@ export default function ManageVideos() {
     }
   };
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 3,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 6,
+  });
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -257,7 +270,7 @@ export default function ManageVideos() {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} md={6} lg={12}>
+            {/* <Grid item xs={12} md={6} lg={12}>
               <input
                 accept="video/*"
                 style={{ display: "none" }}
@@ -266,7 +279,6 @@ export default function ManageVideos() {
                 onChange={handleVideoUpload}
               />
 
-              <label htmlFor="video-upload">
                 <Button
                   disabled={isSubmitDisabled()}
                   fullWidth
@@ -283,7 +295,28 @@ export default function ManageVideos() {
                 >
                   {uploadedVideo.name ? uploadedVideo.name : "Upload Video"}
                 </Button>
-              </label>
+            </Grid> */}
+            <Grid item xs={12} md={6} lg={12}>
+              <Button
+              fullWidth
+                component="label"
+                role={undefined}
+                disabled={isSubmitDisabled()}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  backgroundColor: "#8F00FF",
+
+                  py: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                Upload file
+                <VisuallyHiddenInput type="file" />
+              </Button>
             </Grid>
 
             <Grid item xs={12} md={12} textAlign={"end"}>
