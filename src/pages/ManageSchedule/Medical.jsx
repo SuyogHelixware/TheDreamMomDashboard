@@ -41,9 +41,14 @@ export default function ManageMedical() {
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
   const [imgData, setImgData] = React.useState([]);
+  const [tags, setTags] = React.useState([]);
   const cardsPerPage = 8;
 
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+  });
 
   const clearFormData = () => {
     setData({
@@ -60,12 +65,25 @@ export default function ManageMedical() {
     const file = event.target.files[0];
     console.log("Uploaded file:", file);
     setUploadedImg(file);
+
+    setData((prevData) => ({
+      ...prevData,
+      Image: file.name,
+    }));
   };
 
   const handleClose = () => {
     setOn(false);
   };
-  const handleClick = (row) => {
+  const handleClick = (item) => {
+    setData({
+      id: item.id,
+      Name: item.Name,
+      Description: item.Description,
+      Image: item.Image,
+      TagsIds: item.TagsIds,
+      Status: item.Status,
+    });
     setSaveUpdateButton("Update");
     setOn(true);
   };
@@ -122,8 +140,18 @@ export default function ManageMedical() {
     });
   };
 
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+    });
+  };
+
   React.useEffect(() => {
     getAllImgList();
+  }, []);
+
+  React.useEffect(() => {
+    getTagData();
   }, []);
 
   const handlePageChange = (event, value) => {
@@ -132,6 +160,15 @@ export default function ManageMedical() {
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
+
+  const isSubmitDisabled = () => {
+    if (data.name && data.description && data.tag) {
+      return false;
+    } else {
+      // console.log("Please fill all fields");
+      return true;
+    }
+  };
 
   return (
     <>
@@ -173,6 +210,7 @@ export default function ManageMedical() {
                 label="Enter Title"
                 name="name"
                 onChange={onchangeHandler}
+                value={data.Name}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
@@ -186,15 +224,18 @@ export default function ManageMedical() {
 
                 <Select
                   labelId="ChooseType"
-                  id="ChooseType"
-                  label="Choose Type"
+                  id="tag"
+                  label="Tag"
+                  name="tag"
                   onChange={onchangeHandler}
-                  // value={data.name}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
-                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
-                  <MenuItem value={20}>Videos</MenuItem>
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -208,27 +249,27 @@ export default function ManageMedical() {
                 label="Enter Description"
                 name="description"
                 onChange={onchangeHandler}
+                value={data.Description}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
               />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={12}>
+            <Grid item xs={12} lg={12}>
               <input
                 accept="image/*"
-                style={{ display: "none" }}
-                id="file-upload"
+                id="contained-button-file"
                 type="file"
                 onChange={handleFileUpload}
+                style={{ display: "none" }}
               />
-
-              <label htmlFor="file-upload">
+              <label htmlFor="contained-button-file">
                 <Button
                   fullWidth
                   variant="contained"
                   component="span"
-                  // startIcon={<CloudUploadIcon />}
+                  disabled={isSubmitDisabled()}
                   sx={{
                     backgroundColor: "#8F00FF",
                     py: 1.5,
@@ -241,19 +282,12 @@ export default function ManageMedical() {
                     textAlign: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <CloudUploadIcon sx={{ marginRight: 1 }} />
-                    <Typography noWrap>
-                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
-                    </Typography>
-                  </div>
+                  <CloudUploadIcon sx={{ marginRight: 1 }} />
+                  <Typography noWrap>
+                    {uploadedImg && uploadedImg.name
+                      ? uploadedImg.name
+                      : "Upload File"}
+                  </Typography>
                 </Button>
               </label>
             </Grid>
@@ -398,7 +432,7 @@ export default function ManageMedical() {
                   justifyContent: "space-between",
                 }}
               >
-                <IconButton color="primary" onClick={() => handleClick()}>
+                <IconButton color="primary" onClick={() => handleClick(item)}>
                   <EditNoteIcon />
                 </IconButton>
 

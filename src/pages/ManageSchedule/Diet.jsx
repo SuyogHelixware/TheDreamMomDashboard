@@ -41,9 +41,14 @@ const ManageDiet = () => {
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
+  const [tags, setTags] = React.useState([]);
   const cardsPerPage = 8;
 
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+  });
 
   const clearFormData = () => {
     setData({
@@ -60,6 +65,11 @@ const ManageDiet = () => {
     const file = event.target.files[0];
     console.log("Uploaded file:", file);
     setUploadedImg(file);
+
+    setData((prevData) => ({
+      ...prevData,
+      Image: file.name,
+    }));
   };
 
   const handleClose = () => {
@@ -77,14 +87,12 @@ const ManageDiet = () => {
     setSaveUpdateButton("Update");
     setOn(true);
   };
-  
-  
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setData([]); 
+    setData([]);
   };
 
   const onchangeHandler = (event) => {
@@ -132,12 +140,32 @@ const ManageDiet = () => {
     });
   };
 
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+      // console.log(response.data.values.flat());
+    });
+  };
+
   React.useEffect(() => {
     getAllImgList();
   }, []);
 
+  React.useEffect(() => {
+    getTagData();
+  }, []);
+
   const handlePageChange = (event, value) => {
     setPage(value);
+  };
+
+  const isSubmitDisabled = () => {
+    if (data.name && data.description && data.tag) {
+      return false;
+    } else {
+      // console.log("Please fill all fields");
+      return true;
+    }
   };
 
   const startIndex = (page - 1) * cardsPerPage;
@@ -162,8 +190,8 @@ const ManageDiet = () => {
         >
           <Grid
             container
-            xs={12}
             item
+            xs={12}
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
@@ -197,15 +225,18 @@ const ManageDiet = () => {
 
                 <Select
                   labelId="ChooseType"
-                  id="ChooseType"
-                  label="Choose Type"
+                  id="tag"
+                  label="Tag"
+                  name="tag"
                   onChange={onchangeHandler}
-                  // value={data.name}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
-                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
-                  <MenuItem value={20}>Videos</MenuItem>
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -215,7 +246,7 @@ const ManageDiet = () => {
                 size="small"
                 required
                 fullWidth
-                id="outlined-multiline-static"
+                id="description"
                 label="Enter Description"
                 name="description"
                 value={data.Description}
@@ -226,21 +257,20 @@ const ManageDiet = () => {
               />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={12}>
+            <Grid item xs={12} lg={12}>
               <input
                 accept="image/*"
-                style={{ display: "none" }}
-                id="file-upload"
+                id="contained-button-file"
                 type="file"
                 onChange={handleFileUpload}
+                style={{ display: "none" }} 
               />
-
-              <label htmlFor="file-upload">
+              <label htmlFor="contained-button-file">
                 <Button
                   fullWidth
                   variant="contained"
                   component="span"
-                  // startIcon={<CloudUploadIcon />}
+                  disabled={isSubmitDisabled()}
                   sx={{
                     backgroundColor: "#8F00FF",
                     py: 1.5,
@@ -253,19 +283,12 @@ const ManageDiet = () => {
                     textAlign: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <CloudUploadIcon sx={{ marginRight: 1 }} />
-                    <Typography noWrap>
-                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
-                    </Typography>
-                  </div>
+                  <CloudUploadIcon sx={{ marginRight: 1 }} />
+                  <Typography noWrap>
+                    {uploadedImg && uploadedImg.name
+                      ? uploadedImg.name
+                      : "Upload File"}
+                  </Typography>
                 </Button>
               </label>
             </Grid>
@@ -315,8 +338,8 @@ const ManageDiet = () => {
 
       <Grid
         container
-        xs={12}
-        sm={6}
+        // xs={12}
+        // sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -330,7 +353,7 @@ const ManageDiet = () => {
           justifyContent: "space-between",
           mb: 2,
         }}
-        elevation="4"
+        elevation={4}
       >
         <Typography
           width={"100%"}

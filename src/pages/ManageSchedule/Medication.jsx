@@ -20,9 +20,9 @@ import * as React from "react";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import medication from "../../assets/medication.jpg";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
 const styles = {
   typography: {
@@ -40,9 +40,15 @@ const ManageMedication = () => {
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
+  const [imgData, setImgData] = React.useState([]);
+  const [tags, setTags] = React.useState([]);
   const cardsPerPage = 8;
 
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+  });
 
   const clearFormData = () => {
     setData({
@@ -59,12 +65,25 @@ const ManageMedication = () => {
     const file = event.target.files[0];
     console.log("Uploaded file:", file);
     setUploadedImg(file);
+
+    setData((prevData) => ({
+      ...prevData,
+      Image: file.name,
+    }));
   };
 
   const handleClose = () => {
     setOn(false);
   };
-  const handleClick = (row) => {
+  const handleClick = (item) => {
+    setData({
+      id: item.id,
+      Name: item.Name,
+      Description: item.Description,
+      Image: item.Image,
+      TagsIds: item.TagsIds,
+      Status: item.Status,
+    });
     setSaveUpdateButton("Update");
     setOn(true);
   };
@@ -114,23 +133,24 @@ const ManageMedication = () => {
     handleClose();
   };
 
-  // const getAllImgList = () => {
-  //   axios
-  //     .request({
-  //       method: "GET",
-  //       url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
-  //       headers: {
-  //         AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log("Insetance created");
-  //       console.log(response);
-  //     });
-  // };
+  const getAllImgList = () => {
+    axios.get(`${BASE_URL}medications/`).then((response) => {
+      setImgData(response.data.values.flat());
+    });
+  };
+
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+    });
+  };
 
   React.useEffect(() => {
-    // getAllImgList();
+    getAllImgList();
+  }, []);
+
+  React.useEffect(() => {
+    getTagData();
   }, []);
 
   const handlePageChange = (event, value) => {
@@ -139,6 +159,15 @@ const ManageMedication = () => {
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
+
+  const isSubmitDisabled = () => {
+    if (data.name && data.description && data.tag) {
+      return false;
+    } else {
+      // console.log("Please fill all fields");
+      return true;
+    }
+  };
 
   return (
     <>
@@ -193,15 +222,18 @@ const ManageMedication = () => {
 
                 <Select
                   labelId="ChooseType"
-                  id="ChooseType"
-                  label="Choose Type"
+                  id="tag"
+                  label="Tag"
+                  name="tag"
                   onChange={onchangeHandler}
-                  // value={data.name}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
-                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
-                  <MenuItem value={20}>Videos</MenuItem>
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -221,21 +253,20 @@ const ManageMedication = () => {
               />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={12}>
+            <Grid item xs={12} lg={12}>
               <input
                 accept="image/*"
-                style={{ display: "none" }}
-                id="file-upload"
+                id="contained-button-file"
                 type="file"
                 onChange={handleFileUpload}
+                style={{ display: "none" }}
               />
-
-              <label htmlFor="file-upload">
+              <label htmlFor="contained-button-file">
                 <Button
                   fullWidth
                   variant="contained"
                   component="span"
-                  // startIcon={<CloudUploadIcon />}
+                  disabled={isSubmitDisabled()}
                   sx={{
                     backgroundColor: "#8F00FF",
                     py: 1.5,
@@ -248,19 +279,12 @@ const ManageMedication = () => {
                     textAlign: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <CloudUploadIcon sx={{ marginRight: 1 }} />
-                    <Typography noWrap>
-                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
-                    </Typography>
-                  </div>
+                  <CloudUploadIcon sx={{ marginRight: 1 }} />
+                  <Typography noWrap>
+                    {uploadedImg && uploadedImg.name
+                      ? uploadedImg.name
+                      : "Upload File"}
+                  </Typography>
                 </Button>
               </label>
             </Grid>
@@ -369,14 +393,14 @@ const ManageMedication = () => {
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
+        {imgData.slice(startIndex, endIndex).map((item, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ width: "100%" }}>
               <CardMedia
                 sx={{ height: 140 }}
-                image={medication}
+                image={`${Bunny_Image_URL}/Schedule/Medication/${item.Image}`}
                 alt="img"
-                title="green iguana"
+                title={item.Name}
               />
               <CardContent>
                 <Typography
@@ -386,7 +410,7 @@ const ManageMedication = () => {
                   component="div"
                   textAlign={"start"}
                 >
-                  <b>Title:</b>
+                  <b>Title:{item.Name}</b>
                 </Typography>
                 <Typography
                   textAlign={"start"}
@@ -395,9 +419,7 @@ const ManageMedication = () => {
                   color="textSecondary"
                   component="div"
                 >
-                  Description are a widespread group of squamate reptiles, with
-                  over 6,000 species, ranging across all continents except
-                  Antarctica
+                  <b>Description: </b> {item.Description}
                 </Typography>
               </CardContent>
               <CardActions
