@@ -1,5 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Card,
   FormControl,
@@ -10,19 +12,18 @@ import {
   Pagination,
   Paper,
   Select,
+  styled,
 } from "@mui/material";
 import Button from "@mui/material/Button";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { BASE_URL, Bunny_Image_URL } from "../../Constant";
+import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
 
 const styles = {
   typography: {
@@ -37,21 +38,26 @@ const styles = {
 
 export default function ManageExercise() {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [formData, setFormData] = React.useState({
-    Name: "",
-    Description: "",
-    Image: "",
-  });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
   const [tags, setTags] = React.useState([]);
-  const [imgData, setImgData] = React.useState([]);
+  const [imgData, setImgData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+  });
   const cardsPerPage = 8;
+  const [data, setData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+    Id: "",
+  });
 
   const clearFormData = () => {
-    setFormData({
-      id: "",
+    setData({
+      Id: "",
       Name: "",
       Description: "",
       Image: "",
@@ -65,7 +71,7 @@ export default function ManageExercise() {
     console.log("Uploaded file:", file);
     setUploadedImg(file);
 
-    setFormData((prevData) => ({
+    setData((prevData) => ({
       ...prevData,
       Image: file.name,
     }));
@@ -75,7 +81,7 @@ export default function ManageExercise() {
     setOn(false);
   };
   const handleClick = (item) => {
-    setFormData({
+    setData({
       id: item.id,
       Name: item.Name,
       Description: item.Description,
@@ -91,46 +97,105 @@ export default function ManageExercise() {
     setSaveUpdateButton("Save");
     setOn(true);
     clearFormData();
-    setFormData([]);
+    setData([]);
   };
 
-  const handleInputChange = (event) => {
-    setFormData({
-      ...formData,
+  const onchangeHandler = (event) => {
+    setData({
+      ...data,
       [event.target.name]: event.target.value,
     });
   };
 
   const handleSubmitForm = () => {
-    const filename = new Date().getTime() + "_" + uploadedImg.name;
+    if (SaveUpdateButton === "SAVE") {
+      const filename = new Date().getTime() + "_" + uploadedImg.name;
+      axios
+        .request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Exercise/${filename}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          },
+          data: uploadedImg,
+        })
+        .then((response) => {
+          console.log(response);
+          axios
+            .post(`${BASE_URL}exercise`, {
+              Name: data.Name,
+              Description: data.Description,
+              Image: filename,
+            })
+            .then((response) => {
+              console.log(response.data);
+              getAllImgList();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+    } else {
+      axios
+        .request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Exercise/${data.Image}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          },
+          data: uploadedImg,
+        })
+        .then((response) => {
+          axios
+            .patch(`${BASE_URL}exercise/${data.Id}`)
+            .then((response) => {
+              console.log("Node API Data Updated successfully:", response.data);
+              getAllImgList();
+            })
+            .catch((error) => {
+              console.error("Error deleting data:", error);
+            });
+        });
+    }
+    handleClose();
+  };
 
+  const handleDelete = (data) => {
     axios
-      .request({
-        method: "PUT",
-        maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Exercise/${filename}`,
+      .delete(`${Bunny_Storage_URL}/Schedule/Exercise/${data.Image}`, {
         headers: {
-          "Content-Type": "image/jpeg",
           AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
         },
-        data: uploadedImg,
       })
       .then((response) => {
-        console.log(response);
+        console.log(data._id);
+
         axios
-          .post("http://192.168.1.12:3011/api/exercise", {
-            Name: formData.name,
-            Description: formData.description,
-            Image: filename,
-          })
+          .delete(`${BASE_URL}Exercise/${data._id}`)
           .then((response) => {
-            console.log(response.data);
+            console.log("Node API Data Deleted successfully:", response.data);
+            getAllImgList();
           })
           .catch((error) => {
-            console.error("Error:", error);
+            console.error("Error deleting data:", error);
           });
       });
-    handleClose();
+  };
+
+  const handleUpdate = (data) => {
+    setSaveUpdateButton("UPDATE");
+    setOn(true);
+    setData({
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+      Id: data._id,
+    });
+    console.log(data);
   };
 
   const getAllImgList = () => {
@@ -156,17 +221,29 @@ export default function ManageExercise() {
     setPage(value);
   };
 
-  const startIndex = (page - 1) * cardsPerPage;
-  const endIndex = startIndex + cardsPerPage;
-
   const isSubmitDisabled = () => {
-    if (formData.name && formData.description && formData.tag) {
+    if (data.Name && data.Description && data.Tag) {
       return false;
     } else {
       // console.log("Please fill all fields");
       return true;
     }
   };
+
+  const startIndex = (page - 1) * cardsPerPage;
+  const endIndex = startIndex + cardsPerPage;
+
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 3,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 6,
+  });
 
   return (
     <>
@@ -204,10 +281,11 @@ export default function ManageExercise() {
                 spacing={"5"}
                 required
                 fullWidth
-                id="name"
-                label="Enter Title"
-                name="name"
-                onChange={handleInputChange}
+                id="Name"
+                label="Enter Name"
+                name="Name"
+                value={data.Name}
+                onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
@@ -221,10 +299,10 @@ export default function ManageExercise() {
 
                 <Select
                   labelId="ChooseType"
-                  id="tag"
+                  id="Tag"
                   label="Tag"
-                  name="tag"
-                  onChange={handleInputChange}
+                  name="Tag"
+                  onChange={onchangeHandler}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
@@ -242,17 +320,18 @@ export default function ManageExercise() {
                 size="small"
                 required
                 fullWidth
-                id="description"
+                id="Description"
                 label="Enter Description"
-                name="description"
-                onChange={handleInputChange}
+                value={data.Description}
+                name="Description"
+                onChange={onchangeHandler}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
               />
             </Grid>
 
-            <Grid item xs={12} lg={12}>
+            {/* <Grid item xs={12} lg={12}>
               <input
                 accept="image/*"
                 id="contained-button-file"
@@ -286,6 +365,36 @@ export default function ManageExercise() {
                   </Typography>
                 </Button>
               </label>
+            </Grid> */}
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                onChange={handleFileUpload}
+                component="label"
+                role={undefined}
+                disabled={isSubmitDisabled()}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  backgroundColor: "#8F00FF",
+
+                  py: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                <Typography noWrap width={"80%"}>
+                  {SaveUpdateButton === "UPDATE"
+                    ? data.Image
+                    : uploadedImg && uploadedImg.name
+                    ? uploadedImg.name
+                    : "Upload File"}
+                </Typography>
+
+                <VisuallyHiddenInput type="file" />
+              </Button>
             </Grid>
 
             <Grid item xs={12} md={12} textAlign={"end"}>
@@ -428,11 +537,15 @@ export default function ManageExercise() {
                   justifyContent: "space-between",
                 }}
               >
-                <IconButton color="primary" onClick={() => handleClick()}>
+                <IconButton color="primary" onClick={() => handleUpdate(item)}>
                   <EditNoteIcon />
                 </IconButton>
 
-                <Button size="medium" sx={{ color: "red" }}>
+                <Button
+                  size="medium"
+                  sx={{ color: "red" }}
+                  onClick={() => handleDelete(item)}
+                >
                   <DeleteForeverIcon />
                 </Button>
               </CardActions>

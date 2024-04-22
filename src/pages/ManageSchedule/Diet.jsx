@@ -12,17 +12,17 @@ import {
   Pagination,
   Paper,
   Select,
+  styled,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import { BASE_URL, Bunny_Image_URL } from "../../Constant";
+import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
 
 const styles = {
   typography: {
@@ -37,22 +37,26 @@ const styles = {
 
 const ManageDiet = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [imgData, setImgData] = React.useState([]);
+  const [imgData, setImgData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+  });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
   const [tags, setTags] = React.useState([]);
   const cardsPerPage = 8;
-
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
     Image: "",
+    Id: "",
   });
 
   const clearFormData = () => {
     setData({
-      id: "",
+      Id: "",
       Name: "",
       Description: "",
       Image: "",
@@ -75,6 +79,7 @@ const ManageDiet = () => {
   const handleClose = () => {
     setOn(false);
   };
+
   const handleClick = (item) => {
     setData({
       id: item.id,
@@ -103,34 +108,59 @@ const ManageDiet = () => {
   };
 
   const handleSubmitForm = () => {
-    const filename = new Date().getTime() + "_" + uploadedImg.name;
-
-    axios
-      .request({
-        method: "PUT",
-        maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${filename}`,
-        headers: {
-          "Content-Type": "image/jpeg",
-          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-        },
-        data: uploadedImg,
-      })
-      .then((response) => {
-        console.log(response);
-        axios
-          .post("http://192.168.1.12:3011/api/diet", {
-            Name: data.name,
-            Description: data.description,
-            Image: filename,
-          })
-          .then((response) => {
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      });
+    if (SaveUpdateButton === "SAVE") {
+      const filename = new Date().getTime() + "_" + uploadedImg.name;
+      axios
+        .request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${filename}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          },
+          data: uploadedImg,
+        })
+        .then((response) => {
+          console.log(response);
+          axios
+            .post(`${BASE_URL}diet`, {
+              Name: data.Name,
+              Description: data.Description,
+              Image: filename,
+            })
+            .then((response) => {
+              console.log(response.data);
+              getAllImgList();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+    } else {
+      axios
+        .request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${data.Image}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          },
+          data: uploadedImg,
+        })
+        .then((response) => {
+          axios
+            .patch(`${BASE_URL}diet/${data.Id}`)
+            .then((response) => {
+              console.log("Node API Data Updated successfully:", response.data);
+              getAllImgList();
+            })
+            .catch((error) => {
+              console.error("Error deleting data:", error);
+            });
+        });
+    }
     handleClose();
   };
 
@@ -147,6 +177,40 @@ const ManageDiet = () => {
     });
   };
 
+  const handleDelete = (data) => {
+    axios
+      .delete(`${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`, {
+        headers: {
+          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+        },
+      })
+      .then((response) => {
+        console.log(data._id);
+
+        axios
+          .delete(`${BASE_URL}Diet/${data._id}`)
+          .then((response) => {
+            console.log("Node API Data Deleted successfully:", response.data);
+            getAllImgList();
+          })
+          .catch((error) => {
+            console.error("Error deleting data:", error);
+          });
+      });
+  };
+
+  const handleUpdate = (data) => {
+    setSaveUpdateButton("UPDATE");
+    setOn(true);
+    setData({
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+      Id: data._id,
+    });
+    console.log(data);
+  };
+
   React.useEffect(() => {
     getAllImgList();
   }, []);
@@ -160,7 +224,7 @@ const ManageDiet = () => {
   };
 
   const isSubmitDisabled = () => {
-    if (data.name && data.description && data.tag) {
+    if (data.Name && data.Description && data.Tag) {
       return false;
     } else {
       // console.log("Please fill all fields");
@@ -171,6 +235,17 @@ const ManageDiet = () => {
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 3,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 6,
+  });
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -207,9 +282,9 @@ const ManageDiet = () => {
                 spacing={"5"}
                 required
                 fullWidth
-                id="name"
+                id="Name"
                 label="Enter Name"
-                name="name"
+                name="Name"
                 value={data.Name}
                 onChange={onchangeHandler}
                 autoFocus
@@ -225,9 +300,9 @@ const ManageDiet = () => {
 
                 <Select
                   labelId="ChooseType"
-                  id="tag"
+                  id="Tag"
                   label="Tag"
-                  name="tag"
+                  name="Tag"
                   onChange={onchangeHandler}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
@@ -246,9 +321,9 @@ const ManageDiet = () => {
                 size="small"
                 required
                 fullWidth
-                id="description"
+                id="Description"
                 label="Enter Description"
-                name="description"
+                name="Description"
                 value={data.Description}
                 onChange={onchangeHandler}
                 multiline
@@ -257,7 +332,7 @@ const ManageDiet = () => {
               />
             </Grid>
 
-            <Grid item xs={12} lg={12}>
+            {/* <Grid item xs={12} lg={12}>
               <input
                 accept="image/*"
                 id="contained-button-file"
@@ -291,6 +366,37 @@ const ManageDiet = () => {
                   </Typography>
                 </Button>
               </label>
+            </Grid> */}
+
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                onChange={handleFileUpload}
+                component="label"
+                role={undefined}
+                disabled={isSubmitDisabled()}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  backgroundColor: "#8F00FF",
+
+                  py: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                <Typography noWrap width={"80%"}>
+                  {SaveUpdateButton === "UPDATE"
+                    ? data.Image
+                    : uploadedImg && uploadedImg.name
+                    ? uploadedImg.name
+                    : "Upload File"}
+                </Typography>
+
+                <VisuallyHiddenInput type="file" />
+              </Button>
             </Grid>
 
             <Grid item xs={12} md={12} textAlign={"end"}>
@@ -400,9 +506,10 @@ const ManageDiet = () => {
         {imgData.slice(startIndex, endIndex).map((item, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ width: "100%" }}>
-              <CardMedia
-                sx={{ height: 140, objectFit: "cover" }}
-                image={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
+              <img
+                height="100%"
+                width="100%"
+                src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
                 alt="img"
                 title={item.Name}
               />
@@ -433,11 +540,15 @@ const ManageDiet = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <IconButton color="primary" onClick={() => handleClick(item)}>
+                <IconButton color="primary" onClick={() => handleUpdate(item)}>
                   <EditNoteIcon />
                 </IconButton>
 
-                <Button size="medium" sx={{ color: "red" }}>
+                <Button
+                  size="medium"
+                  sx={{ color: "red" }}
+                  onClick={() => handleDelete(item)}
+                >
                   <DeleteForeverIcon />
                 </Button>
               </CardActions>

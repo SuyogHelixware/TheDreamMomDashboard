@@ -347,7 +347,8 @@ export default function ManageVideos() {
                   },
                 }}
               >
-                Upload file
+                {uploadedVideo.name ? uploadedVideo.name : "Upload Video"}
+
                 <VisuallyHiddenInput type="file" />
               </Button>
             </Grid>
