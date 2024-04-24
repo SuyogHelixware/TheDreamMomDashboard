@@ -2,6 +2,8 @@ import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import Swal from "sweetalert2";
+
 import {
   Card,
   FormControl,
@@ -17,7 +19,6 @@ import {
 import Button from "@mui/material/Button";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -36,17 +37,17 @@ const styles = {
   },
 };
 
-export default function ManageExercise() {
+const Exercise = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [on, setOn] = React.useState(false);
-  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [page, setPage] = React.useState(1);
-  const [tags, setTags] = React.useState([]);
   const [imgData, setImgData] = React.useState({
     Name: "",
     Description: "",
     Image: "",
   });
+  const [on, setOn] = React.useState(false);
+  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+  const [page, setPage] = React.useState(1);
+  const [tags, setTags] = React.useState([]);
   const cardsPerPage = 8;
   const [data, setData] = React.useState({
     Name: "",
@@ -80,6 +81,7 @@ export default function ManageExercise() {
   const handleClose = () => {
     setOn(false);
   };
+
   const handleClick = (item) => {
     setData({
       id: item.id,
@@ -94,7 +96,7 @@ export default function ManageExercise() {
   };
 
   const handleOnSave = () => {
-    setSaveUpdateButton("Save");
+    setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
     setData([]);
@@ -108,8 +110,18 @@ export default function ManageExercise() {
   };
 
   const handleSubmitForm = () => {
+    const filename = new Date().getTime() + "_" + uploadedImg.name;
+    const saveObj = {
+      Name: data.Name,
+      Description: data.Description,
+      Image: filename,
+    };
+    const UpdateObj = {
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+    };
     if (SaveUpdateButton === "SAVE") {
-      const filename = new Date().getTime() + "_" + uploadedImg.name;
       axios
         .request({
           method: "PUT",
@@ -124,11 +136,7 @@ export default function ManageExercise() {
         .then((response) => {
           console.log(response);
           axios
-            .post(`${BASE_URL}exercise`, {
-              Name: data.Name,
-              Description: data.Description,
-              Image: filename,
-            })
+            .post(`${BASE_URL}Exercise`, saveObj)
             .then((response) => {
               console.log(response.data);
               getAllImgList();
@@ -138,6 +146,7 @@ export default function ManageExercise() {
             });
         });
     } else {
+     
       axios
         .request({
           method: "PUT",
@@ -151,9 +160,9 @@ export default function ManageExercise() {
         })
         .then((response) => {
           axios
-            .patch(`${BASE_URL}exercise/${data.Id}`)
+            .patch(`${BASE_URL}Exercise/${data.Id}`, UpdateObj)
             .then((response) => {
-              console.log("Node API Data Updated successfully:", response.data);
+              console.log(response.data);
               getAllImgList();
             })
             .catch((error) => {
@@ -162,6 +171,19 @@ export default function ManageExercise() {
         });
     }
     handleClose();
+  };
+
+  const getAllImgList = () => {
+    axios.get(`${BASE_URL}Exercise/`).then((response) => {
+      setImgData(response.data.values.flat());
+    });
+  };
+
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+      // console.log(response.data.values.flat());
+    });
   };
 
   const handleDelete = (data) => {
@@ -198,18 +220,6 @@ export default function ManageExercise() {
     console.log(data);
   };
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}exercise/`).then((response) => {
-      setImgData(response.data.values.flat());
-    });
-  };
-
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
-      setTags(response.data.values);
-    });
-  };
-
   React.useEffect(() => {
     getAllImgList();
   }, []);
@@ -217,6 +227,7 @@ export default function ManageExercise() {
   React.useEffect(() => {
     getTagData();
   }, []);
+
   const handlePageChange = (event, value) => {
     setPage(value);
   };
@@ -244,7 +255,6 @@ export default function ManageExercise() {
     whiteSpace: "nowrap",
     width: 6,
   });
-
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -264,8 +274,8 @@ export default function ManageExercise() {
         >
           <Grid
             container
-            xs={12}
             item
+            xs={12}
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
@@ -315,15 +325,15 @@ export default function ManageExercise() {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
                 required
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                value={data.Description}
                 name="Description"
+                value={data.Description}
                 onChange={onchangeHandler}
                 multiline
                 rows={3}
@@ -337,7 +347,7 @@ export default function ManageExercise() {
                 id="contained-button-file"
                 type="file"
                 onChange={handleFileUpload}
-                style={{ display: "none" }}
+                style={{ display: "none" }} 
               />
               <label htmlFor="contained-button-file">
                 <Button
@@ -366,6 +376,7 @@ export default function ManageExercise() {
                 </Button>
               </label>
             </Grid> */}
+
             <Grid item xs={12}>
               <Button
                 fullWidth
@@ -442,8 +453,8 @@ export default function ManageExercise() {
 
       <Grid
         container
-        xs={12}
-        sm={6}
+        // xs={12}
+        // sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -457,7 +468,7 @@ export default function ManageExercise() {
           justifyContent: "space-between",
           mb: 2,
         }}
-        elevation="4"
+        elevation={4}
       >
         <Typography
           width={"100%"}
@@ -501,57 +512,62 @@ export default function ManageExercise() {
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {imgData.slice(startIndex, endIndex).map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <Card sx={{ width: "100%" }}>
-              <CardMedia
-                sx={{ height: 170 }}
-                image={`${Bunny_Image_URL}/Schedule/Exercise/${item.Image}`}
-                alt="img"
-                title={item.Name}
-              />
-              <CardContent>
-                <Typography
-                  noWrap
-                  height={25}
-                  gutterBottom
-                  component="div"
-                  textAlign={"start"}
+        {Array.isArray(imgData) &&
+          imgData.slice(startIndex, endIndex).map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <Card sx={{ width: "100%" }}>
+                <img
+                  height="100%"
+                  width="100%"
+                  src={`${Bunny_Image_URL}/Schedule/Exercise/${item.Image}`}
+                  alt="img"
+                  title={item.Name}
+                />
+                <CardContent>
+                  <Typography
+                    noWrap
+                    height={25}
+                    gutterBottom
+                    component="div"
+                    textAlign={"start"}
+                  >
+                    <b>Title:{item.Name}</b>
+                  </Typography>
+                  <Typography
+                    textAlign={"start"}
+                    variant="body2"
+                    style={styles.typography}
+                    color="textSecondary"
+                    component="div"
+                  >
+                    <b>Description: </b> {item.Description}
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  sx={{
+                    pt: "0",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <b>Title:{item.Name}</b>
-                </Typography>
-                <Typography
-                  textAlign={"start"}
-                  variant="body2"
-                  style={styles.typography}
-                  color="textSecondary"
-                  component="div"
-                >
-                  <b>Description: </b> {item.Description}
-                </Typography>
-              </CardContent>
-              <CardActions
-                sx={{
-                  pt: "0",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <IconButton color="primary" onClick={() => handleUpdate(item)}>
-                  <EditNoteIcon />
-                </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleUpdate(item)}
+                  >
+                    <EditNoteIcon />
+                  </IconButton>
 
-                <Button
-                  size="medium"
-                  sx={{ color: "red" }}
-                  onClick={() => handleDelete(item)}
-                >
-                  <DeleteForeverIcon />
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
+                  <Button
+                    size="medium"
+                    sx={{ color: "red" }}
+                    onClick={() => handleDelete(item)}
+                  >
+                    <DeleteForeverIcon />
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
@@ -566,4 +582,6 @@ export default function ManageExercise() {
       </Grid>
     </>
   );
-}
+};
+
+export default Exercise;

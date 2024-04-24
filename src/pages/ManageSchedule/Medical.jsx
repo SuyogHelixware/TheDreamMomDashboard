@@ -1,28 +1,29 @@
 import AddIcon from "@mui/icons-material/Add";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import {
+  Box,
+  Paper
+} from "@mui/material";
+import Swal from "sweetalert2";
+
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
-  Card,
   FormControl,
   IconButton,
   InputLabel,
   MenuItem,
   Modal,
-  Pagination,
-  Paper,
   Select,
+  styled
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import * as React from "react";
-import { BASE_URL, Bunny_Image_URL } from "../../Constant";
+import { BASE_URL } from "../../Constant";
 
 const styles = {
   typography: {
@@ -35,24 +36,28 @@ const styles = {
   },
 };
 
-export default function ManageMedical() {
+const Medical = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [on, setOn] = React.useState(false);
-  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [page, setPage] = React.useState(1);
-  const [imgData, setImgData] = React.useState([]);
-  const [tags, setTags] = React.useState([]);
-  const cardsPerPage = 8;
-
-  const [data, setData] = React.useState({
+  const [imgData, setImgData] = React.useState({
     Name: "",
     Description: "",
     Image: "",
   });
+  const [on, setOn] = React.useState(false);
+  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+  const [page, setPage] = React.useState(1);
+  const [tags, setTags] = React.useState([]);
+  const cardsPerPage = 8;
+  const [data, setData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+    Id: "",
+  });
 
   const clearFormData = () => {
     setData({
-      id: "",
+      Id: "",
       Name: "",
       Description: "",
       Image: "",
@@ -68,19 +73,18 @@ export default function ManageMedical() {
 
     setData((prevData) => ({
       ...prevData,
-      Image: file.name,
     }));
   };
 
   const handleClose = () => {
     setOn(false);
   };
+
   const handleClick = (item) => {
     setData({
       id: item.id,
       Name: item.Name,
       Description: item.Description,
-      Image: item.Image,
       TagsIds: item.TagsIds,
       Status: item.Status,
     });
@@ -89,7 +93,7 @@ export default function ManageMedical() {
   };
 
   const handleOnSave = () => {
-    setSaveUpdateButton("Save");
+    setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
     setData([]);
@@ -103,54 +107,160 @@ export default function ManageMedical() {
   };
 
   const handleSubmitForm = () => {
-    const filename = new Date().getTime() + "_" + uploadedImg.name;
-
-    axios
-      .request({
-        method: "PUT",
-        maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Medical/${filename}`,
-        headers: {
-          "Content-Type": "image/jpeg",
-          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-        },
-        data: uploadedImg,
-      })
-      .then((response) => {
-        console.log(response);
-        axios
-          .post("http://192.168.1.12:3011/api/medicaltests", {
-            Name: data.name,
-            Description: data.description,
-            Image: filename,
-          })
-          .then((response) => {
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      });
-    handleClose();
+    const saveObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
+    const UpdateObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
+  
+    Swal.fire({
+      text: "Are you sure you want to submit?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, submit!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (SaveUpdateButton === "SAVE") {
+          axios
+            .post(`${BASE_URL}medicaltests`, saveObj)
+            .then((response) => {
+              console.log(response.data);
+              getAllImgList();
+              handleClose();
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Data saved successfully",
+              });
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong!",
+              });
+            });
+        } else {
+          axios
+            .patch(`${BASE_URL}medicaltests/${data.Id}`, UpdateObj)
+            .then((response) => {
+              console.log(response.data);
+              getAllImgList();
+              handleClose();
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Data updated successfully",
+              });
+            })
+            .catch((error) => {
+              console.error("Error updating data:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong!",
+              });
+            });
+        }
+      }
+    });
   };
 
   const getAllImgList = () => {
     axios.get(`${BASE_URL}medicaltests/`).then((response) => {
-      setImgData(response.data.values.flat());
+      const updatedImgData = response.data.values.flat().map((item, index) => ({
+        ...item,
+        id: index + 1, // You can use any unique identifier here, like item._id if available
+      }));
+      setImgData(updatedImgData);
     });
   };
 
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
+      // console.log(response.data.values.flat());
     });
+  };
+
+  const columns = [
+    { field: "Name", headerName: "Title", width: 200 },
+    { field: "Description", headerName: "Description", width: 300 },
+    {
+      field: "actions",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => (
+        <strong>
+          <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
+            <EditNoteIcon />
+          </IconButton>
+          <Button
+            size="medium"
+            sx={{ color: "red" }}
+            onClick={() => handleDelete(params.row)}
+          >
+            <DeleteForeverIcon />
+          </Button>
+        </strong>
+      ),
+    },
+  ];
+
+const handleDelete = (data) => {
+  Swal.fire({
+    text: "Are you sure you want to delete?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      axios
+        .delete(`${BASE_URL}medicaltests/${data._id}`)
+        .then((response) => {
+          console.log("Node API Data Deleted successfully:", response.data);
+          getAllImgList();
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Data deleted successfully",
+          });
+        })
+        .catch((error) => {
+          console.error("Error deleting data:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+          });
+        });
+    }
+  });
+};
+
+
+  const handleUpdate = (data) => {
+    setSaveUpdateButton("UPDATE");
+    setOn(true);
+    setData({
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+      Id: data._id,
+    });
+    console.log(data);
   };
 
   React.useEffect(() => {
     getAllImgList();
-  }, []);
-
-  React.useEffect(() => {
     getTagData();
   }, []);
 
@@ -158,11 +268,8 @@ export default function ManageMedical() {
     setPage(value);
   };
 
-  const startIndex = (page - 1) * cardsPerPage;
-  const endIndex = startIndex + cardsPerPage;
-
   const isSubmitDisabled = () => {
-    if (data.name && data.description && data.tag) {
+    if (data.Name && data.Description && data.Tag) {
       return false;
     } else {
       // console.log("Please fill all fields");
@@ -170,6 +277,20 @@ export default function ManageMedical() {
     }
   };
 
+  const startIndex = (page - 1) * cardsPerPage;
+  const endIndex = startIndex + cardsPerPage;
+
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 3,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 6,
+  });
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -189,8 +310,8 @@ export default function ManageMedical() {
         >
           <Grid
             container
-            xs={12}
             item
+            xs={12}
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
@@ -198,7 +319,7 @@ export default function ManageMedical() {
             justifyContent={"center"}
           >
             <Grid item xs={12}>
-              <Typography fontWeight="bold">Add Medical Test</Typography>
+              <Typography fontWeight="bold">Add MedicalTest</Typography>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -206,11 +327,11 @@ export default function ManageMedical() {
                 spacing={"5"}
                 required
                 fullWidth
-                id="name"
-                label="Enter Title"
-                name="name"
-                onChange={onchangeHandler}
+                id="Name"
+                label="Enter Name"
+                name="Name"
                 value={data.Name}
+                onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
@@ -224,9 +345,9 @@ export default function ManageMedical() {
 
                 <Select
                   labelId="ChooseType"
-                  id="tag"
+                  id="Tag"
                   label="Tag"
-                  name="tag"
+                  name="Tag"
                   onChange={onchangeHandler}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
@@ -240,29 +361,29 @@ export default function ManageMedical() {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
                 required
                 fullWidth
-                id="description"
+                id="Description"
                 label="Enter Description"
-                name="description"
-                onChange={onchangeHandler}
+                name="Description"
                 value={data.Description}
+                onChange={onchangeHandler}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
               />
             </Grid>
 
-            <Grid item xs={12} lg={12}>
+            {/* <Grid item xs={12} lg={12}>
               <input
                 accept="image/*"
                 id="contained-button-file"
                 type="file"
                 onChange={handleFileUpload}
-                style={{ display: "none" }}
+                style={{ display: "none" }} 
               />
               <label htmlFor="contained-button-file">
                 <Button
@@ -290,7 +411,38 @@ export default function ManageMedical() {
                   </Typography>
                 </Button>
               </label>
-            </Grid>
+            </Grid> */}
+            {/* 
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                onChange={handleFileUpload}
+                component="label"
+                role={undefined}
+                disabled={isSubmitDisabled()}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  backgroundColor: "#8F00FF",
+
+                  py: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                <Typography noWrap width={"80%"}>
+                  {SaveUpdateButton === "UPDATE"
+                    ? data.Image
+                    : uploadedImg && uploadedImg.name
+                    ? uploadedImg.name
+                    : "Upload File"}
+                </Typography>
+
+                <VisuallyHiddenInput type="file" />
+              </Button>
+            </Grid> */}
 
             <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
@@ -337,8 +489,8 @@ export default function ManageMedical() {
 
       <Grid
         container
-        xs={12}
-        sm={6}
+        // xs={12}
+        // sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -352,7 +504,7 @@ export default function ManageMedical() {
           justifyContent: "space-between",
           mb: 2,
         }}
-        elevation="4"
+        elevation={4}
       >
         <Typography
           width={"100%"}
@@ -363,7 +515,7 @@ export default function ManageMedical() {
           padding={1}
           noWrap
         >
-          Manage Medical test
+          Manage MedicalTest
         </Typography>
       </Grid>
 
@@ -391,70 +543,132 @@ export default function ManageMedical() {
           }}
         >
           <AddIcon />
-          Add Medical Test
+          Add MedicalTest
         </Button>
       </Grid>
 
-      <Grid container spacing={3} justifyContent="start">
-        {imgData.slice(startIndex, endIndex).map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <Card sx={{ width: "100%" }}>
-              <CardMedia
-                sx={{ height: 170 }}
-                image={`${Bunny_Image_URL}/Schedule/Medical/${item.Image}`}
-                alt="img"
-                title={item.Name}
-              />
-              <CardContent>
-                <Typography
-                  noWrap
-                  height={25}
-                  gutterBottom
-                  component="div"
-                  textAlign={"start"}
+      {/* <Grid container spacing={3} justifyContent="start">
+        {Array.isArray(imgData) &&
+          imgData.slice(startIndex, endIndex).map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <Card sx={{ width: "100%" }}> */}
+      {/* <img
+                  height="100%"
+                  width="100%"
+                  src={`${Bunny_Image_URL}/Schedule/MedicalTest/${item.Image}`}
+                  alt="img"
+                  title={item.Name}
+                /> */}
+      {/* <CardContent>
+                  <Typography
+                    noWrap
+                    height={25}
+                    gutterBottom
+                    component="div"
+                    textAlign={"start"}
+                  >
+                    <b>Title:{item.Name}</b>
+                  </Typography>
+                  <Typography
+                    textAlign={"start"}
+                    variant="body2"
+                    style={styles.typography}
+                    color="textSecondary"
+                    component="div"
+                  >
+                    <b>Description: </b> {item.Description}
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  sx={{
+                    pt: "0",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <b>Title:{item.Name}</b>
-                </Typography>
-                <Typography
-                  textAlign={"start"}
-                  variant="body2"
-                  style={styles.typography}
-                  color="textSecondary"
-                  component="div"
-                >
-                  <b>Description: </b> {item.Description}
-                </Typography>
-              </CardContent>
-              <CardActions
-                sx={{
-                  pt: "0",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <IconButton color="primary" onClick={() => handleClick(item)}>
-                  <EditNoteIcon />
-                </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleUpdate(item)}
+                  >
+                    <EditNoteIcon />
+                  </IconButton>
 
-                <Button size="medium" sx={{ color: "red" }}>
-                  <DeleteForeverIcon />
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                  <Button
+                    size="medium"
+                    sx={{ color: "red" }}
+                    onClick={() => handleDelete(item)}
+                  >
+                    <DeleteForeverIcon />
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+      </Grid> */}
 
-      <Grid container spacing={3} width="100%" pt={5}>
-        <Grid item xs={12}>
-          <Pagination
-            count={Math.ceil(19 / 8)}
-            color="primary"
-            page={page}
-            onChange={handlePageChange}
-          />
-        </Grid>
-      </Grid>
+      {/* <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.isArray(imgData) &&
+              imgData.slice(startIndex, endIndex).map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.Name}</TableCell>
+                  <TableCell>{item.Description}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleUpdate(item)}
+                    >
+                      <EditNoteIcon />
+                    </IconButton>
+                    <Button
+                      size="medium"
+                      sx={{ color: "red" }}
+                      onClick={() => handleDelete(item)}
+                    >
+                      <DeleteForeverIcon />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer> */}
+       <Paper
+        sx={{
+          marginTop: 3,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          bgcolor: "#",
+        }}
+        elevation={7}
+      >
+      <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <DataGrid
+          className="datagrid-style"
+          rows={imgData}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+      
+        />
+      </Box>
+      </Paper>
     </>
   );
-}
+};
+
+export default Medical;

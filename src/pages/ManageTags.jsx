@@ -69,7 +69,7 @@ export default function ManageTags() {
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
             <FormatListNumberedIcon />
           </IconButton>
-          <IconButton color="error" onClick={() => deluser(params.row._id)}>
+          <IconButton color="error"   onClick={() => handleDelete(params.row)}>
             <DeleteForeverSharpIcon />
           </IconButton>
         </>
@@ -97,6 +97,18 @@ export default function ManageTags() {
     axios.get(`${BASE_URL}tags/`).then((response) => {
       setTagsData(response.data.values.flat());
     });
+  };
+
+  const handleDelete = (data) => {
+    axios
+      .delete(`${BASE_URL}tags/${data._id}`)
+      .then((response) => {
+        console.log("Node API Data Deleted successfully:", response.data);
+        getTagData()
+      })
+      .catch((error) => {
+        console.error("Error deleting data:", error);
+      });
   };
   React.useEffect(() => {
     getTagData();

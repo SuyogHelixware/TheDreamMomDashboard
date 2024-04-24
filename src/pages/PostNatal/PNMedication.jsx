@@ -1,28 +1,27 @@
 import AddIcon from "@mui/icons-material/Add";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
-  Card,
+  Box,
   FormControl,
   IconButton,
   InputLabel,
   MenuItem,
   Modal,
-  Pagination,
   Paper,
   Select,
+  styled,
 } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import Swal from "sweetalert2";
+
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import medication from "../../assets/medication.jpg";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { BASE_URL } from "../../Constant";
 
 const styles = {
   typography: {
@@ -37,84 +36,207 @@ const styles = {
 
 const PNMedication = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [formData, setFormData] = React.useState("");
+  const [imgData, setImgData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+  });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
+  const [tags, setTags] = React.useState([]);
   const cardsPerPage = 8;
+  const [data, setData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+    Id: "",
+  });
+
+  const clearFormData = () => {
+    setData({
+      Id: "",
+      Name: "",
+      Description: "",
+      Image: "",
+      TagsIds: [],
+      Status: 1,
+    });
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     console.log("Uploaded file:", file);
     setUploadedImg(file);
+
+    setData((prevData) => ({
+      ...prevData,
+    }));
   };
 
   const handleClose = () => {
     setOn(false);
   };
-  const handleClick = (row) => {
+
+  const handleClick = (item) => {
+    setData({
+      id: item.id,
+      Name: item.Name,
+      Description: item.Description,
+      TagsIds: item.TagsIds,
+      Status: item.Status,
+    });
     setSaveUpdateButton("Update");
     setOn(true);
   };
 
   const handleOnSave = () => {
-    setSaveUpdateButton("Save");
+    setSaveUpdateButton("SAVE");
     setOn(true);
+    clearFormData();
+    setData([]);
   };
 
-  const handleInputChange = (event) => {
-    setFormData({
-      ...formData,
+  const onchangeHandler = (event) => {
+    setData({
+      ...data,
       [event.target.name]: event.target.value,
     });
   };
 
   const handleSubmitForm = () => {
-    axios
-      .request({
-        method: "PUT",
-        maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/PostNatal/Medication/${
-          new Date().getTime() + "_" + uploadedImg.name
-        }`,
-        headers: {
-          "Content-Type": "image/jpeg",
-          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-        },
-        data: uploadedImg,
-      })
-      .then((response) => {
-        console.log(response);
-      });
+    const saveObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
+    const UpdateObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
+    if (SaveUpdateButton === "SAVE") {
+      axios
+        .post(`${BASE_URL}medications`, saveObj)
+        .then((response) => {
+          console.log(response.data);
+          getAllImgList();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      axios
+        .patch(`${BASE_URL}Medications/${data.Id}`, UpdateObj)
+        .then((response) => {
+          console.log(response.data);
+          getAllImgList();
+        })
+        .catch((error) => {
+          console.error("Error deleting data:", error);
+        });
+    }
     handleClose();
   };
 
-  // const getAllImgList = () => {
-  //   axios
-  //     .request({
-  //       method: "GET",
-  //       url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
-  //       headers: {
-  //         AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log("Insetance created");
-  //       console.log(response);
-  //     });
-  // };
+  const getAllImgList = () => {
+    axios.get(`${BASE_URL}Medications/`).then((response) => {
+      const updatedImgData = response.data.values.flat().map((item, index) => ({
+        ...item,
+        id: index + 1, // You can use any unique identifier here, like item._id if available
+      }));
+      setImgData(updatedImgData);
+    });
+  };
+
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+      // console.log(response.data.values.flat());
+    });
+  };
+
+  const handleDelete = (data) => {
+    axios
+      .delete(`${BASE_URL}Medications/${data._id}`)
+      .then((response) => {
+        console.log("Node API Data Deleted successfully:", response.data);
+        getAllImgList();
+      })
+      .catch((error) => {
+        console.error("Error deleting data:", error);
+      });
+  };
+
+  const columns = [
+    { field: "Name", headerName: "Title", width: 200 },
+    { field: "Description", headerName: "Description", width: 300 },
+    {
+      field: "actions",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => (
+        <strong>
+          <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
+            <EditNoteIcon />
+          </IconButton>
+          <Button
+            size="medium"
+            sx={{ color: "red" }}
+            onClick={() => handleDelete(params.row)}
+          >
+            <DeleteForeverIcon />
+          </Button>
+        </strong>
+      ),
+    },
+  ];
+
+  const handleUpdate = (data) => {
+    setSaveUpdateButton("UPDATE");
+    setOn(true);
+    setData({
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+      Id: data._id,
+    });
+    console.log(data);
+  };
 
   React.useEffect(() => {
-    // getAllImgList();
+    getAllImgList();
+  }, []);
+
+  React.useEffect(() => {
+    getTagData();
   }, []);
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
+  const isSubmitDisabled = () => {
+    if (data.Name && data.Description && data.Tag) {
+      return false;
+    } else {
+      // console.log("Please fill all fields");
+      return true;
+    }
+  };
+
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 3,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 6,
+  });
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -134,8 +256,8 @@ const PNMedication = () => {
         >
           <Grid
             container
-            xs={12}
             item
+            xs={12}
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
@@ -143,7 +265,7 @@ const PNMedication = () => {
             justifyContent={"center"}
           >
             <Grid item xs={12}>
-              <Typography fontWeight="bold">Add Medications</Typography>
+              <Typography fontWeight="bold">Add MedicalTest</Typography>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -151,10 +273,11 @@ const PNMedication = () => {
                 spacing={"5"}
                 required
                 fullWidth
-                id="name"
+                id="Name"
                 label="Enter Name"
-                name="blogName"
-                onChange={handleInputChange}
+                name="Name"
+                value={data.Name}
+                onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
@@ -168,15 +291,18 @@ const PNMedication = () => {
 
                 <Select
                   labelId="ChooseType"
-                  id="ChooseType"
-                  label="Choose Type"
-                  onChange={handleInputChange}
-                  // value={data.name}
+                  id="Tag"
+                  label="Tag"
+                  name="Tag"
+                  onChange={onchangeHandler}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
-                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
-                  <MenuItem value={20}>Videos</MenuItem>
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -186,31 +312,31 @@ const PNMedication = () => {
                 size="small"
                 required
                 fullWidth
-                id="outlined-multiline-static"
+                id="Description"
                 label="Enter Description"
-                name="description"
-                onChange={handleInputChange}
+                name="Description"
+                value={data.Description}
+                onChange={onchangeHandler}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
               />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={12}>
+            {/* <Grid item xs={12} lg={12}>
               <input
                 accept="image/*"
-                style={{ display: "none" }}
-                id="file-upload"
+                id="contained-button-file"
                 type="file"
                 onChange={handleFileUpload}
+                style={{ display: "none" }} 
               />
-
-              <label htmlFor="file-upload">
+              <label htmlFor="contained-button-file">
                 <Button
                   fullWidth
                   variant="contained"
                   component="span"
-                  // startIcon={<CloudUploadIcon />}
+                  disabled={isSubmitDisabled()}
                   sx={{
                     backgroundColor: "#8F00FF",
                     py: 1.5,
@@ -223,22 +349,46 @@ const PNMedication = () => {
                     textAlign: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <CloudUploadIcon sx={{ marginRight: 1 }} />
-                    <Typography noWrap>
-                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
-                    </Typography>
-                  </div>
+                  <CloudUploadIcon sx={{ marginRight: 1 }} />
+                  <Typography noWrap>
+                    {uploadedImg && uploadedImg.name
+                      ? uploadedImg.name
+                      : "Upload File"}
+                  </Typography>
                 </Button>
               </label>
-            </Grid>
+            </Grid> */}
+            {/* 
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                onChange={handleFileUpload}
+                component="label"
+                role={undefined}
+                disabled={isSubmitDisabled()}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  backgroundColor: "#8F00FF",
+
+                  py: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                <Typography noWrap width={"80%"}>
+                  {SaveUpdateButton === "UPDATE"
+                    ? data.Image
+                    : uploadedImg && uploadedImg.name
+                    ? uploadedImg.name
+                    : "Upload File"}
+                </Typography>
+
+                <VisuallyHiddenInput type="file" />
+              </Button>
+            </Grid> */}
 
             <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
@@ -285,8 +435,8 @@ const PNMedication = () => {
 
       <Grid
         container
-        xs={12}
-        sm={6}
+        // xs={12}
+        // sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -300,7 +450,7 @@ const PNMedication = () => {
           justifyContent: "space-between",
           mb: 2,
         }}
-        elevation="4"
+        elevation={4}
       >
         <Typography
           width={"100%"}
@@ -311,7 +461,7 @@ const PNMedication = () => {
           padding={1}
           noWrap
         >
-          Manage Medications
+          Manage MedicalTest
         </Typography>
       </Grid>
 
@@ -339,72 +489,130 @@ const PNMedication = () => {
           }}
         >
           <AddIcon />
-          Add Medications
+          Add MedicalTest
         </Button>
       </Grid>
 
-      <Grid container spacing={3} justifyContent="start">
-        {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <Card sx={{ width: "100%" }}>
-              <CardMedia
-                sx={{ height: 140 }}
-                image={medication}
-                alt="img"
-                title="green iguana"
-              />
-              <CardContent>
-                <Typography
-                  noWrap
-                  height={25}
-                  gutterBottom
-                  component="div"
-                  textAlign={"start"}
+      {/* <Grid container spacing={3} justifyContent="start">
+        {Array.isArray(imgData) &&
+          imgData.slice(startIndex, endIndex).map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <Card sx={{ width: "100%" }}> */}
+      {/* <img
+                  height="100%"
+                  width="100%"
+                  src={`${Bunny_Image_URL}/Schedule/MedicalTest/${item.Image}`}
+                  alt="img"
+                  title={item.Name}
+                /> */}
+      {/* <CardContent>
+                  <Typography
+                    noWrap
+                    height={25}
+                    gutterBottom
+                    component="div"
+                    textAlign={"start"}
+                  >
+                    <b>Title:{item.Name}</b>
+                  </Typography>
+                  <Typography
+                    textAlign={"start"}
+                    variant="body2"
+                    style={styles.typography}
+                    color="textSecondary"
+                    component="div"
+                  >
+                    <b>Description: </b> {item.Description}
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  sx={{
+                    pt: "0",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <b>Title:</b>
-                </Typography>
-                <Typography
-                  textAlign={"start"}
-                  variant="body2"
-                  style={styles.typography}
-                  color="textSecondary"
-                  component="div"
-                >
-                  Description are a widespread group of squamate reptiles, with
-                  over 6,000 species, ranging across all continents except
-                  Antarctica
-                </Typography>
-              </CardContent>
-              <CardActions
-                sx={{
-                  pt: "0",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <IconButton color="primary" onClick={() => handleClick()}>
-                  <EditNoteIcon />
-                </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleUpdate(item)}
+                  >
+                    <EditNoteIcon />
+                  </IconButton>
 
-                <Button size="medium" sx={{ color: "red" }}>
-                  <DeleteForeverIcon />
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      <Grid container spacing={3} width="100%" pt={5}>
-        <Grid item xs={12}>
-          <Pagination
-            count={Math.ceil(19 / 8)}
-            color="primary"
-            page={page}
-            onChange={handlePageChange}
-          />
-        </Grid>
-      </Grid>
+                  <Button
+                    size="medium"
+                    sx={{ color: "red" }}
+                    onClick={() => handleDelete(item)}
+                  >
+                    <DeleteForeverIcon />
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+      </Grid> */}
+      {/* 
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.isArray(imgData) &&
+              imgData.slice(startIndex, endIndex).map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.Name}</TableCell>
+                  <TableCell>{item.Description}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleUpdate(item)}
+                    >
+                      <EditNoteIcon />
+                    </IconButton>
+                    <Button
+                      size="medium"
+                      sx={{ color: "red" }}
+                      onClick={() => handleDelete(item)}
+                    >
+                      <DeleteForeverIcon />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer> */}
+  <Paper
+        sx={{
+          marginTop: 3,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          bgcolor: "#",
+        }}
+        elevation={7}
+      >
+      <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <DataGrid
+          className="datagrid-style"
+          rows={imgData}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+          autoHeight
+        />
+      </Box>
+      </Paper>
     </>
   );
 };

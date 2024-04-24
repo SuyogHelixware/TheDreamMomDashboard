@@ -23,6 +23,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
 import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
+import Swal from "sweetalert2";
 
 const styles = {
   typography: {
@@ -108,8 +109,18 @@ const ManageDiet = () => {
   };
 
   const handleSubmitForm = () => {
+    const filename = new Date().getTime() + "_" + uploadedImg.name;
+    const saveObj = {
+      Name: data.Name,
+      Description: data.Description,
+      Image: filename,
+    };
+    const UpdateObj = {
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+    };
     if (SaveUpdateButton === "SAVE") {
-      const filename = new Date().getTime() + "_" + uploadedImg.name;
       axios
         .request({
           method: "PUT",
@@ -124,11 +135,7 @@ const ManageDiet = () => {
         .then((response) => {
           console.log(response);
           axios
-            .post(`${BASE_URL}diet`, {
-              Name: data.Name,
-              Description: data.Description,
-              Image: filename,
-            })
+            .post(`${BASE_URL}diet`, saveObj)
             .then((response) => {
               console.log(response.data);
               getAllImgList();
@@ -138,6 +145,7 @@ const ManageDiet = () => {
             });
         });
     } else {
+     
       axios
         .request({
           method: "PUT",
@@ -151,9 +159,9 @@ const ManageDiet = () => {
         })
         .then((response) => {
           axios
-            .patch(`${BASE_URL}diet/${data.Id}`)
+            .patch(`${BASE_URL}diet/${data.Id}`, UpdateObj)
             .then((response) => {
-              console.log("Node API Data Updated successfully:", response.data);
+              console.log(response.data);
               getAllImgList();
             })
             .catch((error) => {
@@ -177,27 +185,56 @@ const ManageDiet = () => {
     });
   };
 
-  const handleDelete = (data) => {
-    axios
-      .delete(`${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`, {
-        headers: {
-          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-        },
-      })
-      .then((response) => {
-        console.log(data._id);
-
-        axios
-          .delete(`${BASE_URL}Diet/${data._id}`)
-          .then((response) => {
-            console.log("Node API Data Deleted successfully:", response.data);
-            getAllImgList();
-          })
-          .catch((error) => {
-            console.error("Error deleting data:", error);
+ 
+const handleDelete = (data) => {
+  Swal.fire({
+    text: "Are you sure you want to delete?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      axios
+        .delete(`${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`, {
+          headers: {
+            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          },
+        })
+        .then((response) => {
+          console.log(data._id);
+          axios
+            .delete(`${BASE_URL}diet/${data._id}`)
+            .then((response) => {
+              console.log("Node API Data Deleted successfully:", response.data);
+              getAllImgList();
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Data deleted successfully",
+              });
+            })
+            .catch((error) => {
+              console.error("Error deleting data:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong while deleting data from the server!",
+              });
+            });
+        })
+        .catch((error) => {
+          console.error("Error deleting data from storage:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong while deleting data from storage!",
           });
-      });
-  };
+        });
+    }
+  });
+};
 
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
@@ -380,7 +417,6 @@ const ManageDiet = () => {
                 startIcon={<CloudUploadIcon />}
                 sx={{
                   backgroundColor: "#8F00FF",
-
                   py: 1.5,
                   "&:hover": {
                     backgroundColor: "#3B444B",
@@ -503,58 +539,62 @@ const ManageDiet = () => {
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {imgData.slice(startIndex, endIndex).map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <Card sx={{ width: "100%" }}>
-              <img
-                height="100%"
-                width="100%"
-                src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
-                alt="img"
-                title={item.Name}
-              />
-              <CardContent>
-                <Typography
-                  noWrap
-                  height={25}
-                  gutterBottom
-                  component="div"
-                  textAlign={"start"}
+        {Array.isArray(imgData) &&
+          imgData.slice(startIndex, endIndex).map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <Card sx={{ width: "100%" }}>
+                <img
+                  height="100%"
+                  width="100%"
+                  src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
+                  alt="img"
+                  title={item.Name}
+                />
+                <CardContent>
+                  <Typography
+                    noWrap
+                    height={25}
+                    gutterBottom
+                    component="div"
+                    textAlign={"start"}
+                  >
+                    <b>Title:{item.Name}</b>
+                  </Typography>
+                  <Typography
+                    textAlign={"start"}
+                    variant="body2"
+                    style={styles.typography}
+                    color="textSecondary"
+                    component="div"
+                  >
+                    <b>Description: </b> {item.Description}
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  sx={{
+                    pt: "0",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <b>Title:{item.Name}</b>
-                </Typography>
-                <Typography
-                  textAlign={"start"}
-                  variant="body2"
-                  style={styles.typography}
-                  color="textSecondary"
-                  component="div"
-                >
-                  <b>Description: </b> {item.Description}
-                </Typography>
-              </CardContent>
-              <CardActions
-                sx={{
-                  pt: "0",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <IconButton color="primary" onClick={() => handleUpdate(item)}>
-                  <EditNoteIcon />
-                </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleUpdate(item)}
+                  >
+                    <EditNoteIcon />
+                  </IconButton>
 
-                <Button
-                  size="medium"
-                  sx={{ color: "red" }}
-                  onClick={() => handleDelete(item)}
-                >
-                  <DeleteForeverIcon />
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
+                  <Button
+                    size="medium"
+                    sx={{ color: "red" }}
+                    onClick={() => handleDelete(item)}
+                  >
+                    <DeleteForeverIcon />
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
