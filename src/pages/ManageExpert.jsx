@@ -27,9 +27,26 @@ export default function ManageExpert() {
   });
   const columns = [
     {
+      field: "Action",
+      headerName: "Action",
+      width: 150,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <IconButton color="primary" onClick={() => handleClick(params.row)}>
+            <FormatListNumberedIcon />
+          </IconButton>
+
+          <IconButton color="error">
+            <DeleteForeverSharpIcon />
+          </IconButton>
+        </>
+      ),
+    },
+    {
       field: "id",
       headerName: "Sr.No",
-      width: 100,
+      width: 170,
       sortable: false,
     },
 
@@ -47,23 +64,7 @@ export default function ManageExpert() {
       sortable: false,
     },
 
-    {
-      field: "Action",
-      headerName: "Action",
-      width: 100,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <FormatListNumberedIcon />
-          </IconButton>
-
-          <IconButton color="error">
-            <DeleteForeverSharpIcon />
-          </IconButton>
-        </>
-      ),
-    },
+   
   ];
 
   const rows = [

@@ -351,7 +351,7 @@ const ManageAvoidFood = () => {
                 sx={{ height: 140 }}
                 image={diet}
                 alt="img"
-                title="green iguana"
+                title="Avoideble Foods"
               />
               <CardContent>
                 <Typography

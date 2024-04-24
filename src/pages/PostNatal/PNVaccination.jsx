@@ -23,7 +23,6 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
 import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
-import Swal from "sweetalert2";
 
 const styles = {
   typography: {

@@ -94,7 +94,7 @@ export default function ManageVideos() {
     const obj = {
       title: formData.videoName,
     };
-
+ 
     axios
       .request({
         method: "POST",
@@ -163,6 +163,11 @@ export default function ManageVideos() {
   const handlePageChange = (event, value) => {
     setPage(value);
   };
+
+  const play = () => {
+    setIsPlaying(true)
+  };
+
 
   const deluser = (id) => {
     Swal.fire({
@@ -462,7 +467,7 @@ export default function ManageVideos() {
                 height="auto"
                 title="Video Player"
                 frameBorder="0"
-                autoPlay={isPlaying}
+                autoPlay={play}
                 onClick={togglePlay}
                 allowFullScreen
               />

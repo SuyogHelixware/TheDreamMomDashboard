@@ -197,12 +197,10 @@ const Medication = () => {
     });
   };
   const columns = [
-    { field: "Name", headerName: "Title", width: 200 },
-    { field: "Description", headerName: "Description", width: 300 },
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 250,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -218,6 +216,9 @@ const Medication = () => {
         </strong>
       ),
     },
+    { field: "Name", headerName: "Title", width: 250 },
+    { field: "Description", headerName: "Description", width: 300 },
+   
   ];
 
   const handleUpdate = (data) => {

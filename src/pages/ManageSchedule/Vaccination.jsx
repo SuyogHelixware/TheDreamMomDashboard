@@ -455,7 +455,7 @@ const Vaccination = () => {
                   },
                 }}
               >
-                <Typography noWrap width={"80%"}>
+                <Typography noWrap   style={{ width: "80%", textAlign: "center" }}>
                   {SaveUpdateButton === "UPDATE"
                     ? data.Image
                     : uploadedImg && uploadedImg.name

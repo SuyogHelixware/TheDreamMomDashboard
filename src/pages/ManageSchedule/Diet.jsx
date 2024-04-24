@@ -4,6 +4,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Card,
+  CardMedia,
   FormControl,
   IconButton,
   InputLabel,
@@ -22,8 +23,10 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
 import Swal from "sweetalert2";
+
+
+import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
 
 const styles = {
   typography: {
@@ -145,7 +148,6 @@ const ManageDiet = () => {
             });
         });
     } else {
-     
       axios
         .request({
           method: "PUT",
@@ -185,56 +187,60 @@ const ManageDiet = () => {
     });
   };
 
- 
-const handleDelete = (data) => {
-  Swal.fire({
-    text: "Are you sure you want to delete?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete it!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      axios
-        .delete(`${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`, {
-          headers: {
-            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-          },
-        })
-        .then((response) => {
-          console.log(data._id);
-          axios
-            .delete(`${BASE_URL}diet/${data._id}`)
-            .then((response) => {
-              console.log("Node API Data Deleted successfully:", response.data);
-              getAllImgList();
-              Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: "Data deleted successfully",
+  const handleDelete = (data) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`, {
+            headers: {
+              AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+            },
+          })
+          .then((response) => {
+            console.log(data._id);
+            axios
+              .delete(`${BASE_URL}diet/${data._id}`)
+              .then((response) => {
+                console.log(
+                  "Node API Data Deleted successfully:",
+                  response.data
+                );
+                getAllImgList();
+                Swal.fire({
+                  icon: "success",
+                  title: "Success",
+                  text: "Data deleted successfully",
+                });
+              })
+              .catch((error) => {
+                console.error("Error deleting data:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Something went wrong while deleting data from the server!",
+                });
+
+
               });
-            })
-            .catch((error) => {
-              console.error("Error deleting data:", error);
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Something went wrong while deleting data from the server!",
-              });
+          })
+          .catch((error) => {
+            console.error("Error deleting data from storage:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong while deleting data from storage!",
             });
-        })
-        .catch((error) => {
-          console.error("Error deleting data from storage:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong while deleting data from storage!",
           });
-        });
-    }
-  });
-};
+      }
+    });
+  };
 
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
@@ -423,7 +429,10 @@ const handleDelete = (data) => {
                   },
                 }}
               >
-                <Typography noWrap width={"80%"}>
+                <Typography
+                  noWrap
+                  style={{ width: "80%", textAlign: "center" }}
+                >
                   {SaveUpdateButton === "UPDATE"
                     ? data.Image
                     : uploadedImg && uploadedImg.name
@@ -542,14 +551,32 @@ const handleDelete = (data) => {
         {Array.isArray(imgData) &&
           imgData.slice(startIndex, endIndex).map((item, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card sx={{ width: "100%" }}>
-                <img
-                  height="100%"
+              <Card
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <CardMedia
+                  style={{
+                    objectFit: "contain",
+                  }}
+                  component="img"
+                  height="195"
+                  width={"100%"}
+                  src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
+                  alt="ghhj"
+                />
+                {/* <img
+                  // height="100%"
                   width="100%"
                   src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
                   alt="img"
                   title={item.Name}
-                />
+                  style={{  objectFit: "cover" }}
+                /> */}
                 <CardContent>
                   <Typography
                     noWrap

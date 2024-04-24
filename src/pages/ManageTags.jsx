@@ -42,9 +42,25 @@ export default function ManageTags() {
 
   const columns = [
     {
+      field: "Action",
+      headerName: "Action",
+      width: 150,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <IconButton color="primary" onClick={() => handleClick(params.row)}>
+            <FormatListNumberedIcon />
+          </IconButton>
+          <IconButton color="error"   onClick={() => handleDelete(params.row)}>
+            <DeleteForeverSharpIcon />
+          </IconButton>
+        </>
+      ),
+    },
+    {
       field: "id",
       headerName: " Sr.No",
-      width: 100,
+      width: 130,
       sortable: false,
     },
     {
@@ -59,22 +75,7 @@ export default function ManageTags() {
       width: 500,
       sortable: false,
     },
-    {
-      field: "Action",
-      headerName: "Action",
-      width: 100,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <FormatListNumberedIcon />
-          </IconButton>
-          <IconButton color="error"   onClick={() => handleDelete(params.row)}>
-            <DeleteForeverSharpIcon />
-          </IconButton>
-        </>
-      ),
-    },
+   
   ];
 
   const handleClose = () => {

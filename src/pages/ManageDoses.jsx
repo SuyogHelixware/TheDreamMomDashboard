@@ -42,9 +42,25 @@ export default function ManageDoses() {
 
   const columns = [
     {
+      field: "Action",
+      headerName: "Action",
+      width: 150,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <IconButton color="primary" onClick={() => handleClick(params.row)}>
+            <FormatListNumberedIcon />
+          </IconButton>
+          <IconButton color="error">
+            <DeleteForeverSharpIcon />
+          </IconButton>
+        </>
+      ),
+    },
+    {
       field: "id",
       headerName: " Sr.No",
-      width: 100,
+      width: 130,
       sortable: false,
     },
     {
@@ -65,22 +81,7 @@ export default function ManageDoses() {
       width: 500,
       sortable: false,
     },
-    {
-      field: "Action",
-      headerName: "Action",
-      width: 100,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <FormatListNumberedIcon />
-          </IconButton>
-          <IconButton color="error">
-            <DeleteForeverSharpIcon />
-          </IconButton>
-        </>
-      ),
-    },
+   
   ];
 
   const rows = [

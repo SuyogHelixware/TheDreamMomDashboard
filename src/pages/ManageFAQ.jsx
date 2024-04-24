@@ -37,23 +37,10 @@ export default function ManageUsers() {
   };
 
   const columns = [
-    { field: "id", headerName: "Sr.No", width: 150, sortable: false },
-    {
-      field: "firstName",
-      headerName: "Questions",
-      width: 450,
-      sortable: false,
-    },
-    {
-      field: "lastName",
-      headerName: "Answer",
-      width: 250,
-      sortable: false,
-    },
     {
       field: "Action",
       headerName: "Action",
-      width: 100,
+      width: 150,
       sortable: false,
       renderCell: (params) => (
         <>
@@ -67,6 +54,21 @@ export default function ManageUsers() {
         </>
       ),
     },
+
+    { field: "id", headerName: "Sr.No", width: 200, sortable: false },
+    {
+      field: "firstName",
+      headerName: "Questions",
+      width: 400,
+      sortable: false,
+    },
+    {
+      field: "lastName",
+      headerName: "Answer",
+      width: 250,
+      sortable: false,
+    },
+  
   ];
 
   const rows = [

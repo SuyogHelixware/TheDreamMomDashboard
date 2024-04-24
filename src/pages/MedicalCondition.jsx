@@ -163,26 +163,6 @@ export default function MedicalCondition() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 150, sortable: false },
-    {
-      field: "Name",
-      headerName: "Name",
-      width: 200,
-      sortable: false,
-    },
-    {
-      field: "Description",
-      headerName: "Description",
-      width: 380,
-      sortable: false,
-    },
-    {
-      field: "Status",
-      headerName: "Status",
-      width: 200,
-      sortable: false,
-    },
-
     {
       field: "Action",
       headerName: "Action",
@@ -216,6 +196,60 @@ export default function MedicalCondition() {
         </>
       ),
     },
+
+    { field: "id", headerName: "ID", width: 150, sortable: false },
+    {
+      field: "Name",
+      headerName: "Name",
+      width: 200,
+      sortable: false,
+    },
+    {
+      field: "Description",
+      headerName: "Description",
+      width: 380,
+      sortable: false,
+    },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 200,
+      sortable: false,
+    },
+
+    // {
+    //   field: "Action",
+    //   headerName: "Action",
+    //   width: 200,
+    //   sortable: false,
+    //   renderCell: (params) => (
+    //     <>
+    //       <IconButton
+    //         onClick={() => handleClick(params.row)}
+    //         sx={{
+    //           "& .MuiButtonBase-root,": {
+    //             padding: 0,
+    //           },
+    //         }}
+    //         color="primary"
+    //       >
+    //         <EditNoteIcon />
+    //       </IconButton>
+    //       <IconButton
+    //         sx={{
+    //           "& .MuiButtonBase-root,": {
+    //             padding: 0,
+    //             marginLeft: 3,
+    //           },
+    //         }}
+    //         onClick={() => deluser(params.row._id)}
+    //         color="primary"
+    //       >
+    //         <DeleteForeverIcon style={{ color: "red" }} />
+    //       </IconButton>
+    //     </>
+    //   ),
+    // },
   ];
   const getUserData = () => {
     axios.get(`${BASE_URL}medicalconditions/`).then((response) => {
@@ -262,10 +296,10 @@ export default function MedicalCondition() {
 
             <Grid item xs={12}>
               <TextField
-                name="name"
+                name="Name"
                 required
                 size="small"
-                id="name"
+                id="Name"
                 label="Enter Name"
                 style={{ borderRadius: 10, width: "100%" }}
                 autoFocus

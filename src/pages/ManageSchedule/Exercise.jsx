@@ -39,11 +39,7 @@ const styles = {
 
 const Exercise = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [imgData, setImgData] = React.useState({
-    Name: "",
-    Description: "",
-    Image: "",
-  });
+  const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
@@ -146,7 +142,6 @@ const Exercise = () => {
             });
         });
     } else {
-     
       axios
         .request({
           method: "PUT",
@@ -182,7 +177,6 @@ const Exercise = () => {
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
-      // console.log(response.data.values.flat());
     });
   };
 
@@ -195,7 +189,6 @@ const Exercise = () => {
       })
       .then((response) => {
         console.log(data._id);
-
         axios
           .delete(`${BASE_URL}Exercise/${data._id}`)
           .then((response) => {
@@ -236,7 +229,6 @@ const Exercise = () => {
     if (data.Name && data.Description && data.Tag) {
       return false;
     } else {
-      // console.log("Please fill all fields");
       return true;
     }
   };
@@ -255,6 +247,7 @@ const Exercise = () => {
     whiteSpace: "nowrap",
     width: 6,
   });
+
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -341,42 +334,6 @@ const Exercise = () => {
               />
             </Grid>
 
-            {/* <Grid item xs={12} lg={12}>
-              <input
-                accept="image/*"
-                id="contained-button-file"
-                type="file"
-                onChange={handleFileUpload}
-                style={{ display: "none" }} 
-              />
-              <label htmlFor="contained-button-file">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  disabled={isSubmitDisabled()}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <CloudUploadIcon sx={{ marginRight: 1 }} />
-                  <Typography noWrap>
-                    {uploadedImg && uploadedImg.name
-                      ? uploadedImg.name
-                      : "Upload File"}
-                  </Typography>
-                </Button>
-              </label>
-            </Grid> */}
-
             <Grid item xs={12}>
               <Button
                 fullWidth
@@ -389,21 +346,19 @@ const Exercise = () => {
                 startIcon={<CloudUploadIcon />}
                 sx={{
                   backgroundColor: "#8F00FF",
-
                   py: 1.5,
                   "&:hover": {
                     backgroundColor: "#3B444B",
                   },
                 }}
               >
-                <Typography noWrap width={"80%"}>
+                <Typography noWrap style={{ width: "80%", textAlign: "center" }}>
                   {SaveUpdateButton === "UPDATE"
                     ? data.Image
                     : uploadedImg && uploadedImg.name
                     ? uploadedImg.name
                     : "Upload File"}
                 </Typography>
-
                 <VisuallyHiddenInput type="file" />
               </Button>
             </Grid>
@@ -453,8 +408,6 @@ const Exercise = () => {
 
       <Grid
         container
-        // xs={12}
-        // sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -515,7 +468,7 @@ const Exercise = () => {
         {Array.isArray(imgData) &&
           imgData.slice(startIndex, endIndex).map((item, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card sx={{ width: "100%" }}>
+              <Card sx={{ width: "100%", minHeight: 300 }}>
                 <img
                   height="100%"
                   width="100%"
@@ -525,22 +478,22 @@ const Exercise = () => {
                 />
                 <CardContent>
                   <Typography
-                    noWrap
-                    height={25}
                     gutterBottom
+                    variant="h5"
                     component="div"
                     textAlign={"start"}
                   >
-                    <b>Title:{item.Name}</b>
+                    <b>Title: {item.Name}</b>
                   </Typography>
                   <Typography
-                    textAlign={"start"}
                     variant="body2"
+                    color="text.secondary"
                     style={styles.typography}
-                    color="textSecondary"
                     component="div"
+                    textAlign={"start"}
                   >
-                    <b>Description: </b> {item.Description}
+                    <b>Description: </b>
+                    {item.Description}
                   </Typography>
                 </CardContent>
                 <CardActions
@@ -550,18 +503,10 @@ const Exercise = () => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleUpdate(item)}
-                  >
+                  <IconButton color="primary" onClick={() => handleUpdate(item)}>
                     <EditNoteIcon />
                   </IconButton>
-
-                  <Button
-                    size="medium"
-                    sx={{ color: "red" }}
-                    onClick={() => handleDelete(item)}
-                  >
+                  <Button size="medium" sx={{ color: "red" }} onClick={() => handleDelete(item)}>
                     <DeleteForeverIcon />
                   </Button>
                 </CardActions>

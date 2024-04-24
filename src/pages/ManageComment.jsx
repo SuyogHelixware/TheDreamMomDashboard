@@ -29,7 +29,25 @@ export default function ManageComment() {
   });
 
   const columns = [
-    { field: "id", headerName: "Sr.No", width: 100, sortable: false },
+    {
+      field: "Action",
+      headerName: "Action",
+      width: 150,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <IconButton color="primary" onClick={() => handleClick(params.row)}>
+            <FormatListNumberedIcon />
+          </IconButton>
+
+          <IconButton color="error">
+            <DeleteForeverSharpIcon />
+          </IconButton>
+        </>
+      ),
+    },
+
+    { field: "id", headerName: "Sr.No", width: 130, sortable: false },
     {
       field: "Name",
       headerName: "Name",
@@ -48,23 +66,7 @@ export default function ManageComment() {
       width: 100,
       sortable: false,
     },
-    {
-      field: "Action",
-      headerName: "Action",
-      width: 100,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <FormatListNumberedIcon />
-          </IconButton>
-
-          <IconButton color="error">
-            <DeleteForeverSharpIcon />
-          </IconButton>
-        </>
-      ),
-    },
+    
   ];
 
   const rows = [
