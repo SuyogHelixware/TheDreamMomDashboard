@@ -10,6 +10,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import * as React from "react";
 import { IconButton, Modal, Paper } from "@mui/material";
 import { DatePickerField } from "../components/Component";
+import Swal from "sweetalert2";
 
 export default function ManageSubscription() {
   const [on, setOn] = React.useState(false);
@@ -26,7 +27,7 @@ export default function ManageSubscription() {
             <FormatListNumberedIcon />
           </IconButton>
 
-          <IconButton color="error">
+          <IconButton color="error" onClick={deldata}>
             <DeleteForeverSharpIcon />
           </IconButton>
         </>
@@ -95,6 +96,38 @@ export default function ManageSubscription() {
     { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
     { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
   ];
+
+  const deldata = (id) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      // if (result.isConfirmed) {
+      //   axios
+      //     .delete(`${BASE_URL}videos/${id}`)
+      //     .then((response) => {
+      //       if (response.data.status === true) {
+      //         setVideos(Videos.filter((video) => video._id !== id));
+      //         Swal.fire({
+      //           position: "center",
+      //           icon: "success",
+      //           toast: true,
+      //           title: "Video deleted Successfully",
+      //           showConfirmButton: false,
+      //           timer: 2500,
+      //         });
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       alert("error");
+      //     });
+      // }
+    });
+  };
 
   const handleClose = () => {
     setOn(false);

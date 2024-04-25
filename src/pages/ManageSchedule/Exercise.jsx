@@ -92,6 +92,7 @@ const Exercise = () => {
   };
 
   const handleOnSave = () => {
+   
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
@@ -106,6 +107,15 @@ const Exercise = () => {
   };
 
   const handleSubmitForm = () => {
+    Swal.fire({
+      position: "center",
+      size:"small",
+      icon: "success",
+      title: "Succesfully Uploaded",
+      showConfirmButton: false,
+      timer: 1500
+    });
+    
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
       Name: data.Name,
@@ -181,6 +191,18 @@ const Exercise = () => {
   };
 
   const handleDelete = (data) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+       
+     
     axios
       .delete(`${Bunny_Storage_URL}/Schedule/Exercise/${data.Image}`, {
         headers: {
@@ -193,13 +215,22 @@ const Exercise = () => {
           .delete(`${BASE_URL}Exercise/${data._id}`)
           .then((response) => {
             console.log("Node API Data Deleted successfully:", response.data);
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success"
+            });
             getAllImgList();
           })
           .catch((error) => {
             console.error("Error deleting data:", error);
           });
       });
+    }
+       
+  });
   };
+
 
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");

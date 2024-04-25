@@ -1,7 +1,8 @@
 import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
+  Box,
   FormControl,
   IconButton,
   InputLabel,
@@ -9,28 +10,91 @@ import {
   Modal,
   Paper,
   Select,
+  styled,
 } from "@mui/material";
-import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
+import Swal from "sweetalert2";
+
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
 import * as React from "react";
+import { BASE_URL } from "../Constant";
 
-export default function ManageDoses() {
+const styles = {
+  typography: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    height: 40,
+  },
+};
+
+const ManageDoses = () => {
+  const [uploadedImg, setUploadedImg] = React.useState("");
+  const [imgData, setImgData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+  });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [List, setList] = React.useState("");
+  const [page, setPage] = React.useState(1);
+  const [tags, setTags] = React.useState([]);
+  const cardsPerPage = 8;
   const [data, setData] = React.useState({
-    id: "",
-    Password: "",
-    Firstname: "",
-    Middlename: "",
-    Lastname: "",
+    Name: "",
+    Description: "",
+    Image: "",
+    Id: "",
   });
-  const handleChange = (event) => {
-    setList(event.target.value);
+
+  const clearFormData = () => {
+    setData({
+      Id: "",
+      Name: "",
+      Description: "",
+      Image: "",
+      TagsIds: [],
+      Status: 1,
+    });
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    console.log("Uploaded file:", file);
+    setUploadedImg(file);
+
+    setData((prevData) => ({
+      ...prevData,
+    }));
+  };
+
+  const handleClose = () => {
+    setOn(false);
+  };
+
+  const handleClick = (item) => {
+    setData({
+      id: item.id,
+      Name: item.Name,
+      Description: item.Description,
+      TagsIds: item.TagsIds,
+      Status: item.Status,
+    });
+    setSaveUpdateButton("Update");
+    setOn(true);
+  };
+
+  const handleOnSave = () => {
+    setSaveUpdateButton("SAVE");
+    setOn(true);
+    clearFormData();
+    setData([]);
   };
 
   const onchangeHandler = (event) => {
@@ -40,78 +104,170 @@ export default function ManageDoses() {
     });
   };
 
+  const handleSubmitForm = () => {
+    const saveObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
+    const UpdateObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
+  
+    let requestPromise;
+    if (SaveUpdateButton === "SAVE") {
+      requestPromise = axios.post(`${BASE_URL}dosagedet`, saveObj);
+    } else {
+      requestPromise = axios.patch(`${BASE_URL}dosagedet/${data.Id}`, UpdateObj);
+    }
+  
+    requestPromise
+      .then((response) => {
+        console.log(response.data);
+        getAllImgList();
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Data saved successfully",
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+      })
+      .finally(() => {
+        handleClose();
+      });
+  };
+
+  const getAllImgList = () => {
+    axios.get(`${BASE_URL}dosagedet/`).then((response) => {
+      const updatedImgData = response.data.values.flat().map((item, index) => ({
+        ...item,
+        id: index + 1, // You can use any unique identifier here, like item._id if available
+      }));
+      setImgData(updatedImgData);
+    });
+  };
+
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+      // console.log(response.data.values.flat());
+    });
+  };
+
+
+  const handleDelete = (data) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${BASE_URL}dosagedet/${data._id}`)
+          .then((response) => {
+            console.log("Node API Data Deleted successfully:", response.data);
+            getAllImgList();
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Data deleted successfully",
+              showConfirmButton: false,
+              timer: 2500,
+            });
+          })
+          .catch((error) => {
+            console.error("Error deleting data:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong!",
+            });
+          });
+      }
+    });
+  };
   const columns = [
     {
-      field: "Action",
+      field: "actions",
       headerName: "Action",
-      width: 150,
-      sortable: false,
+      width: 250,
       renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <FormatListNumberedIcon />
+        <strong>
+          <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
+            <EditNoteIcon />
           </IconButton>
-          <IconButton color="error">
-            <DeleteForeverSharpIcon />
-          </IconButton>
-        </>
+          <Button
+            size="medium"
+            sx={{ color: "red" }}
+            onClick={() => handleDelete(params.row)}
+          >
+            <DeleteForeverIcon />
+          </Button>
+        </strong>
       ),
     },
-    {
-      field: "id",
-      headerName: " Sr.No",
-      width: 130,
-      sortable: false,
-    },
-    {
-      field: "firstName",
-      headerName: "Name",
-      width: 300,
-      sortable: false,
-    },
-    {
-      field: "Dose",
-      headerName: "Dosage",
-      width: 230,
-      sortable: false,
-    },
-    {
-      field: "lastName",
-      headerName: "Description",
-      width: 500,
-      sortable: false,
-    },
+    { field: "Name", headerName: "Title", width: 250 },
+    { field: "Description", headerName: "Description", width: 300 },
    
   ];
 
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 14 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: "devin", age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
-
-  const handleClose = () => {
-    setOn(false);
-  };
-
-  const handleClick = (row) => {
-    setSaveUpdateButton("Update");
-
+  const handleUpdate = (data) => {
+    setSaveUpdateButton("UPDATE");
     setOn(true);
+    setData({
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+      Id: data._id,
+    });
+    console.log(data);
   };
 
-  const handleOnSave = () => {
-    setSaveUpdateButton("Save");
+  React.useEffect(() => {
+    getAllImgList();
+  }, []);
 
-    setOn(true);
+  React.useEffect(() => {
+    getTagData();
+  }, []);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
   };
 
+  const isSubmitDisabled = () => {
+    if (data.Name && data.Description && data.Tag) {
+      return false;
+    } else {
+      // console.log("Please fill all fields");
+      return true;
+    }
+  };
+
+  const startIndex = (page - 1) * cardsPerPage;
+  const endIndex = startIndex + cardsPerPage;
+
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 3,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 6,
+  });
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -119,7 +275,7 @@ export default function ManageDoses() {
           elevation={10}
           sx={{
             width: "90%",
-            maxWidth:400,
+            maxWidth: 400,
             bgcolor: "#ccccff",
             position: "absolute",
             top: "50%",
@@ -131,9 +287,9 @@ export default function ManageDoses() {
         >
           <Grid
             container
-            xs={12}
             item
-            spacing={4}
+            xs={12}
+            spacing={2}
             display={"flex"}
             flexDirection={"column"}
             padding={4}
@@ -144,58 +300,131 @@ export default function ManageDoses() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                name="name"
-                required
                 size="small"
-                id="name"
+                spacing={"5"}
+                required
+                fullWidth
+                id="Name"
                 label="Enter Name"
-                style={{ borderRadius: 10, width: "100%" }}
-                autoFocus
+                name="Name"
+                value={data.Name}
                 onChange={onchangeHandler}
-                value={data.name}
+                autoFocus
+                style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
 
             <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
                 <InputLabel id="demo-select-small-label">
-                  Select Dosage
+                  Select Type
                 </InputLabel>
 
                 <Select
-                  labelId="demo-select-small-label"
-                  id="demo-select-small"
-                  label="Select schedule"
-                  value={List}
-                  onChange={handleChange}
+                  labelId="ChooseType"
+                  id="Tag"
+                  label="Tag"
+                  name="Tag"
+                  onChange={onchangeHandler}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
-                  <MenuItem value={10}>First Dose</MenuItem>
-                  <MenuItem value={20}>Second Dose</MenuItem>
-                  <MenuItem value={30}>Third Dose</MenuItem>
-                  <MenuItem value={40}>Fourth Dose</MenuItem>
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
                 required
                 fullWidth
-                id="outlined-multiline-static"
+                id="Description"
                 label="Enter Description"
+                name="Description"
+                value={data.Description}
+                onChange={onchangeHandler}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
               />
             </Grid>
 
+            {/* <Grid item xs={12} lg={12}>
+              <input
+                accept="image/*"
+                id="contained-button-file"
+                type="file"
+                onChange={handleFileUpload}
+                style={{ display: "none" }} 
+              />
+              <label htmlFor="contained-button-file">
+                <Button
+                  fullWidth
+                  variant="contained"
+                  component="span"
+                  disabled={isSubmitDisabled()}
+                  sx={{
+                    backgroundColor: "#8F00FF",
+                    py: 1.5,
+                    "&:hover": {
+                      backgroundColor: "#3B444B",
+                    },
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  <CloudUploadIcon sx={{ marginRight: 1 }} />
+                  <Typography noWrap>
+                    {uploadedImg && uploadedImg.name
+                      ? uploadedImg.name
+                      : "Upload File"}
+                  </Typography>
+                </Button>
+              </label>
+            </Grid> */}
+            {/* 
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                onChange={handleFileUpload}
+                component="label"
+                role={undefined}
+                disabled={isSubmitDisabled()}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  backgroundColor: "#8F00FF",
+
+                  py: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                <Typography noWrap width={"80%"}>
+                  {SaveUpdateButton === "UPDATE"
+                    ? data.Image
+                    : uploadedImg && uploadedImg.name
+                    ? uploadedImg.name
+                    : "Upload File"}
+                </Typography>
+
+                <VisuallyHiddenInput type="file" />
+              </Button>
+            </Grid> */}
+
             <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
                 onClick={handleClose}
-                type="submit"
+                type="reset"
                 size="small"
                 sx={{
                   marginTop: 1,
@@ -215,6 +444,7 @@ export default function ManageDoses() {
               <Button
                 type="submit"
                 size="small"
+                onClick={handleSubmitForm}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -229,7 +459,6 @@ export default function ManageDoses() {
                 {SaveUpdateButton}
               </Button>
             </Grid>
-
             <Grid />
           </Grid>
         </Paper>
@@ -237,8 +466,8 @@ export default function ManageDoses() {
 
       <Grid
         container
-        xs={12}
-        sm={6}
+        // xs={12}
+        // sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -252,7 +481,7 @@ export default function ManageDoses() {
           justifyContent: "space-between",
           mb: 2,
         }}
-        elevation="4"
+        elevation={4}
       >
         <Typography
           width={"100%"}
@@ -263,7 +492,7 @@ export default function ManageDoses() {
           padding={1}
           noWrap
         >
-          Manage Dosage
+          Manage Dosages
         </Typography>
       </Grid>
 
@@ -274,6 +503,7 @@ export default function ManageDoses() {
           size="medium"
           sx={{
             pr: 2,
+            mb: 2,
             color: "white",
             backgroundColor: "#8F00FF",
             boxShadow: 5,
@@ -293,7 +523,102 @@ export default function ManageDoses() {
           Add Dosage
         </Button>
       </Grid>
-      <Paper
+
+      {/* <Grid container spacing={3} justifyContent="start">
+        {Array.isArray(imgData) &&
+          imgData.slice(startIndex, endIndex).map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <Card sx={{ width: "100%" }}> */}
+      {/* <img
+                  height="100%"
+                  width="100%"
+                  src={`${Bunny_Image_URL}/Schedule/MedicalTest/${item.Image}`}
+                  alt="img"
+                  title={item.Name}
+                /> */}
+      {/* <CardContent>
+                  <Typography
+                    noWrap
+                    height={25}
+                    gutterBottom
+                    component="div"
+                    textAlign={"start"}
+                  >
+                    <b>Title:{item.Name}</b>
+                  </Typography>
+                  <Typography
+                    textAlign={"start"}
+                    variant="body2"
+                    style={styles.typography}
+                    color="textSecondary"
+                    component="div"
+                  >
+                    <b>Description: </b> {item.Description}
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  sx={{
+                    pt: "0",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleUpdate(item)}
+                  >
+                    <EditNoteIcon />
+                  </IconButton>
+
+                  <Button
+                    size="medium"
+                    sx={{ color: "red" }}
+                    onClick={() => handleDelete(item)}
+                  >
+                    <DeleteForeverIcon />
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+      </Grid> */}
+      {/* 
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.isArray(imgData) &&
+              imgData.slice(startIndex, endIndex).map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.Name}</TableCell>
+                  <TableCell>{item.Description}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleUpdate(item)}
+                    >
+                      <EditNoteIcon />
+                    </IconButton>
+                    <Button
+                      size="medium"
+                      sx={{ color: "red" }}
+                      onClick={() => handleDelete(item)}
+                    >
+                      <DeleteForeverIcon />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer> */}
+  <Paper
         sx={{
           marginTop: 3,
           display: "flex",
@@ -303,21 +628,26 @@ export default function ManageDoses() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
-          <DataGrid
-            className="datagrid-style"
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
+      <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <DataGrid
+          className="datagrid-style"
+          rows={imgData}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
               },
-            }}
-          />
-        </Box>
+            },
+          }}
+          autoHeight
+        />
+      </Box>
+
+      
       </Paper>
     </>
   );
-}
+};
+
+export default ManageDoses;

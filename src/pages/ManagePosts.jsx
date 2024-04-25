@@ -9,35 +9,28 @@ import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
 import * as React from "react";
 import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
+import axios from "axios";
+import { BASE_URL } from "../Constant";
+
+
 export default function ManagePosts() {
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+  
   const [data, setData] = React.useState({
     id: "",
     Password: "",
     Firstname: "",
     Middlename: "",
     Lastname: "",
+ 
   });
 
   const columns = [
-    { field: "id", headerName: "Sr.No", width: 100, sortable: false,},
-    {
-      field: "firstName",
-      headerName: "Name",
-      width: 300,
-      sortable: false,
-    },
-    {
-      field: "lastName",
-      headerName: "Description",
-      width: 500,
-      sortable: false,
-    },
     {
       field: "Action",
       headerName: "Action",
-      width: 100,
+      width: 150,
       sortable: false,
       renderCell: (params) => (
         <>
@@ -51,6 +44,20 @@ export default function ManagePosts() {
         </>
       ),
     },
+    { field: "id", headerName: "Sr.No", width: 130, sortable: false,},
+    {
+      field: "firstName",
+      headerName: "Name",
+      width: 300,
+      sortable: false,
+    },
+    {
+      field: "lastName",
+      headerName: "Description",
+      width: 500,
+      sortable: false,
+    },
+   
   ];
 
   const rows = [
@@ -64,6 +71,7 @@ export default function ManagePosts() {
     { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
     { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
   ];
+
 
   const handleClose = () => {
     setOn(false);
@@ -88,6 +96,19 @@ export default function ManagePosts() {
     setOn(true);
   };
 
+  const getAllList=()=>{
+   
+      axios.get(`${BASE_URL}posts/`).then((response) => {
+        const updatedImgData = response.data.values.flat().map((item, index) => ({
+          ...item,
+          id: index + 1,
+        }));
+        setData(updatedImgData);
+      });
+    };
+  React.useState =(()=>{
+    getAllList();
+  },[]);
   return (
     <>
       <Modal open={on} onClose={handleClose}>
