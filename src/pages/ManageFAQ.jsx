@@ -17,6 +17,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import * as React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 
 export default function ManageUsers() {
   const [on, setOn] = React.useState(false);
@@ -45,7 +46,7 @@ export default function ManageUsers() {
       renderCell: (params) => (
         <>
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <FormatListNumberedIcon />
+            <EditNoteIcon />
           </IconButton>
 
           <IconButton color="error">

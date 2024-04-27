@@ -78,18 +78,18 @@ const Exercise = () => {
     setOn(false);
   };
 
-  const handleClick = (item) => {
-    setData({
-      id: item.id,
-      Name: item.Name,
-      Description: item.Description,
-      Image: item.Image,
-      TagsIds: item.TagsIds,
-      Status: item.Status,
-    });
-    setSaveUpdateButton("Update");
-    setOn(true);
-  };
+  // const handleClick = (item) => {
+  //   setData({
+  //     id: item.id,
+  //     Name: item.Name,
+  //     Description: item.Description,
+  //     Image: item.Image,
+  //     TagsIds: item.TagsIds,
+  //     Status: item.Status,
+  //   });
+  //   setSaveUpdateButton("Update");
+  //   setOn(true);
+  // };
 
   const handleOnSave = () => {
    

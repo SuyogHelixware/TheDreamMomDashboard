@@ -10,6 +10,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import * as React from "react";
 import { IconButton, Modal, Paper } from "@mui/material";
 import { DatePickerField } from "../components/Component";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import Swal from "sweetalert2";
 
 export default function ManageSubscription() {
@@ -24,7 +25,7 @@ export default function ManageSubscription() {
       renderCell: (params) => (
         <>
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <FormatListNumberedIcon />
+            <EditNoteIcon />
           </IconButton>
 
           <IconButton color="error" onClick={deldata}>
@@ -250,6 +251,7 @@ export default function ManageSubscription() {
               <Button
                 type="submit"
                 size="small"
+                // onClick={()=>updateUser(data._id)}
                 sx={{
                   marginTop: 1,
                   p: 1,

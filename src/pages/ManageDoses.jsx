@@ -10,7 +10,6 @@ import {
   Modal,
   Paper,
   Select,
-  styled,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -23,19 +22,19 @@ import axios from "axios";
 import * as React from "react";
 import { BASE_URL } from "../Constant";
 
-const styles = {
-  typography: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    height: 40,
-  },
-};
+// const styles = {
+//   typography: {
+//     overflow: "hidden",
+//     textOverflow: "ellipsis",
+//     display: "-webkit-box",
+//     WebkitLineClamp: 2,
+//     WebkitBoxOrient: "vertical",
+//     height: 40,
+//   },
+// };
 
 const ManageDoses = () => {
-  const [uploadedImg, setUploadedImg] = React.useState("");
+  // const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState({
     Name: "",
     Description: "",
@@ -43,9 +42,9 @@ const ManageDoses = () => {
   });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [page, setPage] = React.useState(1);
+  // const [page, setPage] = React.useState(1);
   const [tags, setTags] = React.useState([]);
-  const cardsPerPage = 8;
+  // const cardsPerPage = 8;
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
@@ -64,31 +63,31 @@ const ManageDoses = () => {
     });
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    console.log("Uploaded file:", file);
-    setUploadedImg(file);
+  // const handleFileUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   console.log("Uploaded file:", file);
+  //   setUploadedImg(file);
 
-    setData((prevData) => ({
-      ...prevData,
-    }));
-  };
+  //   setData((prevData) => ({
+  //     ...prevData,
+  //   }));
+  // };
 
   const handleClose = () => {
     setOn(false);
   };
 
-  const handleClick = (item) => {
-    setData({
-      id: item.id,
-      Name: item.Name,
-      Description: item.Description,
-      TagsIds: item.TagsIds,
-      Status: item.Status,
-    });
-    setSaveUpdateButton("Update");
-    setOn(true);
-  };
+  // const handleClick = (item) => {
+  //   setData({
+  //     id: item.id,
+  //     Name: item.Name,
+  //     Description: item.Description,
+  //     TagsIds: item.TagsIds,
+  //     Status: item.Status,
+  //   });
+  //   setSaveUpdateButton("Update");
+  //   setOn(true);
+  // };
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -103,8 +102,24 @@ const ManageDoses = () => {
       [event.target.name]: event.target.value,
     });
   };
-
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 2500,
+    });
+  };
   const handleSubmitForm = () => {
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
@@ -113,14 +128,17 @@ const ManageDoses = () => {
       Name: data.Name,
       Description: data.Description,
     };
-  
+
     let requestPromise;
     if (SaveUpdateButton === "SAVE") {
       requestPromise = axios.post(`${BASE_URL}dosagedet`, saveObj);
     } else {
-      requestPromise = axios.patch(`${BASE_URL}dosagedet/${data.Id}`, UpdateObj);
+      requestPromise = axios.patch(
+        `${BASE_URL}dosagedet/${data.Id}`,
+        UpdateObj
+      );
     }
-  
+
     requestPromise
       .then((response) => {
         console.log(response.data);
@@ -160,7 +178,6 @@ const ManageDoses = () => {
       // console.log(response.data.values.flat());
     });
   };
-
 
   const handleDelete = (data) => {
     Swal.fire({
@@ -218,7 +235,6 @@ const ManageDoses = () => {
     },
     { field: "Name", headerName: "Title", width: 250 },
     { field: "Description", headerName: "Description", width: 300 },
-   
   ];
 
   const handleUpdate = (data) => {
@@ -241,33 +257,33 @@ const ManageDoses = () => {
     getTagData();
   }, []);
 
-  const handlePageChange = (event, value) => {
-    setPage(value);
-  };
+  // const handlePageChange = (event, value) => {
+  //   setPage(value);
+  // };
 
-  const isSubmitDisabled = () => {
-    if (data.Name && data.Description && data.Tag) {
-      return false;
-    } else {
-      // console.log("Please fill all fields");
-      return true;
-    }
-  };
+  // const isSubmitDisabled = () => {
+  //   if (data.Name && data.Description && data.Tag) {
+  //     return false;
+  //   } else {
+  //     // console.log("Please fill all fields");
+  //     return true;
+  //   }
+  // };
 
-  const startIndex = (page - 1) * cardsPerPage;
-  const endIndex = startIndex + cardsPerPage;
+  // const startIndex = (page - 1) * cardsPerPage;
+  // const endIndex = startIndex + cardsPerPage;
 
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 3,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 6,
-  });
+  // const VisuallyHiddenInput = styled("input")({
+  //   clip: "rect(0 0 0 0)",
+  //   clipPath: "inset(50%)",
+  //   height: 3,
+  //   overflow: "hidden",
+  //   position: "absolute",
+  //   bottom: 0,
+  //   left: 0,
+  //   whiteSpace: "nowrap",
+  //   width: 6,
+  // });
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -444,7 +460,8 @@ const ManageDoses = () => {
               <Button
                 type="submit"
                 size="small"
-                onClick={handleSubmitForm}
+                // onClick={handleSubmitForm}
+                onClick={() => handleSubmitForm(data._id)}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -618,7 +635,7 @@ const ManageDoses = () => {
           </TableBody>
         </Table>
       </TableContainer> */}
-  <Paper
+      <Paper
         sx={{
           marginTop: 3,
           display: "flex",
@@ -628,23 +645,21 @@ const ManageDoses = () => {
         }}
         elevation={7}
       >
-      <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
-        <DataGrid
-          className="datagrid-style"
-          rows={imgData}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+          <DataGrid
+            className="datagrid-style"
+            rows={imgData}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          autoHeight
-        />
-      </Box>
-
-      
+            }}
+            autoHeight
+          />
+        </Box>
       </Paper>
     </>
   );

@@ -129,8 +129,7 @@ export default function ManageVideos() {
         // console.log("uploaded video response");
         // console.log(response);
 
-        axios
-          .post("http://192.168.1.12:3011/api/videos", {
+        axios.post("http://192.168.1.12:3011/api/videos", {
             Name: formData.videoName,
             Description: formData.videoDescription,
             Link: `${Bunny_Stream_GET_URL}/${data.videoLibraryId}/${data.guid}`,

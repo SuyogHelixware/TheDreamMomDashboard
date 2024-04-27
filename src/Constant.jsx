@@ -1,4 +1,4 @@
-export const BASE_URL = "http://desktop-ptih5n0:3011/api/";
+export const BASE_URL = "http://34.232.150.10:3011/api/";
 // export const BASE_URL="http://192.168.1.4:3011/api/";
 
 export const Bunny_Storage_URL =

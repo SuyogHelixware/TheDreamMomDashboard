@@ -100,22 +100,10 @@ export default function ManageTags() {
     });
   };
 
-  const handleDelete = (data) => {
-    axios
-      .delete(`${BASE_URL}tags/${data._id}`)
-      .then((response) => {
-        console.log("Node API Data Deleted successfully:", response.data);
-        getTagData()
-      })
-      .catch((error) => {
-        console.error("Error deleting data:", error);
-      });
-  };
-  React.useEffect(() => {
-    getTagData();
-  }, []);
+  
+ 
 
-  const deluser = (id) => {
+  const handleDelete = (data) => {
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -126,10 +114,11 @@ export default function ManageTags() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${BASE_URL}tags/${id}`)
+          .delete(`${BASE_URL}tags/${data._id}`)
           .then((response) => {
             if (response.data.status === true) {
-              setTagsData(tagData.filter((user) => user._id !== id));
+              // setTagsData(tagData.filter((user) => user._id !== id));
+              getTagData()
               Swal.fire({
                 position: "center",
                 icon: "success",
@@ -211,6 +200,10 @@ export default function ManageTags() {
         });
       });
   };
+
+  React.useEffect(() => {
+    getTagData();
+  }, []);
 
   return (
     <>

@@ -25,7 +25,6 @@ import axios from "axios";
 import * as React from "react";
 import Swal from "sweetalert2";
 
-
 import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
 
 const styles = {
@@ -111,7 +110,27 @@ const ManageDiet = () => {
     });
   };
 
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 2500,
+    });
+  };
+
   const handleSubmitForm = () => {
+    const requiredFields = ["Name", "Tag", "Description"];
+
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
       Name: data.Name,
@@ -226,8 +245,6 @@ const ManageDiet = () => {
                   title: "Oops...",
                   text: "Something went wrong while deleting data from the server!",
                 });
-
-
               });
           })
           .catch((error) => {
@@ -467,7 +484,7 @@ const ManageDiet = () => {
               <Button
                 type="submit"
                 size="small"
-                onClick={handleSubmitForm}
+                onclick={() => handleSubmitForm(data._id)}
                 sx={{
                   marginTop: 1,
                   p: 1,

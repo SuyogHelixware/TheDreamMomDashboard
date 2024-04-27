@@ -16,6 +16,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import * as React from "react";
 
 export default function ManageExpert() {
@@ -34,7 +35,7 @@ export default function ManageExpert() {
       renderCell: (params) => (
         <>
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <FormatListNumberedIcon />
+            <EditNoteIcon />
           </IconButton>
 
           <IconButton color="error">
