@@ -2,9 +2,11 @@ import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import Swal from "sweetalert2";
+
 import {
   Card,
-  CardMedia,
+  Chip,
   FormControl,
   IconButton,
   InputLabel,
@@ -23,8 +25,6 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import Swal from "sweetalert2";
-
 import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
 
 const styles = {
@@ -40,11 +40,9 @@ const styles = {
 
 const ManageDiet = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [imgData, setImgData] = React.useState({
-    Name: "",
-    Description: "",
-    Image: "",
-  });
+  const [selectedTags, setSelectedTags] = React.useState([]);
+
+  const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
@@ -68,6 +66,11 @@ const ManageDiet = () => {
     });
   };
 
+  const handleChange = (event) => {
+    setSelectedTags(event.target.value);
+    console.log(event.target.value);
+  };
+
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     console.log("Uploaded file:", file);
@@ -83,18 +86,18 @@ const ManageDiet = () => {
     setOn(false);
   };
 
-  const handleClick = (item) => {
-    setData({
-      id: item.id,
-      Name: item.Name,
-      Description: item.Description,
-      Image: item.Image,
-      TagsIds: item.TagsIds,
-      Status: item.Status,
-    });
-    setSaveUpdateButton("Update");
-    setOn(true);
-  };
+  // const handleClick = (item) => {
+  //   setData({
+  //     id: item.id,
+  //     Name: item.Name,
+  //     Description: item.Description,
+  //     Image: item.Image,
+  //     TagsIds: item.TagsIds,
+  //     Status: item.Status,
+  //   });
+  //   setSaveUpdateButton("Update");
+  //   setOn(true);
+  // };
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -110,33 +113,16 @@ const ManageDiet = () => {
     });
   };
 
-  const validationAlert = (message) => {
-    Swal.fire({
-      position: "center",
-      icon: "warning",
-      toast: true,
-      title: message,
-      showConfirmButton: false,
-      timer: 2500,
-    });
-  };
-
   const handleSubmitForm = () => {
-    const requiredFields = ["Name", "Tag", "Description"];
-
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
-
-    if (emptyRequiredFields.length > 0) {
-      validationAlert("Please fill in all required fields");
-      return;
-    }
-
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
       Image: filename,
+      TagsIds: selectedTags.map((tag) => tag._id),
     };
+    console.log(saveObj);
+
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
@@ -260,13 +246,15 @@ const ManageDiet = () => {
   };
 
   const handleUpdate = (data) => {
+    console.log(data);
     setSaveUpdateButton("UPDATE");
     setOn(true);
+    setSelectedTags(data.TagsIds)
     setData({
       Name: data.Name,
       Description: data.Description,
       Image: data.Image,
-      Id: data._id,
+      TagsIds: data.TagsIds,
     });
     console.log(data);
   };
@@ -285,10 +273,10 @@ const ManageDiet = () => {
 
   const isSubmitDisabled = () => {
     if (data.Name && data.Description && data.Tag) {
-      return false;
+      return true;
     } else {
       // console.log("Please fill all fields");
-      return true;
+      return false;
     }
   };
 
@@ -363,12 +351,24 @@ const ManageDiet = () => {
                   id="Tag"
                   label="Tag"
                   name="Tag"
-                  onChange={onchangeHandler}
+                  multiple
+                  value={selectedTags}
+                  onChange={handleChange}
+                  renderValue={(selected) => (
+                    <div>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value._id}
+                          label={tags.find((tag) => tag._id === value._id).Name}
+                        />
+                      ))}
+                    </div>
+                  )}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
                   {tags.map((item) => (
-                    <MenuItem key={item._id} value={item._id}>
+                    <MenuItem key={item._id} value={item}>
                       {item.Name}
                     </MenuItem>
                   ))}
@@ -391,42 +391,6 @@ const ManageDiet = () => {
                 placeholder="Enter your Description..."
               />
             </Grid>
-
-            {/* <Grid item xs={12} lg={12}>
-              <input
-                accept="image/*"
-                id="contained-button-file"
-                type="file"
-                onChange={handleFileUpload}
-                style={{ display: "none" }} 
-              />
-              <label htmlFor="contained-button-file">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  disabled={isSubmitDisabled()}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <CloudUploadIcon sx={{ marginRight: 1 }} />
-                  <Typography noWrap>
-                    {uploadedImg && uploadedImg.name
-                      ? uploadedImg.name
-                      : "Upload File"}
-                  </Typography>
-                </Button>
-              </label>
-            </Grid> */}
 
             <Grid item xs={12}>
               <Button
@@ -456,7 +420,6 @@ const ManageDiet = () => {
                     ? uploadedImg.name
                     : "Upload File"}
                 </Typography>
-
                 <VisuallyHiddenInput type="file" />
               </Button>
             </Grid>
@@ -484,7 +447,7 @@ const ManageDiet = () => {
               <Button
                 type="submit"
                 size="small"
-                onclick={() => handleSubmitForm(data._id)}
+                onClick={handleSubmitForm}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -506,8 +469,6 @@ const ManageDiet = () => {
 
       <Grid
         container
-        // xs={12}
-        // sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -568,50 +529,32 @@ const ManageDiet = () => {
         {Array.isArray(imgData) &&
           imgData.slice(startIndex, endIndex).map((item, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <CardMedia
-                  style={{
-                    objectFit: "contain",
-                  }}
-                  component="img"
-                  height="195"
-                  width={"100%"}
-                  src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
-                  alt="ghhj"
-                />
-                {/* <img
-                  // height="100%"
+              <Card sx={{ width: "100%", minHeight: 300 }}>
+                <img
+                  height="100%"
                   width="100%"
                   src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
                   alt="img"
                   title={item.Name}
-                  style={{  objectFit: "cover" }}
-                /> */}
+                />
                 <CardContent>
                   <Typography
-                    noWrap
-                    height={25}
                     gutterBottom
+                    variant="h5"
                     component="div"
                     textAlign={"start"}
                   >
-                    <b>Title:{item.Name}</b>
+                    <b>Title: {item.Name}</b>
                   </Typography>
                   <Typography
-                    textAlign={"start"}
                     variant="body2"
+                    color="text.secondary"
                     style={styles.typography}
-                    color="textSecondary"
                     component="div"
+                    textAlign={"start"}
                   >
-                    <b>Description: </b> {item.Description}
+                    <b>Description: </b>
+                    {item.Description}
                   </Typography>
                 </CardContent>
                 <CardActions
@@ -627,7 +570,6 @@ const ManageDiet = () => {
                   >
                     <EditNoteIcon />
                   </IconButton>
-
                   <Button
                     size="medium"
                     sx={{ color: "red" }}
