@@ -503,6 +503,7 @@ export default function ManageUsers() {
             </Grid>
             <Grid item md={3} sm={3} xs={12} textAlign={"left"} ml={3}>
               <CheckboxInputs
+                checked={data.Status}
                 label="Status"
                 id="Status"
                 onChange={onchangeHandler}
