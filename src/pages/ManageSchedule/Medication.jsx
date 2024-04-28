@@ -158,7 +158,7 @@ const Medication = () => {
     axios.get(`${BASE_URL}Medications/`).then((response) => {
       const updatedImgData = response.data.values.flat().map((item, index) => ({
         ...item,
-        id: index + 1, // You can use any unique identifier here, like item._id if available
+        id: index + 1, 
       }));
       setImgData(updatedImgData);
     });
@@ -167,7 +167,7 @@ const Medication = () => {
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
-      // console.log(response.data.values.flat());
+
     });
   };
 

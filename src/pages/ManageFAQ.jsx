@@ -1,100 +1,215 @@
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
+  Box,
+  Button,
+  Chip,
   FormControl,
+  Grid,
   IconButton,
   InputLabel,
   MenuItem,
   Modal,
   Paper,
   Select,
+  TextField,
+  Typography,
 } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
 import * as React from "react";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import Swal from "sweetalert2";
+import { BASE_URL } from "../Constant";
 
-export default function ManageUsers() {
+const ManageFAQ = () => {
+  const [imgData, setImgData] = React.useState([]);
+  const [selectedTags, setSelectedTags] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [formData, setFormData] = React.useState({
-    question: "",
-    answer: "",
+  const [tags, setTags] = React.useState([]);
+  const [data, setData] = React.useState({
+    Question: "",
+    Answer: "",
+    Id: "",
   });
 
-  const handleClick = (row) => {
-    setSaveUpdateButton("Update");
-    setOn(true);
+  const handleChange = (event) => {
+    setSelectedTags(event.target.value);
+    console.log(event.target.value);
   };
-
-  const handleOnSave = () => {
-    setSaveUpdateButton("Save");
-    setOn(true);
+ 
+  const clearFormData = () => {
+    setData({
+      Id: "",
+      Question: "",
+      Answer: "",
+      TagsIds: [],
+      Status: 1,
+    });
   };
-
-  const columns = [
-    {
-      field: "Action",
-      headerName: "Action",
-      width: 150,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <EditNoteIcon />
-          </IconButton>
-
-          <IconButton color="error">
-            <DeleteForeverSharpIcon />
-          </IconButton>
-        </>
-      ),
-    },
-
-    { field: "id", headerName: "Sr.No", width: 200, sortable: false },
-    {
-      field: "firstName",
-      headerName: "Questions",
-      width: 400,
-      sortable: false,
-    },
-    {
-      field: "lastName",
-      headerName: "Answer",
-      width: 250,
-      sortable: false,
-    },
-  
-  ];
-
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 14 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
 
   const handleClose = () => {
     setOn(false);
   };
 
-  const onchangeHandler = (event) => {
-    setFormData({
-      ...formData,
+  const handleOnSave = () => {
+    setSaveUpdateButton("SAVE");
+    setOn(true);
+    clearFormData();
+  };
 
+  const onChangeHandler = (event) => {
+    setData({
+      ...data,
       [event.target.name]: event.target.value,
     });
   };
+
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 2500,
+    });
+  };
+
+  const handleSubmitForm = () => {
+    const saveObj = {
+      Question: data.Question,
+      Answer: data.Answer,
+    };
+    const updateObj = {
+      Question: data.Question,
+      Answer: data.Answer,
+    };
+
+    let requestPromise;
+    if (SaveUpdateButton === "SAVE") {
+      requestPromise = axios.post(`${BASE_URL}faqs`, saveObj);
+    } else {
+      requestPromise = axios.patch(`${BASE_URL}faqs/${data.Id}`, updateObj);
+    }
+
+    requestPromise
+      .then((response) => {
+        console.log(response.data);
+        getAllImgList();
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Data saved successfully",
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+      })
+      .finally(() => {
+        handleClose();
+      });
+  };
+
+  const getAllImgList = () => {
+    axios.get(`${BASE_URL}faqs/`).then((response) => {
+      const updatedImgData = response.data.values.flat().map((item, index) => ({
+        ...item,
+        id: index + 1,
+      }));
+      setImgData(updatedImgData);
+    });
+  };
+
+
+  const handleDelete = (rowData) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${BASE_URL}faqs/${rowData._id}`)
+          .then((response) => {
+            console.log("Node API Data Deleted successfully:", response.data);
+            getAllImgList();
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Data deleted successfully",
+              showConfirmButton: false,
+              timer: 2500,
+            });
+          })
+          .catch((error) => {
+            console.error("Error deleting data:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong!",
+            });
+          });
+      }
+    });
+  };
+
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+      // console.log(response.data.values.flat());
+    });
+  };
+  React.useEffect(() => {
+    getTagData();
+    getAllImgList();
+  }, []);
+
+
+  const columns = [
+    {
+      field: "actions",
+      headerName: "Action",
+      width: 250,
+      renderCell: (params) => (
+        <strong>
+          <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
+            <EditNoteIcon />
+          </IconButton>
+          <Button
+            size="medium"
+            sx={{ color: "red" }}
+            onClick={() => handleDelete(params.row)}
+          >
+            <DeleteForeverIcon />
+          </Button>
+        </strong>
+      ),
+    },
+    { field: "Question", headerName: "Question", width: 250 },
+    { field: "Answer", headerName: "Answer", width: 300 },
+  ];
+
+  const handleUpdate = (rowData) => {
+    setSaveUpdateButton("UPDATE");
+    setOn(true);
+    setData({
+      Question: rowData.Question,
+      Answer: rowData.Answer,
+      Id: rowData._id,
+    });
+  };
+
+
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -114,32 +229,34 @@ export default function ManageUsers() {
         >
           <Grid
             container
-            xs={12}
             item
-            spacing={3}
+            xs={12}
+            spacing={2}
             display={"flex"}
             flexDirection={"column"}
             padding={4}
             justifyContent={"center"}
           >
             <Grid item xs={12}>
-              <Typography fontWeight="bold">Add FAQ</Typography>
+              <Typography fontWeight="bold">Add FAQS</Typography>
             </Grid>
             <Grid item xs={12}>
               <TextField
-                name="question"
-                required
                 size="small"
-                id="question"
-                label="Enter the question"
-                style={{ borderRadius: 10, width: "100%" }}
+                spacing={"5"}
+                required
+                fullWidth
+                id="Question"
+                label="Enter Question"
+                name="Question"
+                value={data.Question}
+                onChange={onChangeHandler}
                 autoFocus
-                onChange={onchangeHandler}
-                value={formData.question}
+                style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
 
-            <Grid item xs={12}>
+          <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
                 <InputLabel id="demo-select-small-label">
                   Select Type
@@ -147,36 +264,54 @@ export default function ManageUsers() {
 
                 <Select
                   labelId="ChooseType"
-                  id="ChooseType"
-                  label="Choose Type"
-                  onChange={onchangeHandler}
-                  // value={data.name}
+                  id="Tag"
+                  label="Tag"
+                  name="Tag"
+                  multiple
+                  value={selectedTags}
+                  onChange={handleChange}
+                  renderValue={(selected) => (
+                    <div>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value._id}
+                          label={tags.find((tag) => tag._id === value._id).Name}
+                        />
+                      ))}
+                    </div>
+                  )}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
-                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
-                  <MenuItem value={20}>Videos</MenuItem>
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+
+
+            <Grid item xs={12} paddingTop={1}>
               <TextField
-                required
-                label="Enter the Answer"
-                name="answer"
-                id="outlined-multiline-static"
-                style={{ borderRadius: 10, width: "100%" }}
-                value={formData.answer}
+                size="small"
+                fullWidth
+                id="Answer"
+                label="Enter Answer"
+                name="Answer"
+                value={data.Answer}
+                onChange={onChangeHandler}
                 multiline
-                rows={4}
-                onChange={onchangeHandler}
+                rows={3}
+                placeholder="Enter your Description..."
               />
             </Grid>
 
-            <Grid item xs={12} textAlign={"end"}>
+            <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
                 onClick={handleClose}
-                type="submit"
+                type="reset"
                 size="small"
                 sx={{
                   marginTop: 1,
@@ -196,6 +331,7 @@ export default function ManageUsers() {
               <Button
                 type="submit"
                 size="small"
+                onClick={handleSubmitForm}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -210,14 +346,13 @@ export default function ManageUsers() {
                 {SaveUpdateButton}
               </Button>
             </Grid>
+            <Grid />
           </Grid>
         </Paper>
       </Modal>
 
       <Grid
         container
-        xs={12}
-        sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -231,7 +366,7 @@ export default function ManageUsers() {
           justifyContent: "space-between",
           mb: 2,
         }}
-        elevation="4"
+        elevation={4}
       >
         <Typography
           width={"100%"}
@@ -242,7 +377,7 @@ export default function ManageUsers() {
           padding={1}
           noWrap
         >
-          Manage FAQ's
+          Manage FAQS
         </Typography>
       </Grid>
 
@@ -252,6 +387,8 @@ export default function ManageUsers() {
           type="text"
           size="medium"
           sx={{
+            pr: 2,
+            mb: 2,
             color: "white",
             backgroundColor: "#8F00FF",
             boxShadow: 5,
@@ -268,7 +405,7 @@ export default function ManageUsers() {
           }}
         >
           <AddIcon />
-          Add Questions
+          Add FAQS
         </Button>
       </Grid>
 
@@ -282,21 +419,17 @@ export default function ManageUsers() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%" }}>
+        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
-            rows={rows}
+            rows={imgData}
             columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
-            }}
+            autoHeight
           />
         </Box>
       </Paper>
     </>
   );
-}
+};
+
+export default ManageFAQ;

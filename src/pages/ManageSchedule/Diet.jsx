@@ -41,7 +41,6 @@ const styles = {
 const ManageDiet = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [selectedTags, setSelectedTags] = React.useState([]);
-
   const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
