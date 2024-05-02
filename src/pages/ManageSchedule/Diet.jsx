@@ -36,6 +36,10 @@ const styles = {
     WebkitBoxOrient: "vertical",
     height: 40,
   },
+  image: {
+    height: 130, 
+    objectFit: 'cover', 
+  },
 };
 
 const ManageDiet = () => {
@@ -531,11 +535,12 @@ const ManageDiet = () => {
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
               <Card sx={{ width: "100%", minHeight: 300 }}>
                 <img
-                  height="100%"
-                  width="100%"
+                  // height="100%"
+                  // width="100%"
                   src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
                   alt="img"
                   title={item.Name}
+                  style={styles.image}
                 />
                 <CardContent>
                   <Typography
