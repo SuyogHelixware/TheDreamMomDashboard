@@ -4,6 +4,7 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  InputAdornment,
   InputBase,
   InputLabel,
   MenuItem,
@@ -16,6 +17,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import SearchIcon from "@mui/icons-material/Search";
 
 import React from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default class InputTextField extends React.Component {
   render(props) {
@@ -36,6 +38,41 @@ export default class InputTextField extends React.Component {
     );
   }
 }
+
+export class InputPasswordField extends React.Component {
+  render(props) {
+    return (
+      <>
+        <TextField
+          required
+          label={this.props.label}
+          onChange={this.props.onChange}
+          id={this.props.id}
+          name={this.props.id}
+          type={this.props.type}
+          value={this.props.value}
+          size="small"
+          sx={{ maxWidth: 220 }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  edge="end"
+                  sx={{ color: "#9370db " }}
+                  onClick={this.props.onClick}
+                  onMouseDown={this.props.onMouseDown}
+                >
+                  {this.props.showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      </>
+    );
+  }
+}
+
 export class DatePickerField extends React.Component {
   render(props) {
     return (
@@ -50,6 +87,7 @@ export class DatePickerField extends React.Component {
             onChange={this.props.onChange}
             format="DD-MMM-YYYY"
             disabled={this.props.disabled}
+            maxDate={this.props.maxDate}
             slotProps={{
               textField: {
                 size: "small",

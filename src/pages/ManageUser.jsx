@@ -23,6 +23,7 @@ import { BASE_URL } from "../Constant";
 import InputTextField, {
   CheckboxInputs,
   DatePickerField,
+  InputPasswordField,
   InputSelectField,
 } from "../components/Component";
 import Loader from "../components/Loader";
@@ -33,6 +34,13 @@ export default function ManageUsers() {
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [on, setOn] = React.useState(false);
   const [image, setImage] = React.useState(null);
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -78,6 +86,15 @@ export default function ManageUsers() {
   };
 
   const onchangeHandler = (event) => {
+    // console.log(event);
+    if (event.target.name === "Password") {
+      const password = event.target.value;
+      if (password.length > 16) {
+        validationAlert("Password must be at most 16 characters long.");
+        return;
+      }
+    }
+
     setData({
       ...data,
       [event.target.name]: event.target.value,
@@ -155,7 +172,6 @@ export default function ManageUsers() {
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
 
     if (emptyRequiredFields.length > 0) {
-      // alert('Please fill in all required fields.');
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -165,7 +181,7 @@ export default function ManageUsers() {
       return;
     }
 
-    if (data.Password.length < 8) {
+    if (data.Password.length < 6 || data.Password.length > 16) {
       validationAlert("Password must be at least 8 characters long.");
       return;
     }
@@ -428,13 +444,16 @@ export default function ManageUsers() {
               />
             </Grid>
             <Grid item md={6} sm={6} xs={12}>
-              <InputTextField
+              <InputPasswordField
                 label="Password"
                 id="Password"
                 onChange={onchangeHandler}
-                type="password"
+                // type="password"
                 value={data.Password}
                 name="Password"
+                type={showPassword ? "text" : "password"}
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
               />
             </Grid>
             <Grid item md={6} sm={6} xs={12}>
@@ -472,6 +491,7 @@ export default function ManageUsers() {
                 id="DOB"
                 label="DOB"
                 value={dayjs(data.DOB)}
+                maxDate={dayjs(undefined)}
                 onChange={(date) =>
                   onchangeHandler({
                     target: {
@@ -504,9 +524,17 @@ export default function ManageUsers() {
             <Grid item md={3} sm={3} xs={12} textAlign={"left"} ml={3}>
               <CheckboxInputs
                 checked={data.Status}
-                label="Status"
+                label="Active"
                 id="Status"
-                onChange={onchangeHandler}
+                onChange={(event) =>
+                  onchangeHandler({
+                    target: {
+                      name: "Status",
+                      id: "Status",
+                      value: event.target.checked,
+                    },
+                  })
+                }
                 value={data.Status}
                 name="Status"
               />

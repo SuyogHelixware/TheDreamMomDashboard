@@ -14,6 +14,8 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import logo from "../../src/assets/logo.png";
 import bgimg from "../../src/assets/back7.png";
 import Swal from "sweetalert2";
+import axios from "axios";
+import { BASE_URL } from "../Constant";
 
 function Signin() {
   const [userId, setUserId] = useState("");
@@ -33,10 +35,54 @@ function Signin() {
   //   setValueSelected(true);
   // };
 
-  const handleSubmit = () => {
-    sessionStorage.setItem('userId', userId);
-    Navigate("/dashboard/home");
+  const handleSubmit = async () => {
+    try {
+      const body = {
+        Phone: userId,
+        Password: password,
+        UserType: "A",
+      };
+  
+      axios
+        .post(`${BASE_URL}Users/login`, body)
+        .then((res) => {
+          console.log("Response data:", res.data); 
+          if (res.data.status===true) {
+            Swal.fire({
+              position: "top-end",
+              toast: true,
+              title: "Login Success",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            sessionStorage.setItem("userId", userId);
+            Navigate("/dashboard/home");
+          } else {
+            Swal.fire({
+              position: "top-end",
+              icon: "error",
+              toast: true,
+              title: "Invalid username or password",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        })
+        .catch((e) => console.log(e));
+  
+      console.log("Login successful!");
+    } catch (error) {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        toast: true,
+        title: error.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
   };
+  
 
   const login = (e) => {
     e.preventDefault();
@@ -49,24 +95,7 @@ function Signin() {
         showConfirmButton: false,
         timer: 1500,
       });
-    } else if (userId !== "admin" || password !== "admin") {
-      Swal.fire({
-        position: "top-end",
-        icon: "error",
-        toast: true,
-        title: "Incorrect Username or Password",
-        showConfirmButton: false,
-        timer: 1500,
-      });
     } else {
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        toast: true,
-        title: "Login Successful",
-        showConfirmButton: false,
-        timer: 2500,
-      });
       handleSubmit();
     }
   };
