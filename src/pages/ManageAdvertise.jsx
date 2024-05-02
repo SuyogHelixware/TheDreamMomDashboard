@@ -67,12 +67,10 @@ const ManageAdvertise = () => {
 
   const handleChange = (event) => {
     setSelectedTags(event.target.value);
-    console.log(event.target.value);
   };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    console.log("Uploaded file:", file);
     setUploadedImg(file);
 
     setData((prevData) => ({
@@ -99,7 +97,25 @@ const ManageAdvertise = () => {
     });
   };
 
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 2000,
+    });
+  };
+
   const handleSubmitForm = () => {
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
       Name: data.Name,
@@ -107,13 +123,7 @@ const ManageAdvertise = () => {
       Image: filename,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
-    console.log(saveObj);
 
-    const UpdateObj = {
-      Name: data.Name,
-      Description: data.Description,
-      Image: data.Image,
-    };
     if (SaveUpdateButton === "SAVE") {
       axios
         .request({
@@ -127,18 +137,27 @@ const ManageAdvertise = () => {
           data: uploadedImg,
         })
         .then((response) => {
-          console.log(response);
           axios
             .post(`${BASE_URL}advertisement`, saveObj)
             .then((response) => {
-              console.log(response.data);
               getAllImgList();
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Data saved successfully",
+              });
             })
             .catch((error) => {
               console.error("Error:", error);
             });
         });
     } else {
+      const UpdateObj = {
+        Name: data.Name,
+        Description: data.Description,
+        Image: data.Image,
+      };
+
       axios
         .request({
           method: "PUT",
@@ -154,7 +173,6 @@ const ManageAdvertise = () => {
           axios
             .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
             .then((response) => {
-              console.log(response.data);
               getAllImgList();
             })
             .catch((error) => {
@@ -168,14 +186,12 @@ const ManageAdvertise = () => {
   const getAllImgList = () => {
     axios.get(`${BASE_URL}advertisement/`).then((response) => {
       setImgData(response.data.values.flat());
-      // console.log(response.data.values.flat());
     });
   };
 
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
-      // console.log(response.data.values.flat());
     });
   };
 
@@ -196,14 +212,9 @@ const ManageAdvertise = () => {
             },
           })
           .then((response) => {
-            console.log(data._id);
             axios
               .delete(`${BASE_URL}advertisement/${data._id}`)
               .then((response) => {
-                console.log(
-                  "Node API Data Deleted successfully:",
-                  response.data
-                );
                 getAllImgList();
                 Swal.fire({
                   icon: "success",
@@ -233,17 +244,43 @@ const ManageAdvertise = () => {
   };
 
   const handleUpdate = (data) => {
-    console.log(data);
     setSaveUpdateButton("UPDATE");
     setOn(true);
     setSelectedTags(data.TagsIds);
     setData({
+      Id: data._id,
       Name: data.Name,
       Description: data.Description,
       Image: data.Image,
       TagsIds: data.TagsIds,
     });
-    console.log(data);
+  };
+
+  const handlePatch = () => {
+    const UpdateObj = {
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+    };
+
+    axios
+      .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
+      .then((response) => {
+        getAllImgList();
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Data updated successfully",
+        });
+      })
+      .catch((error) => {
+        console.error("Error updating data:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong while updating data!",
+        });
+      });
   };
 
   React.useEffect(() => {
@@ -262,7 +299,6 @@ const ManageAdvertise = () => {
     if (data.Name && data.Description && data.Tag) {
       return true;
     } else {
-      // console.log("Please fill all fields");
       return false;
     }
   };
@@ -281,8 +317,9 @@ const ManageAdvertise = () => {
     whiteSpace: "nowrap",
     width: 6,
   });
+
   return (
-    <>
+        <>
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
@@ -389,6 +426,7 @@ const ManageAdvertise = () => {
                 variant="contained"
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
+                required
                 sx={{
                   backgroundColor: "#8F00FF",
                   py: 1.5,
@@ -404,8 +442,8 @@ const ManageAdvertise = () => {
                   {SaveUpdateButton === "UPDATE"
                     ? data.Image
                     : uploadedImg && uploadedImg.name
-                    ? uploadedImg.name
-                    : "Upload File"}
+                      ? uploadedImg.name
+                      : "Upload File"}
                 </Typography>
                 <VisuallyHiddenInput type="file" />
               </Button>
@@ -521,13 +559,14 @@ const ManageAdvertise = () => {
                   style={{
                     width: "100%",
                     height: "100%",
-                   objectFit: "fill",
-                    aspectRatio: 5/3,
+                    objectFit: "fill",
+                    aspectRatio: 5 / 3,
                   }}
                   src={`${Bunny_Image_URL}/Advertisement/${item.Image}`}
                   alt="img"
                   title={item.Name}
-                
+
+
                 />
 
                 <CardContent>

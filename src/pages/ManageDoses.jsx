@@ -109,7 +109,7 @@ const ManageDoses = () => {
       toast: true,
       title: message,
       showConfirmButton: false,
-      timer: 2500,
+      timer: 2000,
     });
   };
   const handleSubmitForm = () => {

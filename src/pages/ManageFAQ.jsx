@@ -22,6 +22,7 @@ import * as React from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
 
+
 const ManageFAQ = () => {
   const [imgData, setImgData] = React.useState([]);
   const [selectedTags, setSelectedTags] = React.useState([]);
@@ -38,7 +39,7 @@ const ManageFAQ = () => {
     setSelectedTags(event.target.value);
     console.log(event.target.value);
   };
- 
+
   const clearFormData = () => {
     setData({
       Id: "",
@@ -73,11 +74,20 @@ const ManageFAQ = () => {
       toast: true,
       title: message,
       showConfirmButton: false,
-      timer: 2500,
+      timer: 2000,
     });
   };
 
   const handleSubmitForm = () => {
+
+    const requiredFields = ["Question", "Answer"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
+
     const saveObj = {
       Question: data.Question,
       Answer: data.Answer,
@@ -256,7 +266,7 @@ const ManageFAQ = () => {
               />
             </Grid>
 
-          <Grid item xs={12}>
+            <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
                 <InputLabel id="demo-select-small-label">
                   Select Type
@@ -288,6 +298,8 @@ const ManageFAQ = () => {
                       {item.Name}
                     </MenuItem>
                   ))}
+
+
                 </Select>
               </FormControl>
             </Grid>
@@ -331,7 +343,7 @@ const ManageFAQ = () => {
               <Button
                 type="submit"
                 size="small"
-                onClick={handleSubmitForm}
+                onClick={() => handleSubmitForm(data._id)}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -425,6 +437,14 @@ const ManageFAQ = () => {
             rows={imgData}
             columns={columns}
             autoHeight
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
+              },
+            }}
+            pageSizeOptions={[5]}
           />
         </Box>
       </Paper>

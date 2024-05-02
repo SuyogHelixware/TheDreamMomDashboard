@@ -73,11 +73,18 @@ const ManagePosts = () => {
       toast: true,
       title: message,
       showConfirmButton: false,
-      timer: 2500,
+      timer: 2000,
     });
   };
 
   const handleSubmitForm = () => {
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
