@@ -1,18 +1,31 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Card, FormControl, IconButton, InputLabel, MenuItem, Modal, Pagination, Paper, Select } from "@mui/material";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import Swal from "sweetalert2";
+
+import {
+  Card,
+  Chip,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Pagination,
+  Paper,
+  Select,
+  styled,
+} from "@mui/material";
 import Button from "@mui/material/Button";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import advertise from "../assets/advertising.jpg";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../Constant";
 
 const styles = {
   typography: {
@@ -25,88 +38,249 @@ const styles = {
   },
 };
 
-export default function ManageAdvertise() {
+const ManageAdvertise = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [formData, setFormData] = React.useState("");
+  const [selectedTags, setSelectedTags] = React.useState([]);
+  const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
+  const [tags, setTags] = React.useState([]);
   const cardsPerPage = 8;
+  const [data, setData] = React.useState({
+    Name: "",
+    Description: "",
+    Image: "",
+    Id: "",
+  });
+
+  const clearFormData = () => {
+    setData({
+      Id: "",
+      Name: "",
+      Description: "",
+      Image: "",
+      TagsIds: [],
+      Status: 1,
+    });
+  };
+
+  const handleChange = (event) => {
+    setSelectedTags(event.target.value);
+    console.log(event.target.value);
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     console.log("Uploaded file:", file);
     setUploadedImg(file);
+
+    setData((prevData) => ({
+      ...prevData,
+      Image: file.name,
+    }));
   };
 
   const handleClose = () => {
     setOn(false);
   };
-  const handleClick = (row) => {
-    setSaveUpdateButton("Update");
-    setOn(true);
-  };
 
   const handleOnSave = () => {
-    setSaveUpdateButton("Save");
+    setSaveUpdateButton("SAVE");
     setOn(true);
+    clearFormData();
+    setData([]);
   };
 
-  const handleInputChange = (event) => {
-    setFormData({
-      ...formData,
+  const onchangeHandler = (event) => {
+    setData({
+      ...data,
       [event.target.name]: event.target.value,
     });
   };
 
   const handleSubmitForm = () => {
-    console.log(formData);
-    console.log(uploadedImg);
+    const filename = new Date().getTime() + "_" + uploadedImg.name;
+    const saveObj = {
+      Name: data.Name,
+      Description: data.Description,
+      Image: filename,
+      TagsIds: selectedTags.map((tag) => tag._id),
+    };
+    console.log(saveObj);
 
-    axios
-      .request({
-        method: "PUT",
-        maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/${sessionStorage.getItem(
-          "userId"
-        )}/${uploadedImg.name}`,
-        headers: {
-          "Content-Type": "image/jpeg",
-          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-        },
-        data: uploadedImg,
-      })
-      .then((response) => {
-        console.log(response);
-      });
+    const UpdateObj = {
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+    };
+    if (SaveUpdateButton === "SAVE") {
+      axios
+        .request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Advertisement/${filename}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          },
+          data: uploadedImg,
+        })
+        .then((response) => {
+          console.log(response);
+          axios
+            .post(`${BASE_URL}advertisement`, saveObj)
+            .then((response) => {
+              console.log(response.data);
+              getAllImgList();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+    } else {
+      axios
+        .request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Advertisement/${data.Image}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          },
+          data: uploadedImg,
+        })
+        .then((response) => {
+          axios
+            .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
+            .then((response) => {
+              console.log(response.data);
+              getAllImgList();
+            })
+            .catch((error) => {
+              console.error("Error deleting data:", error);
+            });
+        });
+    }
+    handleClose();
   };
 
-  // const getAllImgList = () => {
-  //   axios
-  //     .request({
-  //       method: "GET",
-  //       url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
-  //       headers: {
-  //         AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log("Insetance created");
-  //       console.log(response);
-  //     });
-  // };
+  const getAllImgList = () => {
+    axios.get(`${BASE_URL}advertisement/`).then((response) => {
+      setImgData(response.data.values.flat());
+      // console.log(response.data.values.flat());
+    });
+  };
+
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+      // console.log(response.data.values.flat());
+    });
+  };
+
+  const handleDelete = (data) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${Bunny_Storage_URL}/Advertisement/${data.Image}`, {
+            headers: {
+              AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+            },
+          })
+          .then((response) => {
+            console.log(data._id);
+            axios
+              .delete(`${BASE_URL}advertisement/${data._id}`)
+              .then((response) => {
+                console.log(
+                  "Node API Data Deleted successfully:",
+                  response.data
+                );
+                getAllImgList();
+                Swal.fire({
+                  icon: "success",
+                  title: "Success",
+                  text: "Data deleted successfully",
+                });
+              })
+              .catch((error) => {
+                console.error("Error deleting data:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Something went wrong while deleting data from the server!",
+                });
+              });
+          })
+          .catch((error) => {
+            console.error("Error deleting data from storage:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong while deleting data from storage!",
+            });
+          });
+      }
+    });
+  };
+
+  const handleUpdate = (data) => {
+    console.log(data);
+    setSaveUpdateButton("UPDATE");
+    setOn(true);
+    setSelectedTags(data.TagsIds);
+    setData({
+      Name: data.Name,
+      Description: data.Description,
+      Image: data.Image,
+      TagsIds: data.TagsIds,
+    });
+    console.log(data);
+  };
 
   React.useEffect(() => {
-    // getAllImgList();
+    getAllImgList();
+  }, []);
+
+  React.useEffect(() => {
+    getTagData();
   }, []);
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
+  const isSubmitDisabled = () => {
+    if (data.Name && data.Description && data.Tag) {
+      return true;
+    } else {
+      // console.log("Please fill all fields");
+      return false;
+    }
+  };
+
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 3,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 6,
+  });
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -126,27 +300,28 @@ export default function ManageAdvertise() {
         >
           <Grid
             container
-            xs={12}
             item
+            xs={12}
             spacing={2}
+            display={"flex"}
             flexDirection={"column"}
             padding={4}
             justifyContent={"center"}
           >
             <Grid item xs={12}>
-              <Typography fontWeight="bold">Add Advertise</Typography>
+              <Typography fontWeight="bold">Add Advertisement</Typography>
             </Grid>
-
             <Grid item xs={12}>
               <TextField
                 size="small"
                 spacing={"5"}
                 required
                 fullWidth
-                id="name"
-                label="Enter Title"
-                name="name"
-                onChange={handleInputChange}
+                id="Name"
+                label="Enter Name"
+                name="Name"
+                value={data.Name}
+                onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
@@ -160,76 +335,80 @@ export default function ManageAdvertise() {
 
                 <Select
                   labelId="ChooseType"
-                  id="ChooseType"
-                  label="Choose Type"
-                  onChange={handleInputChange}
-                  // value={data.name}
+                  id="Tag"
+                  label="Tag"
+                  name="Tag"
+                  multiple
+                  value={selectedTags}
+                  onChange={handleChange}
+                  renderValue={(selected) => (
+                    <div>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value._id}
+                          label={tags.find((tag) => tag._id === value._id).Name}
+                        />
+                      ))}
+                    </div>
+                  )}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
-                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
-                  <MenuItem value={20}>Videos</MenuItem>
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
                 required
                 fullWidth
-                id="description"
+                id="Description"
                 label="Enter Description"
-                name="description"
-                onChange={handleInputChange}
+                name="Description"
+                value={data.Description}
+                onChange={onchangeHandler}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
               />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={12}>
-              <input
-                accept="image/*"
-                style={{ display: "none" }}
-                id="file-upload"
-                type="file"
+            <Grid item xs={12}>
+              <Button
+                fullWidth
                 onChange={handleFileUpload}
-              />
-
-              <label htmlFor="file-upload">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  // startIcon={<CloudUploadIcon />}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
+                component="label"
+                role={undefined}
+                disabled={isSubmitDisabled()}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  backgroundColor: "#8F00FF",
+                  py: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#3B444B",
+                  },
+                }}
+              >
+                <Typography
+                  noWrap
+                  style={{ width: "80%", textAlign: "center" }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <CloudUploadIcon sx={{ marginRight: 1 }} />
-                    <Typography noWrap>
-                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
-                    </Typography>
-                  </div>
-                </Button>
-              </label>
+                  {SaveUpdateButton === "UPDATE"
+                    ? data.Image
+                    : uploadedImg && uploadedImg.name
+                    ? uploadedImg.name
+                    : "Upload File"}
+                </Typography>
+                <VisuallyHiddenInput type="file" />
+              </Button>
             </Grid>
 
             <Grid item xs={12} md={12} textAlign={"end"}>
@@ -277,8 +456,6 @@ export default function ManageAdvertise() {
 
       <Grid
         container
-        xs={12}
-        sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -292,7 +469,7 @@ export default function ManageAdvertise() {
           justifyContent: "space-between",
           mb: 2,
         }}
-        elevation="4"
+        elevation={4}
       >
         <Typography
           width={"100%"}
@@ -303,7 +480,7 @@ export default function ManageAdvertise() {
           padding={1}
           noWrap
         >
-          Manage Advertising
+          Manage Advertisement
         </Typography>
       </Grid>
 
@@ -331,60 +508,72 @@ export default function ManageAdvertise() {
           }}
         >
           <AddIcon />
-          Add Advertise
+          Add Advertisement
         </Button>
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <Card sx={{ width: "100%" }}>
-              <CardMedia
-                sx={{ height: 140 }}
-                image={advertise}
-                alt="img"
-                title="Manage Advertise"
-              />
-              <CardContent>
-                <Typography
-                  noWrap
-                  height={25}
-                  gutterBottom
-                  component="div"
-                  textAlign={"start"}
-                >
-                  <b>Title:</b>
-                </Typography>
-                <Typography
-                  textAlign={"start"}
-                  variant="body2"
-                  style={styles.typography}
-                  color="textSecondary"
-                  component="div"
-                >
-                  Description are a widespread group of squamate reptiles, with
-                  over 6,000 species, ranging across all continents except
-                  Antarctica
-                </Typography>
-              </CardContent>
-              <CardActions
-                sx={{
-                  pt: "0",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <IconButton color="primary" onClick={() => handleClick()}>
-                  <EditNoteIcon />
-                </IconButton>
+        {Array.isArray(imgData) &&
+          imgData.slice(startIndex, endIndex).map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <Card sx={{ minHeight: 300 }}>
+                <img
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                   objectFit: "fill",
+                    aspectRatio: 5/3,
+                  }}
+                  src={`${Bunny_Image_URL}/Advertisement/${item.Image}`}
+                  alt="img"
+                  title={item.Name}
+                
+                />
 
-                <Button size="medium" sx={{ color: "red" }}>
-                  <DeleteForeverIcon />
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    textAlign={"start"}
+                  >
+                    <b>Title: {item.Name}</b>
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    style={styles.typography}
+                    component="div"
+                    textAlign={"start"}
+                  >
+                    <b>Description: </b>
+                    {item.Description}
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  sx={{
+                    pt: "0",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleUpdate(item)}
+                  >
+                    <EditNoteIcon />
+                  </IconButton>
+                  <Button
+                    size="medium"
+                    sx={{ color: "red" }}
+                    onClick={() => handleDelete(item)}
+                  >
+                    <DeleteForeverIcon />
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
@@ -399,4 +588,6 @@ export default function ManageAdvertise() {
       </Grid>
     </>
   );
-}
+};
+
+export default ManageAdvertise;
