@@ -1,119 +1,214 @@
 import AddIcon from "@mui/icons-material/Add";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
-  Card,
+  Box,
+  Button,
+  Chip,
   FormControl,
+  Grid,
   IconButton,
   InputLabel,
   MenuItem,
   Modal,
-  Pagination,
   Paper,
   Select,
+  TextField,
+  Typography,
 } from "@mui/material";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import * as React from "react";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import diet from "../assets/diet.jpg";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-
-const styles = {
-  typography: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    height: 40,
-  },
-};
+import Swal from "sweetalert2";
+import { BASE_URL } from "../Constant";
 
 const ManageAvoidFood = () => {
-  const [uploadedImg, setUploadedImg] = React.useState("");
-  const [formData, setFormData] = React.useState("");
+  const [imgData, setImgData] = React.useState([]);
+  const [selectedTags, setSelectedTags] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [page, setPage] = React.useState(1);
-  const cardsPerPage = 8;
+  const [tags, setTags] = React.useState([]);
+  const [data, setData] = React.useState({
+    Name: "",
+    Description: "",
+    Id: "",
+  });
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    console.log("Uploaded file:", file);
-    setUploadedImg(file);
+  const handleChange = (event) => {
+    setSelectedTags(event.target.value);
+    console.log(event.target.value);
+  };
+ 
+  const clearFormData = () => {
+    setData({
+      Id: "",
+      Name: "",
+      Description: "",
+      TagsIds: [],
+      Status: 1,
+    });
   };
 
   const handleClose = () => {
     setOn(false);
   };
-  const handleClick = (row) => {
-    setSaveUpdateButton("Update");
-    setOn(true);
-  };
 
   const handleOnSave = () => {
-    setSaveUpdateButton("Save");
+    setSaveUpdateButton("SAVE");
     setOn(true);
+    clearFormData();
   };
 
-  const handleInputChange = (event) => {
-    setFormData({
-      ...formData,
+  const onChangeHandler = (event) => {
+    setData({
+      ...data,
       [event.target.name]: event.target.value,
     });
   };
 
-  const handleSubmitForm = () => {
-    axios
-      .request({
-        method: "PUT",
-        maxBodyLength: Infinity,
-        url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${
-          new Date().getTime() + "_" + uploadedImg.name
-        }`,
-        headers: {
-          "Content-Type": "image/jpeg",
-          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-        },
-        data: uploadedImg,
-      })
-      .then((response) => {
-        console.log(response);
-      });
-    handleClose();
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 2500,
+    });
   };
 
-  // const getAllImgList = () => {
-  //   axios
-  //     .request({
-  //       method: "GET",
-  //       url: "https://storage.bunnycdn.com/thedreammomstoragezone1/admin/",
-  //       headers: {
-  //         AccessKey: "fddbd3df-9f4e-4a10-8df9a37562f7-e1d6-4424",
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log("Instance created");
-  //       console.log(response);
-  //     });
-  // };
+  const handleSubmitForm = () => {
+    const saveObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
+    const updateObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
 
+    let requestPromise;
+    if (SaveUpdateButton === "SAVE") {
+      requestPromise = axios.post(`${BASE_URL}avoidablethings`, saveObj);
+    } else {
+      requestPromise = axios.patch(`${BASE_URL}avoidablethings/${data.Id}`, updateObj);
+    }
+
+    requestPromise
+      .then((response) => {
+        console.log(response.data);
+        getAllImgList();
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Data saved successfully",
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+      })
+      .finally(() => {
+        handleClose();
+      });
+  };
+
+  const getAllImgList = () => {
+    axios.get(`${BASE_URL}avoidablethings/`).then((response) => {
+      const updatedImgData = response.data.values.flat().map((item, index) => ({
+        ...item,
+        id: index + 1,
+      }));
+      setImgData(updatedImgData);
+    });
+  };
+
+
+  const handleDelete = (rowData) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${BASE_URL}avoidablethings/${rowData._id}`)
+          .then((response) => {
+            console.log("Node API Data Deleted successfully:", response.data);
+            getAllImgList();
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Data deleted successfully",
+              showConfirmButton: false,
+              timer: 2500,
+            });
+          })
+          .catch((error) => {
+            console.error("Error deleting data:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong!",
+            });
+          });
+      }
+    });
+  };
+
+  const getTagData = () => {
+    axios.get(`${BASE_URL}tags`).then((response) => {
+      setTags(response.data.values);
+      // console.log(response.data.values.flat());
+    });
+  };
   React.useEffect(() => {
-    // getAllImgList();
+    getTagData();
+    getAllImgList();
   }, []);
 
-  const handlePageChange = (event, value) => {
-    setPage(value);
+
+  const columns = [
+    {
+      field: "actions",
+      headerName: "Action",
+      width: 250,
+      renderCell: (params) => (
+        <strong>
+          <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
+            <EditNoteIcon />
+          </IconButton>
+          <Button
+            size="medium"
+            sx={{ color: "red" }}
+            onClick={() => handleDelete(params.row)}
+          >
+            <DeleteForeverIcon />
+          </Button>
+        </strong>
+      ),
+    },
+    { field: "Name", headerName: "Name", width: 250 },
+    { field: "Description", headerName: "Description", width: 300 },
+  ];
+
+  const handleUpdate = (rowData) => {
+    setSaveUpdateButton("UPDATE");
+    setOn(true);
+    setData({
+      Name: rowData.Name,
+      Description: rowData.Description,
+      Id: rowData._id,
+    });
   };
 
-  const startIndex = (page - 1) * cardsPerPage;
-  const endIndex = startIndex + cardsPerPage;
 
   return (
     <>
@@ -134,8 +229,8 @@ const ManageAvoidFood = () => {
         >
           <Grid
             container
-            xs={12}
             item
+            xs={12}
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
@@ -143,7 +238,7 @@ const ManageAvoidFood = () => {
             justifyContent={"center"}
           >
             <Grid item xs={12}>
-              <Typography fontWeight="bold">Add Food</Typography>
+              <Typography fontWeight="bold">Add Avoidable Things</Typography>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -151,16 +246,17 @@ const ManageAvoidFood = () => {
                 spacing={"5"}
                 required
                 fullWidth
-                id="name"
+                id="Name"
                 label="Enter Name"
-                name="blogName"
-                onChange={handleInputChange}
+                name="Name"
+                value={data.Name}
+                onChange={onChangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
 
-            <Grid item xs={12}>
+          <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
                 <InputLabel id="demo-select-small-label">
                   Select Type
@@ -168,76 +264,48 @@ const ManageAvoidFood = () => {
 
                 <Select
                   labelId="ChooseType"
-                  id="ChooseType"
-                  label="Choose Type"
-                  onChange={handleInputChange}
-                  // value={data.name}
+                  id="Tag"
+                  label="Tag"
+                  name="Tag"
+                  multiple
+                  value={selectedTags}
+                  onChange={handleChange}
+                  renderValue={(selected) => (
+                    <div>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value._id}
+                          label={tags.find((tag) => tag._id === value._id).Name}
+                        />
+                      ))}
+                    </div>
+                  )}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
-                  <MenuItem value={10}>Blogs and Newsletter</MenuItem>
-                  <MenuItem value={20}>Videos</MenuItem>
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
 
+
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                required
                 fullWidth
-                id="outlined-multiline-static"
+                id="Description"
                 label="Enter Description"
-                name="description"
-                onChange={handleInputChange}
+                name="Description"
+                value={data.Description}
+                onChange={onChangeHandler}
                 multiline
                 rows={3}
                 placeholder="Enter your Description..."
               />
-            </Grid>
-
-            <Grid item xs={12} md={6} lg={12}>
-              <input
-                accept="image/*"
-                style={{ display: "none" }}
-                id="file-upload"
-                type="file"
-                onChange={handleFileUpload}
-              />
-
-              <label htmlFor="file-upload">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  // startIcon={<CloudUploadIcon />}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <CloudUploadIcon sx={{ marginRight: 1 }} />
-                    <Typography noWrap>
-                      {uploadedImg.name ? uploadedImg.name : "Upload Photo"}
-                    </Typography>
-                  </div>
-                </Button>
-              </label>
             </Grid>
 
             <Grid item xs={12} md={12} textAlign={"end"}>
@@ -285,8 +353,6 @@ const ManageAvoidFood = () => {
 
       <Grid
         container
-        xs={12}
-        sm={6}
         md={12}
         lg={12}
         component={Paper}
@@ -300,7 +366,7 @@ const ManageAvoidFood = () => {
           justifyContent: "space-between",
           mb: 2,
         }}
-        elevation="4"
+        elevation={4}
       >
         <Typography
           width={"100%"}
@@ -311,7 +377,7 @@ const ManageAvoidFood = () => {
           padding={1}
           noWrap
         >
-          Manage Avoid Food
+          Manage Avoidable Things
         </Typography>
       </Grid>
 
@@ -339,72 +405,29 @@ const ManageAvoidFood = () => {
           }}
         >
           <AddIcon />
-          Add Food
+          Add Avoidable Things
         </Button>
       </Grid>
 
-      <Grid container spacing={3} justifyContent="start">
-        {[...Array(19)].slice(startIndex, endIndex).map((_, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <Card sx={{ width: "100%" }}>
-              <CardMedia
-                sx={{ height: 140 }}
-                image={diet}
-                alt="img"
-                title="Avoideble Foods"
-              />
-              <CardContent>
-                <Typography
-                  noWrap
-                  height={25}
-                  gutterBottom
-                  component="div"
-                  textAlign={"start"}
-                >
-                  <b>Title:</b>
-                </Typography>
-                <Typography
-                  textAlign={"start"}
-                  variant="body2"
-                  style={styles.typography}
-                  color="textSecondary"
-                  component="div"
-                >
-                  Description are a widespread group of squamate reptiles, with
-                  over 6,000 species, ranging across all continents except
-                  Antarctica
-                </Typography>
-              </CardContent>
-              <CardActions
-                sx={{
-                  pt: "0",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <IconButton color="primary" onClick={() => handleClick()}>
-                  <EditNoteIcon />
-                </IconButton>
-
-                <Button size="medium" sx={{ color: "red" }}>
-                  <DeleteForeverIcon />
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      <Grid container spacing={3} width="100%" pt={5}>
-        <Grid item xs={12}>
-          <Pagination
-            count={Math.ceil(19 / 8)}
-            color="primary"
-            page={page}
-            onChange={handlePageChange}
+      <Paper
+        sx={{
+          marginTop: 3,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          bgcolor: "#",
+        }}
+        elevation={7}
+      >
+        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+          <DataGrid
+            className="datagrid-style"
+            rows={imgData}
+            columns={columns}
+            autoHeight
           />
-        </Grid>
-      </Grid>
+        </Box>
+      </Paper>
     </>
   );
 };
