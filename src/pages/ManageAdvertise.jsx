@@ -141,6 +141,8 @@ const ManageAdvertise = () => {
             .post(`${BASE_URL}advertisement`, saveObj)
             .then((response) => {
               getAllImgList();
+              handleClose();
+
               Swal.fire({
                 icon: "success",
                 title: "Success",
@@ -152,35 +154,55 @@ const ManageAdvertise = () => {
             });
         });
     } else {
-      const UpdateObj = {
-        Name: data.Name,
-        Description: data.Description,
-        Image: data.Image,
-      };
-
-      axios
-        .request({
-          method: "PUT",
-          maxBodyLength: Infinity,
-          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Advertisement/${data.Image}`,
-          headers: {
-            "Content-Type": "image/jpeg",
-            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-          },
-          data: uploadedImg,
-        })
-        .then((response) => {
+      Swal.fire({
+        text: "Do you want to update ?",
+        icon: "warning",
+        size: "small",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Update it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const UpdateObj = {
+            Name: data.Name,
+            Description: data.Description,
+            Image: data.Image,
+          };
           axios
-            .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
-            .then((response) => {
-              getAllImgList();
+            .request({
+              method: "PUT",
+              maxBodyLength: Infinity,
+              url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Advertisement/${data.Image}`,
+              headers: {
+                "Content-Type": "image/jpeg",
+                AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+              },
+              data: uploadedImg,
             })
-            .catch((error) => {
-              console.error("Error deleting data:", error);
+            .then((response) => {
+              axios
+                .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
+                .then((response) => {
+                  getAllImgList();
+                  Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Data Updated successfully",
+                  });
+                  handleClose();
+
+                })
+                .catch((error) => {
+                  console.error("Error Updating data:", error);
+                });
             });
-        });
+        }
+
+      });
+
+
     }
-    handleClose();
   };
 
   const getAllImgList = () => {
@@ -256,32 +278,34 @@ const ManageAdvertise = () => {
     });
   };
 
-  const handlePatch = () => {
-    const UpdateObj = {
-      Name: data.Name,
-      Description: data.Description,
-      Image: data.Image,
-    };
+  // const handlePatch = () => {
+  //   const UpdateObj = {
+  //     Name: data.Name,
+  //     Description: data.Description,
+  //     Image: data.Image,
+  //   };
 
-    axios
-      .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
-      .then((response) => {
-        getAllImgList();
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Data updated successfully",
-        });
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Something went wrong while updating data!",
-        });
-      });
-  };
+  //   axios
+  //     .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
+  //     .then((response) => {
+  //       getAllImgList();
+  //       Swal.fire({
+  //         position: "top-end",
+  //         icon: "success",
+  //         title: "Your work has been updated",
+  //         showConfirmButton: false,
+  //         timer: 1500
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error updating data:", error);
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Oops...",
+  //         text: "Something went wrong while updating data!",
+  //       });
+  //     });
+  // };
 
   React.useEffect(() => {
     getAllImgList();
@@ -319,7 +343,7 @@ const ManageAdvertise = () => {
   });
 
   return (
-        <>
+    <>
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
@@ -571,22 +595,22 @@ const ManageAdvertise = () => {
 
                 <CardContent>
                   <Typography
+                    noWrap
+                    height={25}
                     gutterBottom
-                    variant="h5"
                     component="div"
                     textAlign={"start"}
                   >
-                    <b>Title: {item.Name}</b>
+                    <b>Title: </b> {item.Name}
                   </Typography>
                   <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    style={styles.typography}
-                    component="div"
                     textAlign={"start"}
+                    variant="body2"
+                    style={styles.typography}
+                    color="textSecondary"
+                    component="div"
                   >
-                    <b>Description: </b>
-                    {item.Description}
+                    <b>Description: </b> {item.Description}
                   </Typography>
                 </CardContent>
                 <CardActions

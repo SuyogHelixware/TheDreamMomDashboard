@@ -11,7 +11,7 @@ import { BASE_URL } from "../Constant";
 
 export default function ManageAssesment() {
   const [on, setOn] = React.useState(false);
-  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+  // const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [data, setData] = React.useState([
     {
       id: "",
@@ -41,10 +41,10 @@ export default function ManageAssesment() {
   const handleClose = () => {
     setOn(false);
   };
-  const handleOnSave = () => {
-    setSaveUpdateButton("Save");
-    setOn(true);
-  };
+  // const handleOnSave = () => {
+  //   setSaveUpdateButton("Save");
+  //   setOn(true);
+  // };
   const handleInputChange = (event) => {};
   const handleSubmitForm = () => {};
 
@@ -126,7 +126,7 @@ export default function ManageAssesment() {
   ];
   return (
     <>
-      <Modal open={on} onClose={handleClose}>
+      {/* <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
           sx={{
@@ -225,7 +225,7 @@ export default function ManageAssesment() {
             <Grid />
           </Grid>
         </Paper>
-      </Modal>
+      </Modal> */}
 
       <Grid
         container
@@ -254,12 +254,13 @@ export default function ManageAssesment() {
           color={"#673AB7"}
           padding={1}
           noWrap
+          
         >
           Manage Assesment
         </Typography>
       </Grid>
 
-      <Grid textAlign={"end"} marginBottom={1}>
+      {/* <Grid textAlign={"end"} marginBottom={1}>
         <Button
           onClick={handleOnSave}
           type="text"
@@ -285,11 +286,11 @@ export default function ManageAssesment() {
           <AddIcon />
           Add Assesment
         </Button>
-      </Grid>
+      </Grid> */}
 
       <Paper
         sx={{
-          marginTop: 3,
+          marginTop: 6,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -297,7 +298,7 @@ export default function ManageAssesment() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%" }}>
+        <Box sx={{ height: 430, width: "100%" }}>
           <DataGrid
             className="datagrid-style"
             getRowId={(row) => row.id}
