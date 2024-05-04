@@ -4,6 +4,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Card,
+  Chip,
   FormControl,
   IconButton,
   InputLabel,
@@ -14,6 +15,7 @@ import {
   Select,
   styled,
 } from "@mui/material";
+
 import Button from "@mui/material/Button";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -38,15 +40,13 @@ const styles = {
 
 const Vaccination = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [imgData, setImgData] = React.useState({
-    Name: "",
-    Description: "",
-    Image: "",
-  });
+  const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
   const [tags, setTags] = React.useState([]);
+  const [selectedTags, setSelectedTags] = React.useState([]);
+
   const cardsPerPage = 8;
   const [data, setData] = React.useState({
     Name: "",
@@ -66,6 +66,12 @@ const Vaccination = () => {
     });
   };
 
+  const handleChange = (event) => {
+    setSelectedTags(event.target.value);
+    console.log(event.target.value);
+  };
+
+
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     console.log("Uploaded file:", file);
@@ -81,18 +87,18 @@ const Vaccination = () => {
     setOn(false);
   };
 
-  const handleClick = (item) => {
-    setData({
-      id: item.id,
-      Name: item.Name,
-      Description: item.Description,
-      Image: item.Image,
-      TagsIds: item.TagsIds,
-      Status: item.Status,
-    });
-    setSaveUpdateButton("Update");
-    setOn(true);
-  };
+  // const handleClick = (item) => {
+  //   setData({
+  //     id: item.id,
+  //     Name: item.Name,
+  //     Description: item.Description,
+  //     Image: item.Image,
+  //     TagsIds: item.TagsIds,
+  //     Status: item.Status,
+  //   });
+  //   setSaveUpdateButton("Update");
+  //   setOn(true);
+  // };
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -114,94 +120,67 @@ const Vaccination = () => {
       Name: data.Name,
       Description: data.Description,
       Image: filename,
+      TagsIds: selectedTags.map((tag) => tag._id),
     };
+    console.log(saveObj);
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
       Image: data.Image,
+      TagsIds: selectedTags.map((tag) => tag._id),
     };
-  
-    Swal.fire({
-      text: "Are you sure you want to submit?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, submit!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        if (SaveUpdateButton === "SAVE") {
+
+    if (SaveUpdateButton === "SAVE") {
+      axios
+        .request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Vaccination/${filename}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          },
+          data: uploadedImg,
+        })
+        .then((response) => {
+          console.log(response);
           axios
-            .request({
-              method: "PUT",
-              maxBodyLength: Infinity,
-              url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Vaccination/${filename}`,
-              headers: {
-                "Content-Type": "image/jpeg",
-                AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-              },
-              data: uploadedImg,
-            })
+            .post(`${BASE_URL}vaccination`, saveObj)
             .then((response) => {
-              console.log(response);
-              axios
-                .post(`${BASE_URL}vaccination`, saveObj)
-                .then((response) => {
-                  console.log(response.data);
-                  getAllImgList();
-                  handleClose();
-                  Swal.fire({
-                    icon: "success",
-                    title: "Success",
-                    text: "Data saved successfully",
-                  });
-                })
-                .catch((error) => {
-                  console.error("Error:", error);
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Something went wrong while saving data!",
-                  });
-                });
+              console.log(response.data);
+              getAllImgList();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
             });
-        } else {
+        });
+    } else {
+
+      console.log(UpdateObj)
+      axios
+        .request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Vaccination/${data.Image}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+          },
+          data: uploadedImg,
+        })
+        .then((response) => {
           axios
-            .request({
-              method: "PUT",
-              maxBodyLength: Infinity,
-              url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Vaccination/${data.Image}`,
-              headers: {
-                "Content-Type": "image/jpeg",
-                AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-              },
-              data: uploadedImg,
-            })
+            .patch(`${BASE_URL}vaccination/${data.Id}`, UpdateObj)
             .then((response) => {
-              axios
-                .patch(`${BASE_URL}vaccination/${data.Id}`, UpdateObj)
-                .then((response) => {
-                  console.log(response.data);
-                  getAllImgList();
-                  handleClose();
-                  Swal.fire({
-                    icon: "success",
-                    title: "Success",
-                    text: "Data updated successfully",
-                  });
-                })
-                .catch((error) => {
-                  console.error("Error updating data:", error);
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Something went wrong while updating data!",
-                  });
-                });
+              console.log(response.data);
+              getAllImgList();
+            })
+            .catch((error) => {
+              console.error("Error deleting data:", error);
             });
-        }
-      }
-    });
+        });
+    }
+    handleClose();
   };
   
   const getAllImgList = () => {
@@ -270,11 +249,13 @@ const Vaccination = () => {
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);
+    setSelectedTags(data.TagsIds)
     setData({
       Name: data.Name,
       Description: data.Description,
       Image: data.Image,
       Id: data._id,
+      TagsIds: data.TagsIds,
     });
     console.log(data);
   };
@@ -291,14 +272,14 @@ const Vaccination = () => {
     setPage(value);
   };
 
-  const isSubmitDisabled = () => {
-    if (data.Name && data.Description && data.Tag) {
-      return false;
-    } else {
-      // console.log("Please fill all fields");
-      return true;
-    }
-  };
+  // const isSubmitDisabled = () => {
+  //   if (data.Name && data.Description && data.Tag) {
+  //     return false;
+  //   } else {
+  //     // console.log("Please fill all fields");
+  //     return true;
+  //   }
+  // };
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
@@ -371,12 +352,24 @@ const Vaccination = () => {
                   id="Tag"
                   label="Tag"
                   name="Tag"
-                  onChange={onchangeHandler}
+                  multiple
+                  value={selectedTags}
+                  onChange={handleChange}
+                  renderValue={(selected) => (
+                    <div>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value._id}
+                          label={tags.find((tag) => tag._id === value._id).Name}
+                        />
+                      ))}
+                    </div>
+                  )}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
                   {tags.map((item) => (
-                    <MenuItem key={item._id} value={item._id}>
+                    <MenuItem key={item._id} value={item}>
                       {item.Name}
                     </MenuItem>
                   ))}
@@ -436,33 +429,34 @@ const Vaccination = () => {
               </label>
             </Grid> */}
 
-            <Grid item xs={12}>
+<Grid item xs={12}>
               <Button
                 fullWidth
                 onChange={handleFileUpload}
                 component="label"
                 role={undefined}
-                disabled={isSubmitDisabled()}
+                // disabled={isSubmitDisabled()}
                 variant="contained"
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
                 sx={{
                   backgroundColor: "#8F00FF",
-
                   py: 1.5,
                   "&:hover": {
                     backgroundColor: "#3B444B",
                   },
                 }}
               >
-                <Typography noWrap   style={{ width: "80%", textAlign: "center" }}>
+                <Typography
+                  noWrap
+                  style={{ width: "80%", textAlign: "center" }}
+                >
                   {SaveUpdateButton === "UPDATE"
                     ? data.Image
                     : uploadedImg && uploadedImg.name
                     ? uploadedImg.name
                     : "Upload File"}
                 </Typography>
-
                 <VisuallyHiddenInput type="file" />
               </Button>
             </Grid>
