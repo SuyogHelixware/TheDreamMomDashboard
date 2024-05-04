@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 
 import {
   Card,
+  Chip,
   FormControl,
   IconButton,
   InputLabel,
@@ -41,6 +42,7 @@ const Exercise = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
+  const [selectedTags, setSelectedTags] = React.useState([]);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
   const [tags, setTags] = React.useState([]);
@@ -99,6 +101,11 @@ const Exercise = () => {
     setData([]);
   };
 
+  const handleChange = (event) => {
+    setSelectedTags(event.target.value);
+    console.log(event.target.value);
+  };
+
   const onchangeHandler = (event) => {
     setData({
       ...data,
@@ -121,12 +128,16 @@ const Exercise = () => {
       Name: data.Name,
       Description: data.Description,
       Image: filename,
+      TagsIds: selectedTags.map((tag) => tag._id),
     };
+    console.log(saveObj);
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
       Image: data.Image,
+      TagsIds: selectedTags.map((tag) => tag._id),
     };
+
     if (SaveUpdateButton === "SAVE") {
       axios
         .request({
@@ -256,13 +267,13 @@ const Exercise = () => {
     setPage(value);
   };
 
-  const isSubmitDisabled = () => {
-    if (data.Name && data.Description && data.Tag) {
-      return false;
-    } else {
-      return true;
-    }
-  };
+  // const isSubmitDisabled = () => {
+  //   if (data.Name && data.Description && data.Tag) {
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // };
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
@@ -336,19 +347,30 @@ const Exercise = () => {
                   id="Tag"
                   label="Tag"
                   name="Tag"
-                  onChange={onchangeHandler}
+                  multiple
+                  value={selectedTags}
+                  onChange={handleChange}
+                  renderValue={(selected) => (
+                    <div>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value._id}
+                          label={tags.find((tag) => tag._id === value._id).Name}
+                        />
+                      ))}
+                    </div>
+                  )}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
                   {tags.map((item) => (
-                    <MenuItem key={item._id} value={item._id}>
+                    <MenuItem key={item._id} value={item}>
                       {item.Name}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
-
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
@@ -371,7 +393,7 @@ const Exercise = () => {
                 onChange={handleFileUpload}
                 component="label"
                 role={undefined}
-                disabled={isSubmitDisabled()}
+                // disabled={isSubmitDisabled()}
                 variant="contained"
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
