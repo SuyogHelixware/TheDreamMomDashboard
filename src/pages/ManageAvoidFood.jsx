@@ -66,16 +66,16 @@ const ManageAvoidFood = () => {
     });
   };
 
-  const validationAlert = (message) => {
-    Swal.fire({
-      position: "center",
-      icon: "warning",
-      toast: true,
-      title: message,
-      showConfirmButton: false,
-      timer: 2500,
-    });
-  };
+  // const validationAlert = (message) => {
+  //   Swal.fire({
+  //     position: "center",
+  //     icon: "warning",
+  //     toast: true,
+  //     title: message,
+  //     showConfirmButton: false,
+  //     timer: 2500,
+  //   });
+  // };
 
   const handleSubmitForm = () => {
     const saveObj = {
