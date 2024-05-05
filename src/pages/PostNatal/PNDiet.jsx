@@ -22,7 +22,6 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import Swal from "sweetalert2";
 
 import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
 
@@ -80,19 +79,6 @@ const PNDiet = () => {
 
   const handleClose = () => {
     setOn(false);
-  };
-
-  const handleClick = (item) => {
-    setData({
-      id: item.id,
-      Name: item.Name,
-      Description: item.Description,
-      Image: item.Image,
-      TagsIds: item.TagsIds,
-      Status: item.Status,
-    });
-    setSaveUpdateButton("Update");
-    setOn(true);
   };
 
   const handleOnSave = () => {

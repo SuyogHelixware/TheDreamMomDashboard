@@ -64,13 +64,13 @@ const ManageDiet = () => {
       TagsIds: [],
       Status: 1,
     });
+    setSelectedTags([]);
   };
 
   const handleChange = (event) => {
     setSelectedTags(event.target.value);
     console.log(event.target.value);
   };
-
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -86,19 +86,6 @@ const ManageDiet = () => {
   const handleClose = () => {
     setOn(false);
   };
-
-  // const handleClick = (item) => {
-  //   setData({
-  //     id: item.id,
-  //     Name: item.Name,
-  //     Description: item.Description,
-  //     Image: item.Image,
-  //     TagsIds: item.TagsIds,
-  //     Status: item.Status,
-  //   });
-  //   setSaveUpdateButton("Update");
-  //   setOn(true);
-  // };
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -155,8 +142,7 @@ const ManageDiet = () => {
             });
         });
     } else {
-
-      console.log(UpdateObj)
+      console.log(UpdateObj);
       axios
         .request({
           method: "PUT",
@@ -182,7 +168,7 @@ const ManageDiet = () => {
     }
     handleClose();
   };
-  
+
   const getAllImgList = () => {
     axios.get(`${BASE_URL}diet/`).then((response) => {
       setImgData(response.data.values.flat());
@@ -192,7 +178,6 @@ const ManageDiet = () => {
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
-      // console.log(response.data.values.flat());
     });
   };
 
@@ -207,7 +192,7 @@ const ManageDiet = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${Bunny_Storage_URL}/Schedule/diet/${data.Image}`, {
+          .delete(`${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`, {
             headers: {
               AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
             },
@@ -217,7 +202,10 @@ const ManageDiet = () => {
             axios
               .delete(`${BASE_URL}diet/${data._id}`)
               .then((response) => {
-                console.log("Node API Data Deleted successfully:", response.data);
+                console.log(
+                  "Node API Data Deleted successfully:",
+                  response.data
+                );
                 getAllImgList();
                 Swal.fire({
                   icon: "success",
@@ -249,7 +237,7 @@ const ManageDiet = () => {
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);
-    setSelectedTags(data.TagsIds)
+    setSelectedTags(data.TagsIds);
     setData({
       Name: data.Name,
       Description: data.Description,
@@ -272,14 +260,13 @@ const ManageDiet = () => {
     setPage(value);
   };
 
-  // const isSubmitDisabled = () => {
-  //   if (data.Name && data.Description && data.Tag) {
-  //     return false;
-  //   } else {
-  //     // console.log("Please fill all fields");
-  //     return true;
-  //   }
-  // };
+  const isSubmitDisabled = () => {
+    if (data.Name && data.Description && selectedTags.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
@@ -393,49 +380,13 @@ const ManageDiet = () => {
               />
             </Grid>
 
-            {/* <Grid item xs={12} lg={12}>
-              <input
-                accept="image/*"
-                id="contained-button-file"
-                type="file"
-                onChange={handleFileUpload}
-                style={{ display: "none" }} 
-              />
-              <label htmlFor="contained-button-file">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  disabled={isSubmitDisabled()}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <CloudUploadIcon sx={{ marginRight: 1 }} />
-                  <Typography noWrap>
-                    {uploadedImg && uploadedImg.name
-                      ? uploadedImg.name
-                      : "Upload File"}
-                  </Typography>
-                </Button>
-              </label>
-            </Grid> */}
-
-<Grid item xs={12}>
+            <Grid item xs={12}>
               <Button
                 fullWidth
                 onChange={handleFileUpload}
                 component="label"
                 role={undefined}
-                // disabled={isSubmitDisabled()}
+                disabled={isSubmitDisabled()}
                 variant="contained"
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
@@ -506,10 +457,7 @@ const ManageDiet = () => {
 
       <Grid
         container
-        // xs={12}
-        // sm={6}
         md={12}
-        lg={12}
         component={Paper}
         textAlign={"center"}
         sx={{
@@ -570,8 +518,12 @@ const ManageDiet = () => {
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
               <Card sx={{ width: "100%" }}>
                 <img
-                  height="100%"
-                  width="100%"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "fill",
+                    aspectRatio: 5 / 3,
+                  }}
                   src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
                   alt="img"
                   title={item.Name}

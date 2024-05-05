@@ -35,7 +35,6 @@ const styles = {
   },
 };
 
-
 const PNVaccination = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState({
@@ -79,19 +78,6 @@ const PNVaccination = () => {
 
   const handleClose = () => {
     setOn(false);
-  };
-
-  const handleClick = (item) => {
-    setData({
-      id: item.id,
-      Name: item.Name,
-      Description: item.Description,
-      Image: item.Image,
-      TagsIds: item.TagsIds,
-      Status: item.Status,
-    });
-    setSaveUpdateButton("Update");
-    setOn(true);
   };
 
   const handleOnSave = () => {
@@ -145,7 +131,6 @@ const PNVaccination = () => {
             });
         });
     } else {
-     
       axios
         .request({
           method: "PUT",
@@ -340,42 +325,6 @@ const PNVaccination = () => {
               />
             </Grid>
 
-            {/* <Grid item xs={12} lg={12}>
-              <input
-                accept="image/*"
-                id="contained-button-file"
-                type="file"
-                onChange={handleFileUpload}
-                style={{ display: "none" }} 
-              />
-              <label htmlFor="contained-button-file">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  disabled={isSubmitDisabled()}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <CloudUploadIcon sx={{ marginRight: 1 }} />
-                  <Typography noWrap>
-                    {uploadedImg && uploadedImg.name
-                      ? uploadedImg.name
-                      : "Upload File"}
-                  </Typography>
-                </Button>
-              </label>
-            </Grid> */}
-
             <Grid item xs={12}>
               <Button
                 fullWidth
@@ -452,9 +401,6 @@ const PNVaccination = () => {
 
       <Grid
         container
-        // xs={12}
-        // sm={6}
-        md={12}
         lg={12}
         component={Paper}
         textAlign={"center"}

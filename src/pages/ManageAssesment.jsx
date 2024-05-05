@@ -1,8 +1,5 @@
-import AddIcon from "@mui/icons-material/Add";
-import { Box, Modal, Paper } from "@mui/material";
-import Button from "@mui/material/Button";
+import { Box, Paper } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
@@ -10,8 +7,6 @@ import * as React from "react";
 import { BASE_URL } from "../Constant";
 
 export default function ManageAssesment() {
-  const [on, setOn] = React.useState(false);
-  // const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [data, setData] = React.useState([
     {
       id: "",
@@ -38,16 +33,7 @@ export default function ManageAssesment() {
   React.useEffect(() => {
     getUserData();
   }, []);
-  const handleClose = () => {
-    setOn(false);
-  };
-  // const handleOnSave = () => {
-  //   setSaveUpdateButton("Save");
-  //   setOn(true);
-  // };
-  const handleInputChange = (event) => {};
-  const handleSubmitForm = () => {};
-
+  
   const columns = [
     { field: "id", headerName: "ID", width: 90, sortable: false },
     {
@@ -126,107 +112,6 @@ export default function ManageAssesment() {
   ];
   return (
     <>
-      {/* <Modal open={on} onClose={handleClose}>
-        <Paper
-          elevation={10}
-          sx={{
-            width: "90%",
-            maxWidth: 400,
-            bgcolor: "#ccccff",
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            justifyContent: "center",
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
-          }}
-        >
-          <Grid
-            container
-            xs={12}
-            item
-            spacing={3}
-            display={"flex"}
-            flexDirection={"column"}
-            padding={4}
-            justifyContent={"center"}
-          >
-            <Grid item xs={12}>
-              <Typography fontWeight="bold">Add Assesment</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                size="small"
-                required
-                fullWidth
-                id="name"
-                label="Enter Title"
-                name="name"
-                onChange={handleInputChange}
-                autoFocus
-                style={{ borderRadius: 10, width: "100%" }}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                size="small"
-                required
-                fullWidth
-                id="description"
-                label="Enter Description"
-                name="description"
-                onChange={handleInputChange}
-                multiline
-                rows={3}
-                placeholder="Enter your Description..."
-              />
-            </Grid>
-
-            <Grid item xs={12} md={12} textAlign={"end"}>
-              <Button
-                onClick={handleClose}
-                type="reset"
-                size="small"
-                sx={{
-                  marginTop: 1,
-                  p: 1,
-                  width: 80,
-                  color: "white",
-                  backgroundColor: "#3B444B",
-                  mr: 1,
-                  "&:hover": {
-                    backgroundColor: "#3B444B",
-                  },
-                }}
-              >
-                Close
-              </Button>
-
-              <Button
-                type="submit"
-                size="small"
-                onClick={handleSubmitForm}
-                sx={{
-                  marginTop: 1,
-                  p: 1,
-                  width: 80,
-                  color: "white",
-                  background: "linear-gradient(to right, #EE696B, #523A78)",
-                  "&:hover": {
-                    backgroundColor: "#673AB7",
-                  },
-                }}
-              >
-                {SaveUpdateButton}
-              </Button>
-            </Grid>
-            <Grid />
-          </Grid>
-        </Paper>
-      </Modal> */}
-
       <Grid
         container
         xs={12}
@@ -254,7 +139,6 @@ export default function ManageAssesment() {
           color={"#673AB7"}
           padding={1}
           noWrap
-          
         >
           Manage Assesment
         </Typography>
