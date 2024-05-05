@@ -28,6 +28,7 @@ import PNMedication from "../pages/PostNatal/PNMedication";
 import PNVaccination from "../pages/PostNatal/PNVaccination";
 import MedicalCondition from "../pages/MedicalCondition";
 import ManageTags from "../pages/ManageTags";
+import PlanMaster from "../pages/PlanMaster";
 
 export default function Routing() {
   return (
@@ -55,6 +56,7 @@ export default function Routing() {
 
             <Route path="manage-assesment" element={<ManageAssesment />} />
             <Route path="manage-avoid-food" element={<ManageAvoidFood />} />
+            <Route path="plan-master" element={<PlanMaster />} />
             <Route path="manage-videos" element={<ManageVideos />} />
             <Route path="manage-posts" element={<ManagePosts />} />
             <Route path="manage-faq" element={<ManageFAQ />} />

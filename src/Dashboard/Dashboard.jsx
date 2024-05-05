@@ -748,6 +748,29 @@ export default function Dashboard() {
                 </Link>
               </List>
             </Collapse>
+
+            <Link to="plan-master" className="link_style">
+              <ListItemButton
+                onClick={handleClickTransaction}
+                selected={location.pathname === "/dashboard/plan-master"}
+                sx={{
+                  "&.Mui-selected": {
+                    backgroundColor: "#8F00FF",
+                    // m:0.5,
+                    borderRadius: 1,
+                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                      color: "#FFFFFF",
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <MonitorHeartIcon />
+                </ListItemIcon>
+                <ListItemText primary="Plan Master" />
+              </ListItemButton>
+            </Link>
+
             <Link to="manage-assesment" className="link_style">
               <ListItemButton
                 onClick={handleClickTransaction}

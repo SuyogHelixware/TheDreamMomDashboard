@@ -39,6 +39,29 @@ export default class InputTextField extends React.Component {
   }
 }
 
+export class InputDescriptionField extends React.Component {
+  render(props) {
+    return (
+      <>
+        <TextField
+          required
+          fullWidth
+          label={this.props.label}
+          onChange={this.props.onChange}
+          id={this.props.id}
+          name={this.props.id}
+          type={this.props.type}
+          value={this.props.value}
+          size="small"
+          sx={{ maxWidth: 220 }}
+          multiline
+          rows={2}
+        />
+      </>
+    );
+  }
+}
+
 export class InputPasswordField extends React.Component {
   render(props) {
     return (
