@@ -4,12 +4,11 @@ import {
   Grid,
   Modal,
   Paper,
-  TextField,
-  Typography,
+  Typography
 } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import React from "react";
 import InputTextField, { InputDescriptionField } from "../components/Component";
-import { DataGrid } from "@mui/x-data-grid";
 
 const style = {
   position: "absolute",
