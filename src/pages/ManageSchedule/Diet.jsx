@@ -65,6 +65,7 @@ const ManageDiet = () => {
       Status: 1,
     });
     setSelectedTags([]);
+    setUploadedImg([])
   };
 
   const handleChange = (event) => {
@@ -101,7 +102,25 @@ const ManageDiet = () => {
     });
   };
 
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
+
   const handleSubmitForm = () => {
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
       Name: data.Name,
@@ -136,6 +155,22 @@ const ManageDiet = () => {
             .then((response) => {
               console.log(response.data);
               getAllImgList();
+              if (response.data.status) {
+                Swal.fire({
+                  icon: "success",
+                  title: "Success",
+                  text: "Data Added successfully",
+                  timer: 1500,
+                });
+                handleClose();
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Failed",
+                  text: "Failed to Add Data",
+                  timer: 1500,
+                });
+              }
             })
             .catch((error) => {
               console.error("Error:", error);
@@ -160,9 +195,25 @@ const ManageDiet = () => {
             .then((response) => {
               console.log(response.data);
               getAllImgList();
+              if(response.data.status){
+                Swal.fire({
+                  icon: "success",
+                  title: "Success",
+                  text: "Data Updated successfully",
+                  timer: 1500,
+                });
+              }else{
+                Swal.fire({
+                  icon: "error",
+                  title: "Failed",
+                  text: "Failed to Update Data",
+                  timer: 1500,
+                });
+              }
+              
             })
             .catch((error) => {
-              console.error("Error deleting data:", error);
+              console.error("Failed to Update Data:", error);
             });
         });
     }
@@ -207,18 +258,30 @@ const ManageDiet = () => {
                   response.data
                 );
                 getAllImgList();
-                Swal.fire({
-                  icon: "success",
-                  title: "Success",
-                  text: "Data deleted successfully",
-                });
+                if(response.data.status){
+                  Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Data deleted successfully",
+                    timer:1500
+                  });
+                }else{
+                  Swal.fire({
+                    icon: "error",
+                    title: "Failed",
+                    text: "Failed to Delete Data",
+                    timer:1500
+                  });
+                }
+                
               })
               .catch((error) => {
                 console.error("Error deleting data:", error);
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text: "Something went wrong while deleting data from the server!",
+                  text: "Something went wrong..!",
+                  timer:1500
                 });
               });
           })
@@ -227,7 +290,8 @@ const ManageDiet = () => {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Something went wrong while deleting data from storage!",
+              text: "Something went wrong...!",
+              timer:1500
             });
           });
       }

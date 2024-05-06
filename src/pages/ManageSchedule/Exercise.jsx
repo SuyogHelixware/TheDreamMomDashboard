@@ -63,6 +63,7 @@ const Exercise = () => {
       TagsIds: [],
       Status: 1,
     });
+    setSelectedTags([])
   };
 
   const handleFileUpload = (event) => {
@@ -80,21 +81,7 @@ const Exercise = () => {
     setOn(false);
   };
 
-  // const handleClick = (item) => {
-  //   setData({
-  //     id: item.id,
-  //     Name: item.Name,
-  //     Description: item.Description,
-  //     Image: item.Image,
-  //     TagsIds: item.TagsIds,
-  //     Status: item.Status,
-  //   });
-  //   setSaveUpdateButton("Update");
-  //   setOn(true);
-  // };
-
   const handleOnSave = () => {
-   
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
@@ -114,15 +101,7 @@ const Exercise = () => {
   };
 
   const handleSubmitForm = () => {
-    Swal.fire({
-      position: "center",
-      size:"small",
-      icon: "success",
-      title: "Succesfully Uploaded",
-      showConfirmButton: false,
-      timer: 1500
-    });
-    
+
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
       Name: data.Name,
@@ -157,6 +136,22 @@ const Exercise = () => {
             .then((response) => {
               console.log(response.data);
               getAllImgList();
+              if (response.data.status) {
+                Swal.fire({
+                  icon: "success",
+                  title: "Success",
+                  text: "Data Added successfully",
+                  timer: 1500,
+                });
+                handleClose();
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Failed",
+                  text: "Failed to Add Data",
+                  timer: 1500,
+                });
+              }
             })
             .catch((error) => {
               console.error("Error:", error);
@@ -180,9 +175,24 @@ const Exercise = () => {
             .then((response) => {
               console.log(response.data);
               getAllImgList();
+              if (response.data.status) {
+                Swal.fire({
+                  icon: "success",
+                  title: "Success",
+                  text: "Data Updated successfully",
+                  timer: 1500,
+                });
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Failed",
+                  text: "Failed to Update Data",
+                  timer: 1500,
+                });
+              }
             })
             .catch((error) => {
-              console.error("Error deleting data:", error);
+              console.error("Failed to Update Data:", error);
             });
         });
     }
@@ -209,39 +219,54 @@ const Exercise = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-       
-     
-    axios
-      .delete(`${Bunny_Storage_URL}/Schedule/Exercise/${data.Image}`, {
-        headers: {
-          AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-        },
-      })
-      .then((response) => {
-        console.log(data._id);
         axios
-          .delete(`${BASE_URL}Exercise/${data._id}`)
-          .then((response) => {
-            console.log("Node API Data Deleted successfully:", response.data);
-            Swal.fire({
-              title: "Deleted!",
-              text: "Your file has been deleted.",
-              icon: "success"
-            });
-            getAllImgList();
+          .delete(`${Bunny_Storage_URL}/Schedule/Exercise/${data.Image}`, {
+            headers: {
+              AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+            },
           })
-          .catch((error) => {
-            console.error("Error deleting data:", error);
+          .then((response) => {
+            console.log(data._id);
+            axios
+              .delete(`${BASE_URL}Exercise/${data._id}`)
+              .then((response) => {
+                console.log(
+                  "Node API Data Deleted successfully:",
+                  response.data
+                );
+                getAllImgList();
+                if (response.data.status) {
+                  Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Data deleted successfully",
+                    timer: 1500,
+                  });
+                } else {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Failed",
+                    text: "Failed to Delete Data",
+                    timer: 1500,
+                  });
+                }
+              })
+              .catch((error) => {
+                console.error("Error deleting data:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Something went wrong..!",
+                  timer: 1500,
+                });
+              });
           });
-      });
-    }
-       
-  });
+      }
+    });
   };
-
 
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
@@ -267,13 +292,13 @@ const Exercise = () => {
     setPage(value);
   };
 
-  // const isSubmitDisabled = () => {
-  //   if (data.Name && data.Description && data.Tag) {
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // };
+  const isSubmitDisabled = () => {
+    if (data.Name && data.Description && selectedTags.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
@@ -393,7 +418,7 @@ const Exercise = () => {
                 onChange={handleFileUpload}
                 component="label"
                 role={undefined}
-                // disabled={isSubmitDisabled()}
+                disabled={isSubmitDisabled()}
                 variant="contained"
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
@@ -405,7 +430,10 @@ const Exercise = () => {
                   },
                 }}
               >
-                <Typography noWrap style={{ width: "80%", textAlign: "center" }}>
+                <Typography
+                  noWrap
+                  style={{ width: "80%", textAlign: "center" }}
+                >
                   {SaveUpdateButton === "UPDATE"
                     ? data.Image
                     : uploadedImg && uploadedImg.name
@@ -523,8 +551,12 @@ const Exercise = () => {
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
               <Card sx={{ width: "100%", minHeight: 300 }}>
                 <img
-                  height="100%"
-                  width="100%"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "fill",
+                    aspectRatio: 5 / 3,
+                  }}
                   src={`${Bunny_Image_URL}/Schedule/Exercise/${item.Image}`}
                   alt="img"
                   title={item.Name}
@@ -556,10 +588,17 @@ const Exercise = () => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <IconButton color="primary" onClick={() => handleUpdate(item)}>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleUpdate(item)}
+                  >
                     <EditNoteIcon />
                   </IconButton>
-                  <Button size="medium" sx={{ color: "red" }} onClick={() => handleDelete(item)}>
+                  <Button
+                    size="medium"
+                    sx={{ color: "red" }}
+                    onClick={() => handleDelete(item)}
+                  >
                     <DeleteForeverIcon />
                   </Button>
                 </CardActions>
