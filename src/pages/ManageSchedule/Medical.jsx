@@ -1,9 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import {
-  Box,
-  Paper
-} from "@mui/material";
+import { Box, Chip, Paper } from "@mui/material";
 import Swal from "sweetalert2";
 
 import EditNoteIcon from "@mui/icons-material/EditNote";
@@ -13,7 +10,7 @@ import {
   InputLabel,
   MenuItem,
   Modal,
-  Select
+  Select,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -24,19 +21,7 @@ import axios from "axios";
 import * as React from "react";
 import { BASE_URL } from "../../Constant";
 
-// const styles = {
-//   typography: {
-//     overflow: "hidden",
-//     textOverflow: "ellipsis",
-//     display: "-webkit-box",
-//     WebkitLineClamp: 2,
-//     WebkitBoxOrient: "vertical",
-//     height: 40,
-//   },
-// };
-
 const Medical = () => {
-  // const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState({
     Name: "",
     Description: "",
@@ -44,9 +29,8 @@ const Medical = () => {
   });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  // const [page, setPage] = React.useState(1);
+  const [selectedTags, setSelectedTags] = React.useState([]);
   const [tags, setTags] = React.useState([]);
-  // const cardsPerPage = 8;
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
@@ -63,33 +47,16 @@ const Medical = () => {
       TagsIds: [],
       Status: 1,
     });
+    setSelectedTags([]);
   };
 
-  // const handleFileUpload = (event) => {
-  //   const file = event.target.files[0];
-  //   console.log("Uploaded file:", file);
-  //   setUploadedImg(file);
-
-  //   setData((prevData) => ({
-  //     ...prevData,
-  //   }));
-  // };
-
+  const handleChange = (event) => {
+    setSelectedTags(event.target.value);
+    console.log(event.target.value);
+  };
   const handleClose = () => {
     setOn(false);
   };
-
-  // const handleClick = (item) => {
-  //   setData({
-  //     id: item.id,
-  //     Name: item.Name,
-  //     Description: item.Description,
-  //     TagsIds: item.TagsIds,
-  //     Status: item.Status,
-  //   });
-  //   setSaveUpdateButton("Update");
-  //   setOn(true);
-  // };
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -124,17 +91,18 @@ const Medical = () => {
       validationAlert("Please fill in all required fields");
       return;
     }
- 
 
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
+      TagsIds: selectedTags.map((tag) => tag._id),
     };
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
+      TagsIds: selectedTags.map((tag) => tag._id),
     };
-  
+
     Swal.fire({
       text: "Are you sure you want to submit?",
       icon: "question",
@@ -195,7 +163,7 @@ const Medical = () => {
     axios.get(`${BASE_URL}medicaltests/`).then((response) => {
       const updatedImgData = response.data.values.flat().map((item, index) => ({
         ...item,
-        id: index + 1, // You can use any unique identifier here, like item._id if available
+        id: index + 1,
       }));
       setImgData(updatedImgData);
     });
@@ -204,7 +172,6 @@ const Medical = () => {
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
-      // console.log(response.data.values.flat());
     });
   };
 
@@ -230,46 +197,47 @@ const Medical = () => {
     },
     { field: "Name", headerName: "Title", width: 250 },
     { field: "Description", headerName: "Description", width: 300 },
-    
   ];
 
-const handleDelete = (data) => {
-  Swal.fire({
-    text: "Are you sure you want to delete?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete it!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      axios
-        .delete(`${BASE_URL}medicaltests/${data._id}`)
-        .then((response) => {
-          console.log("Node API Data Deleted successfully:", response.data);
-          getAllImgList();
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "Data deleted successfully",
+  const handleDelete = (data) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${BASE_URL}medicaltests/${data._id}`)
+          .then((response) => {
+            console.log("Node API Data Deleted successfully:", response.data);
+            getAllImgList();
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Data deleted successfully",
+              timer: 1500,
+            });
+          })
+          .catch((error) => {
+            console.error("Error deleting data:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong!",
+              timer: 1500,
+            });
           });
-        })
-        .catch((error) => {
-          console.error("Error deleting data:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong!",
-          });
-        });
-    }
-  });
-};
-
+      }
+    });
+  };
 
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);
+    setSelectedTags(data.TagsIds);
     setData({
       Name: data.Name,
       Description: data.Description,
@@ -368,12 +336,24 @@ const handleDelete = (data) => {
                   id="Tag"
                   label="Tag"
                   name="Tag"
-                  onChange={onchangeHandler}
+                  multiple
+                  value={selectedTags}
+                  onChange={handleChange}
+                  renderValue={(selected) => (
+                    <div>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value._id}
+                          label={tags.find((tag) => tag._id === value._id).Name}
+                        />
+                      ))}
+                    </div>
+                  )}
                   style={{ textAlign: "left" }}
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
                   {tags.map((item) => (
-                    <MenuItem key={item._id} value={item._id}>
+                    <MenuItem key={item._id} value={item}>
                       {item.Name}
                     </MenuItem>
                   ))}
@@ -487,7 +467,7 @@ const handleDelete = (data) => {
               <Button
                 type="submit"
                 size="small"
-                onClick={()=> handleSubmitForm(data._id)}
+                onClick={() => handleSubmitForm(data._id)}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -661,7 +641,7 @@ const handleDelete = (data) => {
           </TableBody>
         </Table>
       </TableContainer> */}
-       <Paper
+      <Paper
         sx={{
           marginTop: 3,
           display: "flex",
@@ -671,21 +651,20 @@ const handleDelete = (data) => {
         }}
         elevation={7}
       >
-      <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
-        <DataGrid
-          className="datagrid-style"
-          rows={imgData}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+          <DataGrid
+            className="datagrid-style"
+            rows={imgData}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-      
-        />
-      </Box>
+            }}
+          />
+        </Box>
       </Paper>
     </>
   );

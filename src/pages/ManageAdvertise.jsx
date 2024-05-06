@@ -147,6 +147,7 @@ const ManageAdvertise = () => {
                 icon: "success",
                 title: "Success",
                 text: "Data saved successfully",
+                timer:1500,
               });
             })
             .catch((error) => {
@@ -189,6 +190,7 @@ const ManageAdvertise = () => {
                     icon: "success",
                     title: "Success",
                     text: "Data Updated successfully",
+                    timer:1500,
                   });
                   handleClose();
 
@@ -242,6 +244,7 @@ const ManageAdvertise = () => {
                   icon: "success",
                   title: "Success",
                   text: "Data deleted successfully",
+                  timer:1500
                 });
               })
               .catch((error) => {
