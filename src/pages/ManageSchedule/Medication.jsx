@@ -3,30 +3,21 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Box,
-  FormControl,
   IconButton,
-  InputLabel,
-  MenuItem,
   Modal,
-  Paper,
-  Select,
-  // styled,
+  Paper
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import Swal from "sweetalert2";
-
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import * as React from "react";
+import Swal from "sweetalert2";
 import { BASE_URL } from "../../Constant";
 
- 
-
 const Medication = () => {
-  // const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState({
     Name: "",
     Description: "",
@@ -34,13 +25,9 @@ const Medication = () => {
   });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  // const [page, setPage] = React.useState(1);
-  const [tags, setTags] = React.useState([]);
-  // const cardsPerPage = 8;
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
-    Image: "",
     Id: "",
   });
 
@@ -49,37 +36,13 @@ const Medication = () => {
       Id: "",
       Name: "",
       Description: "",
-      Image: "",
-      TagsIds: [],
       Status: 1,
     });
   };
 
-  // const handleFileUpload = (event) => {
-  //   const file = event.target.files[0];
-  //   console.log("Uploaded file:", file);
-  //   setUploadedImg(file);
-
-  //   setData((prevData) => ({
-  //     ...prevData,
-  //   }));
-  // };
-
   const handleClose = () => {
     setOn(false);
   };
-
-  // const handleClick = (item) => {
-  //   setData({
-  //     id: item.id,
-  //     Name: item.Name,
-  //     Description: item.Description,
-  //     TagsIds: item.TagsIds,
-  //     Status: item.Status,
-  //   });
-  //   setSaveUpdateButton("Update");
-  //   setOn(true);
-  // };
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -107,13 +70,12 @@ const Medication = () => {
   };
 
   const handleSubmitForm = () => {
-     const requiredFileds=["Name" ,"Tag","Description"];
-     const emptyRequiredFields= requiredFileds.filter((field)=>!data[field]); 
-  if(emptyRequiredFields.length > 0){
-    validationAlert("Please fill in all required fields");
-    return;
-  }
- 
+    const requiredFileds = ["Name", "Description"];
+    const emptyRequiredFields = requiredFileds.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
 
     const saveObj = {
       Name: data.Name,
@@ -123,34 +85,47 @@ const Medication = () => {
       Name: data.Name,
       Description: data.Description,
     };
-  
-    let requestPromise;
-    if (SaveUpdateButton === "SAVE") {
-      requestPromise = axios.post(`${BASE_URL}medications`, saveObj);
-    } else {
-      requestPromise = axios.patch(`${BASE_URL}Medications/${data.Id}`, UpdateObj);
-    }
-  
-    requestPromise
+
+    const axiosRequest =
+      SaveUpdateButton === "SAVE"
+        ? axios.post(`${BASE_URL}medications`, saveObj)
+        : axios.patch(`${BASE_URL}medications/${data.Id}`, UpdateObj);
+
+    axiosRequest
       .then((response) => {
-        console.log(response.data);
-        getAllImgList();
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Data saved successfully",
-        });
+        if (response.data.status) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title:
+              SaveUpdateButton === "SAVE"
+                ? "Data Added Successfully"
+                : "Data Updated Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          console.log(response.data);
+          getAllImgList();
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: response.data.message,
+            showConfirmButton: false,
+          });
+        }
+        handleClose();
       })
       .catch((error) => {
-        console.error("Error:", error);
         Swal.fire({
+          position: "center",
           icon: "error",
-          title: "Oops...",
-          text: "Something went wrong!",
+          toast: true,
+          title: "Error occurred while saving/updating FAQ",
+          showConfirmButton: false,
         });
-      })
-      .finally(() => {
-        handleClose();
       });
   };
 
@@ -158,19 +133,11 @@ const Medication = () => {
     axios.get(`${BASE_URL}Medications/`).then((response) => {
       const updatedImgData = response.data.values.flat().map((item, index) => ({
         ...item,
-        id: index + 1, 
+        id: index + 1,
       }));
       setImgData(updatedImgData);
     });
   };
-
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
-      setTags(response.data.values);
-
-    });
-  };
-
 
   const handleDelete = (data) => {
     Swal.fire({
@@ -190,9 +157,10 @@ const Medication = () => {
             Swal.fire({
               position: "center",
               icon: "success",
+              toast: true,
               title: "Data deleted successfully",
               showConfirmButton: false,
-              timer: 2500,
+              timer: 1500,
             });
           })
           .catch((error) => {
@@ -228,7 +196,6 @@ const Medication = () => {
     },
     { field: "Name", headerName: "Title", width: 250 },
     { field: "Description", headerName: "Description", width: 300 },
-   
   ];
 
   const handleUpdate = (data) => {
@@ -237,7 +204,6 @@ const Medication = () => {
     setData({
       Name: data.Name,
       Description: data.Description,
-      Image: data.Image,
       Id: data._id,
     });
     console.log(data);
@@ -247,37 +213,6 @@ const Medication = () => {
     getAllImgList();
   }, []);
 
-  React.useEffect(() => {
-    getTagData();
-  }, []);
-
-  // const handlePageChange = (event, value) => {
-  //   setPage(value);
-  // };
-
-  // const isSubmitDisabled = () => {
-  //   if (data.Name && data.Description && data.Tag) {
-  //     return false;
-  //   } else {
-  //     // console.log("Please fill all fields");
-  //     return true;
-  //   }
-  // };
-
-  // const startIndex = (page - 1) * cardsPerPage;
-  // const endIndex = startIndex + cardsPerPage;
-
-  // const VisuallyHiddenInput = styled("input")({
-  //   clip: "rect(0 0 0 0)",
-  //   clipPath: "inset(50%)",
-  //   height: 3,
-  //   overflow: "hidden",
-  //   position: "absolute",
-  //   bottom: 0,
-  //   left: 0,
-  //   whiteSpace: "nowrap",
-  //   width: 6,
-  // });
   return (
     <>
       <Modal open={on} onClose={handleClose}>
@@ -324,30 +259,6 @@ const Medication = () => {
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
-
-                <Select
-                  labelId="ChooseType"
-                  id="Tag"
-                  label="Tag"
-                  name="Tag"
-                  onChange={onchangeHandler}
-                  style={{ textAlign: "left" }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
-                >
-                  {tags.map((item) => (
-                    <MenuItem key={item._id} value={item._id}>
-                      {item.Name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
@@ -363,73 +274,6 @@ const Medication = () => {
                 placeholder="Enter your Description..."
               />
             </Grid>
-
-            {/* <Grid item xs={12} lg={12}>
-              <input
-                accept="image/*"
-                id="contained-button-file"
-                type="file"
-                onChange={handleFileUpload}
-                style={{ display: "none" }} 
-              />
-              <label htmlFor="contained-button-file">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  disabled={isSubmitDisabled()}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <CloudUploadIcon sx={{ marginRight: 1 }} />
-                  <Typography noWrap>
-                    {uploadedImg && uploadedImg.name
-                      ? uploadedImg.name
-                      : "Upload File"}
-                  </Typography>
-                </Button>
-              </label>
-            </Grid> */}
-            {/* 
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                onChange={handleFileUpload}
-                component="label"
-                role={undefined}
-                disabled={isSubmitDisabled()}
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-                sx={{
-                  backgroundColor: "#8F00FF",
-
-                  py: 1.5,
-                  "&:hover": {
-                    backgroundColor: "#3B444B",
-                  },
-                }}
-              >
-                <Typography noWrap width={"80%"}>
-                  {SaveUpdateButton === "UPDATE"
-                    ? data.Image
-                    : uploadedImg && uploadedImg.name
-                    ? uploadedImg.name
-                    : "Upload File"}
-                </Typography>
-
-                <VisuallyHiddenInput type="file" />
-              </Button>
-            </Grid> */}
 
             <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
@@ -453,8 +297,8 @@ const Medication = () => {
 
               <Button
                 type="submit"
-                size="small" 
-                onClick={()=>handleSubmitForm(data._id)}
+                size="small"
+                onClick={() => handleSubmitForm(data._id)}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -476,9 +320,6 @@ const Medication = () => {
 
       <Grid
         container
-        // xs={12}
-        // sm={6}
-        md={12}
         lg={12}
         component={Paper}
         textAlign={"center"}
@@ -534,101 +375,7 @@ const Medication = () => {
         </Button>
       </Grid>
 
-      {/* <Grid container spacing={3} justifyContent="start">
-        {Array.isArray(imgData) &&
-          imgData.slice(startIndex, endIndex).map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card sx={{ width: "100%" }}> */}
-      {/* <img
-                  height="100%"
-                  width="100%"
-                  src={`${Bunny_Image_URL}/Schedule/MedicalTest/${item.Image}`}
-                  alt="img"
-                  title={item.Name}
-                /> */}
-      {/* <CardContent>
-                  <Typography
-                    noWrap
-                    height={25}
-                    gutterBottom
-                    component="div"
-                    textAlign={"start"}
-                  >
-                    <b>Title:{item.Name}</b>
-                  </Typography>
-                  <Typography
-                    textAlign={"start"}
-                    variant="body2"
-                    style={styles.typography}
-                    color="textSecondary"
-                    component="div"
-                  >
-                    <b>Description: </b> {item.Description}
-                  </Typography>
-                </CardContent>
-                <CardActions
-                  sx={{
-                    pt: "0",
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleUpdate(item)}
-                  >
-                    <EditNoteIcon />
-                  </IconButton>
-
-                  <Button
-                    size="medium"
-                    sx={{ color: "red" }}
-                    onClick={() => handleDelete(item)}
-                  >
-                    <DeleteForeverIcon />
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-      </Grid> */}
-      {/* 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Array.isArray(imgData) &&
-              imgData.slice(startIndex, endIndex).map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell>{item.Name}</TableCell>
-                  <TableCell>{item.Description}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleUpdate(item)}
-                    >
-                      <EditNoteIcon />
-                    </IconButton>
-                    <Button
-                      size="medium"
-                      sx={{ color: "red" }}
-                      onClick={() => handleDelete(item)}
-                    >
-                      <DeleteForeverIcon />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
-  <Paper
+      <Paper
         sx={{
           marginTop: 3,
           display: "flex",
@@ -638,23 +385,22 @@ const Medication = () => {
         }}
         elevation={7}
       >
-      <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
-        <DataGrid
-          className="datagrid-style"
-          rows={imgData}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+          <DataGrid
+            className="datagrid-style"
+            rows={imgData}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          autoHeight
-        />
-      </Box>
-
-      
+            }}
+            autoHeight
+            pageSizeOptions={[5]}
+          />
+        </Box>
       </Paper>
     </>
   );

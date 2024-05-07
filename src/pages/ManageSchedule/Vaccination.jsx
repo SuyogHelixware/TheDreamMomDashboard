@@ -64,13 +64,14 @@ const Vaccination = () => {
       TagsIds: [],
       Status: 1,
     });
+    setSelectedTags([]);
+    setUploadedImg("");
   };
 
   const handleChange = (event) => {
     setSelectedTags(event.target.value);
     console.log(event.target.value);
   };
-
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -87,19 +88,6 @@ const Vaccination = () => {
     setOn(false);
   };
 
-  // const handleClick = (item) => {
-  //   setData({
-  //     id: item.id,
-  //     Name: item.Name,
-  //     Description: item.Description,
-  //     Image: item.Image,
-  //     TagsIds: item.TagsIds,
-  //     Status: item.Status,
-  //   });
-  //   setSaveUpdateButton("Update");
-  //   setOn(true);
-  // };
-
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
@@ -114,7 +102,25 @@ const Vaccination = () => {
     });
   };
 
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
+
   const handleSubmitForm = () => {
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
       Name: data.Name,
@@ -131,6 +137,10 @@ const Vaccination = () => {
     };
 
     if (SaveUpdateButton === "SAVE") {
+      if (uploadedImg === "") {
+        validationAlert("Please select file");
+        return;
+      }
       axios
         .request({
           method: "PUT",
@@ -149,14 +159,30 @@ const Vaccination = () => {
             .then((response) => {
               console.log(response.data);
               getAllImgList();
+              if (response.data.status) {
+                Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  toast: true,
+                  title: "Data Added Successfully",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                handleClose();
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Failed",
+                  text: "Failed to Add Data",
+                });
+              }
             })
             .catch((error) => {
               console.error("Error:", error);
             });
         });
     } else {
-
-      console.log(UpdateObj)
+      console.log(UpdateObj);
       axios
         .request({
           method: "PUT",
@@ -174,15 +200,32 @@ const Vaccination = () => {
             .then((response) => {
               console.log(response.data);
               getAllImgList();
+
+              if (response.data.status) {
+                Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  title: "Data Updated Successfully",
+                  toast: true,
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Failed",
+                  text: "Failed to Update Data",
+                });
+              }
             })
             .catch((error) => {
-              console.error("Error deleting data:", error);
+              console.error("Failed to Update Data:", error);
             });
         });
     }
     handleClose();
   };
-  
+
   const getAllImgList = () => {
     axios.get(`${BASE_URL}vaccination/`).then((response) => {
       setImgData(response.data.values.flat());
@@ -192,7 +235,6 @@ const Vaccination = () => {
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
-      // console.log(response.data.values.flat());
     });
   };
 
@@ -217,12 +259,18 @@ const Vaccination = () => {
             axios
               .delete(`${BASE_URL}vaccination/${data._id}`)
               .then((response) => {
-                console.log("Node API Data Deleted successfully:", response.data);
+                console.log(
+                  "Node API Data Deleted successfully:",
+                  response.data
+                );
                 getAllImgList();
                 Swal.fire({
+                  position: "center",
                   icon: "success",
-                  title: "Success",
-                  text: "Data deleted successfully",
+                  toast: true,
+                  title: "Data deleted successfully",
+                  showConfirmButton: false,
+                  timer: 1500,
                 });
               })
               .catch((error) => {
@@ -230,7 +278,7 @@ const Vaccination = () => {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text: "Something went wrong while deleting data from the server!",
+                  text: "Something went wrong!",
                 });
               });
           })
@@ -239,7 +287,7 @@ const Vaccination = () => {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Something went wrong while deleting data from storage!",
+              text: "Something went wrong!",
             });
           });
       }
@@ -249,7 +297,7 @@ const Vaccination = () => {
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);
-    setSelectedTags(data.TagsIds)
+    setSelectedTags(data.TagsIds);
     setData({
       Name: data.Name,
       Description: data.Description,
@@ -272,14 +320,13 @@ const Vaccination = () => {
     setPage(value);
   };
 
-  // const isSubmitDisabled = () => {
-  //   if (data.Name && data.Description && data.Tag) {
-  //     return false;
-  //   } else {
-  //     // console.log("Please fill all fields");
-  //     return true;
-  //   }
-  // };
+  const isSubmitDisabled = () => {
+    if (data.Name && data.Description && selectedTags.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
@@ -393,49 +440,13 @@ const Vaccination = () => {
               />
             </Grid>
 
-            {/* <Grid item xs={12} lg={12}>
-              <input
-                accept="image/*"
-                id="contained-button-file"
-                type="file"
-                onChange={handleFileUpload}
-                style={{ display: "none" }} 
-              />
-              <label htmlFor="contained-button-file">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  disabled={isSubmitDisabled()}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <CloudUploadIcon sx={{ marginRight: 1 }} />
-                  <Typography noWrap>
-                    {uploadedImg && uploadedImg.name
-                      ? uploadedImg.name
-                      : "Upload File"}
-                  </Typography>
-                </Button>
-              </label>
-            </Grid> */}
-
-<Grid item xs={12}>
+            <Grid item xs={12}>
               <Button
                 fullWidth
                 onChange={handleFileUpload}
                 component="label"
                 role={undefined}
-                // disabled={isSubmitDisabled()}
+                disabled={isSubmitDisabled()}
                 variant="contained"
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
@@ -506,9 +517,6 @@ const Vaccination = () => {
 
       <Grid
         container
-        // xs={12}
-        // sm={6}
-        md={12}
         lg={12}
         component={Paper}
         textAlign={"center"}
@@ -570,8 +578,12 @@ const Vaccination = () => {
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
               <Card sx={{ width: "100%" }}>
                 <img
-                  height="100%"
-                  width="100%"
+                 style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "fill",
+                  aspectRatio: 5 / 3,
+                }}
                   src={`${Bunny_Image_URL}/Schedule/Vaccination/${item.Image}`}
                   alt="img"
                   title={item.Name}

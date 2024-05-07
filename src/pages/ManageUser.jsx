@@ -63,7 +63,6 @@ export default function ManageUsers() {
     Phone: "",
     Address: "",
     BloodGroup: "",
-    // UserType: "",
     Status: 1,
     Email: "",
   });
@@ -79,14 +78,12 @@ export default function ManageUsers() {
       Phone: "",
       Address: "",
       BloodGroup: "",
-      // UserType: "",
       Status: 1,
       Email: "",
     });
   };
 
   const onchangeHandler = (event) => {
-    // console.log(event);
     if (event.target.name === "Password") {
       const password = event.target.value;
       if (password.length > 16) {

@@ -24,7 +24,7 @@ export default class InputTextField extends React.Component {
     return (
       <>
         <TextField
-          required
+          // required
           label={this.props.label}
           onChange={this.props.onChange}
           id={this.props.id}
@@ -44,7 +44,7 @@ export class InputDescriptionField extends React.Component {
     return (
       <>
         <TextField
-          required
+          // required
           fullWidth
           label={this.props.label}
           onChange={this.props.onChange}
