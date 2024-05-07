@@ -22,7 +22,6 @@ import * as React from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
 
-
 const ManageFAQ = () => {
   const [imgData, setImgData] = React.useState([]);
   const [selectedTags, setSelectedTags] = React.useState([]);
@@ -48,6 +47,7 @@ const ManageFAQ = () => {
       TagsIds: [],
       Status: 1,
     });
+    setSelectedTags([]);
   };
 
   const handleClose = () => {
@@ -74,12 +74,11 @@ const ManageFAQ = () => {
       toast: true,
       title: message,
       showConfirmButton: false,
-      timer: 2000,
+      timer: 1500,
     });
   };
 
   const handleSubmitForm = () => {
-
     const requiredFields = ["Question", "Answer"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
     if (emptyRequiredFields.length > 0) {
@@ -87,43 +86,57 @@ const ManageFAQ = () => {
       return;
     }
 
-
     const saveObj = {
       Question: data.Question,
       Answer: data.Answer,
+      TagsIds: selectedTags.map((tag) => tag._id),
     };
-    const updateObj = {
+    const UpdateObj = {
       Question: data.Question,
       Answer: data.Answer,
+      TagsIds: selectedTags.map((tag) => tag._id),
     };
 
-    let requestPromise;
-    if (SaveUpdateButton === "SAVE") {
-      requestPromise = axios.post(`${BASE_URL}faqs`, saveObj);
-    } else {
-      requestPromise = axios.patch(`${BASE_URL}faqs/${data.Id}`, updateObj);
-    }
+    const axiosRequest =
+      SaveUpdateButton === "SAVE"
+        ? axios.post(`${BASE_URL}faqs`, saveObj)
+        : axios.patch(`${BASE_URL}faqs/${data.Id}`, UpdateObj);
 
-    requestPromise
+    axiosRequest
       .then((response) => {
-        console.log(response.data);
-        getAllImgList();
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Data saved successfully",
-        });
+        if (response.data.status) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title:
+              SaveUpdateButton === "SAVE"
+                ? "FAQ Added Successfully"
+                : "FAQ Updated Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          console.log(response.data);
+          getAllImgList();
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: response.data.message,
+            showConfirmButton: false,
+          });
+        }
+        handleClose();
       })
       .catch((error) => {
-        console.error("Error:", error);
         Swal.fire({
+          position: "center",
           icon: "error",
-          title: "Oops...",
-          text: "Something went wrong!",
+          toast: true,
+          title: "Error occurred while saving/updating FAQ",
+          showConfirmButton: false,
         });
-      })
-      .finally(() => {
-        handleClose();
       });
   };
 
@@ -136,7 +149,6 @@ const ManageFAQ = () => {
       setImgData(updatedImgData);
     });
   };
-
 
   const handleDelete = (rowData) => {
     Swal.fire({
@@ -156,9 +168,10 @@ const ManageFAQ = () => {
             Swal.fire({
               position: "center",
               icon: "success",
+              toast: true,
               title: "Data deleted successfully",
               showConfirmButton: false,
-              timer: 2500,
+              timer: 1500,
             });
           })
           .catch((error) => {
@@ -184,12 +197,11 @@ const ManageFAQ = () => {
     getAllImgList();
   }, []);
 
-
   const columns = [
     {
       field: "actions",
       headerName: "Action",
-      width: 250,
+      width: 180,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -205,6 +217,7 @@ const ManageFAQ = () => {
         </strong>
       ),
     },
+    { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Question", headerName: "Question", width: 250 },
     { field: "Answer", headerName: "Answer", width: 300 },
   ];
@@ -212,13 +225,14 @@ const ManageFAQ = () => {
   const handleUpdate = (rowData) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);
+    setSelectedTags(rowData.TagsIds);
     setData({
       Question: rowData.Question,
       Answer: rowData.Answer,
       Id: rowData._id,
+      TagsIds: rowData.TagsIds,
     });
   };
-
 
   return (
     <>
@@ -298,12 +312,9 @@ const ManageFAQ = () => {
                       {item.Name}
                     </MenuItem>
                   ))}
-
-
                 </Select>
               </FormControl>
             </Grid>
-
 
             <Grid item xs={12} paddingTop={1}>
               <TextField
@@ -315,8 +326,8 @@ const ManageFAQ = () => {
                 value={data.Answer}
                 onChange={onChangeHandler}
                 multiline
-                rows={3}
-                placeholder="Enter your Description..."
+                rows={5}
+                placeholder="Enter your Answer..."
               />
             </Grid>
 

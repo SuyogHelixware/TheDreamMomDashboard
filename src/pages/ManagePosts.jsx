@@ -4,15 +4,10 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Box,
   Button,
-  Chip,
-  FormControl,
   Grid,
   IconButton,
-  InputLabel,
-  MenuItem,
   Modal,
   Paper,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -24,27 +19,19 @@ import { BASE_URL } from "../Constant";
 
 const ManagePosts = () => {
   const [imgData, setImgData] = React.useState([]);
-  const [selectedTags, setSelectedTags] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [tags, setTags] = React.useState([]);
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
     Id: "",
   });
 
-  const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
-  };
- 
   const clearFormData = () => {
     setData({
       Id: "",
       Name: "",
       Description: "",
-      TagsIds: [],
       Status: 1,
     });
   };
@@ -89,38 +76,51 @@ const ManagePosts = () => {
       Name: data.Name,
       Description: data.Description,
     };
-    const updateObj = {
+    const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
     };
 
-    let requestPromise;
-    if (SaveUpdateButton === "SAVE") {
-      requestPromise = axios.post(`${BASE_URL}posts`, saveObj);
-    } else {
-      requestPromise = axios.patch(`${BASE_URL}posts/${data.Id}`, updateObj);
-    }
+    const axiosRequest =
+      SaveUpdateButton === "SAVE"
+        ? axios.post(`${BASE_URL}posts`, saveObj)
+        : axios.patch(`${BASE_URL}posts/${data.Id}`, UpdateObj);
 
-    requestPromise
+    axiosRequest
       .then((response) => {
-        console.log(response.data);
-        getAllImgList();
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Data saved successfully",
-        });
+        if (response.data.status) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title:
+              SaveUpdateButton === "SAVE"
+                ? "Post Added Successfully"
+                : "Post Updated Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          console.log(response.data);
+          getAllImgList();
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: response.data.message,
+            showConfirmButton: false,
+          });
+        }
+        handleClose();
       })
       .catch((error) => {
-        console.error("Error:", error);
         Swal.fire({
+          position: "center",
           icon: "error",
-          title: "Oops...",
-          text: "Something went wrong!",
+          toast: true,
+          title: "Error occurred while saving/updating Post",
+          showConfirmButton: false,
         });
-      })
-      .finally(() => {
-        handleClose();
       });
   };
 
@@ -133,7 +133,6 @@ const ManagePosts = () => {
       setImgData(updatedImgData);
     });
   };
-
 
   const handleDelete = (rowData) => {
     Swal.fire({
@@ -153,9 +152,10 @@ const ManagePosts = () => {
             Swal.fire({
               position: "center",
               icon: "success",
-              title: "Data deleted successfully",
+              toast: true,
+              title: "Post deleted successfully",
               showConfirmButton: false,
-              timer: 2500,
+              timer: 1500,
             });
           })
           .catch((error) => {
@@ -170,23 +170,15 @@ const ManagePosts = () => {
     });
   };
 
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
-      setTags(response.data.values);
-      // console.log(response.data.values.flat());
-    });
-  };
   React.useEffect(() => {
-    getTagData();
     getAllImgList();
   }, []);
-
 
   const columns = [
     {
       field: "actions",
       headerName: "Action",
-      width: 250,
+      width: 180,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -202,6 +194,8 @@ const ManagePosts = () => {
         </strong>
       ),
     },
+
+    { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 300 },
   ];
@@ -215,7 +209,6 @@ const ManagePosts = () => {
       Id: rowData._id,
     });
   };
-
 
   return (
     <>
@@ -262,43 +255,6 @@ const ManagePosts = () => {
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
-
-          <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
-
-                <Select
-                  labelId="ChooseType"
-                  id="Tag"
-                  label="Tag"
-                  name="Tag"
-                  multiple
-                  value={selectedTags}
-                  onChange={handleChange}
-                  renderValue={(selected) => (
-                    <div>
-                      {selected.map((value) => (
-                        <Chip
-                          key={value._id}
-                          label={tags.find((tag) => tag._id === value._id).Name}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  style={{ textAlign: "left" }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
-                >
-                  {tags.map((item) => (
-                    <MenuItem key={item._id} value={item}>
-                      {item.Name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
 
             <Grid item xs={12} paddingTop={1}>
               <TextField
@@ -432,6 +388,14 @@ const ManagePosts = () => {
             rows={imgData}
             columns={columns}
             autoHeight
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
+              },
+            }}
+            pageSizeOptions={[5]}
           />
         </Box>
       </Paper>

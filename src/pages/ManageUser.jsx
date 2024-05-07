@@ -195,7 +195,7 @@ export default function ManageUsers() {
     axiosRequest
       .then((response) => {
         setLoaderOpen(false);
-        if (response.data.status === true) {
+        if (response.data.status) {
           Swal.fire({
             position: "center",
             icon: "success",
@@ -208,7 +208,7 @@ export default function ManageUsers() {
             timer: 2500,
           });
           getUserData();
-        } else if (response.data.status === false) {
+        } else {
           Swal.fire({
             position: "center",
             icon: "error",
@@ -298,12 +298,6 @@ export default function ManageUsers() {
       sortable: false,
       valueFormatter: (params) => dayjs(params.value).format("DD-MMM-YYYY"),
     },
-    // {
-    //   field: "Password",
-    //   headerName: "Password",
-    //   width: 160,
-    //   sortable: false,
-    // },
     {
       field: "Phone",
       headerName: "Phone",
@@ -322,12 +316,6 @@ export default function ManageUsers() {
       width: 130,
       sortable: false,
     },
-    // {
-    //   field: "UserType",
-    //   headerName: "UserType",
-    //   width: 100,
-    //   sortable: false,
-    // },
     {
       field: "Status",
       headerName: "Status",

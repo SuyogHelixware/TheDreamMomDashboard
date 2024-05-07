@@ -63,7 +63,8 @@ const Exercise = () => {
       TagsIds: [],
       Status: 1,
     });
-    setSelectedTags([])
+    setSelectedTags([]);
+    setUploadedImg("");
   };
 
   const handleFileUpload = (event) => {
@@ -100,7 +101,24 @@ const Exercise = () => {
     });
   };
 
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
+
   const handleSubmitForm = () => {
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
 
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
@@ -118,6 +136,10 @@ const Exercise = () => {
     };
 
     if (SaveUpdateButton === "SAVE") {
+      if (uploadedImg === "") {
+        validationAlert("Please select file");
+        return;
+      }
       axios
         .request({
           method: "PUT",
@@ -138,9 +160,11 @@ const Exercise = () => {
               getAllImgList();
               if (response.data.status) {
                 Swal.fire({
+                  position: "center",
                   icon: "success",
-                  title: "Success",
-                  text: "Data Added successfully",
+                  toast: true,
+                  title: "Data Added Successfully",
+                  showConfirmButton: false,
                   timer: 1500,
                 });
                 handleClose();
@@ -149,7 +173,6 @@ const Exercise = () => {
                   icon: "error",
                   title: "Failed",
                   text: "Failed to Add Data",
-                  timer: 1500,
                 });
               }
             })
@@ -177,9 +200,11 @@ const Exercise = () => {
               getAllImgList();
               if (response.data.status) {
                 Swal.fire({
+                  position: "center",
                   icon: "success",
-                  title: "Success",
-                  text: "Data Updated successfully",
+                  title: "Data Updated Successfully",
+                  toast: true,
+                  showConfirmButton: false,
                   timer: 1500,
                 });
               } else {
@@ -187,7 +212,6 @@ const Exercise = () => {
                   icon: "error",
                   title: "Failed",
                   text: "Failed to Update Data",
-                  timer: 1500,
                 });
               }
             })
@@ -213,12 +237,11 @@ const Exercise = () => {
 
   const handleDelete = (data) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "Are you sure you want to delete?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -240,9 +263,11 @@ const Exercise = () => {
                 getAllImgList();
                 if (response.data.status) {
                   Swal.fire({
+                    position: "center",
                     icon: "success",
-                    title: "Success",
-                    text: "Data deleted successfully",
+                    toast: true,
+                    title: "Data deleted successfully",
+                    showConfirmButton: false,
                     timer: 1500,
                   });
                 } else {
@@ -250,7 +275,6 @@ const Exercise = () => {
                     icon: "error",
                     title: "Failed",
                     text: "Failed to Delete Data",
-                    timer: 1500,
                   });
                 }
               })
@@ -271,11 +295,13 @@ const Exercise = () => {
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);
+    setSelectedTags(data.TagsIds);
     setData({
       Name: data.Name,
       Description: data.Description,
       Image: data.Image,
       Id: data._id,
+      TagsIds: data.TagsIds,
     });
     console.log(data);
   };

@@ -52,6 +52,7 @@ const ManageAdvertise = () => {
     Description: "",
     Image: "",
     Id: "",
+    Tag: "",
   });
 
   const clearFormData = () => {
@@ -62,11 +63,15 @@ const ManageAdvertise = () => {
       Image: "",
       TagsIds: [],
       Status: 1,
+      Tag: "",
     });
+    setSelectedTags([]);
+    setUploadedImg("");
   };
 
   const handleChange = (event) => {
     setSelectedTags(event.target.value);
+    console.log(event.target.value);
   };
 
   const handleFileUpload = (event) => {
@@ -125,6 +130,10 @@ const ManageAdvertise = () => {
     };
 
     if (SaveUpdateButton === "SAVE") {
+      if (uploadedImg === "") {
+        validationAlert("Please select file");
+        return;
+      }
       axios
         .request({
           method: "PUT",
@@ -141,14 +150,23 @@ const ManageAdvertise = () => {
             .post(`${BASE_URL}advertisement`, saveObj)
             .then((response) => {
               getAllImgList();
-              handleClose();
 
-              Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: "Data saved successfully",
-                timer:1500,
-              });
+              if (response.data.status) {
+                Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  toast: true,
+                  title: "Data Added Successfully",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Failed",
+                  text: "Failed to Add Data",
+                });
+              }
             })
             .catch((error) => {
               console.error("Error:", error);
@@ -169,6 +187,7 @@ const ManageAdvertise = () => {
             Name: data.Name,
             Description: data.Description,
             Image: data.Image,
+            TagsIds: selectedTags.map((tag) => tag._id),
           };
           axios
             .request({
@@ -186,25 +205,31 @@ const ManageAdvertise = () => {
                 .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
                 .then((response) => {
                   getAllImgList();
-                  Swal.fire({
-                    icon: "success",
-                    title: "Success",
-                    text: "Data Updated successfully",
-                    timer:1500,
-                  });
-                  handleClose();
-
+                  if (response.data.status) {
+                    Swal.fire({
+                      position: "center",
+                      icon: "success",
+                      toast: true,
+                      title: "Data Updated Successfully",
+                      showConfirmButton: false,
+                      timer: 1500,
+                    });
+                  } else {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Failed",
+                      text: "Failed to Update Data",
+                    });
+                  }
                 })
                 .catch((error) => {
                   console.error("Error Updating data:", error);
                 });
             });
         }
-
       });
-
-
     }
+    handleClose();
   };
 
   const getAllImgList = () => {
@@ -241,10 +266,12 @@ const ManageAdvertise = () => {
               .then((response) => {
                 getAllImgList();
                 Swal.fire({
+                  position: "center",
                   icon: "success",
-                  title: "Success",
-                  text: "Data deleted successfully",
-                  timer:1500
+                  toast: true,
+                  title: "Data Deleted Successfully",
+                  showConfirmButton: false,
+                  timer: 1500,
                 });
               })
               .catch((error) => {
@@ -252,7 +279,7 @@ const ManageAdvertise = () => {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text: "Something went wrong while deleting data from the server!",
+                  text: "Something went wrong!",
                 });
               });
           })
@@ -261,7 +288,7 @@ const ManageAdvertise = () => {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Something went wrong while deleting data from storage!",
+              text: "Something went wrong!",
             });
           });
       }
@@ -281,35 +308,6 @@ const ManageAdvertise = () => {
     });
   };
 
-  // const handlePatch = () => {
-  //   const UpdateObj = {
-  //     Name: data.Name,
-  //     Description: data.Description,
-  //     Image: data.Image,
-  //   };
-
-  //   axios
-  //     .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
-  //     .then((response) => {
-  //       getAllImgList();
-  //       Swal.fire({
-  //         position: "top-end",
-  //         icon: "success",
-  //         title: "Your work has been updated",
-  //         showConfirmButton: false,
-  //         timer: 1500
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error updating data:", error);
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "Oops...",
-  //         text: "Something went wrong while updating data!",
-  //       });
-  //     });
-  // };
-
   React.useEffect(() => {
     getAllImgList();
   }, []);
@@ -324,9 +322,9 @@ const ManageAdvertise = () => {
 
   const isSubmitDisabled = () => {
     if (data.Name && data.Description && data.Tag) {
-      return true;
-    } else {
       return false;
+    } else {
+      return true;
     }
   };
 
@@ -469,8 +467,8 @@ const ManageAdvertise = () => {
                   {SaveUpdateButton === "UPDATE"
                     ? data.Image
                     : uploadedImg && uploadedImg.name
-                      ? uploadedImg.name
-                      : "Upload File"}
+                    ? uploadedImg.name
+                    : "Upload File"}
                 </Typography>
                 <VisuallyHiddenInput type="file" />
               </Button>
@@ -592,8 +590,6 @@ const ManageAdvertise = () => {
                   src={`${Bunny_Image_URL}/Advertisement/${item.Image}`}
                   alt="img"
                   title={item.Name}
-
-
                 />
 
                 <CardContent>

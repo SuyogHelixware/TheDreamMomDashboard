@@ -2,7 +2,19 @@ import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Card, Chip, FormControl, IconButton, InputLabel, MenuItem, Modal, Pagination, Paper, Select, styled } from "@mui/material";
+import {
+  Card,
+  Chip,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Pagination,
+  Paper,
+  Select,
+  styled,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -52,7 +64,8 @@ const ManageBlog = () => {
       Status: 1,
       Category: "",
     });
-    setSelectedTags([])
+    setSelectedTags([]);
+    setUploadedImg("");
   };
 
   const handleFileUpload = (event) => {
@@ -66,7 +79,12 @@ const ManageBlog = () => {
   };
 
   const isSubmitDisabled = () => {
-    if (data.Name && data.Description && data.Category && selectedTags.length > 0) {
+    if (
+      data.Name &&
+      data.Description &&
+      data.Category &&
+      selectedTags.length > 0
+    ) {
       return false;
     } else {
       return true;
@@ -113,7 +131,6 @@ const ManageBlog = () => {
     });
   };
   const handleSubmitForm = () => {
-
     const requiredFields = ["Name", "Category", "Description"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
     if (emptyRequiredFields.length > 0) {
@@ -126,19 +143,22 @@ const ManageBlog = () => {
       Description: data.Description,
       Link: filename,
       TagsIds: selectedTags.map((tag) => tag._id),
-      Category: data.Category
+      Category: data.Category,
     };
-    console.log(saveObj);
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
       Link: data.Link,
       Category: data.Category,
       TagsIds: selectedTags.map((tag) => tag._id),
+      Id: data.Id,
     };
 
-
     if (SaveUpdateButton === "SAVE") {
+      if (uploadedImg === "") {
+        validationAlert("Please select file");
+        return;
+      }
       axios
         .request({
           method: "PUT",
@@ -156,111 +176,83 @@ const ManageBlog = () => {
             .then((response) => {
               console.log(response.data);
               getAllImgList();
-              Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: "Data saved successfully",
-                timer:1500,
-              });
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-            
+              if (response.data.status) {
+                Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  toast: true,
+                  title: "Blog Added Successfully",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Failed",
+                  text: "Failed to Add Data",
+                });
+              }
             })
             .catch((error) => {
               console.error("Error:", error);
             });
-
         });
-
-    } 
-    else {
-      
-      axios
-        .request({
-          method: "PUT",
-          maxBodyLength: Infinity,
-          url: `${Bunny_Storage_URL}/Blogs/${data.Link}`,
-          headers: {
-            "Content-Type": "image/jpeg",
-            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-          },
-          data: uploadedImg,
-        })
-        .then((response) => {
+    } else {
+      Swal.fire({
+        text: "Do you want to update ?",
+        icon: "warning",
+        size: "small",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Update it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
           axios
-            .patch(`${BASE_URL}blogs/${data.Id}`, UpdateObj)
-            .then((response) => {
-              console.log(response.data);
-              getAllImgList();
-              Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: "Data Updated successfully",
-                timer:1500
-              });
+            .request({
+              method: "PUT",
+              maxBodyLength: Infinity,
+              url: `${Bunny_Storage_URL}/Blogs/${data.Link}`,
+              headers: {
+                "Content-Type": "image/jpeg",
+                AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+              },
+              data: uploadedImg,
             })
-            .catch((error) => {
-              console.error("Error deleting data:", error);
+            .then((response) => {
+              axios
+                .patch(`${BASE_URL}blogs/${data.Id}`, UpdateObj)
+                .then((response) => {
+                  console.log(response.data);
+                  getAllImgList();
+                  if (response.data.status) {
+                    Swal.fire({
+                      position: "center",
+                      icon: "success",
+                      toast: true,
+                      title: "Blog Updated Successfully",
+                      showConfirmButton: false,
+                      timer: 1500,
+                    });
+                  } else {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Failed",
+                      text: "Failed to Update Data",
+                    });
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error deleting data:", error);
+                });
             });
-        });
+        }
+      });
     }
 
-    // ======================================
-    // else {
-    //   Swal.fire({
-    //     text: "Do you want to update ?",
-    //     icon: "warning",
-    //     size: "small",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#3085d6",
-    //     cancelButtonColor: "#d33",
-    //     confirmButtonText: "Yes, Update it!",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       const UpdateObj = {
-    //         Name: data.Name,
-    //         Description: data.Description,
-    //         Image: data.Image,
-    //       };
-    //       axios
-    //         .request({
-    //           method: "PUT",
-    //           maxBodyLength: Infinity,
-    //           url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Blogs/${data.Image}`,
-    //           headers: {
-    //             "Content-Type": "image/jpeg",
-    //             AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-    //           },
-    //           data: uploadedImg,
-    //         })
-    //         .then((response) => {
-    //           axios
-    //             .patch(`${BASE_URL}blogs/${data.Id}`, UpdateObj)
-    //             .then((response) => {
-    //               getAllImgList();
-    //               Swal.fire({
-    //                 icon: "success",
-    //                 title: "Success",
-    //                 text: "Data Updated successfully",
-    //               });
-    //               handleClose();
-
-    //             })
-    //             .catch((error) => {
-    //               console.error("Error Updating data:", error);
-    //             });
-    //         });
-    //     }
-
-    //   });
-
-
-    // }
     handleClose();
   };
   const handleDelete = (data) => {
-
     console.log(data);
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -283,10 +275,12 @@ const ManageBlog = () => {
               .then((response) => {
                 getAllImgList();
                 Swal.fire({
+                  position: "center",
                   icon: "success",
-                  title: "Success",
-                  text: "Data deleted successfully",
-                  timer:1500,
+                  toast: true,
+                  title: "Blog Deleted Successfully",
+                  showConfirmButton: false,
+                  timer: 1500,
                 });
               })
               .catch((error) => {
@@ -294,7 +288,7 @@ const ManageBlog = () => {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text: "Something went wrong while deleting data from the server!",
+                  text: "Something went wrong!",
                 });
               });
           })
@@ -303,7 +297,7 @@ const ManageBlog = () => {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Something went wrong while deleting data from storage!",
+              text: "Something went wrong!",
             });
           });
       }
@@ -335,7 +329,6 @@ const ManageBlog = () => {
     whiteSpace: "nowrap",
     width: 6,
   });
-
 
   const getAllImgList = () => {
     axios.get(`${BASE_URL}blogs/`).then((response) => {
@@ -419,15 +412,13 @@ const ManageBlog = () => {
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
                   <MenuItem value="B">Blogs</MenuItem>
-                  <MenuItem value="N">Newsletter</MenuItem>
+                  <MenuItem value="N">News</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Tag
-                </InputLabel>
+                <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
                   id="Tag"
@@ -474,7 +465,7 @@ const ManageBlog = () => {
               />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={12}>
+            <Grid item xs={12}>
               <Button
                 fullWidth
                 onChange={handleFileUpload}
@@ -500,8 +491,8 @@ const ManageBlog = () => {
                   {SaveUpdateButton === "UPDATE"
                     ? data.Link
                     : uploadedImg && uploadedImg.name
-                      ? uploadedImg.name
-                      : "Upload File"}
+                    ? uploadedImg.name
+                    : "Upload File"}
                 </Typography>
                 <VisuallyHiddenInput type="file" />
               </Button>
@@ -578,7 +569,7 @@ const ManageBlog = () => {
           padding={1}
           noWrap
         >
-          Manage Blog and Newsletter
+          Manage Blog and News
         </Typography>
       </Grid>
 

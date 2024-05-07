@@ -4,17 +4,12 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Box,
   Button,
-  Chip,
-  FormControl,
   Grid,
   IconButton,
-  InputLabel,
-  MenuItem,
   Modal,
   Paper,
-  Select,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
@@ -24,27 +19,19 @@ import { BASE_URL } from "../Constant";
 
 const ManageAvoidFood = () => {
   const [imgData, setImgData] = React.useState([]);
-  const [selectedTags, setSelectedTags] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [tags, setTags] = React.useState([]);
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
     Id: "",
   });
 
-  const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
-  };
- 
   const clearFormData = () => {
     setData({
       Id: "",
       Name: "",
       Description: "",
-      TagsIds: [],
       Status: 1,
     });
   };
@@ -66,54 +53,74 @@ const ManageAvoidFood = () => {
     });
   };
 
-  // const validationAlert = (message) => {
-  //   Swal.fire({
-  //     position: "center",
-  //     icon: "warning",
-  //     toast: true,
-  //     title: message,
-  //     showConfirmButton: false,
-  //     timer: 2500,
-  //   });
-  // };
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
 
   const handleSubmitForm = () => {
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
     };
-    const updateObj = {
+    const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
     };
 
-    let requestPromise;
-    if (SaveUpdateButton === "SAVE") {
-      requestPromise = axios.post(`${BASE_URL}avoidablethings`, saveObj);
-    } else {
-      requestPromise = axios.patch(`${BASE_URL}avoidablethings/${data.Id}`, updateObj);
-    }
+    const axiosRequest =
+      SaveUpdateButton === "SAVE"
+        ? axios.post(`${BASE_URL}avoidablethings`, saveObj)
+        : axios.patch(`${BASE_URL}avoidablethings/${data.Id}`, UpdateObj);
 
-    requestPromise
+    axiosRequest
       .then((response) => {
-        console.log(response.data);
-        getAllImgList();
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Data saved successfully",
-        });
+        if (response.data.status) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title:
+              SaveUpdateButton === "SAVE"
+                ? "Data Added Successfully"
+                : "Data Updated Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          console.log(response.data);
+          getAllImgList();
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: response.data.message,
+            showConfirmButton: false,
+          });
+        }
+        handleClose();
       })
       .catch((error) => {
-        console.error("Error:", error);
         Swal.fire({
+          position: "center",
           icon: "error",
-          title: "Oops...",
-          text: "Something went wrong!",
+          toast: true,
+          title: "Error occurred while saving/updating FAQ",
+          showConfirmButton: false,
         });
-      })
-      .finally(() => {
-        handleClose();
       });
   };
 
@@ -126,7 +133,6 @@ const ManageAvoidFood = () => {
       setImgData(updatedImgData);
     });
   };
-
 
   const handleDelete = (rowData) => {
     Swal.fire({
@@ -146,9 +152,10 @@ const ManageAvoidFood = () => {
             Swal.fire({
               position: "center",
               icon: "success",
+              toast: true,
               title: "Data deleted successfully",
               showConfirmButton: false,
-              timer: 2500,
+              timer: 1500,
             });
           })
           .catch((error) => {
@@ -163,17 +170,9 @@ const ManageAvoidFood = () => {
     });
   };
 
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
-      setTags(response.data.values);
-      // console.log(response.data.values.flat());
-    });
-  };
   React.useEffect(() => {
-    getTagData();
     getAllImgList();
   }, []);
-
 
   const columns = [
     {
@@ -208,7 +207,6 @@ const ManageAvoidFood = () => {
       Id: rowData._id,
     });
   };
-
 
   return (
     <>
@@ -255,43 +253,6 @@ const ManageAvoidFood = () => {
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
-
-          <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
-
-                <Select
-                  labelId="ChooseType"
-                  id="Tag"
-                  label="Tag"
-                  name="Tag"
-                  multiple
-                  value={selectedTags}
-                  onChange={handleChange}
-                  renderValue={(selected) => (
-                    <div>
-                      {selected.map((value) => (
-                        <Chip
-                          key={value._id}
-                          label={tags.find((tag) => tag._id === value._id).Name}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  style={{ textAlign: "left" }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
-                >
-                  {tags.map((item) => (
-                    <MenuItem key={item._id} value={item}>
-                      {item.Name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
 
             <Grid item xs={12} paddingTop={1}>
               <TextField
@@ -425,6 +386,14 @@ const ManageAvoidFood = () => {
             rows={imgData}
             columns={columns}
             autoHeight
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
+              },
+            }}
+            pageSizeOptions={[5]}
           />
         </Box>
       </Paper>

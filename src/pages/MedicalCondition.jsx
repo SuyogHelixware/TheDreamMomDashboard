@@ -17,16 +17,14 @@ import * as React from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
-import Loader from "../components/Loader";
 
 export default function MedicalCondition() {
-  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [on, setOn] = React.useState(false);
 
   const [data, setData] = React.useState({
-    id: "",
+    Id: "",
     Name: "",
     Description: "",
     Status: "",
@@ -34,7 +32,7 @@ export default function MedicalCondition() {
 
   const clearFormData = () => {
     setData({
-      id: "",
+      Id: "",
       Name: "",
       Description: "",
       Status: "",
@@ -52,17 +50,84 @@ export default function MedicalCondition() {
     setOn(false);
   };
 
-  const handleClick = (row) => {
-    setSaveUpdateButton("UPDATE");
-    setOn(true);
-    setData(row);
-  };
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
   };
-  const deluser = (id) => {
+
+  const validationAlert = (message) => {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      toast: true,
+      title: message,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
+
+  const updateUser = (id) => {
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    if (emptyRequiredFields.length > 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+
+    const saveObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
+    const UpdateObj = {
+      Name: data.Name,
+      Description: data.Description,
+    };
+
+    const axiosRequest =
+      SaveUpdateButton === "SAVE"
+        ? axios.post(`${BASE_URL}medicalconditions`, saveObj)
+        : axios.patch(`${BASE_URL}medicalconditions/${data.Id}`, UpdateObj);
+
+    axiosRequest
+      .then((response) => {
+        if (response.data.status) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title:
+              SaveUpdateButton === "SAVE"
+                ? "Data Added Successfully"
+                : "Data Updated Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          console.log(response.data);
+          getUserData();
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: response.data.message,
+            showConfirmButton: false,
+          });
+        }
+        handleClose();
+      })
+      .catch((error) => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          toast: true,
+          title: "Error occurred while saving/updating FAQ",
+          showConfirmButton: false,
+        });
+      });
+  };
+
+  const handleDelete = (rowData) => {
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -73,130 +138,61 @@ export default function MedicalCondition() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${BASE_URL}medicalconditions/${id}`)
+          .delete(`${BASE_URL}medicalconditions/${rowData._id}`)
           .then((response) => {
-            if (response.data.status === true) {
-              setUserData(userData.filter((user) => user._id !== id));
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                toast: true,
-                title: "User deleted Successfully",
-                showConfirmButton: false,
-                timer: 2500,
-              });
-            }
+            console.log("Node API Data Deleted successfully:", response.data);
+            getUserData();
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              toast: true,
+              title: "Data deleted successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
           })
           .catch((error) => {
-            alert("error");
+            console.error("Error deleting data:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong!",
+            });
           });
       }
     });
   };
 
-  const validationAlert = (message) => {
-    Swal.fire({
-      position: "center",
-      icon: "warning",
-      toast: true,
-      title: message,
-      showConfirmButton: false,
-      timer: 2500,
+  const handleUpdate = (rowData) => {
+    setSaveUpdateButton("UPDATE");
+    setOn(true);
+    setData({
+      Name: rowData.Name,
+      Description: rowData.Description,
+      Id: rowData._id,
     });
-  };
-
-  const updateUser = (id) => {
-    const requiredFields = ["Name", "Description", "Status"];
-
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
-
-    if (emptyRequiredFields.length > 0) {
-      validationAlert("Please fill in all required fields");
-      return;
-    }
-
-    setLoaderOpen(true);
-    const axiosRequest =
-      SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}medicalconditions`, data)
-        : axios.patch(`${BASE_URL}medicalconditions/${id}`, data);
-
-    axiosRequest
-      .then((response) => {
-        setLoaderOpen(false);
-        if (response.data.status === true) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            toast: true,
-            title:
-              SaveUpdateButton === "SAVE"
-                ? "User Added Successfully"
-                : "User Updated Successfully",
-            showConfirmButton: false,
-            timer: 2500,
-          });
-          getUserData();
-        } else if (response.data.status === false) {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            toast: true,
-            title: response.data.message,
-            showConfirmButton: false,
-            timer: 2500,
-          });
-        }
-        handleClose();
-      })
-      .catch((error) => {
-        setLoaderOpen(false);
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          toast: true,
-          title: "Error occurred while saving/updating user",
-          showConfirmButton: false,
-          timer: 2500,
-        });
-      });
   };
 
   const columns = [
     {
-      field: "Action",
+      field: "actions",
       headerName: "Action",
-      width: 200,
-      sortable: false,
+      width: 180,
       renderCell: (params) => (
-        <>
-          <IconButton
-            onClick={() => handleClick(params.row)}
-            sx={{
-              "& .MuiButtonBase-root,": {
-                padding: 0,
-              },
-            }}
-            color="primary"
-          >
+        <strong>
+          <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
             <EditNoteIcon />
           </IconButton>
-          <IconButton
-            sx={{
-              "& .MuiButtonBase-root,": {
-                padding: 0,
-                marginLeft: 3,
-              },
-            }}
-            onClick={() => deluser(params.row._id)}
-            color="primary"
+          <Button
+            size="medium"
+            sx={{ color: "red" }}
+            onClick={() => handleDelete(params.row)}
           >
-            <DeleteForeverIcon style={{ color: "red" }} />
-          </IconButton>
-        </>
+            <DeleteForeverIcon />
+          </Button>
+        </strong>
       ),
     },
-
     { field: "id", headerName: "ID", width: 150, sortable: false },
     {
       field: "Name",
@@ -207,7 +203,7 @@ export default function MedicalCondition() {
     {
       field: "Description",
       headerName: "Description",
-      width: 380,
+      width: 500,
       sortable: false,
     },
     {
@@ -216,40 +212,6 @@ export default function MedicalCondition() {
       width: 200,
       sortable: false,
     },
-
-    // {
-    //   field: "Action",
-    //   headerName: "Action",
-    //   width: 200,
-    //   sortable: false,
-    //   renderCell: (params) => (
-    //     <>
-    //       <IconButton
-    //         onClick={() => handleClick(params.row)}
-    //         sx={{
-    //           "& .MuiButtonBase-root,": {
-    //             padding: 0,
-    //           },
-    //         }}
-    //         color="primary"
-    //       >
-    //         <EditNoteIcon />
-    //       </IconButton>
-    //       <IconButton
-    //         sx={{
-    //           "& .MuiButtonBase-root,": {
-    //             padding: 0,
-    //             marginLeft: 3,
-    //           },
-    //         }}
-    //         onClick={() => deluser(params.row._id)}
-    //         color="primary"
-    //       >
-    //         <DeleteForeverIcon style={{ color: "red" }} />
-    //       </IconButton>
-    //     </>
-    //   ),
-    // },
   ];
   const getUserData = () => {
     axios.get(`${BASE_URL}medicalconditions/`).then((response) => {
@@ -262,9 +224,6 @@ export default function MedicalCondition() {
 
   return (
     <>
-      {/* =======================Modal================== */}
-      {loaderOpen && <Loader open={loaderOpen} />}
-
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
@@ -312,23 +271,12 @@ export default function MedicalCondition() {
                 required
                 label="Enter Description"
                 name="Description"
-                id="outlined-multiline-static"
+                id="Description"
                 style={{ borderRadius: 10, width: "100%" }}
                 value={data.Description}
                 multiline
                 rows={2}
                 onChange={onchangeHandler}
-              />
-            </Grid>
-
-            <Grid item md={12} sm={6} xs={12}>
-              <TextField
-                style={{ borderRadius: 10, width: "100%" }}
-                label="  Status"
-                id="Status"
-                onChange={onchangeHandler}
-                value={data.Status}
-                name="Status"
               />
             </Grid>
 

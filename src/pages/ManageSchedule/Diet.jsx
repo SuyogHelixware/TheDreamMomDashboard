@@ -65,7 +65,7 @@ const ManageDiet = () => {
       Status: 1,
     });
     setSelectedTags([]);
-    setUploadedImg([])
+    setUploadedImg("");
   };
 
   const handleChange = (event) => {
@@ -128,7 +128,6 @@ const ManageDiet = () => {
       Image: filename,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
-    console.log(saveObj);
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
@@ -137,6 +136,11 @@ const ManageDiet = () => {
     };
 
     if (SaveUpdateButton === "SAVE") {
+      console.log(uploadedImg);
+      if (uploadedImg === "") {
+        validationAlert("Please select file");
+        return;
+      }
       axios
         .request({
           method: "PUT",
@@ -157,9 +161,11 @@ const ManageDiet = () => {
               getAllImgList();
               if (response.data.status) {
                 Swal.fire({
+                  position: "center",
                   icon: "success",
-                  title: "Success",
-                  text: "Data Added successfully",
+                  toast: true,
+                  title: "Data Added Successfully",
+                  showConfirmButton: false,
                   timer: 1500,
                 });
                 handleClose();
@@ -168,7 +174,6 @@ const ManageDiet = () => {
                   icon: "error",
                   title: "Failed",
                   text: "Failed to Add Data",
-                  timer: 1500,
                 });
               }
             })
@@ -195,22 +200,22 @@ const ManageDiet = () => {
             .then((response) => {
               console.log(response.data);
               getAllImgList();
-              if(response.data.status){
+              if (response.data.status) {
                 Swal.fire({
+                  position: "center",
                   icon: "success",
-                  title: "Success",
-                  text: "Data Updated successfully",
+                  title: "Data Updated Successfully",
+                  toast: true,
+                  showConfirmButton: false,
                   timer: 1500,
                 });
-              }else{
+              } else {
                 Swal.fire({
                   icon: "error",
                   title: "Failed",
                   text: "Failed to Update Data",
-                  timer: 1500,
                 });
               }
-              
             })
             .catch((error) => {
               console.error("Failed to Update Data:", error);
@@ -258,22 +263,22 @@ const ManageDiet = () => {
                   response.data
                 );
                 getAllImgList();
-                if(response.data.status){
+                if (response.data.status) {
                   Swal.fire({
+                    position: "center",
                     icon: "success",
-                    title: "Success",
-                    text: "Data deleted successfully",
-                    timer:1500
+                    toast: true,
+                    title: "Data deleted successfully",
+                    showConfirmButton: false,
+                    timer: 1500,
                   });
-                }else{
+                } else {
                   Swal.fire({
                     icon: "error",
                     title: "Failed",
                     text: "Failed to Delete Data",
-                    timer:1500
                   });
                 }
-                
               })
               .catch((error) => {
                 console.error("Error deleting data:", error);
@@ -281,7 +286,6 @@ const ManageDiet = () => {
                   icon: "error",
                   title: "Oops...",
                   text: "Something went wrong..!",
-                  timer:1500
                 });
               });
           })
@@ -291,7 +295,6 @@ const ManageDiet = () => {
               icon: "error",
               title: "Oops...",
               text: "Something went wrong...!",
-              timer:1500
             });
           });
       }
