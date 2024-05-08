@@ -38,7 +38,7 @@ const styles = {
   },
 };
 
-const PNPrecaution = () => {
+const Precaution = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
@@ -145,7 +145,7 @@ const PNPrecaution = () => {
         .request({
           method: "PUT",
           maxBodyLength: Infinity,
-          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/PostNatal/Precaution/${filename}`,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Precaution/${filename}`,
           headers: {
             "Content-Type": "image/jpeg",
             AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
@@ -187,7 +187,7 @@ const PNPrecaution = () => {
         .request({
           method: "PUT",
           maxBodyLength: Infinity,
-          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/PostNatal/Precaution/${data.Image}`,
+          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Precaution/${data.Image}`,
           headers: {
             "Content-Type": "image/jpeg",
             AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
@@ -248,7 +248,7 @@ const PNPrecaution = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${Bunny_Storage_URL}/PostNatal/Precaution/${data.Image}`, {
+          .delete(`${Bunny_Storage_URL}/Schedule/Precaution/${data.Image}`, {
             headers: {
               AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
             },
@@ -591,7 +591,7 @@ const PNPrecaution = () => {
                     objectFit: "fill",
                     aspectRatio: 5 / 3,
                   }}
-                  src={`${Bunny_Image_URL}/PostNatal/Precaution/${item.Image}`}
+                  src={`${Bunny_Image_URL}/Schedule/Precaution/${item.Image}`}
                   alt="img"
                   title={item.Name}
                 />
@@ -656,4 +656,4 @@ const PNPrecaution = () => {
   );
 };
 
-export default PNPrecaution;
+export default Precaution;

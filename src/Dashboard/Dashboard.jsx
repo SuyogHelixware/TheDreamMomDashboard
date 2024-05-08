@@ -568,6 +568,32 @@ export default function Dashboard() {
                   </ListItemButton>
                 </Link>
 
+                <Link to="manage-schedule/precaution" className="link_style">
+                  <ListItemButton
+                    selected={
+                      router.pathname ===
+                      "/dashboard/manage-schedule/precaution"
+                        ? true
+                        : false
+                    }
+                    sx={{
+                      "&.Mui-selected": {
+                        backgroundColor: "#8F00FF",
+                        // m:0.5,
+                        borderRadius: 1,
+                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                          color: "#FFFFFF",
+                        },
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ pl: 4 }}>
+                      <RemoveIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Precaution" sx={{ pl: 2 }} />
+                  </ListItemButton>
+                </Link>
+
                 <Link to="manage-schedule/vaccination" className="link_style">
                   <ListItemButton
                     selected={

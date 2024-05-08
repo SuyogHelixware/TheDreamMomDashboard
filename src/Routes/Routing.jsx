@@ -29,6 +29,7 @@ import PNVaccination from "../pages/PostNatal/PNVaccination";
 import MedicalCondition from "../pages/MedicalCondition";
 import ManageTags from "../pages/ManageTags";
 import PlanMaster from "../pages/PlanMaster";
+import Precaution from "../pages/ManageSchedule/Precaution";
 
 export default function Routing() {
   return (
@@ -43,6 +44,7 @@ export default function Routing() {
             <Route path="manage-schedule/exercise" element={<Exercise />} />
             <Route path="manage-schedule/medical" element={<Medical />} />
             <Route path="manage-schedule/medication" element={<Medication />} />
+            <Route path="manage-schedule/precaution" element={<Precaution />} />
             <Route
               path="manage-schedule/vaccination"
               element={<Vaccination />}
