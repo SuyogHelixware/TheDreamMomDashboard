@@ -188,7 +188,7 @@ const ManageDoses = () => {
       ),
     },
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
-    { field: "Name", headerName: "Title", width: 250 },
+    { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 300 },
   ];
 
@@ -345,7 +345,7 @@ const ManageDoses = () => {
           sx={{
             pr: 2,
             mb: 2,
-            color: "white",
+            color: "white", 
             backgroundColor: "#8F00FF",
             boxShadow: 5,
             "&:hover": {
@@ -375,7 +375,7 @@ const ManageDoses = () => {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={imgData}

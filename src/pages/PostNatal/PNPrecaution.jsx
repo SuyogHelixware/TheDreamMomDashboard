@@ -603,7 +603,7 @@ const PNPrecaution = () => {
                     component="div"
                     textAlign={"start"}
                   >
-                    <b>Title:{item.Name}</b>
+                    <b>{item.Name}</b>
                   </Typography>
                   <Typography
                     textAlign={"start"}
@@ -612,7 +612,7 @@ const PNPrecaution = () => {
                     color="textSecondary"
                     component="div"
                   >
-                    <b>Description: </b> {item.Description}
+                  {item.Description}
                   </Typography>
                 </CardContent>
                 <CardActions

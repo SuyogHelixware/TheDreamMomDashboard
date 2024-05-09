@@ -625,7 +625,7 @@ const ManageBlog = () => {
                     component="div"
                     textAlign={"start"}
                   >
-                    <b>Title: </b> {item.Name}
+                    <b>{item.Name}</b>
                   </Typography>
                   <Typography
                     textAlign={"start"}
@@ -634,7 +634,7 @@ const ManageBlog = () => {
                     color="textSecondary"
                     component="div"
                   >
-                    <b>Description: </b> {item.Description}
+                    {item.Description}
                   </Typography>
                 </CardContent>
                 <CardActions

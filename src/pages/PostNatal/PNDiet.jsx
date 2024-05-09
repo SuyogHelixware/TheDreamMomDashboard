@@ -132,7 +132,6 @@ const PNDiet = () => {
             });
         });
     } else {
-     
       axios
         .request({
           method: "PUT",
@@ -327,42 +326,6 @@ const PNDiet = () => {
               />
             </Grid>
 
-            {/* <Grid item xs={12} lg={12}>
-              <input
-                accept="image/*"
-                id="contained-button-file"
-                type="file"
-                onChange={handleFileUpload}
-                style={{ display: "none" }} 
-              />
-              <label htmlFor="contained-button-file">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  disabled={isSubmitDisabled()}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <CloudUploadIcon sx={{ marginRight: 1 }} />
-                  <Typography noWrap>
-                    {uploadedImg && uploadedImg.name
-                      ? uploadedImg.name
-                      : "Upload File"}
-                  </Typography>
-                </Button>
-              </label>
-            </Grid> */}
-
             <Grid item xs={12}>
               <Button
                 fullWidth
@@ -502,8 +465,12 @@ const PNDiet = () => {
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
               <Card sx={{ width: "100%" }}>
                 <img
-                  height="100%"
-                  width="100%"
+                   style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "fill",
+                    aspectRatio: 5 / 3,
+                  }}
                   src={`${Bunny_Image_URL}/Schedule/Diet/${item.Image}`}
                   alt="img"
                   title={item.Name}
@@ -516,7 +483,7 @@ const PNDiet = () => {
                     component="div"
                     textAlign={"start"}
                   >
-                    <b>Title:{item.Name}</b>
+                    <b>{item.Name}</b>
                   </Typography>
                   <Typography
                     textAlign={"start"}
@@ -525,7 +492,7 @@ const PNDiet = () => {
                     color="textSecondary"
                     component="div"
                   >
-                    <b>Description: </b> {item.Description}
+                    {item.Description}
                   </Typography>
                 </CardContent>
                 <CardActions

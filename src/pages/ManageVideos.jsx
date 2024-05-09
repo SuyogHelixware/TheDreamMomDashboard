@@ -94,7 +94,7 @@ export default function ManageVideos() {
     const obj = {
       title: formData.videoName,
     };
- 
+
     axios
       .request({
         method: "POST",
@@ -129,7 +129,8 @@ export default function ManageVideos() {
         // console.log("uploaded video response");
         // console.log(response);
 
-        axios.post("http://192.168.1.12:3011/api/videos", {
+        axios
+          .post("http://192.168.1.12:3011/api/videos", {
             Name: formData.videoName,
             Description: formData.videoDescription,
             Link: `${Bunny_Stream_GET_URL}/${data.videoLibraryId}/${data.guid}`,
@@ -164,9 +165,8 @@ export default function ManageVideos() {
   };
 
   const play = () => {
-    setIsPlaying(true)
+    setIsPlaying(true);
   };
-
 
   const deluser = (id) => {
     Swal.fire({
@@ -306,32 +306,6 @@ export default function ManageVideos() {
               </FormControl>
             </Grid>
 
-            {/* <Grid item xs={12} md={6} lg={12}>
-              <input
-                accept="video/*"
-                style={{ display: "none" }}
-                id="video-upload"
-                type="file"
-                onChange={handleVideoUpload}
-              />
-
-                <Button
-                  disabled={isSubmitDisabled()}
-                  fullWidth
-                  variant="contained"
-                  component="span"
-                  startIcon={<CloudUploadIcon />}
-                  sx={{
-                    backgroundColor: "#8F00FF",
-                    py: 1.5,
-                    "&:hover": {
-                      backgroundColor: "#3B444B",
-                    },
-                  }}
-                >
-                  {uploadedVideo.name ? uploadedVideo.name : "Upload Video"}
-                </Button>
-            </Grid> */}
             <Grid item xs={12}>
               <Button
                 fullWidth
@@ -462,8 +436,12 @@ export default function ManageVideos() {
             <Card sx={{ width: "100%" }}>
               <iframe
                 src={`${Bunny_Stream_GET_URL}/${item.StorageLabId}/${item.StorageVideoId}`}
-                width="100%"
-                height="auto"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "fill",
+                  aspectRatio: 5 / 3,
+                }}
                 title="Video Player"
                 frameBorder="0"
                 autoPlay={play}
@@ -479,8 +457,7 @@ export default function ManageVideos() {
                   component="div"
                   textAlign={"start"}
                 >
-                  {" "}
-                  {item.Name}
+                 <b>{item.Name}</b>
                 </Typography>
                 <Typography
                   textAlign={"start"}

@@ -589,21 +589,21 @@ const Exercise = () => {
                 />
                 <CardContent>
                   <Typography
+                    noWrap
+                    height={25}
                     gutterBottom
-                    variant="h5"
                     component="div"
                     textAlign={"start"}
                   >
-                    <b>Title: {item.Name}</b>
+                    <b>{item.Name}</b>
                   </Typography>
                   <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    style={styles.typography}
-                    component="div"
                     textAlign={"start"}
+                    variant="body2"
+                    style={styles.typography}
+                    color="textSecondary"
+                    component="div"
                   >
-                    <b>Description: </b>
                     {item.Description}
                   </Typography>
                 </CardContent>
