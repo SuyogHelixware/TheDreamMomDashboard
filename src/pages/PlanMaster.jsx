@@ -17,16 +17,38 @@ import PlanMasterVaccination from "./PlanMasterVaccination";
 import PlanMasterMedication from "./PlanMasterMedication";
 import PlanMasterExercise from "./PlanMasterExercise";
 import PlanMasterMedical from "./PlanMasterMedical";
+import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
+import { BASE_URL } from "../Constant";
 
 const PlanMaster = () => {
   const [open, setOpen] = useState(false);
-  // const [data, setData] = useState({
+  const [data, setData] = useState([
+  //   {
   //   Name: "",
-  //   Description: "",
+  //   Description: " ",
+  //   DietIds: "",
+  //   ExerciseIds: "",
+  //   VaccinationIds: "",
+  //   MedTestIds: "",
+  //   MedDetailsIds: "",
   //   Age: "",
-  //   Height: "",
   //   Weight: "",
-  // });
+  //   Height: "",
+  //   Week: "",
+  //   Status: "",
+  // }
+]);
+
+  const getAllPlanMasterData = () => {
+    axios.get(`${BASE_URL}planmaster/`).then((response) => {
+      setData(response.data.values);
+    });
+  };
+
+  React.useEffect(() => {
+    getAllPlanMasterData();
+  }, []);
 
   const handleParentDialogOpen = () => {
     setOpen(true);
@@ -40,6 +62,29 @@ const PlanMaster = () => {
     console.log("------");
     handleParentDialogClose();
   };
+
+  const columns = [
+    {
+      field: "actions",
+      headerName: "Action",
+      width: 150,
+    },
+    {
+      field: "SrNo",
+      headerName: "SrNo",
+      width: 100,
+    },
+    { field: "Name", headerName: "Name", width: 250 },
+    { field: "Description", headerName: "Description", width: 400 },
+    {
+      field: "Age",
+      headerName: "Age",
+      width: 100,
+    },
+    { field: "Height", headerName: "Height", width: 250 },
+    { field: "Weight", headerName: "Weight", width: 400 },
+    { field: "Status", headerName: "Status", width: 400 },
+  ];
 
   return (
     <>
@@ -102,6 +147,27 @@ const PlanMaster = () => {
         </Button>
       </Grid>
 
+      <Grid container item height={380} lg={12} component={Paper}>
+        <DataGrid
+          className="datagrid-style"
+          rows={data.map((data, index) => ({
+            ...data,
+            SrNo: index + 1,
+          }))}
+          rowHeight={70}
+          getRowId={(row) => row._id}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+          pageSizeOptions={[5]}
+        />
+      </Grid>
+
       <Dialog
         open={open}
         onClose={handleParentDialogClose}
@@ -140,7 +206,7 @@ const PlanMaster = () => {
                 id="Name"
                 label="Enter Name"
                 name="Name"
-                // value={data.Name}
+                value={data.Name}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -150,7 +216,7 @@ const PlanMaster = () => {
                 id="Age"
                 label="Enter Age"
                 name="Age"
-                // value={data.Age}
+                value={data.Age}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -163,7 +229,7 @@ const PlanMaster = () => {
                 name="Description"
                 multiline
                 rows={3}
-                // value={data.Description}
+                value={data.Description}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -173,7 +239,7 @@ const PlanMaster = () => {
                 id="Weight"
                 label="Enter Weight"
                 name="Weight"
-                // value={data.Weight}
+                value={data.Weight}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -183,7 +249,7 @@ const PlanMaster = () => {
                 id="Height"
                 label="Enter Height"
                 name="Height"
-                // value={data.Height}
+                value={data.Height}
               />
             </Grid>
           </Grid>

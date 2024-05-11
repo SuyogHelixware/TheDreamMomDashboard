@@ -42,12 +42,24 @@ function Signin() {
         Password: password,
         UserType: "A",
       };
-  
+
       axios
         .post(`${BASE_URL}Users/login`, body)
         .then((res) => {
-          console.log("Response data:", res.data); 
-          if (res.data.status===true) {
+          console.log("Response data:", res.data);
+          if (res.data.status === true) {
+            
+            const data = res.data.values;
+            const userData = {
+              Name: `${data.Lastname} ${data.Firstname}`,
+              Phone: data.Phone,
+              Address: data.Address,
+              Email: data.Email,
+              BloodGroup: data.BloodGroup,
+              Avatar: data.Avatar,
+            };
+            sessionStorage.setItem("userId", userId);
+            sessionStorage.setItem("userData", JSON.stringify(userData));
             Swal.fire({
               position: "top-end",
               toast: true,
@@ -55,7 +67,6 @@ function Signin() {
               showConfirmButton: false,
               timer: 1500,
             });
-            sessionStorage.setItem("userId", userId);
             Navigate("/dashboard/home");
           } else {
             Swal.fire({
@@ -69,7 +80,7 @@ function Signin() {
           }
         })
         .catch((e) => console.log(e));
-  
+
       console.log("Login successful!");
     } catch (error) {
       Swal.fire({
@@ -82,7 +93,6 @@ function Signin() {
       });
     }
   };
-  
 
   const login = (e) => {
     e.preventDefault();

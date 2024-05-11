@@ -205,17 +205,17 @@ export default function ManageUsers() {
             timer: 2500,
           });
           getUserData();
+          handleClose();
         } else {
           Swal.fire({
             position: "center",
             icon: "error",
             toast: true,
-            title: response.data.message,
-            showConfirmButton: false,
-            timer: 2500,
+            title:"Failed",
+            text: response.data.message,
+            showConfirmButton: true,
           });
         }
-        handleClose();
       })
       .catch((error) => {
         setLoaderOpen(false);
@@ -223,9 +223,9 @@ export default function ManageUsers() {
           position: "center",
           icon: "error",
           toast: true,
-          title: "Error occurred while saving/updating user",
-          showConfirmButton: false,
-          timer: 2500,
+          title:"Failed",
+          text: "Error occurred while saving/updating user",
+          showConfirmButton: true,
         });
       });
   };

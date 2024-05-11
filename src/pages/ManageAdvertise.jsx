@@ -321,7 +321,7 @@ const ManageAdvertise = () => {
   };
 
   const isSubmitDisabled = () => {
-    if (data.Name && data.Description && data.Tag) {
+    if (data.Name && data.Description && selectedTags.length > 0) {
       return false;
     } else {
       return true;
@@ -394,7 +394,6 @@ const ManageAdvertise = () => {
                 <InputLabel id="demo-select-small-label">
                   Select Type
                 </InputLabel>
-
                 <Select
                   labelId="ChooseType"
                   id="Tag"
@@ -409,6 +408,7 @@ const ManageAdvertise = () => {
                         <Chip
                           key={value._id}
                           label={tags.find((tag) => tag._id === value._id).Name}
+                          onDelete={() => handleDelete(value)}
                         />
                       ))}
                     </div>

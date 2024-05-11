@@ -20,7 +20,7 @@ import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import {
   Avatar,
   Button,
@@ -39,6 +39,7 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import TodayIcon from '@mui/icons-material/Today';
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
@@ -46,7 +47,7 @@ import * as React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../src/assets/logo.png";
 import "../Dashboard/Dashboard.css";
-import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import avatar from "../assets/avtar.png";
 
 const drawerWidth = 260;
@@ -141,6 +142,14 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(false);
   const [openList, setOpenList] = React.useState(false);
   const [on, setOn] = React.useState(false);
+  const [userData, setUserData] = React.useState({
+    Name: "",
+    Phone: "",
+    Address: "",
+    Email: "",
+    BloodGroup: "",
+    Avatar:"",
+  });
 
   const [openMenu, setOpenMenu] = React.useState(false);
   const [list, setList] = React.useState(false);
@@ -154,6 +163,12 @@ export default function Dashboard() {
   const handleClose = () => {
     setOn(false);
   };
+
+  React.useEffect(() => {
+    const userData = sessionStorage.getItem("userData");
+    console.log(JSON.parse(userData));
+    setUserData(JSON.parse(userData));
+  }, []);
 
   const theme = useTheme();
 
@@ -256,18 +271,14 @@ export default function Dashboard() {
                   alignItems={"center"}
                 >
                   <MenuItem sx={{ fontSize: 13 }}>
-                    <b>Name : {sessionStorage.getItem("userId") || "...."}</b>
+                    <b>Name : {userData.Name}</b>
                   </MenuItem>
                   <MenuItem sx={{ fontSize: 13, paddingTop: 0 }}>
-                    <b>Mob :</b> +1234567890
-                  </MenuItem>
-
-                  <MenuItem sx={{ fontSize: 13, paddingTop: 0 }}>
-                    <b>Username :</b>Admin@123
+                    <b>Mob :</b> {userData.Phone}
                   </MenuItem>
 
                   <MenuItem sx={{ fontSize: 13, paddingTop: 0 }}>
-                    <b>Address :</b> Ahmednagar , Maharashtra
+                    <b>Address :</b> {userData.Address}
                   </MenuItem>
                 </Grid>
 
@@ -791,7 +802,7 @@ export default function Dashboard() {
                 }}
               >
                 <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <MonitorHeartIcon />
+                  <TodayIcon />
                 </ListItemIcon>
                 <ListItemText primary="Plan Master" />
               </ListItemButton>

@@ -51,7 +51,7 @@ export default function ManageTags() {
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
             <FormatListNumberedIcon />
           </IconButton>
-          <IconButton color="error"   onClick={() => handleDelete(params.row)}>
+          <IconButton color="error" onClick={() => handleDelete(params.row)}>
             <DeleteForeverSharpIcon />
           </IconButton>
         </>
@@ -75,7 +75,6 @@ export default function ManageTags() {
       width: 500,
       sortable: false,
     },
-   
   ];
 
   const handleClose = () => {
@@ -100,9 +99,6 @@ export default function ManageTags() {
     });
   };
 
-  
- 
-
   const handleDelete = (data) => {
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -118,7 +114,7 @@ export default function ManageTags() {
           .then((response) => {
             if (response.data.status === true) {
               // setTagsData(tagData.filter((user) => user._id !== id));
-              getTagData()
+              getTagData();
               Swal.fire({
                 position: "center",
                 icon: "success",
@@ -176,17 +172,18 @@ export default function ManageTags() {
             timer: 2500,
           });
           getTagData();
+          handleClose();
         } else if (response.data.status === false) {
           Swal.fire({
             position: "center",
             icon: "error",
             toast: true,
-            title: response.data.message,
-            showConfirmButton: false,
-            timer: 2500,
+            title: "Failed",
+            text: response.data.message,
+            showConfirmButton: true,
           });
         }
-        handleClose();
+        // handleClose();
       })
       .catch((error) => {
         setLoaderOpen(false);
@@ -196,7 +193,6 @@ export default function ManageTags() {
           toast: true,
           title: "Error occurred while saving/updating user",
           showConfirmButton: false,
-          timer: 2500,
         });
       });
   };
