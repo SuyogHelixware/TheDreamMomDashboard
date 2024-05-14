@@ -24,7 +24,13 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
 import Swal from "sweetalert2";
-import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../Constant";
+import {
+  BASE_URL,
+  Bunny_Image_URL,
+  Bunny_Storage_Access_Key,
+  Bunny_Storage_URL,
+} from "../Constant";
+import Loader from "../components/Loader";
 
 const styles = {
   typography: {
@@ -38,6 +44,7 @@ const styles = {
 };
 
 const ManageBlog = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
@@ -166,8 +173,11 @@ const ManageBlog = () => {
       Id: data.Id,
     };
 
+    setLoaderOpen(true);
+
     if (SaveUpdateButton === "SAVE") {
       if (uploadedImg === "") {
+        setLoaderOpen(false);
         validationAlert("Please select file");
         return;
       }
@@ -175,43 +185,61 @@ const ManageBlog = () => {
         .request({
           method: "PUT",
           maxBodyLength: Infinity,
-          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Blogs/${filename}`,
+          url: `${Bunny_Storage_URL}/Blogs/${filename}`,
           headers: {
             "Content-Type": "image/jpeg",
-            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+            AccessKey: Bunny_Storage_Access_Key,
           },
           data: uploadedImg,
         })
-        .then((response) => {
-          axios
-            .post(`${BASE_URL}blogs`, saveObj)
-            .then((response) => {
-              console.log(response.data);
-
-              if (response.data.status) {
-                Swal.fire({
-                  position: "center",
-                  icon: "success",
-                  toast: true,
-                  title: "Blog Added Successfully",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-                handleClose();
-                getAllImgList();
-              } else {
+        .then((res) => {
+          if (res.data.HttpCode === 201) {
+            axios
+              .post(`${BASE_URL}blogs`, saveObj)
+              .then((response) => {
+                if (response.data.status) {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    toast: true,
+                    title: "Blog Added Successfully",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  handleClose();
+                  getAllImgList();
+                } else {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    icon: "error",
+                    toast: true,
+                    title: "Failed",
+                    text: "Failed to Add Blog",
+                    showConfirmButton: true,
+                  });
+                }
+              })
+              .catch((error) => {
+                setLoaderOpen(false);
                 Swal.fire({
                   icon: "error",
                   toast: true,
                   title: "Failed",
-                  text: "Failed to Add Blog",
+                  text: error,
                   showConfirmButton: true,
                 });
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
+              });
+          } else {
+            setLoaderOpen(false);
+            Swal.fire({
+              icon: "error",
+              toast: true,
+              title: "Failed",
+              text: "Failed to Add Data",
+              showConfirmButton: true,
             });
+          }
         });
     } else {
       Swal.fire({
@@ -231,47 +259,67 @@ const ManageBlog = () => {
               url: `${Bunny_Storage_URL}/Blogs/${data.Link}`,
               headers: {
                 "Content-Type": "image/jpeg",
-                AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+                AccessKey: Bunny_Storage_Access_Key,
               },
               data: uploadedImg,
             })
-            .then((response) => {
-              axios
-                .patch(`${BASE_URL}blogs/${data.Id}`, UpdateObj)
-                .then((response) => {
-                  console.log(response.data);
+            .then((res) => {
+              if (res.data.HttpCode === 201) {
+                axios
+                  .patch(`${BASE_URL}blogs/${data.Id}`, UpdateObj)
+                  .then((response) => {
+                    console.log(response.data);
 
-                  if (response.data.status) {
-                    Swal.fire({
-                      position: "center",
-                      icon: "success",
-                      toast: true,
-                      title: "Blog Updated Successfully",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                    handleClose();
-                    getAllImgList();
-                  } else {
+                    if (response.data.status) {
+                      setLoaderOpen(false);
+                      Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        toast: true,
+                        title: "Blog Updated Successfully",
+                        showConfirmButton: false,
+                        timer: 1500,
+                      });
+                      handleClose();
+                      getAllImgList();
+                    } else {
+                      setLoaderOpen(false);
+                      Swal.fire({
+                        icon: "error",
+                        toast: true,
+                        title: "Failed",
+                        text: "Failed to Update Data",
+                        showConfirmButton: true,
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    setLoaderOpen(false);
                     Swal.fire({
                       icon: "error",
                       toast: true,
                       title: "Failed",
-                      text: "Failed to Update Data",
+                      text: error,
                       showConfirmButton: true,
                     });
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error Updating data:", error);
+                  });
+              } else {
+                setLoaderOpen(false);
+                Swal.fire({
+                  icon: "error",
+                  toast: true,
+                  title: "Failed",
+                  text: "Failed to Update Data",
+                  showConfirmButton: true,
                 });
+              }
             });
         }
       });
     }
   };
   const handleDelete = (data) => {
-    console.log(data);
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -284,43 +332,56 @@ const ManageBlog = () => {
         axios
           .delete(`${Bunny_Storage_URL}/Blogs/${data.Link}`, {
             headers: {
-              AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+              AccessKey: Bunny_Storage_Access_Key,
             },
           })
-          .then((response) => {
-            axios
-              .delete(`${BASE_URL}blogs/${data._id}`)
-              .then((response) => {
-                Swal.fire({
-                  position: "center",
-                  icon: "success",
-                  toast: true,
-                  title: "Blog Deleted Successfully",
-                  showConfirmButton: false,
-                  timer: 1500,
+          .then((res) => {
+            if (res.data.HttpCode === 200) {
+              axios
+                .delete(`${BASE_URL}blogs/${data._id}`)
+                .then((response) => {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    toast: true,
+                    title: "Blog Deleted Successfully",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  handleClose();
+                  getAllImgList();
+                })
+                .catch((error) => {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    toast: true,
+                    title: "Failed",
+                    text: error,
+                    showConfirmButton: true,
+                  });
                 });
-                handleClose();
-                getAllImgList();
-              })
-              .catch((error) => {
-                console.error("Error deleting data:", error);
-                Swal.fire({
-                  position: "center",
-                  icon: "error",
-                  toast: true,
-                  title: "Failed",
-                  text: "Something went wrong!",
-                  showConfirmButton: true,
-                });
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Something went wrong...!",
+                showConfirmButton: true,
               });
+            }
           })
           .catch((error) => {
+            setLoaderOpen(false);
             Swal.fire({
               position: "center",
               icon: "error",
               toast: true,
-              title: "Oops...",
-              text: "Something went wrong!",
+              title: "Failed",
+              text: error,
               showConfirmButton: true,
             });
           });
@@ -377,6 +438,7 @@ const ManageBlog = () => {
 
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
@@ -567,10 +629,7 @@ const ManageBlog = () => {
 
       <Grid
         container
-        xs={12}
-        sm={6}
         md={12}
-        lg={12}
         component={Paper}
         textAlign={"center"}
         sx={{

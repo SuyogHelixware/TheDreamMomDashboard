@@ -270,10 +270,7 @@ export default function ManageComment() {
 
       <Grid
         container
-        xs={12}
-        sm={6}
         md={12}
-        lg={12}
         component={Paper}
         textAlign={"center"}
         sx={{

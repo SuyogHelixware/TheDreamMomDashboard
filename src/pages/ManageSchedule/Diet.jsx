@@ -24,7 +24,12 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
+import {
+  BASE_URL,
+  Bunny_Image_URL,
+  Bunny_Storage_Access_Key,
+  Bunny_Storage_URL,
+} from "../../Constant";
 import Swal from "sweetalert2";
 import Loader from "../../components/Loader";
 
@@ -154,6 +159,7 @@ const ManageDiet = () => {
     if (SaveUpdateButton === "SAVE") {
       console.log(uploadedImg);
       if (uploadedImg === "") {
+        setLoaderOpen(false);
         validationAlert("Please select file");
         return;
       }
@@ -161,16 +167,16 @@ const ManageDiet = () => {
         .request({
           method: "PUT",
           maxBodyLength: Infinity,
-          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${filename}`,
+          url: `${Bunny_Storage_URL}/Schedule/Diet/${filename}`,
           headers: {
             "Content-Type": "image/jpeg",
-            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+            AccessKey: Bunny_Storage_Access_Key,
           },
           data: uploadedImg,
         })
-        .then((response) => {
-          console.log(response);
-          if (response.data.HttpCode === 201) {
+        .then((res) => {
+          console.log(res);
+          if (res.data.HttpCode === 201) {
             axios
               .post(`${BASE_URL}diet`, saveObj)
               .then((response) => {
@@ -199,7 +205,13 @@ const ManageDiet = () => {
               })
               .catch((error) => {
                 setLoaderOpen(false);
-                console.error("Error:", error);
+                Swal.fire({
+                  icon: "error",
+                  toast: true,
+                  title: "Failed",
+                  text: error,
+                  showConfirmButton: true,
+                });
               });
           } else {
             setLoaderOpen(false);
@@ -226,10 +238,10 @@ const ManageDiet = () => {
             .request({
               method: "PUT",
               maxBodyLength: Infinity,
-              url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${data.Image}`,
+              url: `${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`,
               headers: {
                 "Content-Type": "image/jpeg",
-                AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+                AccessKey: Bunny_Storage_Access_Key,
               },
               data: uploadedImg,
             })
@@ -264,7 +276,13 @@ const ManageDiet = () => {
                   })
                   .catch((error) => {
                     setLoaderOpen(false);
-                    console.error("Failed to Updating Data:", error);
+                    Swal.fire({
+                      icon: "error",
+                      toast: true,
+                      title: "Failed",
+                      text: error,
+                      showConfirmButton: true,
+                    });
                   });
               } else {
                 setLoaderOpen(false);
@@ -308,12 +326,12 @@ const ManageDiet = () => {
         axios
           .delete(`${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`, {
             headers: {
-              AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+              AccessKey: Bunny_Storage_Access_Key,
             },
           })
-          .then((response) => {
-            console.log(response);
-            if (response.data.HttpCode === 200) {
+          .then((res) => {
+            console.log(res);
+            if (res.data.HttpCode === 200) {
               axios
                 .delete(`${BASE_URL}diet/${data._id}`)
                 .then((response) => {
@@ -347,8 +365,8 @@ const ManageDiet = () => {
                     position: "center",
                     icon: "error",
                     toast: true,
-                    title: "Oops...",
-                    text: "Something went wrong!",
+                    title: "Failed",
+                    text: error,
                     showConfirmButton: true,
                   });
                 });
@@ -357,7 +375,7 @@ const ManageDiet = () => {
               Swal.fire({
                 icon: "error",
                 toast: true,
-                title: "Oops...",
+                title: "Failed",
                 text: "Something went wrong...!",
                 showConfirmButton: true,
               });
@@ -368,8 +386,8 @@ const ManageDiet = () => {
             Swal.fire({
               icon: "error",
               toast: true,
-              title: "Oops...",
-              text: "Something went wrong...!",
+              title: "Failed",
+              text: error,
               showConfirmButton: true,
             });
           });

@@ -1,6 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import { IconButton, Modal, Paper } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -49,7 +49,7 @@ export default function ManageTags() {
       renderCell: (params) => (
         <>
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
-            <FormatListNumberedIcon />
+            <EditNoteIcon />
           </IconButton>
           <IconButton color="error" onClick={() => handleDelete(params.row)}>
             <DeleteForeverSharpIcon />
@@ -100,6 +100,7 @@ export default function ManageTags() {
   };
 
   const handleDelete = (data) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -111,26 +112,39 @@ export default function ManageTags() {
       if (result.isConfirmed) {
         axios
           .delete(`${BASE_URL}tags/${data._id}`)
-          .then((response) => {
-
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              toast: true,
-              title: "Tag deleted successfully",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            handleClose();
-            getTagData();
+          .then((res) => {
+            if (res.data.status) {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                toast: true,
+                title: "Tag deleted successfully",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              handleClose();
+              getTagData();
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Failed to Delete!",
+                showConfirmButton: true,
+              });
+            }
           })
           .catch((error) => {
+            setLoaderOpen(false);
             Swal.fire({
               position: "center",
               icon: "error",
               toast: true,
-              title: "Oops...",
-              text: "Something went wrong!",
+              title: "Failed",
+              text: error,
               showConfirmButton: true,
             });
           });
@@ -164,8 +178,8 @@ export default function ManageTags() {
 
     axiosRequest
       .then((response) => {
-        setLoaderOpen(false);
         if (response.data.status === true) {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "success",
@@ -179,7 +193,8 @@ export default function ManageTags() {
           });
           getTagData();
           handleClose();
-        } else if (response.data.status === false) {
+        } else {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "error",
@@ -197,7 +212,7 @@ export default function ManageTags() {
           icon: "error",
           toast: true,
           title: "Failed",
-          text: "Something went wrong!",
+          text: error,
           showConfirmButton: true,
         });
       });
@@ -314,10 +329,7 @@ export default function ManageTags() {
 
       <Grid
         container
-        xs={12}
-        sm={6}
         md={12}
-        lg={12}
         component={Paper}
         textAlign={"center"}
         sx={{

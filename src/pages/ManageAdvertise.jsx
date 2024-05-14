@@ -25,7 +25,13 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
-import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../Constant";
+import {
+  BASE_URL,
+  Bunny_Image_URL,
+  Bunny_Storage_Access_Key,
+  Bunny_Storage_URL,
+} from "../Constant";
+import Loader from "../components/Loader";
 
 const styles = {
   typography: {
@@ -39,6 +45,7 @@ const styles = {
 };
 
 const ManageAdvertise = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [selectedTags, setSelectedTags] = React.useState([]);
   const [imgData, setImgData] = React.useState([]);
@@ -141,8 +148,11 @@ const ManageAdvertise = () => {
       TagsIds: selectedTags.map((tag) => tag._id),
     };
 
+    setLoaderOpen(true);
+
     if (SaveUpdateButton === "SAVE") {
       if (uploadedImg === "") {
+        setLoaderOpen(false);
         validationAlert("Please select file");
         return;
       }
@@ -150,41 +160,61 @@ const ManageAdvertise = () => {
         .request({
           method: "PUT",
           maxBodyLength: Infinity,
-          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Advertisement/${filename}`,
+          url: `${Bunny_Storage_URL}/Advertisement/${filename}`,
           headers: {
             "Content-Type": "image/jpeg",
-            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+            AccessKey: Bunny_Storage_Access_Key,
           },
           data: uploadedImg,
         })
-        .then((response) => {
-          axios
-            .post(`${BASE_URL}advertisement`, saveObj)
-            .then((response) => {
-              if (response.data.status) {
-                Swal.fire({
-                  position: "center",
-                  icon: "success",
-                  toast: true,
-                  title: "Data Added Successfully",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-                handleClose();
-                getAllImgList();
-              } else {
+        .then((res) => {
+          if (res.data.HttpCode === 201) {
+            axios
+              .post(`${BASE_URL}advertisement`, saveObj)
+              .then((response) => {
+                if (response.data.status) {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    toast: true,
+                    title: "Data Added Successfully",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  handleClose();
+                  getAllImgList();
+                } else {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    icon: "error",
+                    toast: true,
+                    title: "Failed",
+                    text: "Failed to Add Data",
+                    showConfirmButton: true,
+                  });
+                }
+              })
+              .catch((error) => {
+                setLoaderOpen(false);
                 Swal.fire({
                   icon: "error",
                   toast: true,
                   title: "Failed",
-                  text: "Failed to Add Data",
+                  text: error,
                   showConfirmButton: true,
                 });
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
+              });
+          } else {
+            setLoaderOpen(false);
+            Swal.fire({
+              icon: "error",
+              toast: true,
+              title: "Failed",
+              text: "Failed to Add Data",
+              showConfirmButton: true,
             });
+          }
         });
     } else {
       Swal.fire({
@@ -207,41 +237,61 @@ const ManageAdvertise = () => {
             .request({
               method: "PUT",
               maxBodyLength: Infinity,
-              url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Advertisement/${data.Image}`,
+              url: `${Bunny_Storage_URL}/Advertisement/${data.Image}`,
               headers: {
                 "Content-Type": "image/jpeg",
-                AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+                AccessKey: Bunny_Storage_Access_Key,
               },
               data: uploadedImg,
             })
-            .then((response) => {
-              axios
-                .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
-                .then((response) => {
-                  if (response.data.status) {
-                    Swal.fire({
-                      position: "center",
-                      icon: "success",
-                      toast: true,
-                      title: "Data Updated Successfully",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                    handleClose();
-                    getAllImgList();
-                  } else {
+            .then((res) => {
+              if (res.data.HttpCode === 201) {
+                axios
+                  .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
+                  .then((response) => {
+                    if (response.data.status) {
+                      setLoaderOpen(false);
+                      Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        toast: true,
+                        title: "Data Updated Successfully",
+                        showConfirmButton: false,
+                        timer: 1500,
+                      });
+                      handleClose();
+                      getAllImgList();
+                    } else {
+                      setLoaderOpen(false);
+                      Swal.fire({
+                        icon: "error",
+                        toast: true,
+                        title: "Failed",
+                        text: "Failed to Update Data",
+                        showConfirmButton: true,
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    setLoaderOpen(false);
                     Swal.fire({
                       icon: "error",
                       toast: true,
                       title: "Failed",
-                      text: "Failed to Update Data",
+                      text: error,
                       showConfirmButton: true,
                     });
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error Updating data:", error);
+                  });
+              } else {
+                setLoaderOpen(false);
+                Swal.fire({
+                  icon: "error",
+                  toast: true,
+                  title: "Failed",
+                  text: "Failed to Update Data",
+                  showConfirmButton: true,
                 });
+              }
             });
         }
       });
@@ -261,6 +311,7 @@ const ManageAdvertise = () => {
   };
 
   const handleDelete = (data) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -273,42 +324,57 @@ const ManageAdvertise = () => {
         axios
           .delete(`${Bunny_Storage_URL}/Advertisement/${data.Image}`, {
             headers: {
-              AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+              AccessKey: Bunny_Storage_Access_Key,
             },
           })
-          .then((response) => {
-            axios
-              .delete(`${BASE_URL}advertisement/${data._id}`)
-              .then((response) => {
-                Swal.fire({
-                  position: "center",
-                  icon: "success",
-                  toast: true,
-                  title: "Data Deleted Successfully",
-                  showConfirmButton: false,
-                  timer: 1500,
+          .then((res) => {
+            if (res.data.HttpCode === 200) {
+              axios
+                .delete(`${BASE_URL}advertisement/${data._id}`)
+                .then((response) => {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    toast: true,
+                    title: "Data Deleted Successfully",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  handleClose();
+                  getAllImgList();
+                })
+                .catch((error) => {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    toast: true,
+                    title: "Failed",
+                    text: error,
+                    showConfirmButton: true,
+                  });
                 });
-                handleClose();
-                getAllImgList();
-              })
-              .catch((error) => {
-                Swal.fire({
-                  position: "center",
-                  icon: "error",
-                  toast: true,
-                  title: "Failed",
-                  text: "Something went wrong!",
-                  showConfirmButton: true,
-                });
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Failed to Delete!",
+                showConfirmButton: true,
               });
+            }
           })
           .catch((error) => {
+            setLoaderOpen(false);
             Swal.fire({
               position: "center",
               icon: "error",
               toast: true,
-              title: "Oops...",
-              text: "Something went wrong!",
+              title: "Failed",
+              text: error,
               showConfirmButton: true,
             });
           });
@@ -366,6 +432,7 @@ const ManageAdvertise = () => {
 
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}

@@ -184,7 +184,7 @@ const Medication = () => {
               icon: "error",
               toast: true,
               title: "Failed",
-              text: "Something went wrong!",
+              text: error,
               showConfirmButton: true,
             });
           });

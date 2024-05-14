@@ -158,7 +158,7 @@ const Medical = () => {
           position: "center",
           icon: "error",
           toast: true,
-          title: "Something went wrong..!",
+          title: error,
           showConfirmButton: false,
         });
       });
@@ -249,7 +249,7 @@ const Medical = () => {
               icon: "error",
               toast: true,
               title: "Failed",
-              text: "Something went wrong!",
+              text: error,
               showConfirmButton: true,
             });
           });

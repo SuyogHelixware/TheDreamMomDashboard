@@ -17,8 +17,10 @@ import * as React from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
+import Loader from "../components/Loader";
 
 export default function MedicalCondition() {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [on, setOn] = React.useState(false);
@@ -84,6 +86,8 @@ export default function MedicalCondition() {
       Description: data.Description,
     };
 
+    setLoaderOpen(true);
+
     const axiosRequest =
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}medicalconditions`, saveObj)
@@ -92,6 +96,7 @@ export default function MedicalCondition() {
     axiosRequest
       .then((response) => {
         if (response.data.status) {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "success",
@@ -106,6 +111,7 @@ export default function MedicalCondition() {
           handleClose();
           getUserData();
         } else {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "error",
@@ -117,6 +123,7 @@ export default function MedicalCondition() {
         }
       })
       .catch((error) => {
+        setLoaderOpen(false);
         Swal.fire({
           position: "center",
           icon: "error",
@@ -129,6 +136,7 @@ export default function MedicalCondition() {
   };
 
   const handleDelete = (rowData) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -141,24 +149,38 @@ export default function MedicalCondition() {
         axios
           .delete(`${BASE_URL}medicalconditions/${rowData._id}`)
           .then((response) => {
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              toast: true,
-              title: "Data deleted successfully",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            handleClose();
-            getUserData();
+            if (response.data.status) {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                toast: true,
+                title: "Data deleted successfully",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              handleClose();
+              getUserData();
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Something went wrong!",
+                showConfirmButton: true,
+              });
+            }
           })
           .catch((error) => {
+            setLoaderOpen(false);
             Swal.fire({
               position: "center",
               icon: "error",
               toast: true,
-              title: "Oops...",
-              text: "Something went wrong!",
+              title: "Failed",
+              text: error,
               showConfirmButton: true,
             });
           });
@@ -227,6 +249,7 @@ export default function MedicalCondition() {
 
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}

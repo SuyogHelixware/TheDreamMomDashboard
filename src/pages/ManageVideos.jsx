@@ -171,6 +171,12 @@ export default function ManageVideos() {
 
     setLoaderOpen(true);
     if (SaveUpdateButton === "SAVE") {
+      if (uploadedVideo === "") {
+        setLoaderOpen(false);
+        validationAlert("Please select Video");
+        return;
+      }
+
       const obj = {
         title: videoname,
       };
@@ -181,14 +187,12 @@ export default function ManageVideos() {
           headers: {
             accept: "application/json",
             "content-type": "application/json",
-            AccessKey: "fff023aa-0097-4333-920f44dfeef3-eafe-4e47",
+            AccessKey: Bunny_Stream_Access_Key,
           },
           data: obj,
         })
         .then((response) => {
-          // console.log("Instance created");
           uploadVideo(response.data);
-          // console.log(response);
         });
     } else {
       Swal.fire({
@@ -229,7 +233,13 @@ export default function ManageVideos() {
             })
             .catch((error) => {
               setLoaderOpen(false);
-              console.error("Failed to Updating Data:", error);
+              Swal.fire({
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Failed to Update Data",
+                showConfirmButton: true,
+              });
             });
         }
       });
@@ -288,7 +298,13 @@ export default function ManageVideos() {
             })
             .catch((error) => {
               setLoaderOpen(false);
-              console.error("Error:", error);
+              Swal.fire({
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: error,
+                showConfirmButton: true,
+              });
             });
         } else {
           setLoaderOpen(false);
@@ -378,7 +394,7 @@ export default function ManageVideos() {
                       icon: "error",
                       toast: true,
                       title: "Failed",
-                      text: "Failed to Delete Video",
+                      text: error,
                       showConfirmButton: true,
                     });
                   });
@@ -399,8 +415,8 @@ export default function ManageVideos() {
         Swal.fire({
           icon: "error",
           toast: true,
-          title: "Oops...",
-          text: "Something went wrong...!",
+          title: "Failed",
+          text: error,
           showConfirmButton: true,
         });
       });

@@ -16,8 +16,10 @@ import axios from "axios";
 import * as React from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
+import Loader from "../components/Loader";
 
 const ManageAvoidFood = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
@@ -81,6 +83,8 @@ const ManageAvoidFood = () => {
       Description: data.Description,
     };
 
+    setLoaderOpen(true);
+
     const axiosRequest =
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}avoidablethings`, saveObj)
@@ -89,6 +93,7 @@ const ManageAvoidFood = () => {
     axiosRequest
       .then((response) => {
         if (response.data.status) {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "success",
@@ -103,6 +108,7 @@ const ManageAvoidFood = () => {
           getAllImgList();
           handleClose();
         } else {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "error",
@@ -114,6 +120,7 @@ const ManageAvoidFood = () => {
         }
       })
       .catch((error) => {
+        setLoaderOpen(false);
         Swal.fire({
           position: "center",
           icon: "error",
@@ -136,6 +143,7 @@ const ManageAvoidFood = () => {
   };
 
   const handleDelete = (rowData) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -148,6 +156,7 @@ const ManageAvoidFood = () => {
         axios
           .delete(`${BASE_URL}avoidablethings/${rowData._id}`)
           .then((response) => {
+            setLoaderOpen(false);
             Swal.fire({
               position: "center",
               icon: "success",
@@ -160,6 +169,7 @@ const ManageAvoidFood = () => {
             getAllImgList();
           })
           .catch((error) => {
+            setLoaderOpen(false);
             Swal.fire({
               position: "center",
               icon: "error",
@@ -213,6 +223,7 @@ const ManageAvoidFood = () => {
 
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}

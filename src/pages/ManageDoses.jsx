@@ -11,8 +11,10 @@ import axios from "axios";
 import * as React from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
+import Loader from "../components/Loader";
 
 const ManageDoses = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [imgData, setImgData] = React.useState([]);
@@ -88,6 +90,8 @@ const ManageDoses = () => {
       Description: data.Description,
     };
 
+    setLoaderOpen(true);
+
     const axiosRequest =
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}dosagedet`, saveObj)
@@ -96,6 +100,7 @@ const ManageDoses = () => {
     axiosRequest
       .then((response) => {
         if (response.data.status) {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "success",
@@ -110,6 +115,7 @@ const ManageDoses = () => {
           getAllImgList();
           handleClose();
         } else {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "error",
@@ -121,18 +127,20 @@ const ManageDoses = () => {
         }
       })
       .catch((error) => {
+        setLoaderOpen(false);
         Swal.fire({
           position: "center",
           icon: "error",
           toast: true,
           text: "Failed",
-          title: "Something went wrong!",
+          title: error,
           showConfirmButton: true,
         });
       });
   };
 
   const handleDelete = (data) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -144,24 +152,37 @@ const ManageDoses = () => {
       if (result.isConfirmed) {
         axios
           .delete(`${BASE_URL}dosagedet/${data._id}`)
-          .then((response) => {
-            getAllImgList();
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              title: "Data deleted successfully",
-              showConfirmButton: false,
-              timer: 1500,
-              toast: true,
-            });
-            handleClose();
+          .then((res) => {
+            if (res.data.status) {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Data deleted successfully",
+                showConfirmButton: false,
+                timer: 1500,
+                toast: true,
+              });
+              handleClose();
+              getAllImgList();
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Failed to Delete Data",
+                showConfirmButton: true,
+              });
+            }
           })
           .catch((error) => {
+            setLoaderOpen(false);
             Swal.fire({
               icon: "error",
               title: "Failed",
               toast: true,
-              text: "Something went wrong!",
+              text: error,
               showConfirmButton: true,
             });
           });
@@ -206,6 +227,7 @@ const ManageDoses = () => {
 
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}

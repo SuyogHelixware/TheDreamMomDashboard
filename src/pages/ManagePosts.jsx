@@ -16,8 +16,10 @@ import axios from "axios";
 import * as React from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
+import Loader from "../components/Loader";
 
 const ManagePosts = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
@@ -81,6 +83,8 @@ const ManagePosts = () => {
       Description: data.Description,
     };
 
+    setLoaderOpen(true);
+
     const axiosRequest =
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}posts`, saveObj)
@@ -89,6 +93,7 @@ const ManagePosts = () => {
     axiosRequest
       .then((response) => {
         if (response.data.status) {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "success",
@@ -103,6 +108,7 @@ const ManagePosts = () => {
           handleClose();
           getAllImgList();
         } else {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "error",
@@ -114,12 +120,13 @@ const ManagePosts = () => {
         }
       })
       .catch((error) => {
+        setLoaderOpen(false);
         Swal.fire({
           position: "center",
           icon: "error",
           toast: true,
-          title: "Oops...",
-          text: "Something went wrong!",
+          title: "Failed",
+          text: error,
           showConfirmButton: true,
         });
       });
@@ -136,6 +143,7 @@ const ManagePosts = () => {
   };
 
   const handleDelete = (rowData) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -148,24 +156,38 @@ const ManagePosts = () => {
         axios
           .delete(`${BASE_URL}posts/${rowData._id}`)
           .then((response) => {
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              toast: true,
-              title: "Post deleted successfully",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            handleClose();
-            getAllImgList();
+            if (response.data.status) {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                toast: true,
+                title: "Post deleted successfully",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              handleClose();
+              getAllImgList();
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Failed to Delete Post",
+                showConfirmButton: true,
+              });
+            }
           })
           .catch((error) => {
+            setLoaderOpen(false);
             Swal.fire({
               position: "center",
               icon: "error",
               toast: true,
-              title: "Oops...",
-              text: "Something went wrong!",
+              title: "Failed",
+              text: error,
               showConfirmButton: true,
             });
           });
@@ -215,6 +237,7 @@ const ManagePosts = () => {
 
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
