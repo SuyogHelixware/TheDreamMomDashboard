@@ -26,6 +26,7 @@ import axios from "axios";
 import * as React from "react";
 import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
 import Swal from "sweetalert2";
+import Loader from "../../components/Loader";
 
 const styles = {
   typography: {
@@ -39,6 +40,7 @@ const styles = {
 };
 
 const Precaution = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
@@ -147,6 +149,8 @@ const Precaution = () => {
       TagsIds: selectedTags.map((tag) => tag._id),
     };
 
+    setLoaderOpen(true);
+
     if (SaveUpdateButton === "SAVE") {
       console.log(uploadedImg);
       if (uploadedImg === "") {
@@ -170,6 +174,7 @@ const Precaution = () => {
             .post(`${BASE_URL}precaution`, saveObj)
             .then((response) => {
               if (response.data.status) {
+                setLoaderOpen(false);
                 Swal.fire({
                   position: "center",
                   icon: "success",
@@ -181,6 +186,7 @@ const Precaution = () => {
                 handleClose();
                 getAllImgList();
               } else {
+                setLoaderOpen(false);
                 Swal.fire({
                   icon: "error",
                   toast: true,
@@ -191,6 +197,7 @@ const Precaution = () => {
               }
             })
             .catch((error) => {
+              setLoaderOpen(false);
               console.error("Error:", error);
             });
         });
@@ -212,6 +219,7 @@ const Precaution = () => {
             .patch(`${BASE_URL}precaution/${data.Id}`, UpdateObj)
             .then((response) => {
               if (response.data.status) {
+                setLoaderOpen(false);
                 Swal.fire({
                   position: "center",
                   icon: "success",
@@ -223,6 +231,7 @@ const Precaution = () => {
                 handleClose();
                 getAllImgList();
               } else {
+                setLoaderOpen(false);
                 Swal.fire({
                   icon: "error",
                   toast: true,
@@ -233,6 +242,7 @@ const Precaution = () => {
               }
             })
             .catch((error) => {
+              setLoaderOpen(false);
               console.error("Failed to Update Data:", error);
             });
         });
@@ -252,6 +262,7 @@ const Precaution = () => {
   };
 
   const handleDelete = (data) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -273,6 +284,7 @@ const Precaution = () => {
               .delete(`${BASE_URL}precaution/${data._id}`)
               .then((response) => {
                 if (response.data.status) {
+                  setLoaderOpen(false);
                   Swal.fire({
                     position: "center",
                     icon: "success",
@@ -284,6 +296,7 @@ const Precaution = () => {
                   handleClose();
                   getAllImgList();
                 } else {
+                  setLoaderOpen(false);
                   Swal.fire({
                     position: "center",
                     icon: "error",
@@ -295,6 +308,7 @@ const Precaution = () => {
                 }
               })
               .catch((error) => {
+                setLoaderOpen(false);
                 console.error("Error deleting data:", error);
                 Swal.fire({
                   toast: true,
@@ -306,6 +320,7 @@ const Precaution = () => {
               });
           })
           .catch((error) => {
+            setLoaderOpen(false);
             Swal.fire({
               toast: true,
               icon: "error",
@@ -368,6 +383,7 @@ const Precaution = () => {
   });
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
