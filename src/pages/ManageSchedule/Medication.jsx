@@ -1,12 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import {
-  Box,
-  IconButton,
-  Modal,
-  Paper
-} from "@mui/material";
+import { Box, IconButton, Modal, Paper } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -105,26 +100,25 @@ const Medication = () => {
             showConfirmButton: false,
             timer: 1500,
           });
-          console.log(response.data);
+          handleClose();
           getAllImgList();
         } else {
           Swal.fire({
-            position: "center",
             icon: "error",
             toast: true,
-            title: response.data.message,
-            showConfirmButton: false,
+            title: "Failed",
+            text: response.data.message,
+            showConfirmButton: true,
           });
         }
-        handleClose();
       })
       .catch((error) => {
         Swal.fire({
           position: "center",
           icon: "error",
           toast: true,
-          title: "Error occurred while saving/updating FAQ",
-          showConfirmButton: false,
+          title: "Something went wrong..!",
+          showConfirmButton: true,
         });
       });
   };
@@ -152,8 +146,6 @@ const Medication = () => {
         axios
           .delete(`${BASE_URL}Medications/${data._id}`)
           .then((response) => {
-            console.log("Node API Data Deleted successfully:", response.data);
-            getAllImgList();
             Swal.fire({
               position: "center",
               icon: "success",
@@ -162,13 +154,17 @@ const Medication = () => {
               showConfirmButton: false,
               timer: 1500,
             });
+            handleClose();
+            getAllImgList();
           })
           .catch((error) => {
-            console.error("Error deleting data:", error);
             Swal.fire({
+              position: "center",
               icon: "error",
-              title: "Oops...",
+              toast: true,
+              title: "Failed",
               text: "Something went wrong!",
+              showConfirmButton: true,
             });
           });
       }
@@ -385,7 +381,7 @@ const Medication = () => {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={imgData}
@@ -393,12 +389,12 @@ const Medication = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
             autoHeight
-            pageSizeOptions={[5]}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

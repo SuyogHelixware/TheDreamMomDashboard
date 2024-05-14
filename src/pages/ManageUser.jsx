@@ -113,6 +113,7 @@ export default function ManageUsers() {
     clearFormData();
   };
   const deluser = (id) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -125,7 +126,8 @@ export default function ManageUsers() {
         axios
           .delete(`${BASE_URL}Users/${id}`)
           .then((response) => {
-            if (response.data.status === true) {
+            if (response.data.status) {
+              setLoaderOpen(false);
               setUserData(userData.filter((user) => user._id !== id));
               Swal.fire({
                 position: "center",
@@ -135,9 +137,19 @@ export default function ManageUsers() {
                 showConfirmButton: false,
                 timer: 2500,
               });
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Failed to Delete Video",
+                showConfirmButton: true,
+              });
             }
           })
           .catch((error) => {
+            setLoaderOpen(false);
             alert("error");
           });
       }
@@ -191,8 +203,8 @@ export default function ManageUsers() {
 
     axiosRequest
       .then((response) => {
-        setLoaderOpen(false);
         if (response.data.status) {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "success",
@@ -207,11 +219,12 @@ export default function ManageUsers() {
           getUserData();
           handleClose();
         } else {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "error",
             toast: true,
-            title:"Failed",
+            title: "Failed",
             text: response.data.message,
             showConfirmButton: true,
           });
@@ -223,7 +236,7 @@ export default function ManageUsers() {
           position: "center",
           icon: "error",
           toast: true,
-          title:"Failed",
+          title: "Failed",
           text: "Error occurred while saving/updating user",
           showConfirmButton: true,
         });

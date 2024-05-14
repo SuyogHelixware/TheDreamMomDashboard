@@ -26,6 +26,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
 import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
+import Loader from "../../components/Loader";
 
 const styles = {
   typography: {
@@ -39,6 +40,7 @@ const styles = {
 };
 
 const Exercise = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
@@ -90,10 +92,21 @@ const Exercise = () => {
   };
 
   const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
-  };
+    const selectedTags = event.target.value;
+    const uniqueSelectedTags = selectedTags.filter(
+      (tag, index, self) => self.findIndex((t) => t._id === tag._id) === index
+    );
+    setSelectedTags(uniqueSelectedTags);
 
+    const removedTag = selectedTags.find(
+      (tag) => selectedTags.filter((t) => t._id === tag._id).length > 1
+    );
+    if (removedTag) {
+      setSelectedTags((prevTags) =>
+        prevTags.filter((tag) => tag._id !== removedTag._id)
+      );
+    }
+  };
   const onchangeHandler = (event) => {
     setData({
       ...data,
@@ -115,7 +128,7 @@ const Exercise = () => {
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
-    if (emptyRequiredFields.length > 0) {
+    if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -134,6 +147,8 @@ const Exercise = () => {
       Image: data.Image,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
+
+    setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
       if (uploadedImg === "") {
@@ -156,9 +171,8 @@ const Exercise = () => {
           axios
             .post(`${BASE_URL}Exercise`, saveObj)
             .then((response) => {
-              console.log(response.data);
-              getAllImgList();
               if (response.data.status) {
+                setLoaderOpen(false);
                 Swal.fire({
                   position: "center",
                   icon: "success",
@@ -168,15 +182,20 @@ const Exercise = () => {
                   timer: 1500,
                 });
                 handleClose();
+                getAllImgList();
               } else {
+                setLoaderOpen(false);
                 Swal.fire({
                   icon: "error",
+                  toast: true,
                   title: "Failed",
                   text: "Failed to Add Data",
+                  showConfirmButton: true,
                 });
               }
             })
             .catch((error) => {
+              setLoaderOpen(false);
               console.error("Error:", error);
             });
         });
@@ -196,9 +215,8 @@ const Exercise = () => {
           axios
             .patch(`${BASE_URL}Exercise/${data.Id}`, UpdateObj)
             .then((response) => {
-              console.log(response.data);
-              getAllImgList();
               if (response.data.status) {
+                setLoaderOpen(false);
                 Swal.fire({
                   position: "center",
                   icon: "success",
@@ -207,20 +225,25 @@ const Exercise = () => {
                   showConfirmButton: false,
                   timer: 1500,
                 });
+                handleClose();
+                getAllImgList();
               } else {
+                setLoaderOpen(false);
                 Swal.fire({
                   icon: "error",
+                  toast: true,
                   title: "Failed",
                   text: "Failed to Update Data",
+                  showConfirmButton: true,
                 });
               }
             })
             .catch((error) => {
+              setLoaderOpen(false);
               console.error("Failed to Update Data:", error);
             });
         });
     }
-    handleClose();
   };
 
   const getAllImgList = () => {
@@ -236,6 +259,7 @@ const Exercise = () => {
   };
 
   const handleDelete = (data) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -256,12 +280,8 @@ const Exercise = () => {
             axios
               .delete(`${BASE_URL}Exercise/${data._id}`)
               .then((response) => {
-                console.log(
-                  "Node API Data Deleted successfully:",
-                  response.data
-                );
-                getAllImgList();
                 if (response.data.status) {
+                  setLoaderOpen(false);
                   Swal.fire({
                     position: "center",
                     icon: "success",
@@ -270,21 +290,29 @@ const Exercise = () => {
                     showConfirmButton: false,
                     timer: 1500,
                   });
+                  handleClose();
+                  getAllImgList();
                 } else {
+                  setLoaderOpen(false);
                   Swal.fire({
+                    position: "center",
                     icon: "error",
+                    toast: true,
                     title: "Failed",
-                    text: "Failed to Delete Data",
+                    text: "Something went wrong!",
+                    showConfirmButton: true,
                   });
                 }
               })
               .catch((error) => {
-                console.error("Error deleting data:", error);
+                setLoaderOpen(false);
                 Swal.fire({
+                  position: "center",
                   icon: "error",
+                  toast: true,
                   title: "Oops...",
-                  text: "Something went wrong..!",
-                  timer: 1500,
+                  text: "Something went wrong!",
+                  showConfirmButton: true,
                 });
               });
           });
@@ -343,6 +371,7 @@ const Exercise = () => {
 
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}

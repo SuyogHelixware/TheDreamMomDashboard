@@ -35,9 +35,22 @@ const ManageFAQ = () => {
   });
 
   const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
+    const selectedTags = event.target.value;
+    const uniqueSelectedTags = selectedTags.filter(
+      (tag, index, self) => self.findIndex((t) => t._id === tag._id) === index
+    );
+    setSelectedTags(uniqueSelectedTags);
+
+    const removedTag = selectedTags.find(
+      (tag) => selectedTags.filter((t) => t._id === tag._id).length > 1
+    );
+    if (removedTag) {
+      setSelectedTags((prevTags) =>
+        prevTags.filter((tag) => tag._id !== removedTag._id)
+      );
+    }
   };
+
 
   const clearFormData = () => {
     setData({
@@ -81,7 +94,7 @@ const ManageFAQ = () => {
   const handleSubmitForm = () => {
     const requiredFields = ["Question", "Answer"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
-    if (emptyRequiredFields.length > 0) {
+    if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -116,26 +129,26 @@ const ManageFAQ = () => {
             showConfirmButton: false,
             timer: 1500,
           });
-          console.log(response.data);
           getAllImgList();
+          handleClose();
         } else {
           Swal.fire({
             position: "center",
             icon: "error",
             toast: true,
-            title: response.data.message,
-            showConfirmButton: false,
+            text: response.data.message,
+            title: "Failed",
+            showConfirmButton: true,
           });
         }
-        handleClose();
       })
       .catch((error) => {
         Swal.fire({
           position: "center",
           icon: "error",
           toast: true,
-          title: "Error occurred while saving/updating FAQ",
-          showConfirmButton: false,
+          title: "Something went wrong!",
+          showConfirmButton: true,
         });
       });
   };
@@ -163,8 +176,6 @@ const ManageFAQ = () => {
         axios
           .delete(`${BASE_URL}faqs/${rowData._id}`)
           .then((response) => {
-            console.log("Node API Data Deleted successfully:", response.data);
-            getAllImgList();
             Swal.fire({
               position: "center",
               icon: "success",
@@ -173,13 +184,17 @@ const ManageFAQ = () => {
               showConfirmButton: false,
               timer: 1500,
             });
+            handleClose();
+            getAllImgList();
           })
           .catch((error) => {
-            console.error("Error deleting data:", error);
             Swal.fire({
+              position: "center",
               icon: "error",
-              title: "Oops...",
+              toast: true,
+              title: "Failed",
               text: "Something went wrong!",
+              showConfirmButton: true,
             });
           });
       }
@@ -189,7 +204,6 @@ const ManageFAQ = () => {
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
-      // console.log(response.data.values.flat());
     });
   };
   React.useEffect(() => {
@@ -218,8 +232,8 @@ const ManageFAQ = () => {
       ),
     },
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
-    { field: "Question", headerName: "Question", width: 250 },
-    { field: "Answer", headerName: "Answer", width: 300 },
+    { field: "Question", headerName: "Question", width: 350 },
+    { field: "Answer", headerName: "Answer", width: 350 },
   ];
 
   const handleUpdate = (rowData) => {
@@ -442,7 +456,7 @@ const ManageFAQ = () => {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={imgData}
@@ -451,11 +465,11 @@ const ManageFAQ = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
-            pageSizeOptions={[5]}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

@@ -20,6 +20,8 @@ import PlanMasterMedical from "./PlanMasterMedical";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { BASE_URL } from "../Constant";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 
 const PlanMaster = () => {
   const [open, setOpen] = useState(false);
@@ -68,6 +70,19 @@ const PlanMaster = () => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      renderCell: (params) => (
+        <strong>
+          <IconButton color="primary">
+            <EditNoteIcon />
+          </IconButton>
+          <Button
+            size="medium"
+            sx={{ color: "red" }}
+          >
+            <DeleteForeverIcon />
+          </Button>
+        </strong>
+      ),
     },
     {
       field: "SrNo",
@@ -81,9 +96,9 @@ const PlanMaster = () => {
       headerName: "Age",
       width: 100,
     },
-    { field: "Height", headerName: "Height", width: 250 },
-    { field: "Weight", headerName: "Weight", width: 400 },
-    { field: "Status", headerName: "Status", width: 400 },
+    { field: "Height", headerName: "Height", width: 100 },
+    { field: "Weight", headerName: "Weight", width: 100 },
+    { field: "Status", headerName: "Status", width: 100 },
   ];
 
   return (
@@ -147,7 +162,7 @@ const PlanMaster = () => {
         </Button>
       </Grid>
 
-      <Grid container item height={380} lg={12} component={Paper}>
+      <Grid container item height={500} lg={12} component={Paper}>
         <DataGrid
           className="datagrid-style"
           rows={data.map((data, index) => ({
@@ -160,11 +175,11 @@ const PlanMaster = () => {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 5,
+                pageSize: 7,
               },
             },
           }}
-          pageSizeOptions={[5]}
+          pageSizeOptions={[7]}
         />
       </Grid>
 

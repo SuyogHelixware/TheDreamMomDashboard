@@ -26,6 +26,7 @@ import axios from "axios";
 import * as React from "react";
 import { BASE_URL, Bunny_Image_URL, Bunny_Storage_URL } from "../../Constant";
 import Swal from "sweetalert2";
+import Loader from "../../components/Loader";
 
 const styles = {
   typography: {
@@ -39,6 +40,7 @@ const styles = {
 };
 
 const ManageDiet = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
@@ -69,8 +71,20 @@ const ManageDiet = () => {
   };
 
   const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
+    const selectedTags = event.target.value;
+    const uniqueSelectedTags = selectedTags.filter(
+      (tag, index, self) => self.findIndex((t) => t._id === tag._id) === index
+    );
+    setSelectedTags(uniqueSelectedTags);
+
+    const removedTag = selectedTags.find(
+      (tag) => selectedTags.filter((t) => t._id === tag._id).length > 1
+    );
+    if (removedTag) {
+      setSelectedTags((prevTags) =>
+        prevTags.filter((tag) => tag._id !== removedTag._id)
+      );
+    }
   };
 
   const handleFileUpload = (event) => {
@@ -116,7 +130,7 @@ const ManageDiet = () => {
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
-    if (emptyRequiredFields.length > 0) {
+    if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -134,6 +148,8 @@ const ManageDiet = () => {
       Image: data.Image,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
+
+    setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
       console.log(uploadedImg);
@@ -154,75 +170,116 @@ const ManageDiet = () => {
         })
         .then((response) => {
           console.log(response);
-          axios
-            .post(`${BASE_URL}diet`, saveObj)
-            .then((response) => {
-              console.log(response.data);
-              getAllImgList();
-              if (response.data.status) {
-                Swal.fire({
-                  position: "center",
-                  icon: "success",
-                  toast: true,
-                  title: "Data Added Successfully",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-                handleClose();
-              } else {
-                Swal.fire({
-                  icon: "error",
-                  title: "Failed",
-                  text: "Failed to Add Data",
-                });
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
+          if (response.data.HttpCode === 201) {
+            axios
+              .post(`${BASE_URL}diet`, saveObj)
+              .then((response) => {
+                if (response.data.status) {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    toast: true,
+                    title: "Data Added Successfully",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  handleClose();
+                  getAllImgList();
+                } else {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    icon: "error",
+                    toast: true,
+                    title: "Failed",
+                    text: "Failed to Add Data",
+                    showConfirmButton: true,
+                  });
+                }
+              })
+              .catch((error) => {
+                setLoaderOpen(false);
+                console.error("Error:", error);
+              });
+          } else {
+            setLoaderOpen(false);
+            Swal.fire({
+              icon: "error",
+              toast: true,
+              title: "Failed",
+              text: "Failed to Add Data",
+              showConfirmButton: true,
             });
+          }
         });
     } else {
-      console.log(UpdateObj);
-      axios
-        .request({
-          method: "PUT",
-          maxBodyLength: Infinity,
-          url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${data.Image}`,
-          headers: {
-            "Content-Type": "image/jpeg",
-            AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
-          },
-          data: uploadedImg,
-        })
-        .then((response) => {
+      Swal.fire({
+        text: "Do you want to Update?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Update it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
           axios
-            .patch(`${BASE_URL}diet/${data.Id}`, UpdateObj)
-            .then((response) => {
-              console.log(response.data);
-              getAllImgList();
-              if (response.data.status) {
-                Swal.fire({
-                  position: "center",
-                  icon: "success",
-                  title: "Data Updated Successfully",
-                  toast: true,
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
+            .request({
+              method: "PUT",
+              maxBodyLength: Infinity,
+              url: `https://storage.bunnycdn.com/thedreammomstoragezone1/Schedule/Diet/${data.Image}`,
+              headers: {
+                "Content-Type": "image/jpeg",
+                AccessKey: "eb240658-afa6-44a1-8b32cffac9ba-24f5-4196",
+              },
+              data: uploadedImg,
+            })
+            .then((res) => {
+              console.log(res);
+              if (res.data.HttpCode === 201) {
+                axios
+                  .patch(`${BASE_URL}diet/${data.Id}`, UpdateObj)
+                  .then((response) => {
+                    if (response.data.status) {
+                      setLoaderOpen(false);
+                      Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Data Updated Successfully",
+                        toast: true,
+                        showConfirmButton: false,
+                        timer: 1500,
+                      });
+                      handleClose();
+                      getAllImgList();
+                    } else {
+                      setLoaderOpen(false);
+                      Swal.fire({
+                        icon: "error",
+                        toast: true,
+                        title: "Failed",
+                        text: "Failed to Update Data",
+                        showConfirmButton: true,
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    setLoaderOpen(false);
+                    console.error("Failed to Updating Data:", error);
+                  });
               } else {
+                setLoaderOpen(false);
                 Swal.fire({
                   icon: "error",
+                  toast: true,
                   title: "Failed",
                   text: "Failed to Update Data",
+                  showConfirmButton: true,
                 });
               }
-            })
-            .catch((error) => {
-              console.error("Failed to Update Data:", error);
             });
-        });
+        }
+      });
     }
-    handleClose();
   };
 
   const getAllImgList = () => {
@@ -238,6 +295,7 @@ const ManageDiet = () => {
   };
 
   const handleDelete = (data) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -254,47 +312,65 @@ const ManageDiet = () => {
             },
           })
           .then((response) => {
-            console.log(data._id);
-            axios
-              .delete(`${BASE_URL}diet/${data._id}`)
-              .then((response) => {
-                console.log(
-                  "Node API Data Deleted successfully:",
-                  response.data
-                );
-                getAllImgList();
-                if (response.data.status) {
+            console.log(response);
+            if (response.data.HttpCode === 200) {
+              axios
+                .delete(`${BASE_URL}diet/${data._id}`)
+                .then((response) => {
+                  if (response.data.status) {
+                    setLoaderOpen(false);
+                    Swal.fire({
+                      position: "center",
+                      icon: "success",
+                      toast: true,
+                      title: "Data deleted successfully",
+                      showConfirmButton: false,
+                      timer: 1500,
+                    });
+                    handleClose();
+                    getAllImgList();
+                  } else {
+                    setLoaderOpen(false);
+                    Swal.fire({
+                      position: "center",
+                      icon: "error",
+                      toast: true,
+                      title: "Failed",
+                      text: "Failed to Delete!",
+                      showConfirmButton: true,
+                    });
+                  }
+                })
+                .catch((error) => {
+                  setLoaderOpen(false);
                   Swal.fire({
                     position: "center",
-                    icon: "success",
-                    toast: true,
-                    title: "Data deleted successfully",
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                } else {
-                  Swal.fire({
                     icon: "error",
-                    title: "Failed",
-                    text: "Failed to Delete Data",
+                    toast: true,
+                    title: "Oops...",
+                    text: "Something went wrong!",
+                    showConfirmButton: true,
                   });
-                }
-              })
-              .catch((error) => {
-                console.error("Error deleting data:", error);
-                Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: "Something went wrong..!",
                 });
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                icon: "error",
+                toast: true,
+                title: "Oops...",
+                text: "Something went wrong...!",
+                showConfirmButton: true,
               });
+            }
           })
           .catch((error) => {
-            console.error("Error deleting data from storage:", error);
+            setLoaderOpen(false);
             Swal.fire({
               icon: "error",
+              toast: true,
               title: "Oops...",
               text: "Something went wrong...!",
+              showConfirmButton: true,
             });
           });
       }
@@ -351,6 +427,7 @@ const ManageDiet = () => {
   });
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}

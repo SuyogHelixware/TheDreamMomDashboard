@@ -103,26 +103,27 @@ export default function MedicalCondition() {
             showConfirmButton: false,
             timer: 1500,
           });
-          console.log(response.data);
+          handleClose();
           getUserData();
         } else {
           Swal.fire({
             position: "center",
             icon: "error",
             toast: true,
-            title: response.data.message,
-            showConfirmButton: false,
+            title: "Failed",
+            text: response.data.message,
+            showConfirmButton: true,
           });
         }
-        handleClose();
       })
       .catch((error) => {
         Swal.fire({
           position: "center",
           icon: "error",
           toast: true,
-          title: "Error occurred while saving/updating FAQ",
-          showConfirmButton: false,
+          title: "Failed",
+          text: "Something went wrong!",
+          showConfirmButton: true,
         });
       });
   };
@@ -140,8 +141,6 @@ export default function MedicalCondition() {
         axios
           .delete(`${BASE_URL}medicalconditions/${rowData._id}`)
           .then((response) => {
-            console.log("Node API Data Deleted successfully:", response.data);
-            getUserData();
             Swal.fire({
               position: "center",
               icon: "success",
@@ -150,13 +149,17 @@ export default function MedicalCondition() {
               showConfirmButton: false,
               timer: 1500,
             });
+            handleClose();
+            getUserData();
           })
           .catch((error) => {
-            console.error("Error deleting data:", error);
             Swal.fire({
+              position: "center",
               icon: "error",
+              toast: true,
               title: "Oops...",
               text: "Something went wrong!",
+              showConfirmButton: true,
             });
           });
       }
@@ -177,7 +180,7 @@ export default function MedicalCondition() {
     {
       field: "actions",
       headerName: "Action",
-      width: 180,
+      width: 150,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -193,7 +196,7 @@ export default function MedicalCondition() {
         </strong>
       ),
     },
-    { field: "id", headerName: "ID", width: 150, sortable: false },
+    { field: "id", headerName: "ID", width: 100, sortable: false },
     {
       field: "Name",
       headerName: "Name",
@@ -209,7 +212,7 @@ export default function MedicalCondition() {
     {
       field: "Status",
       headerName: "Status",
-      width: 200,
+      width: 150,
       sortable: false,
     },
   ];
@@ -389,7 +392,7 @@ export default function MedicalCondition() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%" }}>
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
             className="datagrid-style"
             getRowId={(row) => row._id}
@@ -398,11 +401,11 @@ export default function MedicalCondition() {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
-            pageSizeOptions={[5]}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

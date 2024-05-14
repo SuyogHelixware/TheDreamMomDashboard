@@ -54,7 +54,7 @@ export default function ManageComment() {
     {
       field: "Name",
       headerName: "Name",
-      width: 300,
+      width: 250,
       sortable: false,
     },
     {
@@ -337,7 +337,7 @@ export default function ManageComment() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={rows}
@@ -345,10 +345,11 @@ export default function ManageComment() {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

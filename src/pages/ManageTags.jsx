@@ -112,21 +112,27 @@ export default function ManageTags() {
         axios
           .delete(`${BASE_URL}tags/${data._id}`)
           .then((response) => {
-            if (response.data.status === true) {
-              // setTagsData(tagData.filter((user) => user._id !== id));
-              getTagData();
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                toast: true,
-                title: "Tag deleted Successfully",
-                showConfirmButton: false,
-                timer: 2500,
-              });
-            }
+
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              toast: true,
+              title: "Tag deleted successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            handleClose();
+            getTagData();
           })
           .catch((error) => {
-            alert("error");
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              toast: true,
+              title: "Oops...",
+              text: "Something went wrong!",
+              showConfirmButton: true,
+            });
           });
       }
     });
@@ -138,7 +144,7 @@ export default function ManageTags() {
       toast: true,
       title: message,
       showConfirmButton: false,
-      timer: 2500,
+      timer: 1500,
     });
   };
   const updateUser = (id) => {
@@ -169,7 +175,7 @@ export default function ManageTags() {
                 ? "Tag Added Successfully"
                 : "Tag Updated Successfully",
             showConfirmButton: false,
-            timer: 2500,
+            timer: 1500,
           });
           getTagData();
           handleClose();
@@ -183,7 +189,6 @@ export default function ManageTags() {
             showConfirmButton: true,
           });
         }
-        // handleClose();
       })
       .catch((error) => {
         setLoaderOpen(false);
@@ -191,8 +196,9 @@ export default function ManageTags() {
           position: "center",
           icon: "error",
           toast: true,
-          title: "Error occurred while saving/updating user",
-          showConfirmButton: false,
+          title: "Failed",
+          text: "Something went wrong!",
+          showConfirmButton: true,
         });
       });
   };
@@ -374,7 +380,7 @@ export default function ManageTags() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             getRowId={(row) => row._id}
@@ -383,10 +389,11 @@ export default function ManageTags() {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

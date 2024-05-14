@@ -100,26 +100,27 @@ const ManagePosts = () => {
             showConfirmButton: false,
             timer: 1500,
           });
-          console.log(response.data);
+          handleClose();
           getAllImgList();
         } else {
           Swal.fire({
             position: "center",
             icon: "error",
             toast: true,
-            title: response.data.message,
-            showConfirmButton: false,
+            title: "Failed",
+            text: response.data.message,
+            showConfirmButton: true,
           });
         }
-        handleClose();
       })
       .catch((error) => {
         Swal.fire({
           position: "center",
           icon: "error",
           toast: true,
-          title: "Error occurred while saving/updating Post",
-          showConfirmButton: false,
+          title: "Oops...",
+          text: "Something went wrong!",
+          showConfirmButton: true,
         });
       });
   };
@@ -147,8 +148,6 @@ const ManagePosts = () => {
         axios
           .delete(`${BASE_URL}posts/${rowData._id}`)
           .then((response) => {
-            console.log("Node API Data Deleted successfully:", response.data);
-            getAllImgList();
             Swal.fire({
               position: "center",
               icon: "success",
@@ -157,13 +156,17 @@ const ManagePosts = () => {
               showConfirmButton: false,
               timer: 1500,
             });
+            handleClose();
+            getAllImgList();
           })
           .catch((error) => {
-            console.error("Error deleting data:", error);
             Swal.fire({
+              position: "center",
               icon: "error",
+              toast: true,
               title: "Oops...",
               text: "Something went wrong!",
+              showConfirmButton: true,
             });
           });
       }
@@ -382,7 +385,7 @@ const ManagePosts = () => {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={imgData}
@@ -391,11 +394,11 @@ const ManagePosts = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
-            pageSizeOptions={[5]}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

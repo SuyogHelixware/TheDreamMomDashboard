@@ -182,7 +182,7 @@ export default function ManageAssesment() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 430, width: "100%" }}>
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
             className="datagrid-style"
             getRowId={(row) => row.id}
@@ -191,11 +191,11 @@ export default function ManageAssesment() {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
-            pageSizeOptions={[5]}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

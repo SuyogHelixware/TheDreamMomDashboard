@@ -92,8 +92,20 @@ const ManageBlog = () => {
   };
 
   const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
+    const selectedTags = event.target.value;
+    const uniqueSelectedTags = selectedTags.filter(
+      (tag, index, self) => self.findIndex((t) => t._id === tag._id) === index
+    );
+    setSelectedTags(uniqueSelectedTags);
+
+    const removedTag = selectedTags.find(
+      (tag) => selectedTags.filter((t) => t._id === tag._id).length > 1
+    );
+    if (removedTag) {
+      setSelectedTags((prevTags) =>
+        prevTags.filter((tag) => tag._id !== removedTag._id)
+      );
+    }
   };
 
   const handleClose = () => {
@@ -133,7 +145,7 @@ const ManageBlog = () => {
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Category", "Description"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
-    if (emptyRequiredFields.length > 0) {
+    if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -175,7 +187,7 @@ const ManageBlog = () => {
             .post(`${BASE_URL}blogs`, saveObj)
             .then((response) => {
               console.log(response.data);
-              getAllImgList();
+
               if (response.data.status) {
                 Swal.fire({
                   position: "center",
@@ -185,11 +197,15 @@ const ManageBlog = () => {
                   showConfirmButton: false,
                   timer: 1500,
                 });
+                handleClose();
+                getAllImgList();
               } else {
                 Swal.fire({
                   icon: "error",
+                  toast: true,
                   title: "Failed",
-                  text: "Failed to Add Data",
+                  text: "Failed to Add Blog",
+                  showConfirmButton: true,
                 });
               }
             })
@@ -199,7 +215,7 @@ const ManageBlog = () => {
         });
     } else {
       Swal.fire({
-        text: "Do you want to update ?",
+        text: "Do you want to updat..?",
         icon: "warning",
         size: "small",
         showCancelButton: true,
@@ -224,7 +240,7 @@ const ManageBlog = () => {
                 .patch(`${BASE_URL}blogs/${data.Id}`, UpdateObj)
                 .then((response) => {
                   console.log(response.data);
-                  getAllImgList();
+
                   if (response.data.status) {
                     Swal.fire({
                       position: "center",
@@ -234,23 +250,25 @@ const ManageBlog = () => {
                       showConfirmButton: false,
                       timer: 1500,
                     });
+                    handleClose();
+                    getAllImgList();
                   } else {
                     Swal.fire({
                       icon: "error",
+                      toast: true,
                       title: "Failed",
                       text: "Failed to Update Data",
+                      showConfirmButton: true,
                     });
                   }
                 })
                 .catch((error) => {
-                  console.error("Error deleting data:", error);
+                  console.error("Error Updating data:", error);
                 });
             });
         }
       });
     }
-
-    handleClose();
   };
   const handleDelete = (data) => {
     console.log(data);
@@ -273,7 +291,6 @@ const ManageBlog = () => {
             axios
               .delete(`${BASE_URL}blogs/${data._id}`)
               .then((response) => {
-                getAllImgList();
                 Swal.fire({
                   position: "center",
                   icon: "success",
@@ -282,22 +299,29 @@ const ManageBlog = () => {
                   showConfirmButton: false,
                   timer: 1500,
                 });
+                handleClose();
+                getAllImgList();
               })
               .catch((error) => {
                 console.error("Error deleting data:", error);
                 Swal.fire({
+                  position: "center",
                   icon: "error",
-                  title: "Oops...",
+                  toast: true,
+                  title: "Failed",
                   text: "Something went wrong!",
+                  showConfirmButton: true,
                 });
               });
           })
           .catch((error) => {
-            console.error("Error deleting data from storage:", error);
             Swal.fire({
+              position: "center",
               icon: "error",
+              toast: true,
               title: "Oops...",
               text: "Something went wrong!",
+              showConfirmButton: true,
             });
           });
       }

@@ -9,7 +9,7 @@ import {
   Modal,
   Paper,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
@@ -100,26 +100,27 @@ const ManageAvoidFood = () => {
             showConfirmButton: false,
             timer: 1500,
           });
-          console.log(response.data);
           getAllImgList();
+          handleClose();
         } else {
           Swal.fire({
             position: "center",
             icon: "error",
             toast: true,
-            title: response.data.message,
-            showConfirmButton: false,
+            title: "Failed",
+            text: response.data.message,
+            showConfirmButton: true,
           });
         }
-        handleClose();
       })
       .catch((error) => {
         Swal.fire({
           position: "center",
           icon: "error",
           toast: true,
-          title: "Error occurred while saving/updating FAQ",
-          showConfirmButton: false,
+          title: "Failed",
+          text: "Failed to Add Data",
+          showConfirmButton: true,
         });
       });
   };
@@ -147,8 +148,6 @@ const ManageAvoidFood = () => {
         axios
           .delete(`${BASE_URL}avoidablethings/${rowData._id}`)
           .then((response) => {
-            console.log("Node API Data Deleted successfully:", response.data);
-            getAllImgList();
             Swal.fire({
               position: "center",
               icon: "success",
@@ -157,13 +156,17 @@ const ManageAvoidFood = () => {
               showConfirmButton: false,
               timer: 1500,
             });
+            handleClose();
+            getAllImgList();
           })
           .catch((error) => {
-            console.error("Error deleting data:", error);
             Swal.fire({
+              position: "center",
               icon: "error",
-              title: "Oops...",
+              toast: true,
+              title: "Failed",
               text: "Something went wrong!",
+              showConfirmButton: true,
             });
           });
       }
@@ -380,7 +383,7 @@ const ManageAvoidFood = () => {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={imgData}
@@ -389,11 +392,11 @@ const ManageAvoidFood = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
-            pageSizeOptions={[5]}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

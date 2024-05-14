@@ -1,6 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import { IconButton, Modal, Paper } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -46,6 +46,12 @@ export default function ManageSubscription() {
       width: 180,
       sortable: false,
     },
+    {
+      field: "lastName",
+      headerName: "Description",
+      width: 300,
+      sortable: false,
+    },
 
     {
       field: "feature",
@@ -74,15 +80,6 @@ export default function ManageSubscription() {
       width: 200,
       sortable: false,
     },
-
-    {
-      field: "lastName",
-      headerName: "Description",
-      width: 300,
-      sortable: false,
-    },
-
-  
   ];
 
   const rows = [
@@ -341,7 +338,7 @@ export default function ManageSubscription() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 510, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={rows}
@@ -349,10 +346,11 @@ export default function ManageSubscription() {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

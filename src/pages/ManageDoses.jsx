@@ -12,7 +12,6 @@ import * as React from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
 
-
 const ManageDoses = () => {
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
@@ -108,26 +107,27 @@ const ManageDoses = () => {
             showConfirmButton: false,
             timer: 1500,
           });
-          console.log(response.data);
           getAllImgList();
+          handleClose();
         } else {
           Swal.fire({
             position: "center",
             icon: "error",
             toast: true,
+            text: "Failed",
             title: response.data.message,
-            showConfirmButton: false,
+            showConfirmButton: true,
           });
         }
-        handleClose();
       })
       .catch((error) => {
         Swal.fire({
           position: "center",
           icon: "error",
           toast: true,
-          title: "Error occurred while saving/updating FAQ",
-          showConfirmButton: false,
+          text: "Failed",
+          title: "Something went wrong!",
+          showConfirmButton: true,
         });
       });
   };
@@ -145,7 +145,6 @@ const ManageDoses = () => {
         axios
           .delete(`${BASE_URL}dosagedet/${data._id}`)
           .then((response) => {
-            console.log("Node API Data Deleted successfully:", response.data);
             getAllImgList();
             Swal.fire({
               position: "center",
@@ -155,13 +154,15 @@ const ManageDoses = () => {
               timer: 1500,
               toast: true,
             });
+            handleClose();
           })
           .catch((error) => {
-            console.error("Error deleting data:", error);
             Swal.fire({
               icon: "error",
-              title: "Oops...",
+              title: "Failed",
+              toast: true,
               text: "Something went wrong!",
+              showConfirmButton: true,
             });
           });
       }
@@ -345,7 +346,7 @@ const ManageDoses = () => {
           sx={{
             pr: 2,
             mb: 2,
-            color: "white", 
+            color: "white",
             backgroundColor: "#8F00FF",
             boxShadow: 5,
             "&:hover": {
@@ -375,7 +376,7 @@ const ManageDoses = () => {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={imgData}
@@ -383,10 +384,11 @@ const ManageDoses = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
+            pageSizeOptions={[7]}
             autoHeight
           />
         </Box>

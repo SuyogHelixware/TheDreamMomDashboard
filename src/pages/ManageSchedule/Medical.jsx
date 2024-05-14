@@ -20,8 +20,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import * as React from "react";
 import { BASE_URL } from "../../Constant";
+import Loader from "../../components/Loader";
 
 const Medical = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [imgData, setImgData] = React.useState({
     Name: "",
     Description: "",
@@ -51,9 +53,22 @@ const Medical = () => {
   };
 
   const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
+    const selectedTags = event.target.value;
+    const uniqueSelectedTags = selectedTags.filter(
+      (tag, index, self) => self.findIndex((t) => t._id === tag._id) === index
+    );
+    setSelectedTags(uniqueSelectedTags);
+
+    const removedTag = selectedTags.find(
+      (tag) => selectedTags.filter((t) => t._id === tag._id).length > 1
+    );
+    if (removedTag) {
+      setSelectedTags((prevTags) =>
+        prevTags.filter((tag) => tag._id !== removedTag._id)
+      );
+    }
   };
+
   const handleClose = () => {
     setOn(false);
   };
@@ -87,7 +102,7 @@ const Medical = () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
 
-    if (emptyRequiredFields.length > 0) {
+    if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -102,6 +117,7 @@ const Medical = () => {
       Description: data.Description,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
+    setLoaderOpen(true);
 
     const axiosRequest =
       SaveUpdateButton === "SAVE"
@@ -111,6 +127,7 @@ const Medical = () => {
     axiosRequest
       .then((response) => {
         if (response.data.status) {
+          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "success",
@@ -122,25 +139,26 @@ const Medical = () => {
             showConfirmButton: false,
             timer: 1500,
           });
-          console.log(response.data);
+          handleClose();
           getAllImgList();
         } else {
+          setLoaderOpen(false);
           Swal.fire({
-            position: "center",
             icon: "error",
             toast: true,
-            title: response.data.message,
-            showConfirmButton: false,
+            title: "Failed",
+            text: response.data.message,
+            showConfirmButton: true,
           });
         }
-        handleClose();
       })
       .catch((error) => {
+        setLoaderOpen(false);
         Swal.fire({
           position: "center",
           icon: "error",
           toast: true,
-          title: "Error occurred while saving/updating FAQ",
+          title: "Something went wrong..!",
           showConfirmButton: false,
         });
       });
@@ -187,6 +205,7 @@ const Medical = () => {
   ];
 
   const handleDelete = (data) => {
+    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -199,23 +218,39 @@ const Medical = () => {
         axios
           .delete(`${BASE_URL}medicaltests/${data._id}`)
           .then((response) => {
-            console.log("Node API Data Deleted successfully:", response.data);
-            getAllImgList();
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              toast: true,
-              title: "Data deleted successfully",
-              showConfirmButton: false,
-              timer: 1500,
-            });
+            if (response.data.status) {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                toast: true,
+                title: "Data deleted successfully",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              handleClose();
+              getAllImgList();
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Failed to Delete!",
+                showConfirmButton: true,
+              });
+            }
           })
           .catch((error) => {
-            console.error("Error deleting data:", error);
+            setLoaderOpen(false);
             Swal.fire({
+              position: "center",
               icon: "error",
-              title: "Oops...",
+              toast: true,
+              title: "Failed",
               text: "Something went wrong!",
+              showConfirmButton: true,
             });
           });
       }
@@ -243,6 +278,7 @@ const Medical = () => {
 
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
@@ -449,7 +485,7 @@ const Medical = () => {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={imgData}
@@ -457,11 +493,11 @@ const Medical = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 7,
                 },
               },
             }}
-            pageSizeOptions={[5]}
+            pageSizeOptions={[7]}
           />
         </Box>
       </Paper>

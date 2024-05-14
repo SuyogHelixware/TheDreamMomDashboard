@@ -69,8 +69,20 @@ const Precaution = () => {
   };
 
   const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
+    const selectedTags = event.target.value;
+    const uniqueSelectedTags = selectedTags.filter(
+      (tag, index, self) => self.findIndex((t) => t._id === tag._id) === index
+    );
+    setSelectedTags(uniqueSelectedTags);
+
+    const removedTag = selectedTags.find(
+      (tag) => selectedTags.filter((t) => t._id === tag._id).length > 1
+    );
+    if (removedTag) {
+      setSelectedTags((prevTags) =>
+        prevTags.filter((tag) => tag._id !== removedTag._id)
+      );
+    }
   };
 
   const handleFileUpload = (event) => {
@@ -116,7 +128,7 @@ const Precaution = () => {
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
-    if (emptyRequiredFields.length > 0) {
+    if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -157,8 +169,6 @@ const Precaution = () => {
           axios
             .post(`${BASE_URL}precaution`, saveObj)
             .then((response) => {
-              console.log(response.data);
-              getAllImgList();
               if (response.data.status) {
                 Swal.fire({
                   position: "center",
@@ -169,11 +179,14 @@ const Precaution = () => {
                   timer: 1500,
                 });
                 handleClose();
+                getAllImgList();
               } else {
                 Swal.fire({
                   icon: "error",
+                  toast: true,
                   title: "Failed",
                   text: "Failed to Add Data",
+                  showConfirmButton: true,
                 });
               }
             })
@@ -198,8 +211,6 @@ const Precaution = () => {
           axios
             .patch(`${BASE_URL}precaution/${data.Id}`, UpdateObj)
             .then((response) => {
-              console.log(response.data);
-              getAllImgList();
               if (response.data.status) {
                 Swal.fire({
                   position: "center",
@@ -209,11 +220,15 @@ const Precaution = () => {
                   showConfirmButton: false,
                   timer: 1500,
                 });
+                handleClose();
+                getAllImgList();
               } else {
                 Swal.fire({
                   icon: "error",
+                  toast: true,
                   title: "Failed",
                   text: "Failed to Update Data",
+                  showConfirmButton: true,
                 });
               }
             })
@@ -222,7 +237,6 @@ const Precaution = () => {
             });
         });
     }
-    handleClose();
   };
 
   const getAllImgList = () => {
@@ -258,11 +272,6 @@ const Precaution = () => {
             axios
               .delete(`${BASE_URL}precaution/${data._id}`)
               .then((response) => {
-                console.log(
-                  "Node API Data Deleted successfully:",
-                  response.data
-                );
-                getAllImgList();
                 if (response.data.status) {
                   Swal.fire({
                     position: "center",
@@ -272,29 +281,37 @@ const Precaution = () => {
                     showConfirmButton: false,
                     timer: 1500,
                   });
+                  handleClose();
+                  getAllImgList();
                 } else {
                   Swal.fire({
+                    position: "center",
                     icon: "error",
+                    toast: true,
                     title: "Failed",
-                    text: "Failed to Delete Data",
+                    text: "Something went wrong!",
+                    showConfirmButton: true,
                   });
                 }
               })
               .catch((error) => {
                 console.error("Error deleting data:", error);
                 Swal.fire({
+                  toast: true,
                   icon: "error",
                   title: "Oops...",
                   text: "Something went wrong..!",
+                  showConfirmButton: true,
                 });
               });
           })
           .catch((error) => {
-            console.error("Error deleting data from storage:", error);
             Swal.fire({
+              toast: true,
               icon: "error",
               title: "Oops...",
               text: "Something went wrong...!",
+              showConfirmButton: true,
             });
           });
       }

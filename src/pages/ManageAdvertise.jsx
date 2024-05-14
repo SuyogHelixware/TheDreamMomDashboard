@@ -70,8 +70,20 @@ const ManageAdvertise = () => {
   };
 
   const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
+    const selectedTags = event.target.value;
+    const uniqueSelectedTags = selectedTags.filter(
+      (tag, index, self) => self.findIndex((t) => t._id === tag._id) === index
+    );
+    setSelectedTags(uniqueSelectedTags);
+
+    const removedTag = selectedTags.find(
+      (tag) => selectedTags.filter((t) => t._id === tag._id).length > 1
+    );
+    if (removedTag) {
+      setSelectedTags((prevTags) =>
+        prevTags.filter((tag) => tag._id !== removedTag._id)
+      );
+    }
   };
 
   const handleFileUpload = (event) => {
@@ -116,7 +128,7 @@ const ManageAdvertise = () => {
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
-    if (emptyRequiredFields.length > 0) {
+    if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -149,8 +161,6 @@ const ManageAdvertise = () => {
           axios
             .post(`${BASE_URL}advertisement`, saveObj)
             .then((response) => {
-              getAllImgList();
-
               if (response.data.status) {
                 Swal.fire({
                   position: "center",
@@ -160,11 +170,15 @@ const ManageAdvertise = () => {
                   showConfirmButton: false,
                   timer: 1500,
                 });
+                handleClose();
+                getAllImgList();
               } else {
                 Swal.fire({
                   icon: "error",
+                  toast: true,
                   title: "Failed",
                   text: "Failed to Add Data",
+                  showConfirmButton: true,
                 });
               }
             })
@@ -204,7 +218,6 @@ const ManageAdvertise = () => {
               axios
                 .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
                 .then((response) => {
-                  getAllImgList();
                   if (response.data.status) {
                     Swal.fire({
                       position: "center",
@@ -214,11 +227,15 @@ const ManageAdvertise = () => {
                       showConfirmButton: false,
                       timer: 1500,
                     });
+                    handleClose();
+                    getAllImgList();
                   } else {
                     Swal.fire({
                       icon: "error",
+                      toast: true,
                       title: "Failed",
                       text: "Failed to Update Data",
+                      showConfirmButton: true,
                     });
                   }
                 })
@@ -229,7 +246,6 @@ const ManageAdvertise = () => {
         }
       });
     }
-    handleClose();
   };
 
   const getAllImgList = () => {
@@ -264,7 +280,6 @@ const ManageAdvertise = () => {
             axios
               .delete(`${BASE_URL}advertisement/${data._id}`)
               .then((response) => {
-                getAllImgList();
                 Swal.fire({
                   position: "center",
                   icon: "success",
@@ -273,22 +288,28 @@ const ManageAdvertise = () => {
                   showConfirmButton: false,
                   timer: 1500,
                 });
+                handleClose();
+                getAllImgList();
               })
               .catch((error) => {
-                console.error("Error deleting data:", error);
                 Swal.fire({
+                  position: "center",
                   icon: "error",
-                  title: "Oops...",
+                  toast: true,
+                  title: "Failed",
                   text: "Something went wrong!",
+                  showConfirmButton: true,
                 });
               });
           })
           .catch((error) => {
-            console.error("Error deleting data from storage:", error);
             Swal.fire({
+              position: "center",
               icon: "error",
+              toast: true,
               title: "Oops...",
               text: "Something went wrong!",
+              showConfirmButton: true,
             });
           });
       }
@@ -408,7 +429,7 @@ const ManageAdvertise = () => {
                         <Chip
                           key={value._id}
                           label={tags.find((tag) => tag._id === value._id).Name}
-                          onDelete={() => handleDelete(value)}
+                          // onDelete={() => handleDelete(value)}
                         />
                       ))}
                     </div>

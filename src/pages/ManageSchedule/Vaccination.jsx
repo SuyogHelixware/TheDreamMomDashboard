@@ -69,8 +69,20 @@ const Vaccination = () => {
   };
 
   const handleChange = (event) => {
-    setSelectedTags(event.target.value);
-    console.log(event.target.value);
+    const selectedTags = event.target.value;
+    const uniqueSelectedTags = selectedTags.filter(
+      (tag, index, self) => self.findIndex((t) => t._id === tag._id) === index
+    );
+    setSelectedTags(uniqueSelectedTags);
+
+    const removedTag = selectedTags.find(
+      (tag) => selectedTags.filter((t) => t._id === tag._id).length > 1
+    );
+    if (removedTag) {
+      setSelectedTags((prevTags) =>
+        prevTags.filter((tag) => tag._id !== removedTag._id)
+      );
+    }
   };
 
   const handleFileUpload = (event) => {
@@ -116,7 +128,7 @@ const Vaccination = () => {
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
-    if (emptyRequiredFields.length > 0) {
+    if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -157,8 +169,6 @@ const Vaccination = () => {
           axios
             .post(`${BASE_URL}vaccination`, saveObj)
             .then((response) => {
-              console.log(response.data);
-              getAllImgList();
               if (response.data.status) {
                 Swal.fire({
                   position: "center",
@@ -169,11 +179,14 @@ const Vaccination = () => {
                   timer: 1500,
                 });
                 handleClose();
+                getAllImgList();
               } else {
                 Swal.fire({
                   icon: "error",
+                  toast: true,
                   title: "Failed",
                   text: "Failed to Add Data",
+                  showConfirmButton: true,
                 });
               }
             })
@@ -198,9 +211,6 @@ const Vaccination = () => {
           axios
             .patch(`${BASE_URL}vaccination/${data.Id}`, UpdateObj)
             .then((response) => {
-              console.log(response.data);
-              getAllImgList();
-
               if (response.data.status) {
                 Swal.fire({
                   position: "center",
@@ -210,11 +220,15 @@ const Vaccination = () => {
                   showConfirmButton: false,
                   timer: 1500,
                 });
+                handleClose();
+                getAllImgList();
               } else {
                 Swal.fire({
                   icon: "error",
+                  toast: true,
                   title: "Failed",
                   text: "Failed to Update Data",
+                  showConfirmButton: true,
                 });
               }
             })
@@ -223,7 +237,6 @@ const Vaccination = () => {
             });
         });
     }
-    handleClose();
   };
 
   const getAllImgList = () => {
@@ -259,11 +272,6 @@ const Vaccination = () => {
             axios
               .delete(`${BASE_URL}vaccination/${data._id}`)
               .then((response) => {
-                console.log(
-                  "Node API Data Deleted successfully:",
-                  response.data
-                );
-                getAllImgList();
                 Swal.fire({
                   position: "center",
                   icon: "success",
@@ -272,19 +280,24 @@ const Vaccination = () => {
                   showConfirmButton: false,
                   timer: 1500,
                 });
+                handleClose();
+                getAllImgList();
               })
               .catch((error) => {
-                console.error("Error deleting data:", error);
                 Swal.fire({
+                  position: "center",
                   icon: "error",
-                  title: "Oops...",
+                  toast: true,
+                  title: "Failed",
                   text: "Something went wrong!",
+                  showConfirmButton: true,
                 });
               });
           })
           .catch((error) => {
-            console.error("Error deleting data from storage:", error);
             Swal.fire({
+              showConfirmButton: true,
+              toast: true,
               icon: "error",
               title: "Oops...",
               text: "Something went wrong!",
@@ -578,12 +591,12 @@ const Vaccination = () => {
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
               <Card sx={{ width: "100%" }}>
                 <img
-                 style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "fill",
-                  aspectRatio: 5 / 3,
-                }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "fill",
+                    aspectRatio: 5 / 3,
+                  }}
                   src={`${Bunny_Image_URL}/Schedule/Vaccination/${item.Image}`}
                   alt="img"
                   title={item.Name}
