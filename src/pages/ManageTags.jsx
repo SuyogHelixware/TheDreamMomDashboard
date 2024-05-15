@@ -174,7 +174,18 @@ export default function ManageTags() {
     const axiosRequest =
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}tags`, data)
-        : axios.patch(`${BASE_URL}tags/${id}`, data);
+        : Swal.fire({
+            text: "Do you want to Update?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Update it!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              return axios.patch(`${BASE_URL}tags/${id}`, data);
+            }
+          });
 
     axiosRequest
       .then((response) => {

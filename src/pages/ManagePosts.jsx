@@ -88,7 +88,18 @@ const ManagePosts = () => {
     const axiosRequest =
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}posts`, saveObj)
-        : axios.patch(`${BASE_URL}posts/${data.Id}`, UpdateObj);
+        : Swal.fire({
+            text: "Do you want to Update?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Update it!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              return axios.patch(`${BASE_URL}posts/${data.Id}`, UpdateObj);
+            }
+          });
 
     axiosRequest
       .then((response) => {
