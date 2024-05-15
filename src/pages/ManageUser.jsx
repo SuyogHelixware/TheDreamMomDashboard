@@ -257,27 +257,27 @@ export default function ManageUsers() {
       renderCell: (params) => (
         <>
           <IconButton
+            onClick={() => handleClick(params.row)}
             sx={{
               "& .MuiButtonBase-root,": {
                 padding: 0,
               },
             }}
-            onClick={() => deluser(params.row._id)}
             color="primary"
           >
-            <DeleteForeverIcon style={{ color: "red" }} />
+            <EditNoteIcon />
           </IconButton>
           <IconButton
-            onClick={() => handleClick(params.row)}
             sx={{
               "& .MuiButtonBase-root,": {
                 padding: 0,
                 marginLeft: 3,
               },
             }}
+            onClick={() => deluser(params.row._id)}
             color="primary"
           >
-            <EditNoteIcon />
+            <DeleteForeverIcon style={{ color: "red" }} />
           </IconButton>
         </>
       ),

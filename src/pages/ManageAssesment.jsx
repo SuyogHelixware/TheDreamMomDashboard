@@ -103,12 +103,12 @@ export default function ManageAssesment() {
       width: 100,
       sortable: false,
     },
-    {
-      field: "MedConIds",
-      headerName: "MedConIds",
-      width: 100,
-      sortable: false,
-    },
+    // {
+    //   field: "MedConIds",
+    //   headerName: "MedConIds",
+    //   width: 100,
+    //   sortable: false,
+    // },
   ];
   return (
     <>
