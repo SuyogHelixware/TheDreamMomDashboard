@@ -97,10 +97,10 @@ const ManageDiet = () => {
     console.log("Uploaded file:", file);
     setUploadedImg(file);
 
-    setData((prevData) => ({
-      ...prevData,
-      Image: file.name,
-    }));
+    // setData((prevData) => ({
+    //   ...prevData,
+    //   Image: file.name,
+    // }));
   };
 
   const handleClose = () => {
@@ -150,7 +150,7 @@ const ManageDiet = () => {
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
-      Image: data.Image,
+      Image: filename,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
 
@@ -238,7 +238,7 @@ const ManageDiet = () => {
             .request({
               method: "PUT",
               maxBodyLength: Infinity,
-              url: `${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`,
+              url: `${Bunny_Storage_URL}/Schedule/Diet/${filename}`,
               headers: {
                 "Content-Type": "image/jpeg",
                 AccessKey: Bunny_Storage_Access_Key,
@@ -261,6 +261,17 @@ const ManageDiet = () => {
                         showConfirmButton: false,
                         timer: 1500,
                       });
+
+                      axios
+                        .request({
+                          method: "DELETE",
+                          maxBodyLength: Infinity,
+                          url: `${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`,
+                          headers: {
+                            AccessKey: Bunny_Storage_Access_Key,
+                          },
+                        })
+                        .then((res) => {});
                       handleClose();
                       getAllImgList();
                     } else {
