@@ -96,7 +96,7 @@ const ManageDoses = () => {
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}dosagedet`, saveObj)
         : Swal.fire({
-            text: "Do you want to Update?",
+            text: "Do you want to Update...?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",

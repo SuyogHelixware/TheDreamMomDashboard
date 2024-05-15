@@ -97,10 +97,10 @@ const Vaccination = () => {
     console.log("Uploaded file:", file);
     setUploadedImg(file);
 
-    setData((prevData) => ({
-      ...prevData,
-      Image: file.name,
-    }));
+    // setData((prevData) => ({
+    //   ...prevData,
+    //   Image: file.name,
+    // }));
   };
 
   const handleClose = () => {
@@ -151,7 +151,7 @@ const Vaccination = () => {
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
-      Image: data.Image,
+      Image: uploadedImg === "" ? data.Image : filename,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
 
@@ -193,6 +193,7 @@ const Vaccination = () => {
                   });
                   handleClose();
                   getAllImgList();
+                  setUploadedImg("");
                 } else {
                   setLoaderOpen(false);
                   Swal.fire({
@@ -226,67 +227,91 @@ const Vaccination = () => {
           }
         });
     } else {
-      console.log(UpdateObj);
-      axios
-        .request({
-          method: "PUT",
-          maxBodyLength: Infinity,
-          url: `${Bunny_Storage_URL}/Schedule/Vaccination/${data.Image}`,
-          headers: {
-            "Content-Type": "image/jpeg",
-            AccessKey: Bunny_Storage_Access_Key,
-          },
-          data: uploadedImg,
-        })
-        .then((res) => {
-          if (res.data.HttpCode === 201) {
-            axios
-              .patch(`${BASE_URL}vaccination/${data.Id}`, UpdateObj)
-              .then((response) => {
-                if (response.data.status) {
-                  setLoaderOpen(false);
-                  Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: "Data Updated Successfully",
-                    toast: true,
-                    showConfirmButton: false,
-                    timer: 1500,
+      Swal.fire({
+        text: "Do you want to Update?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Update it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .request({
+              method: "PUT",
+              maxBodyLength: Infinity,
+              url: `${Bunny_Storage_URL}/Schedule/Vaccination/${filename}`,
+              headers: {
+                "Content-Type": "image/jpeg",
+                AccessKey: Bunny_Storage_Access_Key,
+              },
+              data: uploadedImg,
+            })
+            .then((res) => {
+              if (res.data.HttpCode === 201) {
+                axios
+                  .patch(`${BASE_URL}vaccination/${data.Id}`, UpdateObj)
+                  .then((response) => {
+                    if (response.data.status) {
+                      setLoaderOpen(false);
+                      Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Data Updated Successfully",
+                        toast: true,
+                        showConfirmButton: false,
+                        timer: 1500,
+                      });
+                      handleClose();
+                      uploadedImg !== ""
+                        ? axios
+                            .request({
+                              method: "DELETE",
+                              maxBodyLength: Infinity,
+                              url: `${Bunny_Storage_URL}/Schedule/Vaccination/${data.Image}`,
+                              headers: {
+                                AccessKey: Bunny_Storage_Access_Key,
+                              },
+                            })
+                            .then((res) => {})
+                        : handleClose();
+                      getAllImgList();
+                      setUploadedImg("");
+                    } else {
+                      setLoaderOpen(false);
+                      Swal.fire({
+                        icon: "error",
+                        toast: true,
+                        title: "Failed",
+                        text: "Failed to Update Data",
+                        showConfirmButton: true,
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    setLoaderOpen(false);
+                    Swal.fire({
+                      icon: "error",
+                      toast: true,
+                      title: "Failed",
+                      text: error,
+                      showConfirmButton: true,
+                    });
                   });
-                  handleClose();
-                  getAllImgList();
-                } else {
-                  setLoaderOpen(false);
-                  Swal.fire({
-                    icon: "error",
-                    toast: true,
-                    title: "Failed",
-                    text: "Failed to Update Data",
-                    showConfirmButton: true,
-                  });
-                }
-              })
-              .catch((error) => {
+              } else {
                 setLoaderOpen(false);
                 Swal.fire({
                   icon: "error",
                   toast: true,
                   title: "Failed",
-                  text: error,
+                  text: "Failed to Update Data",
                   showConfirmButton: true,
                 });
-              });
-          } else {
-            setLoaderOpen(false);
-            Swal.fire({
-              icon: "error",
-              toast: true,
-              title: "Failed",
-              text: "Failed to Update Data",
-              showConfirmButton: true,
+              }
             });
-          }
-        });
+        }
+        setLoaderOpen(false);
+      });
     }
   };
 
@@ -381,7 +406,7 @@ const Vaccination = () => {
               text: error,
             });
           });
-      }
+      }setLoaderOpen(false);
     });
   };
 

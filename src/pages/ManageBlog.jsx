@@ -78,11 +78,6 @@ const ManageBlog = () => {
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     setUploadedImg(file);
-
-    setData((prevData) => ({
-      ...prevData,
-      Link: file.name,
-    }));
   };
 
   const isSubmitDisabled = () => {
@@ -167,7 +162,7 @@ const ManageBlog = () => {
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
-      Link: data.Link,
+      Link: uploadedImg === "" ? data.Link : filename,
       Category: data.Category,
       TagsIds: selectedTags.map((tag) => tag._id),
       Id: data.Id,
@@ -209,6 +204,7 @@ const ManageBlog = () => {
                   });
                   handleClose();
                   getAllImgList();
+                  setUploadedImg("");
                 } else {
                   setLoaderOpen(false);
                   Swal.fire({
@@ -243,7 +239,7 @@ const ManageBlog = () => {
         });
     } else {
       Swal.fire({
-        text: "Do you want to updat..?",
+        text: "Do you want to Update..?",
         icon: "warning",
         size: "small",
         showCancelButton: true,
@@ -256,7 +252,7 @@ const ManageBlog = () => {
             .request({
               method: "PUT",
               maxBodyLength: Infinity,
-              url: `${Bunny_Storage_URL}/Blogs/${data.Link}`,
+              url: `${Bunny_Storage_URL}/Blogs/${filename}`,
               headers: {
                 "Content-Type": "image/jpeg",
                 AccessKey: Bunny_Storage_Access_Key,
@@ -281,7 +277,20 @@ const ManageBlog = () => {
                         timer: 1500,
                       });
                       handleClose();
+                      uploadedImg !== ""
+                        ? axios
+                            .request({
+                              method: "DELETE",
+                              maxBodyLength: Infinity,
+                              url: `${Bunny_Storage_URL}/Schedule/Blogs/${data.Image}`,
+                              headers: {
+                                AccessKey: Bunny_Storage_Access_Key,
+                              },
+                            })
+                            .then((res) => {})
+                        : handleClose();
                       getAllImgList();
+                      setUploadedImg("");
                     } else {
                       setLoaderOpen(false);
                       Swal.fire({
@@ -315,6 +324,7 @@ const ManageBlog = () => {
               }
             });
         }
+        setLoaderOpen(false);
       });
     }
   };
@@ -386,6 +396,7 @@ const ManageBlog = () => {
             });
           });
       }
+      setLoaderOpen(false);
     });
   };
 

@@ -308,7 +308,7 @@ const ManageDiet = () => {
                 });
               }
             });
-        }
+        } setLoaderOpen(false);
       });
     }
   };
@@ -404,7 +404,7 @@ const ManageDiet = () => {
               showConfirmButton: true,
             });
           });
-      }
+      }setLoaderOpen(false);
     });
   };
 

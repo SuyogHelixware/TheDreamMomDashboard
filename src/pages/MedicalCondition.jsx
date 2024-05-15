@@ -92,7 +92,7 @@ export default function MedicalCondition() {
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}medicalconditions`, saveObj)
         : Swal.fire({
-            text: "Do you want to Update?",
+            text: "Do you want to Update...?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
