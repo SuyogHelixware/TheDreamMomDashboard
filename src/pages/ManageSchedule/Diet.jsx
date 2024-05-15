@@ -150,7 +150,7 @@ const ManageDiet = () => {
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
-      Image: filename,
+      Image: uploadedImg === "" ? data.Image : filename,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
 
@@ -192,6 +192,7 @@ const ManageDiet = () => {
                   });
                   handleClose();
                   getAllImgList();
+                  setUploadedImg("");
                 } else {
                   setLoaderOpen(false);
                   Swal.fire({
@@ -261,19 +262,20 @@ const ManageDiet = () => {
                         showConfirmButton: false,
                         timer: 1500,
                       });
-
-                      axios
-                        .request({
-                          method: "DELETE",
-                          maxBodyLength: Infinity,
-                          url: `${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`,
-                          headers: {
-                            AccessKey: Bunny_Storage_Access_Key,
-                          },
-                        })
-                        .then((res) => {});
+                      handleClose();
+                      uploadedImg!==""?axios
+                      .request({
+                        method: "DELETE",
+                        maxBodyLength: Infinity,
+                        url: `${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`,
+                        headers: {
+                          AccessKey: Bunny_Storage_Access_Key,
+                        },
+                      })
+                      .then((res) => {}):
                       handleClose();
                       getAllImgList();
+                      setUploadedImg("");
                     } else {
                       setLoaderOpen(false);
                       Swal.fire({
