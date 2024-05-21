@@ -94,13 +94,18 @@ const Precaution = () => {
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    console.log("Uploaded file:", file);
-    setUploadedImg(file);
-
-    setData((prevData) => ({
-      ...prevData,
-      Image: file.name,
-    }));
+    if (file && file.type.startsWith("image/")) {
+      setUploadedImg(file);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid File",
+        text: "Please upload a valid image file",
+        toast: true,
+        showConfirmButton: true,
+      });
+      setUploadedImg("");
+    }
   };
 
   const handleClose = () => {
@@ -132,9 +137,9 @@ const Precaution = () => {
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async () => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -150,21 +155,20 @@ const Precaution = () => {
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
-      Image: data.Image,
+      Image: uploadedImg === "" ? data.Image : filename,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
 
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
-      console.log(uploadedImg);
       if (uploadedImg === "") {
         setLoaderOpen(false);
         validationAlert("Please select file");
         return;
       }
-      axios
-        .request({
+      try {
+        const res = await axios.request({
           method: "PUT",
           maxBodyLength: Infinity,
           url: `${Bunny_Storage_URL}/Schedule/Precaution/${filename}`,
@@ -173,129 +177,113 @@ const Precaution = () => {
             AccessKey: Bunny_Storage_Access_Key,
           },
           data: uploadedImg,
-        })
-        .then((res) => {
-          if (res.data.HttpCode === 201) {
-            axios
-              .post(`${BASE_URL}precaution`, saveObj)
-              .then((response) => {
-                if (response.data.status) {
-                  setLoaderOpen(false);
-                  Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    toast: true,
-                    title: "Data Added Successfully",
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                  handleClose();
-                  getAllImgList();
-                } else {
-                  setLoaderOpen(false);
-                  Swal.fire({
-                    icon: "error",
-                    toast: true,
-                    title: "Failed",
-                    text: "Failed to Add Data",
-                    showConfirmButton: true,
-                  });
-                }
-              })
-              .catch((error) => {
-                setLoaderOpen(false);
-                Swal.fire({
-                  icon: "error",
-                  toast: true,
-                  title: "Failed",
-                  text: error,
-                  showConfirmButton: true,
-                });
-              });
-          } else {
+        });
+
+        if (res.data.HttpCode === 201) {
+          const response = await axios.post(`${BASE_URL}precaution`, saveObj);
+          if (response.data.status) {
             setLoaderOpen(false);
             Swal.fire({
-              icon: "error",
+              position: "center",
+              icon: "success",
               toast: true,
-              title: "Failed",
-              text: "Failed to Add Data",
-              showConfirmButton: true,
+              title: "Data Added Successfully",
+              showConfirmButton: false,
+              timer: 1500,
             });
+            handleClose();
+            getAllImgList();
+            setUploadedImg("");
+          } else {
+            setLoaderOpen(false);
+            throw new Error("Failed to Add Data");
           }
+        } else {
+          setLoaderOpen(false);
+          throw new Error("Failed to Upload Image");
+        }
+      } catch (error) {
+        setLoaderOpen(false);
+        Swal.fire({
+          icon: "error",
+          toast: true,
+          title: "Failed",
+          text: error.message,
+          showConfirmButton: true,
         });
+      }
     } else {
-      Swal.fire({
-        text: "Do you want to Update?",
+      const result = await Swal.fire({
+        text: "Do you want to Update...?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, Update it!",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          axios
-            .request({
-              method: "PUT",
-              maxBodyLength: Infinity,
-              url: `${Bunny_Storage_URL}/Schedule/Precaution/${data.Image}`,
-              headers: {
-                "Content-Type": "image/jpeg",
-                AccessKey: Bunny_Storage_Access_Key,
-              },
-              data: uploadedImg,
-            })
-            .then((res) => {
-              if (res.data.HttpCode === 201) {
-                axios
-                  .patch(`${BASE_URL}precaution/${data.Id}`, UpdateObj)
-                  .then((response) => {
-                    if (response.data.status) {
-                      setLoaderOpen(false);
-                      Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "Data Updated Successfully",
-                        toast: true,
-                        showConfirmButton: false,
-                        timer: 1500,
-                      });
-                      handleClose();
-                      getAllImgList();
-                    } else {
-                      setLoaderOpen(false);
-                      Swal.fire({
-                        icon: "error",
-                        toast: true,
-                        title: "Failed",
-                        text: "Failed to Update Data",
-                        showConfirmButton: true,
-                      });
-                    }
-                  })
-                  .catch((error) => {
-                    setLoaderOpen(false);
-                    Swal.fire({
-                      icon: "error",
-                      toast: true,
-                      title: "Failed",
-                      text: error,
-                      showConfirmButton: true,
-                    });
-                  });
-              } else {
-                setLoaderOpen(false);
-                Swal.fire({
-                  icon: "error",
-                  toast: true,
-                  title: "Failed",
-                  text: "Failed to Update Data",
-                  showConfirmButton: true,
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const res = await axios.request({
+            method: "PUT",
+            maxBodyLength: Infinity,
+            url: `${Bunny_Storage_URL}/Schedule/Precaution/${filename}`,
+            headers: {
+              "Content-Type": "image/jpeg",
+              AccessKey: Bunny_Storage_Access_Key,
+            },
+            data: uploadedImg,
+          });
+
+          if (res.data.HttpCode === 201) {
+            const response = await axios.patch(
+              `${BASE_URL}precaution/${data.Id}`,
+              UpdateObj
+            );
+            if (response.data.status) {
+              if (uploadedImg !== "") {
+                await axios.request({
+                  method: "DELETE",
+                  maxBodyLength: Infinity,
+                  url: `${Bunny_Storage_URL}/Schedule/Precaution/${data.Image}`,
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
                 });
               }
-            });
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Data Updated Successfully",
+                toast: true,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              handleClose();
+              getAllImgList();
+              setUploadedImg("");
+            } else {
+              setLoaderOpen(false);
+              throw new Error("Failed to Update Data");
+            }
+          } else {
+            setLoaderOpen(false);
+            throw new Error("Failed to Upload Image");
+          }
+        } catch (error) {
+          setLoaderOpen(false);
+          Swal.fire({
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
         }
+      } else {
         setLoaderOpen(false);
-      });
+      }
     }
   };
   const getAllImgList = () => {
@@ -311,7 +299,6 @@ const Precaution = () => {
   };
 
   const handleDelete = (data) => {
-    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -321,6 +308,7 @@ const Precaution = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setLoaderOpen(true);
         axios
           .delete(`${Bunny_Storage_URL}/Schedule/Precaution/${data.Image}`, {
             headers: {
@@ -342,7 +330,6 @@ const Precaution = () => {
                       showConfirmButton: false,
                       timer: 1500,
                     });
-                    handleClose();
                     getAllImgList();
                   } else {
                     setLoaderOpen(false);
@@ -359,10 +346,11 @@ const Precaution = () => {
                 .catch((error) => {
                   setLoaderOpen(false);
                   Swal.fire({
-                    toast: true,
+                    position: "center",
                     icon: "error",
+                    toast: true,
                     title: "Failed",
-                    text: error,
+                    text: error.message,
                     showConfirmButton: true,
                   });
                 });
@@ -383,11 +371,11 @@ const Precaution = () => {
               toast: true,
               icon: "error",
               title: "Failed",
-              text: error,
+              text: error,  
               showConfirmButton: true,
             });
           });
-      }setLoaderOpen(false);
+      }
     });
   };
 
@@ -488,9 +476,7 @@ const Precaution = () => {
 
             <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
+                <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
                   labelId="ChooseType"

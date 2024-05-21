@@ -5,6 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import * as React from "react";
 import { BASE_URL } from "../Constant";
+import dayjs from "dayjs";
 
 export default function ManageAssesment() {
   const [data, setData] = React.useState([
@@ -35,7 +36,7 @@ export default function ManageAssesment() {
   }, []);
   
   const columns = [
-    { field: "id", headerName: "ID", width: 90, sortable: false },
+    { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     {
       field: "Weight",
       headerName: "Weight",
@@ -53,6 +54,7 @@ export default function ManageAssesment() {
       headerName: "SonogramDate",
       width: 150,
       sortable: false,
+      valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
 
     {
@@ -60,12 +62,14 @@ export default function ManageAssesment() {
       headerName: "DueDate",
       width: 160,
       sortable: false,
+      valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
     {
       field: "DelDate",
       headerName: "DelDate",
       width: 150,
       sortable: false,
+      valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
     {
       field: "DelType",
@@ -90,12 +94,14 @@ export default function ManageAssesment() {
       headerName: "Status",
       width: 100,
       sortable: false,
+      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
     },
     {
       field: "DOB",
       headerName: "DOB",
       width: 100,
       sortable: false,
+      valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
     {
       field: "BloodGroup",

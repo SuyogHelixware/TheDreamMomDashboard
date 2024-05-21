@@ -108,7 +108,7 @@ export class DatePickerField extends React.Component {
             label={this.props.label}
             value={this.props.value}
             onChange={this.props.onChange}
-            format="DD-MMM-YYYY"
+            format="YYYY-MM-DD"
             disabled={this.props.disabled}
             maxDate={this.props.maxDate}
             slotProps={{

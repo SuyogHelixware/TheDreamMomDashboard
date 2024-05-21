@@ -68,7 +68,7 @@ const Medication = () => {
 
   const handleSubmitForm = () => {
     const requiredFileds = ["Name", "Description"];
-    const emptyRequiredFields = requiredFileds.filter((field) => !data[field]);
+    const emptyRequiredFields = requiredFileds.filter((field) =>!data[field].trim());
     if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -100,11 +100,14 @@ const Medication = () => {
                 `${BASE_URL}medications/${data.Id}`,
                 UpdateObj
               );
+            } else {
+              throw new Error("Update cancelled");
             }
           });
 
     axiosRequest
       .then((response) => {
+        setLoaderOpen(false);
         if (response.data.status) {
           setLoaderOpen(false);
           Swal.fire({
@@ -133,13 +136,16 @@ const Medication = () => {
       })
       .catch((error) => {
         setLoaderOpen(false);
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          toast: true,
-          title: "Something went wrong..!",
-          showConfirmButton: true,
-        });
+        if (error.message !== "Update cancelled") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
       });
   };
 
@@ -203,13 +209,14 @@ const Medication = () => {
             });
           });
       }
+      setLoaderOpen(false);
     });
   };
   const columns = [
     {
       field: "actions",
       headerName: "Action",
-      width: 250,
+      width: 150,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -225,6 +232,7 @@ const Medication = () => {
         </strong>
       ),
     },
+    { field: "id", headerName: "SR.No", width: 100, sortable: false },
     { field: "Name", headerName: "Title", width: 250 },
     { field: "Description", headerName: "Description", width: 300 },
   ];

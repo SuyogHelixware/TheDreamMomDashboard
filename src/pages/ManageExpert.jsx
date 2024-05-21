@@ -147,7 +147,7 @@ export default function ManageExpert() {
             <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
                 <InputLabel id="demo-select-small-label">
-                  Select Type
+                  Select Tag
                 </InputLabel>
 
                 <Select

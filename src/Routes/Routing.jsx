@@ -21,11 +21,11 @@ import Medication from "../pages/ManageSchedule/Medication";
 import Vaccination from "../pages/ManageSchedule/Vaccination";
 // import Login from "../Dashboard/Login";
 import Signin from "../Dashboard/signin";
-import PNDiet from "../pages/PostNatal/PNDiet";
-import PNExercise from "../pages/PostNatal/PNExercise";
-import PNPrecaution from "../pages/PostNatal/PNPrecaution";
-import PNMedication from "../pages/PostNatal/PNMedication";
-import PNVaccination from "../pages/PostNatal/PNVaccination";
+// import PNDiet from "../pages/PostNatal/PNDiet";
+// import PNExercise from "../pages/PostNatal/PNExercise";
+// import PNPrecaution from "../pages/PostNatal/PNPrecaution";
+// import PNMedication from "../pages/PostNatal/PNMedication";
+// import PNVaccination from "../pages/PostNatal/PNVaccination";
 import MedicalCondition from "../pages/MedicalCondition";
 import ManageTags from "../pages/ManageTags";
 import PlanMaster from "../pages/PlanMaster";
@@ -50,11 +50,11 @@ export default function Routing() {
               element={<Vaccination />}
             />
 
-            <Route path="post-natal/pndiet" element={<PNDiet />} />
+            {/* <Route path="post-natal/pndiet" element={<PNDiet />} />
             <Route path="post-natal/pnexercise" element={<PNExercise />} />
             <Route path="post-natal/pnprecaution" element={<PNPrecaution />} />
             <Route path="post-natal/pnmedication" element={<PNMedication />} />
-            <Route path="post-natal/pnvaccination" element={<PNVaccination />}/>
+            <Route path="post-natal/pnvaccination" element={<PNVaccination />}/> */}
 
             <Route path="manage-assesment" element={<ManageAssesment />} />
             <Route path="manage-avoid-food" element={<ManageAvoidFood />} />

@@ -75,7 +75,7 @@ const ManageDoses = () => {
 
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
     if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -105,11 +105,14 @@ const ManageDoses = () => {
           }).then((result) => {
             if (result.isConfirmed) {
               return axios.patch(`${BASE_URL}dosagedet/${data.Id}`, UpdateObj);
+            } else {
+              throw new Error("Update cancelled");
             }
           });
 
     axiosRequest
       .then((response) => {
+        setLoaderOpen(false);
         if (response.data.status) {
           setLoaderOpen(false);
           Swal.fire({
@@ -139,19 +142,20 @@ const ManageDoses = () => {
       })
       .catch((error) => {
         setLoaderOpen(false);
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          toast: true,
-          text: "Failed",
-          title: error,
-          showConfirmButton: true,
-        });
+        if (error.message !== "Update cancelled") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
       });
   };
 
   const handleDelete = (data) => {
-    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -161,6 +165,7 @@ const ManageDoses = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setLoaderOpen(true);
         axios
           .delete(`${BASE_URL}dosagedet/${data._id}`)
           .then((res) => {
@@ -204,7 +209,7 @@ const ManageDoses = () => {
     {
       field: "actions",
       headerName: "Action",
-      width: 180,
+      width: 150,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>

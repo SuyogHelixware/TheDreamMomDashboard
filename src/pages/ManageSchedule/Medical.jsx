@@ -100,7 +100,7 @@ const Medical = () => {
 
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
 
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
@@ -123,7 +123,7 @@ const Medical = () => {
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}medicaltests`, saveObj)
         : Swal.fire({
-            text: "Do you want to Update?",
+            text: "Do you want to Update...?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -131,12 +131,18 @@ const Medical = () => {
             confirmButtonText: "Yes, Update it!",
           }).then((result) => {
             if (result.isConfirmed) {
-             return axios.patch(`${BASE_URL}medicaltests/${data.Id}`, UpdateObj);
+              return axios.patch(
+                `${BASE_URL}medicaltests/${data.Id}`,
+                UpdateObj
+              );
+            } else {
+              throw new Error("Update cancelled");
             }
           });
 
     axiosRequest
       .then((response) => {
+        setLoaderOpen(false);
         if (response.data.status) {
           setLoaderOpen(false);
           Swal.fire({
@@ -155,6 +161,7 @@ const Medical = () => {
         } else {
           setLoaderOpen(false);
           Swal.fire({
+            position: "center",
             icon: "error",
             toast: true,
             title: "Failed",
@@ -165,13 +172,16 @@ const Medical = () => {
       })
       .catch((error) => {
         setLoaderOpen(false);
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          toast: true,
-          title: error,
-          showConfirmButton: false,
-        });
+        if (error.message !== "Update cancelled") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
       });
   };
 
@@ -195,7 +205,7 @@ const Medical = () => {
     {
       field: "actions",
       headerName: "Action",
-      width: 200,
+      width: 150,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -211,6 +221,7 @@ const Medical = () => {
         </strong>
       ),
     },
+    { field: "id", headerName: "SR.No", width: 100, sortable:false },
     { field: "Name", headerName: "Title", width: 250 },
     { field: "Description", headerName: "Description", width: 300 },
   ];
@@ -265,6 +276,7 @@ const Medical = () => {
             });
           });
       }
+      setLoaderOpen(false);
     });
   };
 
@@ -337,7 +349,7 @@ const Medical = () => {
             <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
                 <InputLabel id="demo-select-small-label">
-                  Select Type
+                  Select Tag
                 </InputLabel>
 
                 <Select

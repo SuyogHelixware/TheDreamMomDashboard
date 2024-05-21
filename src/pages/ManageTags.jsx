@@ -100,7 +100,6 @@ export default function ManageTags() {
   };
 
   const handleDelete = (data) => {
-    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -110,6 +109,7 @@ export default function ManageTags() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setLoaderOpen(true);
         axios
           .delete(`${BASE_URL}tags/${data._id}`)
           .then((res) => {
@@ -163,7 +163,7 @@ export default function ManageTags() {
   };
   const updateUser = (id) => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
 
     if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
@@ -184,11 +184,14 @@ export default function ManageTags() {
           }).then((result) => {
             if (result.isConfirmed) {
               return axios.patch(`${BASE_URL}tags/${id}`, data);
+            } else {
+              throw new Error("Update cancelled");
             }
           });
 
     axiosRequest
       .then((response) => {
+        setLoaderOpen(false);
         if (response.data.status === true) {
           setLoaderOpen(false);
           Swal.fire({
@@ -218,14 +221,16 @@ export default function ManageTags() {
       })
       .catch((error) => {
         setLoaderOpen(false);
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          toast: true,
-          title: "Failed",
-          text: error,
-          showConfirmButton: true,
-        });
+        if (error.message !== "Update cancelled") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
       });
   };
 

@@ -92,6 +92,17 @@ export default function ManageUsers() {
       }
     }
 
+    if (event.target.name === "Phone") {
+      const phone = event.target.value;
+      if (phone.length > 10) {
+        validationAlert("Phone number must be exactly 10 digits long.");
+        return;
+      } else if (phone.includes("e")) {
+        validationAlert("Please enter valid number");
+        return;
+      }
+    }
+
     setData({
       ...data,
       [event.target.name]: event.target.value,
@@ -135,7 +146,7 @@ export default function ManageUsers() {
                 toast: true,
                 title: "User deleted Successfully",
                 showConfirmButton: false,
-                timer: 2500,
+                timer: 1500,
               });
             } else {
               setLoaderOpen(false);
@@ -150,9 +161,16 @@ export default function ManageUsers() {
           })
           .catch((error) => {
             setLoaderOpen(false);
-            alert("error");
+            Swal.fire({
+              icon: "error",
+              toast: true,
+              title: "Failed",
+              text: error,
+              showConfirmButton: true,
+            });
           });
       }
+      setLoaderOpen(false);
     });
   };
   const validationAlert = (message) => {
@@ -162,49 +180,59 @@ export default function ManageUsers() {
       toast: true,
       title: message,
       showConfirmButton: false,
-      timer: 2500,
+      timer: 1500,
     });
   };
   const updateUser = (id) => {
     const requiredFields = [
       "Firstname",
-      "Middlename",
       "Lastname",
       "Password",
       "Phone",
-      "Address",
-      "Email",
-      "Status",
       "DOB",
       "BloodGroup",
     ];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.Email);
 
     if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
       return;
-    }
-
-    if (!isValidPhoneNumber(data.Phone)) {
+    } else if (!isValidPhoneNumber(data.Phone)) {
       validationAlert("Please enter a valid 10-digit phone number.");
       return;
-    }
-
-    if (data.Password.length < 6 || data.Password.length > 16) {
+    } else if (data.Password.length < 6 || data.Password.length > 16) {
       validationAlert("Password must be at least 8 characters long.");
+      return;
+    } else if (data.Email.length > 0 && !emailRegex) {
+      validationAlert("Please enter a valid email address.");
       return;
     }
 
     setLoaderOpen(true);
+
     const axiosRequest =
       SaveUpdateButton === "SAVE"
         ? axios.post(`${BASE_URL}Users`, data)
-        : axios.patch(`${BASE_URL}Users/${id}`, data);
+        : Swal.fire({
+            text: "Do you want to Update...?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Update it!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              return axios.patch(`${BASE_URL}Users/${id}`, data);
+            } else {
+              throw new Error("Update cancelled");
+            }
+          });
 
     axiosRequest
       .then((response) => {
+        setLoaderOpen(false);
         if (response.data.status) {
-          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "success",
@@ -214,7 +242,7 @@ export default function ManageUsers() {
                 ? "User Added Successfully"
                 : "User Updated Successfully",
             showConfirmButton: false,
-            timer: 2500,
+            timer: 1500,
           });
           getUserData();
           handleClose();
@@ -232,14 +260,16 @@ export default function ManageUsers() {
       })
       .catch((error) => {
         setLoaderOpen(false);
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          toast: true,
-          title: "Failed",
-          text: "Error occurred while saving/updating user",
-          showConfirmButton: true,
-        });
+        if (error.message !== "Update cancelled") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
       });
   };
 
@@ -282,7 +312,7 @@ export default function ManageUsers() {
         </>
       ),
     },
-    { field: "id", headerName: "ID", width: 90, sortable: false },
+    { field: "id", headerName: "SR.No", width: 90, sortable: false },
     {
       field: "Firstname",
       headerName: "First Name",
@@ -306,7 +336,7 @@ export default function ManageUsers() {
       headerName: "DOB",
       width: 150,
       sortable: false,
-      valueFormatter: (params) => dayjs(params.value).format("DD-MMM-YYYY"),
+      valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
     {
       field: "Phone",
@@ -331,6 +361,7 @@ export default function ManageUsers() {
       headerName: "Status",
       width: 100,
       sortable: false,
+      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
     },
     {
       field: "Email",

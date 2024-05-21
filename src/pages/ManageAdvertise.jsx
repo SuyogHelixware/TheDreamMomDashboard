@@ -95,7 +95,18 @@ const ManageAdvertise = () => {
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    setUploadedImg(file);
+    if (file && file.type.startsWith("image/")) {
+      setUploadedImg(file);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid File",
+        text: "Please upload a valid image file",
+        toast: true,
+        showConfirmButton: true,
+      });
+      setUploadedImg("");
+    }
   };
 
   const handleClose = () => {
@@ -123,13 +134,13 @@ const ManageAdvertise = () => {
       toast: true,
       title: message,
       showConfirmButton: false,
-      timer: 2000,
+      timer: 1500,
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async () => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -143,6 +154,13 @@ const ManageAdvertise = () => {
       TagsIds: selectedTags.map((tag) => tag._id),
     };
 
+    const UpdateObj = {
+      Name: data.Name,
+      Description: data.Description,
+      Image: uploadedImg === "" ? data.Image : filename,
+      TagsIds: selectedTags.map((tag) => tag._id),
+    };
+
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
@@ -151,8 +169,8 @@ const ManageAdvertise = () => {
         validationAlert("Please select file");
         return;
       }
-      axios
-        .request({
+      try {
+        const res = await axios.request({
           method: "PUT",
           maxBodyLength: Infinity,
           url: `${Bunny_Storage_URL}/Advertisement/${filename}`,
@@ -161,149 +179,116 @@ const ManageAdvertise = () => {
             AccessKey: Bunny_Storage_Access_Key,
           },
           data: uploadedImg,
-        })
-        .then((res) => {
-          if (res.data.HttpCode === 201) {
-            axios
-              .post(`${BASE_URL}advertisement`, saveObj)
-              .then((response) => {
-                if (response.data.status) {
-                  setLoaderOpen(false);
-                  Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    toast: true,
-                    title: "Data Added Successfully",
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                  handleClose();
-                  getAllImgList();
-                  setUploadedImg("");
-                } else {
-                  setLoaderOpen(false);
-                  Swal.fire({
-                    icon: "error",
-                    toast: true,
-                    title: "Failed",
-                    text: "Failed to Add Data",
-                    showConfirmButton: true,
-                  });
-                }
-              })
-              .catch((error) => {
-                setLoaderOpen(false);
-                Swal.fire({
-                  icon: "error",
-                  toast: true,
-                  title: "Failed",
-                  text: error,
-                  showConfirmButton: true,
-                });
-              });
-          } else {
+        });
+
+        if (res.data.HttpCode === 201) {
+          const response = await axios.post(
+            `${BASE_URL}advertisement`,
+            saveObj
+          );
+          if (response.data.status) {
             setLoaderOpen(false);
             Swal.fire({
-              icon: "error",
+              position: "center",
+              icon: "success",
               toast: true,
-              title: "Failed",
-              text: "Failed to Add Data",
-              showConfirmButton: true,
+              title: "Data Added Successfully",
+              showConfirmButton: false,
+              timer: 1500,
             });
+            handleClose();
+            getAllImgList();
+            setUploadedImg("");
+          } else {
+            setLoaderOpen(false);
+            throw new Error("Failed to Add Data");
           }
+        } else {
+          setLoaderOpen(false);
+          throw new Error("Failed to Upload Image");
+        }
+      } catch (error) {
+        setLoaderOpen(false);
+        Swal.fire({
+          icon: "error",
+          toast: true,
+          title: "Failed",
+          text: error.message,
+          showConfirmButton: true,
         });
+      }
     } else {
-      Swal.fire({
+      const result = await Swal.fire({
         text: "Do you want to Update...?",
         icon: "warning",
-        size: "small",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, Update it!",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const UpdateObj = {
-            Name: data.Name,
-            Description: data.Description,
-            Image: uploadedImg === "" ? data.Image : filename,
-            TagsIds: selectedTags.map((tag) => tag._id),
-          };
-          axios
-            .request({
-              method: "PUT",
-              maxBodyLength: Infinity,
-              url: `${Bunny_Storage_URL}/Advertisement/${filename}`,
-              headers: {
-                "Content-Type": "image/jpeg",
-                AccessKey: Bunny_Storage_Access_Key,
-              },
-              data: uploadedImg,
-            })
-            .then((res) => {
-              if (res.data.HttpCode === 201) {
-                axios
-                  .patch(`${BASE_URL}advertisement/${data.Id}`, UpdateObj)
-                  .then((response) => {
-                    if (response.data.status) {
-                      setLoaderOpen(false);
-                      Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        toast: true,
-                        title: "Data Updated Successfully",
-                        showConfirmButton: false,
-                        timer: 1500,
-                      });
-                      handleClose();
-                      uploadedImg !== ""
-                        ? axios
-                            .request({
-                              method: "DELETE",
-                              maxBodyLength: Infinity,
-                              url: `${Bunny_Storage_URL}/Advertisement/${data.Image}`,
-                              headers: {
-                                AccessKey: Bunny_Storage_Access_Key,
-                              },
-                            })
-                            .then((res) => {})
-                        : handleClose();
-                      getAllImgList();
-                      setUploadedImg("");
-                    } else {
-                      setLoaderOpen(false);
-                      Swal.fire({
-                        icon: "error",
-                        toast: true,
-                        title: "Failed",
-                        text: "Failed to Update Data",
-                        showConfirmButton: true,
-                      });
-                    }
-                  })
-                  .catch((error) => {
-                    setLoaderOpen(false);
-                    Swal.fire({
-                      icon: "error",
-                      toast: true,
-                      title: "Failed",
-                      text: error,
-                      showConfirmButton: true,
-                    });
-                  });
-              } else {
-                setLoaderOpen(false);
-                Swal.fire({
-                  icon: "error",
-                  toast: true,
-                  title: "Failed",
-                  text: "Failed to Update Data",
-                  showConfirmButton: true,
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const res = await axios.request({
+            method: "PUT",
+            maxBodyLength: Infinity,
+            url: `${Bunny_Storage_URL}/Advertisement/${filename}`,
+            headers: {
+              "Content-Type": "image/jpeg",
+              AccessKey: Bunny_Storage_Access_Key,
+            },
+            data: uploadedImg,
+          });
+
+          if (res.data.HttpCode === 201) {
+            const response = await axios.patch(
+              `${BASE_URL}advertisement/${data.Id}`,
+              UpdateObj
+            );
+            if (response.data.status) {
+              if (uploadedImg !== "") {
+                await axios.request({
+                  method: "DELETE",
+                  maxBodyLength: Infinity,
+                  url: `${Bunny_Storage_URL}/Advertisement/${data.Image}`,
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
                 });
               }
-            });
-        } setLoaderOpen(false);
-      });
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Data Updated Successfully",
+                toast: true,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              handleClose();
+              getAllImgList();
+              setUploadedImg("");
+            } else {
+              setLoaderOpen(false);
+              throw new Error("Failed to Update Data");
+            }
+          } else {
+            setLoaderOpen(false);
+            throw new Error("Failed to Upload Image");
+          }
+        } catch (error) {
+          setLoaderOpen(false);
+          Swal.fire({
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
+      } else {
+        setLoaderOpen(false);
+      }
     }
   };
 
@@ -320,7 +305,6 @@ const ManageAdvertise = () => {
   };
 
   const handleDelete = (data) => {
-    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -330,6 +314,7 @@ const ManageAdvertise = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setLoaderOpen(true);
         axios
           .delete(`${Bunny_Storage_URL}/Advertisement/${data.Image}`, {
             headers: {
@@ -387,7 +372,7 @@ const ManageAdvertise = () => {
               showConfirmButton: true,
             });
           });
-      } setLoaderOpen(false);
+      }
     });
   };
 
@@ -488,9 +473,7 @@ const ManageAdvertise = () => {
 
             <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
+                <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
                 <Select
                   labelId="ChooseType"
                   id="Tag"

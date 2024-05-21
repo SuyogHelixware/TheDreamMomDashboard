@@ -62,13 +62,13 @@ const ManagePosts = () => {
       toast: true,
       title: message,
       showConfirmButton: false,
-      timer: 2000,
+      timer: 1500,
     });
   };
 
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
     if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -98,11 +98,14 @@ const ManagePosts = () => {
           }).then((result) => {
             if (result.isConfirmed) {
               return axios.patch(`${BASE_URL}posts/${data.Id}`, UpdateObj);
+            } else {
+              throw new Error("Update cancelled");
             }
           });
 
     axiosRequest
       .then((response) => {
+        setLoaderOpen(false);
         if (response.data.status) {
           setLoaderOpen(false);
           Swal.fire({
@@ -132,14 +135,16 @@ const ManagePosts = () => {
       })
       .catch((error) => {
         setLoaderOpen(false);
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          toast: true,
-          title: "Failed",
-          text: error,
-          showConfirmButton: true,
-        });
+        if (error.message !== "Update cancelled") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
       });
   };
 
@@ -154,7 +159,7 @@ const ManagePosts = () => {
   };
 
   const handleDelete = (rowData) => {
-    setLoaderOpen(true);
+    
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -164,6 +169,7 @@ const ManagePosts = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setLoaderOpen(true);
         axios
           .delete(`${BASE_URL}posts/${rowData._id}`)
           .then((response) => {
@@ -214,7 +220,7 @@ const ManagePosts = () => {
     {
       field: "actions",
       headerName: "Action",
-      width: 180,
+      width: 150,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -234,6 +240,13 @@ const ManagePosts = () => {
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 300 },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 100,
+      sortable: false,
+      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
+    },
   ];
 
   const handleUpdate = (rowData) => {

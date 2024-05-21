@@ -1,10 +1,10 @@
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import AppSettingsAltIcon from "@mui/icons-material/AppSettingsAlt";
-import ApprovalIcon from "@mui/icons-material/Approval";
+// import ApprovalIcon from "@mui/icons-material/Approval";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import CommentIcon from "@mui/icons-material/Comment";
+// import CommentIcon from "@mui/icons-material/Comment";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupsIcon from "@mui/icons-material/Groups";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
@@ -151,7 +151,7 @@ export default function Dashboard() {
     Avatar:"",
   });
 
-  const [openMenu, setOpenMenu] = React.useState(false);
+  // const [openMenu, setOpenMenu] = React.useState(false);
   const [list, setList] = React.useState(false);
 
   const [openProcessTransactions, setOpenProcessTransactions] =
@@ -190,19 +190,19 @@ export default function Dashboard() {
     handleClickTransaction();
   };
 
-  const handleClickMenu = () => {
-    if (!openMenu) {
-      setOpenMenu(true);
-    }
-    setList(!list);
-    if (openProcessTransactions) {
-      setOpenProcessTransactions(!openProcessTransactions);
-    }
-    handleClickTransaction();
-    if (!open) {
-      setOpen(true);
-    }
-  };
+  // const handleClickMenu = () => {
+  //   if (!openMenu) {
+  //     setOpenMenu(true);
+  //   }
+  //   setList(!list);
+  //   if (openProcessTransactions) {
+  //     setOpenProcessTransactions(!openProcessTransactions);
+  //   }
+  //   handleClickTransaction();
+  //   if (!open) {
+  //     setOpen(true);
+  //   }
+  // };
 
   const handleClickTransaction = () => {
     setOpenProcessTransactions(!openProcessTransactions);
@@ -632,32 +632,28 @@ export default function Dashboard() {
                 </Link>
               </List>
             </Collapse>
-            <ListItemButton
-              onClick={handleClickMenu}
-              selected={location.pathname === "/post-natal"}
-              sx={{
-                "&.Mui-selected": {
-                  backgroundColor: "#8F00FF",
-                  // m:0.5,
-                  borderRadius: 1,
-                  "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                    color: "#FFFFFF",
+            <Link to="post-natal" className="link_style">
+              <ListItemButton
+                onClick={handleClickTransaction}
+                selected={location.pathname === "/dashboard/post-natal"}
+                sx={{
+                  "&.Mui-selected": {
+                    backgroundColor: "#8F00FF",
+                    // m:0.5,
+                    borderRadius: 1,
+                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                      color: "#FFFFFF",
+                    },
                   },
-                },
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                <ApprovalIcon />
-              </ListItemIcon>
-              <ListItemText primary="Post Natal" />
-
-              {list ? (
-                <ExpandLess style={{ marginLeft: "auto" }} />
-              ) : (
-                <ExpandMore style={{ marginLeft: "auto" }} />
-              )}
-            </ListItemButton>
-            <Collapse in={list} timeout="auto">
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <TodayIcon />
+                </ListItemIcon>
+                <ListItemText primary="Post Natal" />
+              </ListItemButton>
+            </Link>
+            {/* <Collapse in={list} timeout="auto">
               <List component="div" disablePadding>
                 <Link to="post-natal/pndiet" className="link_style">
                   <ListItemButton
@@ -784,7 +780,7 @@ export default function Dashboard() {
                   </ListItemButton>
                 </Link>
               </List>
-            </Collapse>
+            </Collapse> */}
 
             <Link to="plan-master" className="link_style">
               <ListItemButton
@@ -1043,7 +1039,7 @@ export default function Dashboard() {
                 <ListItemText primary="Manage Expert ANS" />
               </ListItemButton>
             </Link>
-            <Link to="manage-comments" className="link_style">
+            {/* <Link to="manage-comments" className="link_style">
               <ListItemButton
                 onClick={handleClickTransaction}
                 selected={location.pathname === "/dashboard/manage-comments"}
@@ -1063,7 +1059,7 @@ export default function Dashboard() {
                 </ListItemIcon>
                 <ListItemText primary="Manage Comments" />
               </ListItemButton>
-            </Link>
+            </Link> */}
             <Link to="manage-doses" className="link_style">
               <ListItemButton
                 onClick={handleClickTransaction}

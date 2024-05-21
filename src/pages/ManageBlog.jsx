@@ -77,7 +77,18 @@ const ManageBlog = () => {
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    setUploadedImg(file);
+    if (file && file.type.startsWith("image/")) {
+      setUploadedImg(file);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid File",
+        text: "Please upload a valid image file",
+        toast: true,
+        showConfirmButton: true,
+      });
+      setUploadedImg("");
+    }
   };
 
   const isSubmitDisabled = () => {
@@ -144,7 +155,7 @@ const ManageBlog = () => {
       timer: 1500,
     });
   };
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async () => {
     const requiredFields = ["Name", "Category", "Description"];
     const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
@@ -176,8 +187,8 @@ const ManageBlog = () => {
         validationAlert("Please select file");
         return;
       }
-      axios
-        .request({
+      try {
+        const res = await axios.request({
           method: "PUT",
           maxBodyLength: Infinity,
           url: `${Bunny_Storage_URL}/Blogs/${filename}`,
@@ -186,150 +197,116 @@ const ManageBlog = () => {
             AccessKey: Bunny_Storage_Access_Key,
           },
           data: uploadedImg,
-        })
-        .then((res) => {
-          if (res.data.HttpCode === 201) {
-            axios
-              .post(`${BASE_URL}blogs`, saveObj)
-              .then((response) => {
-                if (response.data.status) {
-                  setLoaderOpen(false);
-                  Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    toast: true,
-                    title: "Blog Added Successfully",
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                  handleClose();
-                  getAllImgList();
-                  setUploadedImg("");
-                } else {
-                  setLoaderOpen(false);
-                  Swal.fire({
-                    icon: "error",
-                    toast: true,
-                    title: "Failed",
-                    text: "Failed to Add Blog",
-                    showConfirmButton: true,
-                  });
-                }
-              })
-              .catch((error) => {
-                setLoaderOpen(false);
-                Swal.fire({
-                  icon: "error",
-                  toast: true,
-                  title: "Failed",
-                  text: error,
-                  showConfirmButton: true,
-                });
-              });
-          } else {
+        });
+
+        if (res.data.HttpCode === 201) {
+          const response = await axios.post(`${BASE_URL}blogs`, saveObj);
+          if (response.data.status) {
             setLoaderOpen(false);
             Swal.fire({
-              icon: "error",
+              position: "center",
+              icon: "success",
               toast: true,
-              title: "Failed",
-              text: "Failed to Add Data",
-              showConfirmButton: true,
+              title: "Data Added Successfully",
+              showConfirmButton: false,
+              timer: 1500,
             });
+            handleClose();
+            getAllImgList();
+            setUploadedImg("");
+          } else {
+            setLoaderOpen(false);
+            throw new Error("Failed to Add Data");
           }
+        } else {
+          setLoaderOpen(false);
+          throw new Error("Failed to Upload Image");
+        }
+      } catch (error) {
+        setLoaderOpen(false);
+        Swal.fire({
+          icon: "error",
+          toast: true,
+          title: "Failed",
+          text: error.message,
+          showConfirmButton: true,
         });
+      }
     } else {
-      Swal.fire({
-        text: "Do you want to Update..?",
+      const result = await Swal.fire({
+        text: "Do you want to Update...?",
         icon: "warning",
-        size: "small",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, Update it!",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          axios
-            .request({
-              method: "PUT",
-              maxBodyLength: Infinity,
-              url: `${Bunny_Storage_URL}/Blogs/${filename}`,
-              headers: {
-                "Content-Type": "image/jpeg",
-                AccessKey: Bunny_Storage_Access_Key,
-              },
-              data: uploadedImg,
-            })
-            .then((res) => {
-              if (res.data.HttpCode === 201) {
-                axios
-                  .patch(`${BASE_URL}blogs/${data.Id}`, UpdateObj)
-                  .then((response) => {
-                    console.log(response.data);
+      });
 
-                    if (response.data.status) {
-                      setLoaderOpen(false);
-                      Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        toast: true,
-                        title: "Blog Updated Successfully",
-                        showConfirmButton: false,
-                        timer: 1500,
-                      });
-                      handleClose();
-                      uploadedImg !== ""
-                        ? axios
-                            .request({
-                              method: "DELETE",
-                              maxBodyLength: Infinity,
-                              url: `${Bunny_Storage_URL}/Schedule/Blogs/${data.Image}`,
-                              headers: {
-                                AccessKey: Bunny_Storage_Access_Key,
-                              },
-                            })
-                            .then((res) => {})
-                        : handleClose();
-                      getAllImgList();
-                      setUploadedImg("");
-                    } else {
-                      setLoaderOpen(false);
-                      Swal.fire({
-                        icon: "error",
-                        toast: true,
-                        title: "Failed",
-                        text: "Failed to Update Data",
-                        showConfirmButton: true,
-                      });
-                    }
-                  })
-                  .catch((error) => {
-                    setLoaderOpen(false);
-                    Swal.fire({
-                      icon: "error",
-                      toast: true,
-                      title: "Failed",
-                      text: error,
-                      showConfirmButton: true,
-                    });
-                  });
-              } else {
-                setLoaderOpen(false);
-                Swal.fire({
-                  icon: "error",
-                  toast: true,
-                  title: "Failed",
-                  text: "Failed to Update Data",
-                  showConfirmButton: true,
+      if (result.isConfirmed) {
+        try {
+          const res = await axios.request({
+            method: "PUT",
+            maxBodyLength: Infinity,
+            url: `${Bunny_Storage_URL}/Blogs/${filename}`,
+            headers: {
+              "Content-Type": "image/jpeg",
+              AccessKey: Bunny_Storage_Access_Key,
+            },
+            data: uploadedImg,
+          });
+
+          if (res.data.HttpCode === 201) {
+            const response = await axios.patch(
+              `${BASE_URL}blogs/${data.Id}`,
+              UpdateObj
+            );
+            if (response.data.status) {
+              if (uploadedImg !== "") {
+                await axios.request({
+                  method: "DELETE",
+                  maxBodyLength: Infinity,
+                  url: `${Bunny_Storage_URL}/Blogs/${data.Link}`,
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
                 });
               }
-            });
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Data Updated Successfully",
+                toast: true,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              handleClose();
+              getAllImgList();
+              setUploadedImg("");
+            } else {
+              setLoaderOpen(false);
+              throw new Error("Failed to Update Data");
+            }
+          } else {
+            setLoaderOpen(false);
+            throw new Error("Failed to Upload Image");
+          }
+        } catch (error) {
+          setLoaderOpen(false);
+          Swal.fire({
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
         }
+      } else {
         setLoaderOpen(false);
-      });
+      }
     }
   };
   const handleDelete = (data) => {
-    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -339,6 +316,7 @@ const ManageBlog = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setLoaderOpen(true);
         axios
           .delete(`${Bunny_Storage_URL}/Blogs/${data.Link}`, {
             headers: {
@@ -359,7 +337,6 @@ const ManageBlog = () => {
                     showConfirmButton: false,
                     timer: 1500,
                   });
-                  handleClose();
                   getAllImgList();
                 })
                 .catch((error) => {
@@ -396,7 +373,6 @@ const ManageBlog = () => {
             });
           });
       }
-      setLoaderOpen(false);
     });
   };
 

@@ -94,7 +94,7 @@ const ManageFAQ = () => {
 
   const handleSubmitForm = () => {
     const requiredFields = ["Question", "Answer"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -126,11 +126,14 @@ const ManageFAQ = () => {
           }).then((result) => {
             if (result.isConfirmed) {
               return axios.patch(`${BASE_URL}faqs/${data.Id}`, UpdateObj);
+            } else {
+              throw new Error("Update cancelled");
             }
           });
 
     axiosRequest
       .then((response) => {
+        setLoaderOpen(false);
         if (response.data.status) {
           setLoaderOpen(false);
           Swal.fire({
@@ -160,14 +163,16 @@ const ManageFAQ = () => {
       })
       .catch((error) => {
         setLoaderOpen(false);
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          toast: true,
-          title: "Failed",
-          text: error,
-          showConfirmButton: true,
-        });
+        if (error.message !== "Update cancelled") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
       });
   };
 
@@ -182,7 +187,6 @@ const ManageFAQ = () => {
   };
 
   const handleDelete = (rowData) => {
-    setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -192,6 +196,7 @@ const ManageFAQ = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setLoaderOpen(true);
         axios
           .delete(`${BASE_URL}faqs/${rowData._id}`)
           .then((response) => {
@@ -248,7 +253,7 @@ const ManageFAQ = () => {
     {
       field: "actions",
       headerName: "Action",
-      width: 180,
+      width: 150,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -330,9 +335,7 @@ const ManageFAQ = () => {
 
             <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
+                <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
                   labelId="ChooseType"

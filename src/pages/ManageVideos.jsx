@@ -110,6 +110,21 @@ export default function ManageVideos() {
     setFormData([]);
   };
 
+  // const handleUpdate = (data) => {
+  //   console.log(data);
+  //   setSaveUpdateButton("UPDATE");
+  //   setOn(true);
+  //   setSelectedTags(data.TagsIds);
+  //   setFormData({
+  //     Name: data.Name,
+  //     Description: data.Description,
+  //     Id: data._id,
+  //     TagsIds: data.TagsIds,
+  //     StorageVideoId: data.StorageVideoId,
+  //   });
+  //   console.log("Update Video id", data);
+  // };
+
   const handleUpdate = (data) => {
     console.log(data);
     setSaveUpdateButton("UPDATE");
@@ -122,12 +137,44 @@ export default function ManageVideos() {
       TagsIds: data.TagsIds,
       StorageVideoId: data.StorageVideoId,
     });
+
+    // Set the uploaded video name if it exists
+    if (data.Link) {
+      setUploadedVideo({
+        name: data.Link,
+      });
+    } else {
+      setUploadedVideo(""); // Clear uploaded video if not available
+    }
+
     console.log("Update Video id", data);
   };
 
+  // const handleVideoUpload = (event) => {
+  //   const video = event.target.files[0];
+  //   setUploadedVideo(video);
+  // };
+
   const handleVideoUpload = (event) => {
     const video = event.target.files[0];
-    setUploadedVideo(video);
+    if (video && video.type.startsWith("video/")) {
+      setUploadedVideo(video);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid File",
+        text: "Please upload a valid video file",
+        toast: true,
+        showConfirmButton: true,
+      });
+      setUploadedVideo("");
+    }
+
+    if (formData.Link) {
+      setUploadedVideo({
+        name: formData.Link, // Assuming Link contains the video name
+      });
+    }
   };
 
   const handleInputChange = (event) => {
@@ -151,7 +198,7 @@ export default function ManageVideos() {
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
-      (field) => !formData[field]
+      (field) => !formData[field].trim()
     );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
@@ -241,6 +288,8 @@ export default function ManageVideos() {
                 showConfirmButton: true,
               });
             });
+        } else {
+          setLoaderOpen(false);
         }
       });
     }
@@ -341,7 +390,6 @@ export default function ManageVideos() {
   };
 
   const deleteVideo = (data) => {
-    setLoaderOpen(true);
     console.log(data);
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -353,6 +401,7 @@ export default function ManageVideos() {
     })
       .then((result) => {
         if (result.isConfirmed) {
+          setLoaderOpen(true);
           axios
             .delete(`${Bunny_Stream_URL}/${data.StorageVideoId}`, {
               headers: {
@@ -467,7 +516,7 @@ export default function ManageVideos() {
             container
             xs={12}
             item
-            spacing={3}
+            spacing={2}
             display={"flex"}
             flexDirection={"column"}
             padding={4}
@@ -509,9 +558,7 @@ export default function ManageVideos() {
 
             <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
+                <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
                   labelId="ChooseType"
@@ -562,7 +609,12 @@ export default function ManageVideos() {
                   },
                 }}
               >
-                {uploadedVideo.name ? uploadedVideo.name : "Upload Video"}
+                <Typography
+                  noWrap
+                  style={{ width: "80%", textAlign: "center" }}
+                >
+                  {uploadedVideo.name ? uploadedVideo.name : "Upload Video"}
+                </Typography>
 
                 <VisuallyHiddenInput type="file" />
               </Button>
