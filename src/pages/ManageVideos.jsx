@@ -60,6 +60,7 @@ export default function ManageVideos() {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [selectedTags, setSelectedTags] = React.useState([]);
 
+
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
   };
@@ -73,7 +74,8 @@ export default function ManageVideos() {
     });
     setSelectedTags([]);
     setUploadedVideo("");
-  };
+  };   
+ 
 
   React.useEffect(() => {
     getAllVideoList();
@@ -791,6 +793,7 @@ export default function ManageVideos() {
             onChange={handlePageChange}
           />
         </Grid>
+       
       </Grid>
     </>
   );

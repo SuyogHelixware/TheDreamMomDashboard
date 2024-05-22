@@ -1,69 +1,60 @@
 import CloseIcon from "@mui/icons-material/Close";
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
+    Button,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    IconButton,
+    Paper,
+    TextField,
+    Typography
 } from "@mui/material";
-import React, { useState } from "react";
-import InputTextField, { InputDescriptionField } from "../components/Component";
-import PlanMasterDiet from "./PlanMasterDiet";
-import PlanMasterVaccination from "./PlanMasterVaccination";
-import PlanMasterMedication from "./PlanMasterMedication";
-import PlanMasterExercise from "./PlanMasterExercise";
-import PlanMasterMedical from "./PlanMasterMedical";
-import { DataGrid } from "@mui/x-data-grid";
-import axios from "axios";
-import { BASE_URL } from "../Constant";
+import React, { useState } from 'react';
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import { BASE_URL } from "../Constant";
+import axios from "axios";
 
-const PlanMaster = () => {
+const PostNatal = () => {
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState([
-  //   {
-  //   Name: "",
-  //   Description: " ",
-  //   DietIds: "",
-  //   ExerciseIds: "",
-  //   VaccinationIds: "",
-  //   MedTestIds: "",
-  //   MedDetailsIds: "",
-  //   Age: "",
-  //   Weight: "",
-  //   Height: "",
-  //   Week: "",
-  //   Status: "",
-  // }
-]);
+  const [data, setData] = useState([]);
 
-  const getAllPlanMasterData = () => {
-    axios.get(`${BASE_URL}planmaster/`).then((response) => {
-      setData(response.data.values);
-    });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value
+      
+    }));
   };
-
-  React.useEffect(() => {
-    getAllPlanMasterData();
-  }, []);
 
   const handleParentDialogOpen = () => {
     setOpen(true);
   };
+
+ 
+  
+//   const getAllPlanMasterData = () => {
+//     axios.get(`${BASE_URL}planmaster/`).then((response) => {
+//       setData(response.data.values);
+//     });
+//   };
+
+  React.useEffect(() => {
+    // getAllPlanMasterData();
+  }, []);
+
+  
 
   const handleParentDialogClose = () => {
     setOpen(false);
   };
 
   const handleSave = () => {
-    console.log(data);
     console.log("------");
     handleParentDialogClose();
+    console.log(data);
   };
 
   const columns = [
@@ -102,6 +93,7 @@ const PlanMaster = () => {
     { field: "Status", headerName: "Status", width: 100 },
   ];
 
+
   return (
     <>
       <Grid
@@ -132,7 +124,7 @@ const PlanMaster = () => {
           padding={1}
           noWrap
         >
-          Plan Master
+          Post Natal
         </Typography>
       </Grid>
 
@@ -159,29 +151,8 @@ const PlanMaster = () => {
             },
           }}
         >
-          Open Plan Master
+          Open Post Natal
         </Button>
-      </Grid>
-
-      <Grid container item height={500} lg={12} component={Paper}>
-        <DataGrid
-          className="datagrid-style"
-          rows={data.map((data, index) => ({
-            ...data,
-            SrNo: index + 1,
-          }))}
-          rowHeight={70}
-          getRowId={(row) => row._id}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 7,
-              },
-            },
-          }}
-          pageSizeOptions={[7]}
-        />
       </Grid>
 
       <Dialog
@@ -190,10 +161,9 @@ const PlanMaster = () => {
         aria-labelledby="parent-dialog-title"
         aria-describedby="parent-dialog-description"
         fullScreen
-        // fullWidth
       >
         <DialogTitle>
-          <b>Plan Master</b>
+          <b>Post Natal</b>
           <IconButton
             aria-label="close"
             onClick={handleParentDialogClose}
@@ -203,40 +173,32 @@ const PlanMaster = () => {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent
-          sx={{
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
-            overflowY: { xs: "scroll", md: "auto" },
-            "&::-webkit-scrollbar": {
-              display: "none",
-            },
-            msOverflowStyle: "none",
-            scrollbarWidth: "none",
-          }}
-        >
+        <DialogContent>
           <Grid container spacing={2} pt={3}>
             <Grid item xs={12} sm={4}>
-              <InputTextField
+              <TextField
                 size="small"
                 fullWidth
                 id="Name"
                 label="Enter Name"
                 name="Name"
                 value={data.Name}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <InputTextField
+              <TextField
                 size="small"
                 fullWidth
                 id="Age"
                 label="Enter Age"
                 name="Age"
                 value={data.Age}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <InputDescriptionField
+              <TextField
                 size="small"
                 required
                 fullWidth
@@ -246,67 +208,40 @@ const PlanMaster = () => {
                 multiline
                 rows={3}
                 value={data.Description}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <InputTextField
+              <TextField
                 size="small"
                 fullWidth
                 id="Weight"
                 label="Enter Weight"
                 name="Weight"
                 value={data.Weight}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <InputTextField
+              <TextField
                 size="small"
                 fullWidth
                 id="Height"
                 label="Enter Height"
                 name="Height"
                 value={data.Height}
+                onChange={handleChange}
               />
             </Grid>
+            <Grid item xs={12}>
+              <Button variant="contained" color="primary" onClick={handleSave}>
+                Save
+              </Button>
+            </Grid>
           </Grid>
-
-          <PlanMasterDiet />
-          <PlanMasterVaccination />
-          <PlanMasterMedication />
-          <PlanMasterExercise />
-          <PlanMasterMedical />
-
-          <DialogActions>
-            <Button
-              sx={{
-                p: 1,
-                px: 4,
-                color: "white",
-                backgroundColor: "#8F00FF",
-                boxShadow: 5,
-                position: "fixed",
-                bottom: 10,
-                right: 10,
-                "&:hover": {
-                  backgroundColor: "gray",
-                },
-                "& .MuiButton-label": {
-                  display: "flex",
-                  alignItems: "center",
-                },
-                "& .MuiSvgIcon-root": {
-                  marginRight: "10px",
-                },
-              }}
-              onClick={handleSave}
-            >
-              Save
-            </Button>
-          </DialogActions>
         </DialogContent>
       </Dialog>
     </>
   );
 };
-
-export default PlanMaster;
+export default PostNatal;
