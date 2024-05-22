@@ -30,6 +30,7 @@ import MedicalCondition from "../pages/MedicalCondition";
 import ManageTags from "../pages/ManageTags";
 import PlanMaster from "../pages/PlanMaster";
 import Precaution from "../pages/ManageSchedule/Precaution";
+import PostNatal from "../pages/PostNatal";
 
 export default function Routing() {
   return (
@@ -49,7 +50,7 @@ export default function Routing() {
               path="manage-schedule/vaccination"
               element={<Vaccination />}
             />
-
+            <Route path="post-natal" element={<PostNatal/>} />
             {/* <Route path="post-natal/pndiet" element={<PNDiet />} />
             <Route path="post-natal/pnexercise" element={<PNExercise />} />
             <Route path="post-natal/pnprecaution" element={<PNPrecaution />} />
@@ -62,7 +63,10 @@ export default function Routing() {
             <Route path="manage-videos" element={<ManageVideos />} />
             <Route path="manage-posts" element={<ManagePosts />} />
             <Route path="manage-faq" element={<ManageFAQ />} />
-            <Route path="manage-subscription" element={<ManageSubscription />}/>
+            <Route
+              path="manage-subscription"
+              element={<ManageSubscription />}
+            />
             <Route path="manage-blog" element={<ManageBlog />} />
             <Route path="manage-expert" element={<ManageExpert />} />
             <Route path="manage-comments" element={<ManageComment />} />
@@ -70,7 +74,7 @@ export default function Routing() {
             <Route path="manage-tags" element={<ManageTags />} />
             <Route path="manage-advertise" element={<ManageAdvertise />} />
             <Route path="manage-report" element={<ManageReport />} />
-            <Route path="medical-condition" element={<MedicalCondition/>}/>
+            <Route path="medical-condition" element={<MedicalCondition />} />
             {/* <Route path="login" element={<Login />} /> */}
           </Route>
         </Routes>
