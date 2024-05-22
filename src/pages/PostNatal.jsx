@@ -1,20 +1,16 @@
 import CloseIcon from "@mui/icons-material/Close";
 import {
-    Button,
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    Grid,
-    IconButton,
-    Paper,
-    TextField,
-    Typography
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Paper,
+  TextField,
+  Typography
 } from "@mui/material";
 import React, { useState } from 'react';
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import { BASE_URL } from "../Constant";
-import axios from "axios";
 
 const PostNatal = () => {
   const [open, setOpen] = useState(false);
@@ -57,41 +53,7 @@ const PostNatal = () => {
     console.log(data);
   };
 
-  const columns = [
-    {
-      field: "actions",
-      headerName: "Action",
-      width: 150,
-      renderCell: (params) => (
-        <strong>
-          <IconButton color="primary">
-            <EditNoteIcon />
-          </IconButton>
-          <Button
-            size="medium"
-            sx={{ color: "red" }}
-          >
-            <DeleteForeverIcon />
-          </Button>
-        </strong>
-      ),
-    },
-    {
-      field: "SrNo",
-      headerName: "SrNo",
-      width: 100,
-    },
-    { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 400 },
-    {
-      field: "Age",
-      headerName: "Age",
-      width: 100,
-    },
-    { field: "Height", headerName: "Height", width: 100 },
-    { field: "Weight", headerName: "Weight", width: 100 },
-    { field: "Status", headerName: "Status", width: 100 },
-  ];
+ 
 
 
   return (
