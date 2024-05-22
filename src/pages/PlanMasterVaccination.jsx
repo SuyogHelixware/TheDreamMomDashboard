@@ -15,21 +15,21 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL, Bunny_Image_URL } from "../Constant";
 
-const PlanMasterVaccination = () => {
+const PlanMasterVaccination = ({ sendVaccinationDataToParent }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
-  const [dietData, setDietData] = useState([]);
-  const [selectedDietRows, setSelectedDietRows] = useState([]);
+  const [vaccinationData, setVaccinationData] = useState([]);
+  const [selectedVaccinationRows, setSelectedVaccinationRows] = useState([]);
 
   useEffect(() => {
     axios.get(`${BASE_URL}vaccination/`).then((response) => {
-      const updatedDietData = response.data.values.flat().map((item) => ({
+      const updatedVaccinationData = response.data.values.flat().map((item) => ({
         id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
       }));
-      setDietData(updatedDietData);
+      setVaccinationData(updatedVaccinationData);
     });
   }, []);
 
@@ -41,10 +41,10 @@ const PlanMasterVaccination = () => {
     setChildDialogOpen(false);
   };
 
-  const handleDietRowClick = (id) => {
+  const handleVaccinationRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = dietData.filter((row) => selectedIDs.has(row.id));
-    setSelectedDietRows(
+    const selectedRows = vaccinationData.filter((row) => selectedIDs.has(row.id));
+    setSelectedVaccinationRows(
       selectedRows.map((item) => ({
         id: item.id,
         Name: item.Name,
@@ -62,9 +62,10 @@ const PlanMasterVaccination = () => {
     });
   };
 
-  const handleSaveDietSelection = () => {
-    setChildData((prev) => [...prev, ...selectedDietRows]);
+  const handleSaveVaccinationSelection = () => {
+    setChildData((prev) => [...prev, ...selectedVaccinationRows]);
     setChildDialogOpen(false);
+    sendVaccinationDataToParent(selectedVaccinationRows);
   };
 
   const columns = [
@@ -185,7 +186,7 @@ const PlanMasterVaccination = () => {
 
         <DialogContent sx={{height:400}}>
           <DataGrid
-            rows={dietData}
+            rows={vaccinationData}
             className="datagrid-style"
             rowHeight={80}
             columns={[
@@ -212,7 +213,7 @@ const PlanMasterVaccination = () => {
                 ? true
                 : !childData.map((obj) => obj.id).includes(params.row.id);
             }}
-            onRowSelectionModelChange={(ids) => handleDietRowClick(ids)}
+            onRowSelectionModelChange={(ids) => handleVaccinationRowClick(ids)}
             disableRowSelectionOnClick
             initialState={{
               pagination: {
@@ -244,7 +245,7 @@ const PlanMasterVaccination = () => {
                 marginRight: "10px",
               },
             }}
-            onClick={handleSaveDietSelection}
+            onClick={handleSaveVaccinationSelection}
           >
             Save
           </Button>

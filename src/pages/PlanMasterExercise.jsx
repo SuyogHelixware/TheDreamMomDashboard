@@ -15,21 +15,21 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL, Bunny_Image_URL } from "../Constant";
 
-const PlanMasterExercise = () => {
+const PlanMasterExercise = ({ sendExerciseDataToParent }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
-  const [dietData, setDietData] = useState([]);
-  const [selectedDietRows, setSelectedDietRows] = useState([]);
+  const [exerciseData, setExerciseData] = useState([]);
+  const [selectedExerciseRows, setSelectedExerciseRows] = useState([]);
 
   useEffect(() => {
     axios.get(`${BASE_URL}Exercise/`).then((response) => {
-      const updatedDietData = response.data.values.flat().map((item) => ({
+      const updatedExerciseData = response.data.values.flat().map((item) => ({
         id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
       }));
-      setDietData(updatedDietData);
+      setExerciseData(updatedExerciseData);
     });
   }, []);
 
@@ -41,10 +41,10 @@ const PlanMasterExercise = () => {
     setChildDialogOpen(false);
   };
 
-  const handleDietRowClick = (id) => {
+  const handleExerciseRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = dietData.filter((row) => selectedIDs.has(row.id));
-    setSelectedDietRows(
+    const selectedRows = exerciseData.filter((row) => selectedIDs.has(row.id));
+    setSelectedExerciseRows(
       selectedRows.map((item) => ({
         id: item.id,
         Name: item.Name,
@@ -62,9 +62,10 @@ const PlanMasterExercise = () => {
     });
   };
 
-  const handleSaveDietSelection = () => {
-    setChildData((prev) => [...prev, ...selectedDietRows]);
+  const handleSaveExerciseSelection = () => {
+    setChildData((prev) => [...prev, ...selectedExerciseRows]);
     setChildDialogOpen(false);
+    sendExerciseDataToParent(selectedExerciseRows);
   };
 
   const columns = [
@@ -185,7 +186,7 @@ const PlanMasterExercise = () => {
 
         <DialogContent sx={{height:400}}>
           <DataGrid
-            rows={dietData}
+            rows={exerciseData}
             className="datagrid-style"
             rowHeight={80}
             columns={[
@@ -212,7 +213,7 @@ const PlanMasterExercise = () => {
                 ? true
                 : !childData.map((obj) => obj.id).includes(params.row.id);
             }}
-            onRowSelectionModelChange={(ids) => handleDietRowClick(ids)}
+            onRowSelectionModelChange={(ids) => handleExerciseRowClick(ids)}
             disableRowSelectionOnClick
             initialState={{
               pagination: {
@@ -244,7 +245,7 @@ const PlanMasterExercise = () => {
                 marginRight: "10px",
               },
             }}
-            onClick={handleSaveDietSelection}
+            onClick={handleSaveExerciseSelection}
           >
             Save
           </Button>
