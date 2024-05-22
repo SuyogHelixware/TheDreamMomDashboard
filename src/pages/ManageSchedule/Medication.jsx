@@ -68,8 +68,8 @@ const Medication = () => {
 
   const handleSubmitForm = () => {
     const requiredFileds = ["Name", "Description"];
-    const emptyRequiredFields = requiredFileds.filter((field) =>!data[field].trim());
-    if (emptyRequiredFields.length > 0) {
+    const emptyRequiredFields = requiredFileds.filter((field) =>!data[field] || !data[field].trim());
+        if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
       return;
     }

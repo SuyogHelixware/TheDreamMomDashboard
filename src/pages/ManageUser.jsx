@@ -313,7 +313,7 @@ export default function ManageUsers() {
       BloodGroup: data.BloodGroup,
       UserType: "P",
       Avatar: filename,
-      Status: 1,
+      Status: data.Status,
     };
     const UpdateObj = {
       Firstname: data.Firstname,
@@ -325,6 +325,7 @@ export default function ManageUsers() {
       Email: data.Email,
       Address: data.Address,
       BloodGroup: data.BloodGroup,
+      Status: data.Status,
       UserType: "P",
       Avatar: uploadedImg === "" ? data.Avatar : filename,
     };

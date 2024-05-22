@@ -100,7 +100,8 @@ const Medical = () => {
 
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
+    const emptyRequiredFields = requiredFields.filter( (field) => !data[field] || !data[field].trim()
+  );
 
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");

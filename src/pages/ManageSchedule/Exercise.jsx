@@ -137,7 +137,10 @@ const Exercise = () => {
 
   const handleSubmitForm = async () => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
+    const emptyRequiredFields = requiredFields.filter(
+     
+      (field) => !data[field] || !data[field].trim()
+    );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -221,23 +224,23 @@ const Exercise = () => {
 
       if (result.isConfirmed) {
         try {
-          const res = await axios.request({
-            method: "PUT",
-            maxBodyLength: Infinity,
-            url: `${Bunny_Storage_URL}/Schedule/Exercise/${filename}`,
-            headers: {
-              "Content-Type": "image/jpeg",
-              AccessKey: Bunny_Storage_Access_Key,
-            },
-            data: uploadedImg,
-          });
+          const response = await axios.patch(
+            `${BASE_URL}Exercise/${data.Id}`,
+            UpdateObj
+          );
 
-          if (res.data.HttpCode === 201) {
-            const response = await axios.patch(
-              `${BASE_URL}Exercise/${data.Id}`,
-              UpdateObj
-            );
-            if (response.data.status) {
+          if (response.data.status && uploadedImg !== "") {
+            const res = await axios.request({
+              method: "PUT",
+              maxBodyLength: Infinity,
+              url: `${Bunny_Storage_URL}/Schedule/Exercise/${filename}`,
+              headers: {
+                "Content-Type": "image/jpeg",
+                AccessKey: Bunny_Storage_Access_Key,
+              },
+              data: uploadedImg,
+            });
+            if (res.data.HttpCode === 201) {
               if (uploadedImg !== "") {
                 await axios.request({
                   method: "DELETE",
@@ -266,7 +269,17 @@ const Exercise = () => {
             }
           } else {
             setLoaderOpen(false);
-            throw new Error("Failed to Upload Image");
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Data Updated Successfully",
+              toast: true,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            handleClose();
+            getAllImgList();
+            setUploadedImg("");
           }
         } catch (error) {
           setLoaderOpen(false);
@@ -718,10 +731,14 @@ const Exercise = () => {
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
           <Pagination
-            count={Math.ceil(19 / 8)}
-            color="primary"
+            count={Math.ceil(imgData.length / 8)}
+            color="secondary"
             page={page}
             onChange={handlePageChange}
           />

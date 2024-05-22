@@ -47,11 +47,7 @@ export default function ManageVideos() {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [uploadedVideo, setUploadedVideo] = React.useState("");
-  const [formData, setFormData] = React.useState({
-    Name: "",
-    Description: "",
-    Id: "",
-  });
+  
   const [Videos, setVideos] = React.useState([]);
   const [tags, setTags] = React.useState([]);
   const [on, setOn] = React.useState(false);
@@ -59,7 +55,11 @@ export default function ManageVideos() {
   const cardsPerPage = 8;
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [selectedTags, setSelectedTags] = React.useState([]);
-
+  const [formData, setFormData] = React.useState({
+    Name: "",
+    Description: "",
+    Id: "",
+  });
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -785,10 +785,10 @@ export default function ManageVideos() {
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
-        <Grid item xs={12}>
+        <Grid item xs={12} style={{display:"flex", justifyContent:"center"}}>
           <Pagination
-            count={Math.ceil(19 / 8)}
-            color="primary"
+            count={Math.ceil(Videos.length / 8)}
+            color="secondary"
             page={page}
             onChange={handlePageChange}
           />

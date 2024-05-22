@@ -29,7 +29,7 @@ export default function MedicalCondition() {
     Id: "",
     Name: "",
     Description: "",
-    Status: "",
+    Status: 1,
   });
 
   const clearFormData = () => {
@@ -37,7 +37,7 @@ export default function MedicalCondition() {
       Id: "",
       Name: "",
       Description: "",
-      Status: "",
+      Status: 1,
     });
   };
 
@@ -80,10 +80,12 @@ export default function MedicalCondition() {
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
+      Status: data.Status
     };
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
+      Status: data.Status
     };
 
     setLoaderOpen(true);

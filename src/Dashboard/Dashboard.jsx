@@ -43,6 +43,7 @@ import TodayIcon from '@mui/icons-material/Today';
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
+import ApprovalIcon from '@mui/icons-material/Approval';
 import * as React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../src/assets/logo.png";
@@ -648,7 +649,7 @@ export default function Dashboard() {
                 }}
               >
                 <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <TodayIcon />
+                  <ApprovalIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Post Natal" />
               </ListItemButton>
