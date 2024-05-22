@@ -19,7 +19,12 @@ import * as React from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 import avatar from "../../src/assets/avtar.png";
-import { BASE_URL } from "../Constant";
+import {
+  BASE_URL,
+  Bunny_Image_URL,
+  Bunny_Storage_Access_Key,
+  Bunny_Storage_URL,
+} from "../Constant";
 import InputTextField, {
   CheckboxInputs,
   DatePickerField,
@@ -33,8 +38,9 @@ export default function ManageUsers() {
   const [userData, setUserData] = React.useState([]);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [on, setOn] = React.useState(false);
-  const [image, setImage] = React.useState(null);
+  const [uploadedImg, setUploadedImg] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
+  const [Image, setImage] = React.useState("");
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -50,7 +56,22 @@ export default function ManageUsers() {
         setImage(reader.result);
       };
       reader.readAsDataURL(file);
+      setUploadedImg(file);
     }
+    
+    // const file = event.target.files[0];
+    // if (file && file.type.startsWith("image/")) {
+    //   setUploadedImg(file);
+    // } else {
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "Invalid File",
+    //     text: "Please upload a valid image file",
+    //     toast: true,
+    //     showConfirmButton: true,
+    //   });
+    // setUploadedImg("");
+    // }
   };
 
   const [data, setData] = React.useState({
@@ -65,6 +86,7 @@ export default function ManageUsers() {
     BloodGroup: "",
     Status: 1,
     Email: "",
+    Avatar: "",
   });
 
   const clearFormData = () => {
@@ -80,7 +102,9 @@ export default function ManageUsers() {
       BloodGroup: "",
       Status: 1,
       Email: "",
+      Avatar: "",
     });
+    setImage("");
   };
 
   const onchangeHandler = (event) => {
@@ -114,9 +138,13 @@ export default function ManageUsers() {
   };
 
   const handleClick = (row) => {
+    console.log("====================================");
+    console.log(row);
+    console.log("====================================");
     setSaveUpdateButton("UPDATE");
     setOn(true);
     setData(row);
+    setImage(`${Bunny_Image_URL}/Users/${row.Firstname}/${row.Avatar}`);
   };
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -183,7 +211,7 @@ export default function ManageUsers() {
       timer: 1500,
     });
   };
-  const updateUser = (id) => {
+  const updateUser = async (id) => {
     const requiredFields = [
       "Firstname",
       "Lastname",
@@ -211,58 +239,222 @@ export default function ManageUsers() {
 
     setLoaderOpen(true);
 
-    const axiosRequest =
-      SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}Users`, data)
-        : Swal.fire({
-            text: "Do you want to Update...?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, Update it!",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              return axios.patch(`${BASE_URL}Users/${id}`, data);
-            } else {
-              throw new Error("Update cancelled");
-            }
-          });
+    // const axiosRequest =
+    //   SaveUpdateButton === "SAVE"
+    //     ? axios.post(`${BASE_URL}Users`, data)
+    //     : Swal.fire({
+    //         text: "Do you want to Update...?",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#3085d6",
+    //         cancelButtonColor: "#d33",
+    //         confirmButtonText: "Yes, Update it!",
+    //       }).then((result) => {
+    //         if (result.isConfirmed) {
+    //           return axios.patch(`${BASE_URL}Users/${id}`, data);
+    //         } else {
+    //           throw new Error("Update cancelled");
+    //         }
+    //       });
 
-    axiosRequest
-      .then((response) => {
+    // axiosRequest
+    //   .then((response) => {
+    //     setLoaderOpen(false);
+    //     if (response.data.status) {
+    //       Swal.fire({
+    //         position: "center",
+    //         icon: "success",
+    //         toast: true,
+    //         title:
+    //           SaveUpdateButton === "SAVE"
+    //             ? "User Added Successfully"
+    //             : "User Updated Successfully",
+    //         showConfirmButton: false,
+    //         timer: 1500,
+    //       });
+    //       getUserData();
+    //       handleClose();
+    //     } else {
+    //       setLoaderOpen(false);
+    //       Swal.fire({
+    //         position: "center",
+    //         icon: "error",
+    //         toast: true,
+    //         title: "Failed",
+    //         text: response.data.message,
+    //         showConfirmButton: true,
+    //       });
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setLoaderOpen(false);
+    //     if (error.message !== "Update cancelled") {
+    //       Swal.fire({
+    //         position: "center",
+    //         icon: "error",
+    //         toast: true,
+    //         title: "Failed",
+    //         text: error.message,
+    //         showConfirmButton: true,
+    //       });
+    //     }
+    //   });
+
+    const filename = new Date().getTime() + "_" + uploadedImg.name;
+    const saveObj = {
+      Firstname: data.Firstname,
+      Middlename: data.Middlename,
+      Lastname: data.Lastname,
+      DOB: data.DOB,
+      Password: data.Password,
+      Phone: data.Phone,
+      Email: data.Email,
+      Address: data.Address,
+      BloodGroup: data.BloodGroup,
+      UserType: "P",
+      Avatar: filename,
+      Status: 1,
+    };
+    const UpdateObj = {
+      Firstname: data.Firstname,
+      Middlename: data.Middlename,
+      Lastname: data.Lastname,
+      DOB: data.DOB,
+      Password: data.Password,
+      Phone: data.Phone,
+      Email: data.Email,
+      Address: data.Address,
+      BloodGroup: data.BloodGroup,
+      UserType: "P",
+      Avatar: uploadedImg === "" ? data.Avatar : filename,
+    };
+
+    setLoaderOpen(true);
+
+    if (SaveUpdateButton === "SAVE") {
+      if (uploadedImg === "") {
         setLoaderOpen(false);
-        if (response.data.status) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            toast: true,
-            title:
-              SaveUpdateButton === "SAVE"
-                ? "User Added Successfully"
-                : "User Updated Successfully",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          getUserData();
-          handleClose();
+        validationAlert("Please select file");
+        return;
+      }
+      try {
+        const res = await axios.request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `${Bunny_Storage_URL}/Users/${data.Firstname}/${filename}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: Bunny_Storage_Access_Key,
+          },
+          data: uploadedImg,
+        });
+
+        if (res.data.HttpCode === 201) {
+          const response = await axios.post(`${BASE_URL}Users`, saveObj);
+          if (response.data.status) {
+            setLoaderOpen(false);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              toast: true,
+              title: "User Added Successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            handleClose();
+            getUserData();
+            setUploadedImg("");
+          } else {
+            setLoaderOpen(false);
+            throw new Error("Failed to Add User");
+          }
         } else {
           setLoaderOpen(false);
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            toast: true,
-            title: "Failed",
-            text: response.data.message,
-            showConfirmButton: true,
-          });
+          throw new Error("Failed to Upload Image");
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         setLoaderOpen(false);
-        if (error.message !== "Update cancelled") {
+        Swal.fire({
+          icon: "error",
+          toast: true,
+          title: "Failed",
+          text: error.message,
+          showConfirmButton: true,
+        });
+      }
+    } else {
+      const result = await Swal.fire({
+        text: "Do you want to Update...?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Update it!",
+      });
+
+      if (result.isConfirmed) {
+        debugger;
+        try {
+          const response = await axios.patch(
+            `${BASE_URL}Users/${data._id}`,
+            UpdateObj
+          );
+
+          if (response.data.status && uploadedImg !== "") {
+            const res = await axios.request({
+              method: "PUT",
+              maxBodyLength: Infinity,
+              url: `${Bunny_Storage_URL}/Users/${data.Firstname}/${filename}`,
+              headers: {
+                "Content-Type": "image/jpeg",
+                AccessKey: Bunny_Storage_Access_Key,
+              },
+              data: uploadedImg,
+            });
+            if (res.data.HttpCode === 201) {
+              if (uploadedImg !== "") {
+                await axios.request({
+                  method: "DELETE",
+                  maxBodyLength: Infinity,
+                  url: `${Bunny_Storage_URL}/Users/${data.Firstname}/${data.Avatar}`,
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
+                });
+              }
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Data Updated Successfully",
+                toast: true,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              handleClose();
+              getUserData();
+              setUploadedImg("");
+            } else {
+              setLoaderOpen(false);
+              throw new Error("Failed to Update Data");
+            }
+          } else {
+            setLoaderOpen(false);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Data Updated Successfully",
+              toast: true,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            handleClose();
+            getUserData();
+            setUploadedImg("");
+          }
+        } catch (error) {
+          setLoaderOpen(false);
           Swal.fire({
-            position: "center",
             icon: "error",
             toast: true,
             title: "Failed",
@@ -270,7 +462,10 @@ export default function ManageUsers() {
             showConfirmButton: true,
           });
         }
-      });
+      } else {
+        setLoaderOpen(false);
+      }
+    }
   };
 
   const isValidPhoneNumber = (phoneNumber) => {
@@ -361,13 +556,28 @@ export default function ManageUsers() {
       headerName: "Status",
       width: 100,
       sortable: false,
-      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
+      valueGetter: (params) =>
+        params.row.Status === 1 ? "Active" : "Inactive",
     },
     {
       field: "Email",
       headerName: "Email",
       width: 100,
       sortable: false,
+    },
+    {
+      field: "Avatar",
+      headerName: "Image",
+      width: 250,
+      renderCell: (params) => (
+        <img
+          // src={`${Bunny_Image_URL}/Users/${params.row.Avatar}`}
+          src={`${Bunny_Image_URL}/Users/${params.row.Firstname}/${params.row.Avatar}`}
+          alt=""
+          height={50}
+          width={80}
+        />
+      ),
     },
   ];
   const getUserData = () => {
@@ -435,11 +645,11 @@ export default function ManageUsers() {
                 }
               >
                 <img
-                  src={image || avatar}
-                  alt="Uploaded"
+                  src={Image || avatar}
+                  alt="Upload"
                   height={70}
                   width={70}
-                  style={{ display: "block" }}
+                  style={{ display: "block", borderRadius: "50%" }}
                 />
               </Badge>
             </Grid>
@@ -593,7 +803,7 @@ export default function ManageUsers() {
                 type="submit"
                 size="small"
                 onClick={() => updateUser(data._id)}
-                sx={{
+                sx={{     
                   marginTop: 1,
                   p: 1,
                   width: 80,
