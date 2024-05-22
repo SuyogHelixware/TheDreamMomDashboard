@@ -1,4 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Button,
   Dialog,
@@ -10,37 +12,44 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import InputTextField, { InputDescriptionField } from "../components/Component";
-import PlanMasterDiet from "./PlanMasterDiet";
-import PlanMasterVaccination from "./PlanMasterVaccination";
-import PlanMasterMedication from "./PlanMasterMedication";
-import PlanMasterExercise from "./PlanMasterExercise";
-import PlanMasterMedical from "./PlanMasterMedical";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import { BASE_URL } from "../Constant";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditNoteIcon from "@mui/icons-material/EditNote";
+import React, { useState } from "react";
+import Swal from "sweetalert2";
+import {
+  BASE_URL
+} from "../Constant";
+import InputTextField, { InputDescriptionField } from "../components/Component";
+import Loader from "../components/Loader";
+import PlanMasterDiet from "./PlanMasterDiet";
+import PlanMasterExercise from "./PlanMasterExercise";
+import PlanMasterMedical from "./PlanMasterMedical";
+import PlanMasterMedication from "./PlanMasterMedication";
+import PlanMasterVaccination from "./PlanMasterVaccination";
 
 const PlanMaster = () => {
+  const [loaderOpen, setLoaderOpen] = React.useState(false);
+  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState([
-  //   {
-  //   Name: "",
-  //   Description: " ",
-  //   DietIds: "",
-  //   ExerciseIds: "",
-  //   VaccinationIds: "",
-  //   MedTestIds: "",
-  //   MedDetailsIds: "",
-  //   Age: "",
-  //   Weight: "",
-  //   Height: "",
-  //   Week: "",
-  //   Status: "",
-  // }
-]);
+  const [data, setData] = useState([]);
+  const [formData, setFormData] = useState({
+    Name: "",
+    Description: "",
+    DietIds: [],
+    ExerciseIds: [],
+    VaccinationIds: [],
+    MedTestIds: [],
+    MedDetailsIds: [],
+    Age: "",
+    Weight: "",
+    Height: "",
+    Week: "",
+    Status: 1,
+  });
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const getAllPlanMasterData = () => {
     axios.get(`${BASE_URL}planmaster/`).then((response) => {
@@ -54,16 +63,203 @@ const PlanMaster = () => {
 
   const handleParentDialogOpen = () => {
     setOpen(true);
+    setSaveUpdateButton("SAVE");
   };
 
   const handleParentDialogClose = () => {
     setOpen(false);
   };
 
-  const handleSave = () => {
-    console.log(data);
-    console.log("------");
+  const handleSave = async () => {
+    const UpdateObj = {
+      Firstname: data.Firstname,
+      Middlename: data.Middlename,
+      Lastname: data.Lastname,
+      DOB: data.DOB,
+      Password: data.Password,
+      Phone: data.Phone,
+      Email: data.Email,
+      Address: data.Address,
+      BloodGroup: data.BloodGroup,
+      UserType: "P",
+    };
+
+    // setLoaderOpen(true);
+
+    // if (SaveUpdateButton === "SAVE") {
+    console.log(formData);
+
+    const formattedData = {
+      ...formData,
+      DietIds: formData.DietIds,
+      ExerciseIds: formData.ExerciseIds,
+      VaccinationIds: formData.VaccinationIds,
+      MedTestIds: formData.MedTestIds,
+      MedDetailsIds: formData.MedDetailsIds,
+    };
     handleParentDialogClose();
+    // console.log(formattedData);
+    axios
+      .post(`${BASE_URL}planmaster/`, formattedData)
+      .then((response) => {
+        if (response.data.status) {
+          setLoaderOpen(false);
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title: "Plan master Saved Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          const newPlanData = response.data.values;
+          setData((prevData) => [...prevData, newPlanData]);
+          handleParentDialogClose();
+        } else {
+          setLoaderOpen(false);
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed to save plan master",
+            text: response.data.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      })
+      .catch((error) => {
+        setLoaderOpen(false);
+        Swal.fire({
+          icon: "error",
+          toast: true,
+          title: "Error saving plan master",
+          text: error.message,
+          showConfirmButton: true,
+        });
+      });
+    // } else {
+    //   const result = await Swal.fire({
+    //     text: "Do you want to Update...?",
+    //     icon: "warning",
+    //     showCancelButton: true,
+    //     confirmButtonColor: "#3085d6",
+    //     cancelButtonColor: "#d33",
+    //     confirmButtonText: "Yes, Update it!",
+    //   });
+
+    //   if (result.isConfirmed) {
+    //     debugger;
+    //     try {
+    //       const response = await axios.patch(
+    //         `${BASE_URL}planmaster/${data._id}`,
+    //         UpdateObj
+    //       );
+
+    //       if (response.data.status) {
+    //         const res = await axios.request({
+    //           method: "PUT",
+    //           maxBodyLength: Infinity,
+    //           url: `${Bunny_Storage_URL}/planmaster`,
+    //           headers: {
+    //             "Content-Type": "image/jpeg",
+    //             AccessKey: Bunny_Storage_Access_Key,
+    //           },
+    //           // data: uploadedImg,
+    //         });
+    //       } else {
+    //         setLoaderOpen(false);
+    //         Swal.fire({
+    //           position: "center",
+    //           icon: "success",
+    //           title: "Data Updated Successfully",
+    //           toast: true,
+    //           showConfirmButton: false,
+    //           timer: 1500,
+    //         });
+    //         handleClose();
+    //         getAllPlanMasterData();
+    //       }
+    //     } catch (error) {
+    //       setLoaderOpen(false);
+    //       Swal.fire({
+    //         icon: "error",
+    //         toast: true,
+    //         title: "Failed",
+    //         text: error.message,
+    //         showConfirmButton: true,
+    //       });
+    //     }
+    //   } else {
+    //     setLoaderOpen(false);
+    //   }
+    // }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleClick = (row) => {
+    setSaveUpdateButton("UPDATE");
+    setOpen(true);
+    setData(row);
+    // setImage(`${Bunny_Image_URL}/Users/${row.Firstname}/${row.Avatar}`);
+  };
+
+  const handleDelete = (id) => {
+    setLoaderOpen(true);
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${BASE_URL}planmaster/${id}`)
+          .then((response) => {
+            if (response.data.status) {
+              setLoaderOpen(false);
+              setData(data.filter((user) => user._id !== id));
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                toast: true,
+                title: "Plan Master deleted Successfully",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Failed to Delete Plan Master",
+                showConfirmButton: true,
+              });
+            }
+          })
+          .catch((error) => {
+            setLoaderOpen(false);
+            Swal.fire({
+              icon: "error",
+              toast: true,
+              title: "Failed",
+              text: error,
+              showConfirmButton: true,
+            });
+          });
+      }
+      setLoaderOpen(false);
+    });
   };
 
   const columns = [
@@ -73,12 +269,13 @@ const PlanMaster = () => {
       width: 150,
       renderCell: (params) => (
         <strong>
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={() => handleClick(params.row)}>
             <EditNoteIcon />
           </IconButton>
           <Button
             size="medium"
             sx={{ color: "red" }}
+            onClick={() => handleDelete(params.row._id)}
           >
             <DeleteForeverIcon />
           </Button>
@@ -102,8 +299,44 @@ const PlanMaster = () => {
     { field: "Status", headerName: "Status", width: 100 },
   ];
 
+  const receiveDataFromDiet = (data) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      DietIds: data.map((diet) => diet.id),
+    }));
+  };
+
+  const receiveDataFromExercise = (data) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      ExerciseIds: data.map((exercise) => exercise.id),
+    }));
+  };
+
+  const receiveDataFromVaccination = (data) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      VaccinationIds: data.map((vaccination) => vaccination.id),
+    }));
+  };
+
+  const receiveDataFromMedication = (data) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      MedDetailsIds: data.map((medication) => medication.id),
+    }));
+  };
+
+  const receiveDataFromMedicalTest = (data) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      MedTestIds: data.map((medicalTest) => medicalTest.id),
+    }));
+  };
+
   return (
     <>
+      {loaderOpen && <Loader open={loaderOpen} />}
       <Grid
         container
         xs={12}
@@ -222,7 +455,8 @@ const PlanMaster = () => {
                 id="Name"
                 label="Enter Name"
                 name="Name"
-                value={data.Name}
+                value={formData.Name}
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -232,7 +466,8 @@ const PlanMaster = () => {
                 id="Age"
                 label="Enter Age"
                 name="Age"
-                value={data.Age}
+                value={formData.Age}
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -245,7 +480,8 @@ const PlanMaster = () => {
                 name="Description"
                 multiline
                 rows={3}
-                value={data.Description}
+                value={formData.Description}
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -255,7 +491,8 @@ const PlanMaster = () => {
                 id="Weight"
                 label="Enter Weight"
                 name="Weight"
-                value={data.Weight}
+                value={formData.Weight}
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -265,16 +502,36 @@ const PlanMaster = () => {
                 id="Height"
                 label="Enter Height"
                 name="Height"
-                value={data.Height}
+                value={formData.Height}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <InputTextField
+                size="small"
+                fullWidth
+                id="Week"
+                label="Enter Week"
+                name="Week"
+                value={formData.Week}
+                onChange={handleInputChange}
               />
             </Grid>
           </Grid>
 
-          <PlanMasterDiet />
-          <PlanMasterVaccination />
-          <PlanMasterMedication />
-          <PlanMasterExercise />
-          <PlanMasterMedical />
+          <PlanMasterDiet sendDataToParent={receiveDataFromDiet} />
+          <PlanMasterVaccination
+            sendVaccinationDataToParent={receiveDataFromVaccination}
+          />
+          <PlanMasterMedication
+            sendMedicationDataToParent={receiveDataFromMedication}
+          />
+          <PlanMasterExercise
+            sendExerciseDataToParent={receiveDataFromExercise}
+          />
+          <PlanMasterMedical
+            sendMedicalTestDataToParent={receiveDataFromMedicalTest}
+          />
 
           <DialogActions>
             <Button
@@ -300,7 +557,7 @@ const PlanMaster = () => {
               }}
               onClick={handleSave}
             >
-              Save
+              {SaveUpdateButton}
             </Button>
           </DialogActions>
         </DialogContent>

@@ -15,7 +15,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL, Bunny_Image_URL } from "../Constant";
 
-const PlanMasterDiet = () => {
+const PlanMasterDiet = ({ sendDataToParent }) => {
+
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [dietData, setDietData] = useState([]);
@@ -64,6 +65,7 @@ const PlanMasterDiet = () => {
 
   const handleSaveDietSelection = () => {
     setChildData((prev) => [...prev, ...selectedDietRows]);
+    sendDataToParent(selectedDietRows);
     setChildDialogOpen(false);
   };
 

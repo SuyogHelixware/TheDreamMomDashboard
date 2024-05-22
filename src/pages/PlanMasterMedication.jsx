@@ -15,20 +15,20 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../Constant";
 
-const PlanMasterMedication = () => {
+const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
-  const [dietData, setDietData] = useState([]);
-  const [selectedDietRows, setSelectedDietRows] = useState([]);
+  const [MedicationData, setMedicationData] = useState([]);
+  const [selectedMedicationRows, setSelectedMedicationRows] = useState([]);
 
   useEffect(() => {
     axios.get(`${BASE_URL}medications/`).then((response) => {
-      const updatedDietData = response.data.values.flat().map((item) => ({
+      const updatedMedicationData = response.data.values.flat().map((item) => ({
         id: item._id,
         Name: item.Name,
         Description: item.Description,
       }));
-      setDietData(updatedDietData);
+      setMedicationData(updatedMedicationData);
     });
   }, []);
 
@@ -40,10 +40,10 @@ const PlanMasterMedication = () => {
     setChildDialogOpen(false);
   };
 
-  const handleDietRowClick = (id) => {
+  const handleMedicationRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = dietData.filter((row) => selectedIDs.has(row.id));
-    setSelectedDietRows(
+    const selectedRows = MedicationData.filter((row) => selectedIDs.has(row.id));
+    setSelectedMedicationRows(
       selectedRows.map((item) => ({
         id: item.id,
         Name: item.Name,
@@ -61,9 +61,10 @@ const PlanMasterMedication = () => {
     });
   };
 
-  const handleSaveDietSelection = () => {
-    setChildData((prev) => [...prev, ...selectedDietRows]);
+  const handleSaveMedicationSelection = () => {
+    setChildData((prev) => [...prev, ...selectedMedicationRows]);
     setChildDialogOpen(false);
+    sendMedicationDataToParent(selectedMedicationRows);
   };
 
   const columns = [
@@ -172,7 +173,7 @@ const PlanMasterMedication = () => {
 
         <DialogContent sx={{height:400}}>
           <DataGrid
-            rows={dietData}
+            rows={MedicationData}
             className="datagrid-style"
             rowHeight={80}
             columns={[
@@ -186,7 +187,7 @@ const PlanMasterMedication = () => {
                 ? true
                 : !childData.map((obj) => obj.id).includes(params.row.id);
             }}
-            onRowSelectionModelChange={(ids) => handleDietRowClick(ids)}
+            onRowSelectionModelChange={(ids) => handleMedicationRowClick(ids)}
             disableRowSelectionOnClick
             initialState={{
               pagination: {
@@ -218,7 +219,7 @@ const PlanMasterMedication = () => {
                 marginRight: "10px",
               },
             }}
-            onClick={handleSaveDietSelection}
+            onClick={handleSaveMedicationSelection}
           >
             Save
           </Button>
