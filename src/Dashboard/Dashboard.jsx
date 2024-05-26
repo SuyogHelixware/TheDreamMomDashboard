@@ -29,6 +29,7 @@ import {
   MenuItem,
   Modal,
   Paper,
+  useMediaQuery,
 } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -140,7 +141,7 @@ const style = {
 export default function Dashboard() {
   const Navigate = useNavigate();
   const router = useLocation();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const [openList, setOpenList] = React.useState(false);
   const [on, setOn] = React.useState(false);
   const [userData, setUserData] = React.useState({
@@ -164,14 +165,19 @@ export default function Dashboard() {
   const handleClose = () => {
     setOn(false);
   };
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   React.useEffect(() => {
     const userData = sessionStorage.getItem("userData");
     console.log(JSON.parse(userData));
     setUserData(JSON.parse(userData));
-  }, []);
+    if (isMobile) {
+      setOpen(false);
+  }
+  }, [isMobile]);
 
-  const theme = useTheme();
+ 
 
   const location = useLocation();
 
@@ -190,21 +196,6 @@ export default function Dashboard() {
     }
     handleClickTransaction();
   };
-
-  // const handleClickMenu = () => {
-  //   if (!openMenu) {
-  //     setOpenMenu(true);
-  //   }
-  //   setList(!list);
-  //   if (openProcessTransactions) {
-  //     setOpenProcessTransactions(!openProcessTransactions);
-  //   }
-  //   handleClickTransaction();
-  //   if (!open) {
-  //     setOpen(true);
-  //   }
-  // };
-
   const handleClickTransaction = () => {
     setOpenProcessTransactions(!openProcessTransactions);
     if (openList) {

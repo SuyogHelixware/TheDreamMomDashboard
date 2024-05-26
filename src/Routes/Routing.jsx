@@ -28,7 +28,7 @@ import Signin from "../Dashboard/signin";
 // import PNVaccination from "../pages/PostNatal/PNVaccination";
 import MedicalCondition from "../pages/MedicalCondition";
 import ManageTags from "../pages/ManageTags";
-import PlanMaster from "../pages/PlanMaster";
+import PlanMaster from "../pages/PlanMaster/PlanMaster";
 import Precaution from "../pages/ManageSchedule/Precaution";
 import PostNatal from "../pages/PostNatal";
 

@@ -13,22 +13,23 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_URL } from "../Constant";
+import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
-const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
+const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
-  const [MedicationData, setMedicationData] = useState([]);
-  const [selectedMedicationRows, setSelectedMedicationRows] = useState([]);
+  const [exerciseData, setExerciseData] = useState([]);
+  const [selectedExerciseRows, setSelectedExerciseRows] = useState([]);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}medications/`).then((response) => {
-      const updatedMedicationData = response.data.values.flat().map((item) => ({
-        id: item._id,
+    axios.get(`${BASE_URL}Exercise/`).then((response) => {
+      const updatedExerciseData = response.data.values.flat().map((item) => ({
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
+        Image: item.Image,
       }));
-      setMedicationData(updatedMedicationData);
+      setExerciseData(updatedExerciseData);
     });
   }, []);
 
@@ -40,10 +41,10 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
     setChildDialogOpen(false);
   };
 
-  const handleMedicationRowClick = (id) => {
+  const handleExerciseRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = MedicationData.filter((row) => selectedIDs.has(row.id));
-    setSelectedMedicationRows(
+    const selectedRows = exerciseData.filter((row) => selectedIDs.has(row.id));
+    setSelectedExerciseRows(
       selectedRows.map((item) => ({
         id: item.id,
         Name: item.Name,
@@ -61,10 +62,10 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
     });
   };
 
-  const handleSaveMedicationSelection = () => {
-    setChildData((prev) => [...prev, ...selectedMedicationRows]);
+  const handleSaveExerciseSelection = () => {
+    setChildData((prev) => [...prev, ...selectedExerciseRows]);
     setChildDialogOpen(false);
-    sendMedicationDataToParent(selectedMedicationRows);
+    sendExerciseDataToParent(selectedExerciseRows);
   };
 
   const columns = [
@@ -87,7 +88,19 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
-    
+    {
+      field: "Image",
+      headerName: "Image",
+      width: 250,
+      renderCell: (params) => (
+        <img
+          src={`${Bunny_Image_URL}/Schedule/Exercise/${params.row.Image}`}
+          alt=""
+          height={50}
+          width={80}
+        />
+      ),
+    },
   ];
 
   return (
@@ -114,7 +127,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
                 },
               }}
             >
-              Add Medications
+              Add Exercise
             </Button>
           </Grid>
           <Grid
@@ -128,19 +141,21 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
               textAlign: "center",
             }}
           >
-            <b>Medications Table</b>
+            <b>Exercise Table</b>
           </Grid>
         </Grid>
 
         <Grid container item height={380} lg={12} component={Paper}>
           <DataGrid
             className="datagrid-style"
-            rows={childData.map((data, index) => ({
-              ...data,
-              SrNo: index + 1,
-            }))}
+            rows={
+              childData.length===0?props.exerciseData:childData.map((data, index) => ({
+                ...data,
+                SrNo: index + 1,
+              })) || []
+            }
             rowHeight={70}
-            getRowId={(row) => row.id}
+            getRowId={(row) => row._id}
             columns={columns}
             initialState={{
               pagination: {
@@ -161,7 +176,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
         maxWidth="lg"
       >
         <DialogTitle>
-          <b>Select Medications</b>
+          <b>Select Exercise</b>
           <IconButton
             aria-label="close"
             onClick={handleChildDialogClose}
@@ -173,13 +188,26 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
 
         <DialogContent sx={{height:400}}>
           <DataGrid
-            rows={MedicationData}
+            rows={exerciseData}
             className="datagrid-style"
             rowHeight={80}
             columns={[
               { field: "id", headerName: "ID", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
+              {
+                field: "Image",
+                headerName: "Image",
+                width: 250,
+                renderCell: (params) => (
+                  <img
+                    src={`${Bunny_Image_URL}/Schedule/Exercise/${params.row.Image}`}
+                    alt=""
+                    height={50}
+                    width={80}
+                  />
+                ),
+              },
             ]}
             checkboxSelection
             isRowSelectable={(params) => {
@@ -187,7 +215,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
                 ? true
                 : !childData.map((obj) => obj.id).includes(params.row.id);
             }}
-            onRowSelectionModelChange={(ids) => handleMedicationRowClick(ids)}
+            onRowSelectionModelChange={(ids) => handleExerciseRowClick(ids)}
             disableRowSelectionOnClick
             initialState={{
               pagination: {
@@ -219,7 +247,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
                 marginRight: "10px",
               },
             }}
-            onClick={handleSaveMedicationSelection}
+            onClick={handleSaveExerciseSelection}
           >
             Save
           </Button>
@@ -229,4 +257,4 @@ const PlanMasterMedication = ({ sendMedicationDataToParent }) => {
   );
 };
 
-export default PlanMasterMedication;
+export default PlanMasterExercise;

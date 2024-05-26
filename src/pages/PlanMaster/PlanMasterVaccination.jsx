@@ -13,22 +13,23 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_URL } from "../Constant";
+import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
-const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
+const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
-  const [medicalData, setMedicalData] = useState([]);
-  const [selectedMedicalRows, setSelectedMedicalRows] = useState([]);
+  const [vaccinationData, setVaccinationData] = useState([]);
+  const [selectedVaccinationRows, setSelectedVaccinationRows] = useState([]);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}medicaltests/`).then((response) => {
-      const updatedMedicalData = response.data.values.flat().map((item) => ({
+    axios.get(`${BASE_URL}vaccination/`).then((response) => {
+      const updatedVaccinationData = response.data.values.flat().map((item) => ({
         id: item._id,
         Name: item.Name,
         Description: item.Description,
+        Image: item.Image,
       }));
-      setMedicalData(updatedMedicalData);
+      setVaccinationData(updatedVaccinationData);
     });
   }, []);
 
@@ -40,12 +41,12 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
     setChildDialogOpen(false);
   };
 
-  const handleMedicalRowClick = (id) => {
+  const handleVaccinationRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = medicalData.filter((row) => selectedIDs.has(row.id));
-    setSelectedMedicalRows(
+    const selectedRows = vaccinationData.filter((row) => selectedIDs.has(row.id));
+    setSelectedVaccinationRows(
       selectedRows.map((item) => ({
-        id: item.id,
+        _id: item.id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
@@ -61,10 +62,10 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
     });
   };
 
-  const handleSaveMedicalSelection = () => {
-    setChildData((prev) => [...prev, ...selectedMedicalRows]);
+  const handleSaveVaccinationSelection = () => {
+    setChildData((prev) => [...prev, ...selectedVaccinationRows]);
     setChildDialogOpen(false);
-    sendMedicalTestDataToParent(selectedMedicalRows);
+    sendVaccinationDataToParent(selectedVaccinationRows);
   };
 
   const columns = [
@@ -87,6 +88,19 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
+    {
+      field: "Image",
+      headerName: "Image",
+      width: 250,
+      renderCell: (params) => (
+        <img
+          src={`${Bunny_Image_URL}/Schedule/Vaccination/${params.row.Image}`}
+          alt=""
+          height={50}
+          width={80}
+        />
+      ),
+    },
   ];
 
   return (
@@ -113,7 +127,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
                 },
               }}
             >
-              Add Medical Test
+              Add Vaccination
             </Button>
           </Grid>
           <Grid
@@ -127,19 +141,25 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
               textAlign: "center",
             }}
           >
-            <b>Medical Test Table</b>
+            <b>Vaccination Table</b>
           </Grid>
         </Grid>
 
         <Grid container item height={380} lg={12} component={Paper}>
           <DataGrid
             className="datagrid-style"
-            rows={childData.map((data, index) => ({
-              ...data,
-              SrNo: index + 1,
-            }))}
+            // rows={childData.map((data, index) => ({
+            //   ...data,
+            //   SrNo: index + 1,
+            // }))}
+            rows={
+              childData.length===0?props.vaccinationData:childData.map((data, index) => ({
+                ...data,
+                SrNo: index + 1,
+              })) || []
+            }
             rowHeight={70}
-            getRowId={(row) => row.id}
+            getRowId={(row) => row._id}
             columns={columns}
             initialState={{
               pagination: {
@@ -160,7 +180,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
         maxWidth="lg"
       >
         <DialogTitle>
-          <b>Select Medical Test</b>
+          <b>Select Vaccination</b>
           <IconButton
             aria-label="close"
             onClick={handleChildDialogClose}
@@ -172,13 +192,26 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
 
         <DialogContent sx={{height:400}}>
           <DataGrid
-            rows={medicalData}
+            rows={vaccinationData}
             className="datagrid-style"
             rowHeight={80}
             columns={[
               { field: "id", headerName: "ID", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
+              {
+                field: "Image",
+                headerName: "Image",
+                width: 250,
+                renderCell: (params) => (
+                  <img
+                    src={`${Bunny_Image_URL}/Schedule/Vaccination/${params.row.Image}`}
+                    alt=""
+                    height={50}
+                    width={80}
+                  />
+                ),
+              },
             ]}
             checkboxSelection
             isRowSelectable={(params) => {
@@ -186,7 +219,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
                 ? true
                 : !childData.map((obj) => obj.id).includes(params.row.id);
             }}
-            onRowSelectionModelChange={(ids) => handleMedicalRowClick(ids)}
+            onRowSelectionModelChange={(ids) => handleVaccinationRowClick(ids)}
             disableRowSelectionOnClick
             initialState={{
               pagination: {
@@ -218,7 +251,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
                 marginRight: "10px",
               },
             }}
-            onClick={handleSaveMedicalSelection}
+            onClick={handleSaveVaccinationSelection}
           >
             Save
           </Button>
@@ -228,4 +261,4 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent }) => {
   );
 };
 
-export default PlanMasterMedical;
+export default PlanMasterVaccination;

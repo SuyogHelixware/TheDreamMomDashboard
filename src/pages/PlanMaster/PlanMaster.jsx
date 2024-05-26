@@ -16,11 +16,11 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
-import {
-  BASE_URL
-} from "../Constant";
-import InputTextField, { InputDescriptionField } from "../components/Component";
-import Loader from "../components/Loader";
+import { BASE_URL } from "../../Constant";
+import InputTextField, {
+  InputDescriptionField,
+} from "../../components/Component";
+import Loader from "../../components/Loader";
 import PlanMasterDiet from "./PlanMasterDiet";
 import PlanMasterExercise from "./PlanMasterExercise";
 import PlanMasterMedical from "./PlanMasterMedical";
@@ -46,10 +46,16 @@ const PlanMaster = () => {
     Week: "",
     Status: 1,
   });
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [oldData, setOldData] = useState({
+    DietIds: [],
+    ExerciseIds: [],
+    VaccinationIds: [],
+    MedTestIds: [],
+    MedDetailsIds: [],
+  });
+  // const handleClose = () => {
+  //   setOpen(false);
+  // };
 
   const getAllPlanMasterData = () => {
     axios.get(`${BASE_URL}planmaster/`).then((response) => {
@@ -84,116 +90,76 @@ const PlanMaster = () => {
       UserType: "P",
     };
 
-    // setLoaderOpen(true);
+    setLoaderOpen(true);
 
-    // if (SaveUpdateButton === "SAVE") {
-    console.log(formData);
+    if (SaveUpdateButton === "SAVE") {
+      const formattedData = {
+        ...formData,
+        DietIds: formData.DietIds,
+        ExerciseIds: formData.ExerciseIds,
+        VaccinationIds: formData.VaccinationIds,
+        MedTestIds: formData.MedTestIds,
+        MedDetailsIds: formData.MedDetailsIds,
+      };
 
-    const formattedData = {
-      ...formData,
-      DietIds: formData.DietIds,
-      ExerciseIds: formData.ExerciseIds,
-      VaccinationIds: formData.VaccinationIds,
-      MedTestIds: formData.MedTestIds,
-      MedDetailsIds: formData.MedDetailsIds,
-    };
-    handleParentDialogClose();
-    // console.log(formattedData);
-    axios
-      .post(`${BASE_URL}planmaster/`, formattedData)
-      .then((response) => {
-        if (response.data.status) {
+      handleParentDialogClose();
+      axios
+        .post(`${BASE_URL}planmaster/`, formattedData)
+        .then((response) => {
+          if (response.data.status) {
+            setLoaderOpen(false);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              toast: true,
+              title: "Plan master Saved Successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            const newPlanData = response.data.values;
+            setData((prevData) => [...prevData, newPlanData]);
+            handleParentDialogClose();
+          } else {
+            setLoaderOpen(false);
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              toast: true,
+              title: "Failed to save plan master",
+              text: response.data.message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        })
+        .catch((error) => {
           setLoaderOpen(false);
           Swal.fire({
-            position: "center",
-            icon: "success",
-            toast: true,
-            title: "Plan master Saved Successfully",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          const newPlanData = response.data.values;
-          setData((prevData) => [...prevData, newPlanData]);
-          handleParentDialogClose();
-        } else {
-          setLoaderOpen(false);
-          Swal.fire({
-            position: "center",
             icon: "error",
             toast: true,
-            title: "Failed to save plan master",
-            text: response.data.message,
-            showConfirmButton: false,
-            timer: 1500,
+            title: "Error saving plan master",
+            text: error.message,
+            showConfirmButton: true,
           });
-        }
-      })
-      .catch((error) => {
-        setLoaderOpen(false);
-        Swal.fire({
-          icon: "error",
-          toast: true,
-          title: "Error saving plan master",
-          text: error.message,
-          showConfirmButton: true,
         });
+    } else {
+      const result = await Swal.fire({
+        text: "Do you want to Update...?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Update it!",
       });
-    // } else {
-    //   const result = await Swal.fire({
-    //     text: "Do you want to Update...?",
-    //     icon: "warning",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#3085d6",
-    //     cancelButtonColor: "#d33",
-    //     confirmButtonText: "Yes, Update it!",
-    //   });
 
-    //   if (result.isConfirmed) {
-    //     debugger;
-    //     try {
-    //       const response = await axios.patch(
-    //         `${BASE_URL}planmaster/${data._id}`,
-    //         UpdateObj
-    //       );
-
-    //       if (response.data.status) {
-    //         const res = await axios.request({
-    //           method: "PUT",
-    //           maxBodyLength: Infinity,
-    //           url: `${Bunny_Storage_URL}/planmaster`,
-    //           headers: {
-    //             "Content-Type": "image/jpeg",
-    //             AccessKey: Bunny_Storage_Access_Key,
-    //           },
-    //           // data: uploadedImg,
-    //         });
-    //       } else {
-    //         setLoaderOpen(false);
-    //         Swal.fire({
-    //           position: "center",
-    //           icon: "success",
-    //           title: "Data Updated Successfully",
-    //           toast: true,
-    //           showConfirmButton: false,
-    //           timer: 1500,
-    //         });
-    //         handleClose();
-    //         getAllPlanMasterData();
-    //       }
-    //     } catch (error) {
-    //       setLoaderOpen(false);
-    //       Swal.fire({
-    //         icon: "error",
-    //         toast: true,
-    //         title: "Failed",
-    //         text: error.message,
-    //         showConfirmButton: true,
-    //       });
-    //     }
-    //   } else {
-    //     setLoaderOpen(false);
-    //   }
-    // }
+      if (result.isConfirmed) {
+        const response = await axios.patch(
+          `${BASE_URL}planmaster/${data._id}`,
+          UpdateObj
+        );
+        console.log(response);
+      }
+    }
   };
 
   const handleInputChange = (e) => {
@@ -205,9 +171,10 @@ const PlanMaster = () => {
   };
 
   const handleClick = (row) => {
+    console.log(row);
     setSaveUpdateButton("UPDATE");
     setOpen(true);
-    setData(row);
+    setOldData(row);
     // setImage(`${Bunny_Image_URL}/Users/${row.Firstname}/${row.Avatar}`);
   };
 
@@ -519,18 +486,21 @@ const PlanMaster = () => {
             </Grid>
           </Grid>
 
-          <PlanMasterDiet sendDataToParent={receiveDataFromDiet} />
+          <PlanMasterDiet
+            sendDataToParent={receiveDataFromDiet}
+            dietData={oldData.DietIds}
+          />
           <PlanMasterVaccination
-            sendVaccinationDataToParent={receiveDataFromVaccination}
+            sendVaccinationDataToParent={receiveDataFromVaccination} vaccinationData={oldData.VaccinationIds}
           />
           <PlanMasterMedication
-            sendMedicationDataToParent={receiveDataFromMedication}
+            sendMedicationDataToParent={receiveDataFromMedication} medicationData={oldData.MedDetailsIds}
           />
           <PlanMasterExercise
-            sendExerciseDataToParent={receiveDataFromExercise}
+            sendExerciseDataToParent={receiveDataFromExercise} exerciseData={oldData.ExerciseIds}
           />
           <PlanMasterMedical
-            sendMedicalTestDataToParent={receiveDataFromMedicalTest}
+            sendMedicalTestDataToParent={receiveDataFromMedicalTest} medTestData={oldData.MedTestIds}
           />
 
           <DialogActions>
