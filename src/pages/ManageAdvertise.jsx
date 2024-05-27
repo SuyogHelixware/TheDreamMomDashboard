@@ -140,7 +140,9 @@ const ManageAdvertise = () => {
 
   const handleSubmitForm = async () => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter( (field) => !data[field] || !data[field].trim());
+    const emptyRequiredFields = requiredFields.filter(
+      (field) => !data[field] || !data[field].trim()
+    );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -234,8 +236,7 @@ const ManageAdvertise = () => {
             UpdateObj
           );
 
-          
-          if (response.data.status && uploadedImg !== ""){
+          if (response.data.status && uploadedImg !== "") {
             const res = await axios.request({
               method: "PUT",
               maxBodyLength: Infinity,
@@ -329,27 +330,39 @@ const ManageAdvertise = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${Bunny_Storage_URL}/Advertisement/${data.Image}`, {
-            headers: {
-              AccessKey: Bunny_Storage_Access_Key,
-            },
-          })
-          .then((res) => {
-            if (res.data.HttpCode === 200) {
+          .delete(`${BASE_URL}advertisement/${data._id}`)
+          .then((response) => {
+            if (response.data.status) {
               axios
-                .delete(`${BASE_URL}advertisement/${data._id}`)
-                .then((response) => {
-                  setLoaderOpen(false);
-                  Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    toast: true,
-                    title: "Data Deleted Successfully",
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                  handleClose();
-                  getAllImgList();
+                .delete(`${Bunny_Storage_URL}/Advertisement/${data.Image}`, {
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
+                })
+                .then((res) => {
+                  if (res.data.HttpCode === 200) {
+                    setLoaderOpen(false);
+                    Swal.fire({
+                      position: "center",
+                      icon: "success",
+                      toast: true,
+                      title: "Data Deleted Successfully",
+                      showConfirmButton: false,
+                      timer: 1500,
+                    });
+                    handleClose();
+                    getAllImgList();
+                  } else {
+                    setLoaderOpen(false);
+                    Swal.fire({
+                      position: "center",
+                      icon: "error",
+                      toast: true,
+                      title: "Failed",
+                      text: "Failed to Delete from Bunny Storage!",
+                      showConfirmButton: true,
+                    });
+                  }
                 })
                 .catch((error) => {
                   setLoaderOpen(false);
@@ -369,7 +382,7 @@ const ManageAdvertise = () => {
                 icon: "error",
                 toast: true,
                 title: "Failed",
-                text: "Failed to Delete!",
+                text: "Failed to Delete Advertisement!",
                 showConfirmButton: true,
               });
             }
@@ -732,7 +745,11 @@ const ManageAdvertise = () => {
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
-        <Grid item xs={12} style={{display:"flex" , justifyContent:"center"}}>
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
           <Pagination
             count={Math.ceil(imgData.length / 8)}
             color="secondary"
