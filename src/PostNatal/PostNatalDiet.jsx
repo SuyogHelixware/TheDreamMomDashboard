@@ -13,10 +13,9 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_URL, Bunny_Image_URL } from "../../Constant";
-// import { BASE_URL, Bunny_Image_URL } from "../Constant";
+import { BASE_URL, Bunny_Image_URL } from "../Constant";
 
-const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
+const  PostNatalDiet = ({ sendDataToParent, ...props }) => {
   console.log("====================================");
   console.log(props);
   console.log("====================================");
@@ -262,5 +261,5 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
   );
 };
 
-export default  PlanMasterDiet;
+export default  PostNatalDiet;
 

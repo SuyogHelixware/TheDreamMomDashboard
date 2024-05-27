@@ -15,7 +15,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
-const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
+const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [vaccinationData, setVaccinationData] = useState([]);
@@ -153,7 +153,7 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
             //   SrNo: index + 1,
             // }))}
             rows={
-              childData.length===0?props.vaccinationData:childData.map((data, index) => ({
+             (childData.length===0?props.vaccinationData:childData).map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []
@@ -217,7 +217,7 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj.id).includes(params.row.id);
+                : !childData.map((obj) => obj._id).includes(params.row.id);
             }}
             onRowSelectionModelChange={(ids) => handleVaccinationRowClick(ids)}
             disableRowSelectionOnClick
@@ -261,4 +261,4 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
   );
 };
 
-export default PlanMasterVaccination;
+export default PostNatalVaccination;

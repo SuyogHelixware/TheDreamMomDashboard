@@ -43,10 +43,10 @@ const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
 
   const handleExerciseRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = exerciseData.filter((row) => selectedIDs.has(row.id));
+    const selectedRows = exerciseData.filter((row) => selectedIDs.has(row._id));
     setSelectedExerciseRows(
       selectedRows.map((item) => ({
-        id: item.id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
@@ -63,6 +63,9 @@ const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
   };
 
   const handleSaveExerciseSelection = () => {
+
+    console.log(selectedExerciseRows);
+
     setChildData((prev) => [...prev, ...selectedExerciseRows]);
     setChildDialogOpen(false);
     sendExerciseDataToParent(selectedExerciseRows);
@@ -149,7 +152,7 @@ const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
           <DataGrid
             className="datagrid-style"
             rows={
-              childData.length===0?props.exerciseData:childData.map((data, index) => ({
+             (childData.length===0?props.exerciseData:childData).map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []
@@ -191,6 +194,7 @@ const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
             rows={exerciseData}
             className="datagrid-style"
             rowHeight={80}
+            getRowId={(row)=>row._id}
             columns={[
               { field: "id", headerName: "ID", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
@@ -213,7 +217,7 @@ const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj.id).includes(params.row.id);
+                : !childData.map((obj) => obj._id).includes(params.row._id);
             }}
             onRowSelectionModelChange={(ids) => handleExerciseRowClick(ids)}
             disableRowSelectionOnClick

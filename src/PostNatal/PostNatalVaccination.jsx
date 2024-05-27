@@ -8,33 +8,28 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  Paper,
+  Paper
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_URL, Bunny_Image_URL } from "../../Constant";
-// import { BASE_URL, Bunny_Image_URL } from "../Constant";
+import { BASE_URL, Bunny_Image_URL } from "../Constant";
 
-const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
-  console.log("====================================");
-  console.log(props);
-  console.log("====================================");
-
+const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
-  const [dietData, setDietData] = useState([]);
-  const [selectedDietRows, setSelectedDietRows] = useState([]);
+  const [vaccinationData, setVaccinationData] = useState([]);
+  const [selectedVaccinationRows, setSelectedVaccinationRows] = useState([]);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}diet/`).then((response) => {
-      const updatedDietData = response.data.values.flat().map((item) => ({
+    axios.get(`${BASE_URL}vaccination/`).then((response) => {
+      const updatedVaccinationData = response.data.values.flat().map((item) => ({
         id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
       }));
-      setDietData(updatedDietData);
+      setVaccinationData(updatedVaccinationData);
     });
   }, []);
 
@@ -46,10 +41,10 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
     setChildDialogOpen(false);
   };
 
-  const handleDietRowClick = (id) => {
+  const handleVaccinationRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = dietData.filter((row) => selectedIDs.has(row.id));
-    setSelectedDietRows(
+    const selectedRows = vaccinationData.filter((row) => selectedIDs.has(row.id));
+    setSelectedVaccinationRows(
       selectedRows.map((item) => ({
         _id: item.id,
         Name: item.Name,
@@ -67,10 +62,10 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
     });
   };
 
-  const handleSaveDietSelection = () => {
-    setChildData((prev) => [...prev, ...selectedDietRows]);
-    sendDataToParent(selectedDietRows);
+  const handleSaveVaccinationSelection = () => {
+    setChildData((prev) => [...prev, ...selectedVaccinationRows]);
     setChildDialogOpen(false);
+    sendVaccinationDataToParent(selectedVaccinationRows);
   };
 
   const columns = [
@@ -99,7 +94,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
       width: 250,
       renderCell: (params) => (
         <img
-          src={`${Bunny_Image_URL}/Schedule/Diet/${params.row.Image}`}
+          src={`${Bunny_Image_URL}/Schedule/Vaccination/${params.row.Image}`}
           alt=""
           height={50}
           width={80}
@@ -132,7 +127,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
                 },
               }}
             >
-              Add Diet
+              Add Vaccination
             </Button>
           </Grid>
           <Grid
@@ -146,15 +141,19 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
               textAlign: "center",
             }}
           >
-            <b>Diet Table</b>
+            <b>Vaccination Table</b>
           </Grid>
         </Grid>
 
         <Grid container item height={380} lg={12} component={Paper}>
           <DataGrid
             className="datagrid-style"
+            // rows={childData.map((data, index) => ({
+            //   ...data,
+            //   SrNo: index + 1,
+            // }))}
             rows={
-              (childData.length===0?props.dietData:childData).map((data, index) => ({
+             (childData.length===0?props.vaccinationData:childData).map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []
@@ -181,7 +180,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
         maxWidth="lg"
       >
         <DialogTitle>
-          <b>Select Diets</b>
+          <b>Select Vaccination</b>
           <IconButton
             aria-label="close"
             onClick={handleChildDialogClose}
@@ -191,9 +190,9 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{ height: 400 }}>
+        <DialogContent sx={{height:400}}>
           <DataGrid
-            rows={dietData}
+            rows={vaccinationData}
             className="datagrid-style"
             rowHeight={80}
             columns={[
@@ -206,7 +205,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
                 width: 250,
                 renderCell: (params) => (
                   <img
-                    src={`${Bunny_Image_URL}/Schedule/Diet/${params.row.Image}`}
+                    src={`${Bunny_Image_URL}/Schedule/Vaccination/${params.row.Image}`}
                     alt=""
                     height={50}
                     width={80}
@@ -220,7 +219,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
                 ? true
                 : !childData.map((obj) => obj._id).includes(params.row.id);
             }}
-            onRowSelectionModelChange={(ids) => handleDietRowClick(ids)}
+            onRowSelectionModelChange={(ids) => handleVaccinationRowClick(ids)}
             disableRowSelectionOnClick
             initialState={{
               pagination: {
@@ -252,7 +251,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
                 marginRight: "10px",
               },
             }}
-            onClick={handleSaveDietSelection}
+            onClick={handleSaveVaccinationSelection}
           >
             Save
           </Button>
@@ -262,5 +261,4 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
   );
 };
 
-export default  PlanMasterDiet;
-
+export default PostNatalVaccination;

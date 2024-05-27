@@ -627,7 +627,7 @@ export default function Dashboard() {
             <Link to="post-natal" className="link_style">
               <ListItemButton
                 onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/post-natal"}
+                selected={location.pathname === "/dashboard/PostNatal/postNatal"}
                 sx={{
                   "&.Mui-selected": {
                     backgroundColor: "#8F00FF",

@@ -30,7 +30,7 @@ import MedicalCondition from "../pages/MedicalCondition";
 import ManageTags from "../pages/ManageTags";
 import PlanMaster from "../pages/PlanMaster/PlanMaster";
 import Precaution from "../pages/ManageSchedule/Precaution";
-import PostNatal from "../pages/PostNatal";
+import PostNatal from "../PostNatal/PostNatal";
 
 export default function Routing() {
   return (

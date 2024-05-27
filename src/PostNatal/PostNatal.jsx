@@ -16,18 +16,18 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
-import { BASE_URL } from "../../Constant";
-import InputTextField, {
-  InputDescriptionField,
-} from "../../components/Component";
-import Loader from "../../components/Loader";
-import PlanMasterDiet from "./PlanMasterDiet";
-import PlanMasterExercise from "./PlanMasterExercise";
-import PlanMasterMedical from "./PlanMasterMedical";
-import PlanMasterMedication from "./PlanMasterMedication";
-import PlanMasterVaccination from "./PlanMasterVaccination";
+import { BASE_URL } from "../Constant";
 
-const PlanMaster = () => {
+import PostNatalDiet from "./PostNatalDiet";
+import PostNatalVaccination from "./PostNatalVaccination";
+import PostNatalMedication from "./PostNatalMedication";
+import PostNatalExercise from "./PostNatalExercise";
+import PostNatalMedical from "./PostNatalMedical";
+import Loader from "../components/Loader";
+import InputTextField, { InputDescriptionField } from "../components/Component";
+
+
+const  PostNatal = () => {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [open, setOpen] = useState(false);
@@ -57,14 +57,14 @@ const PlanMaster = () => {
   //   setOpen(false);
   // };
 
-  const getAllPlanMasterData = () => {
-    axios.get(`${BASE_URL}planmaster/`).then((response) => {
+  const getAllPostNatalData = () => {
+    axios.get(`${BASE_URL}postnatal`).then((response) => {
       setData(response.data.values);
     });
   };
 
   React.useEffect(() => {
-    getAllPlanMasterData();
+  getAllPostNatalData();
   }, []);
 
   const handleParentDialogOpen = () => {
@@ -88,7 +88,8 @@ const PlanMaster = () => {
       Address: data.Address,
       BloodGroup: data.BloodGroup,
       UserType: "P",
-    };
+        };
+      
 
     setLoaderOpen(true);
 
@@ -100,11 +101,13 @@ const PlanMaster = () => {
         VaccinationIds: formData.VaccinationIds,
         MedTestIds: formData.MedTestIds,
         MedDetailsIds: formData.MedDetailsIds,
+               
       };
+      console.log(formattedData);
 
       handleParentDialogClose();
       axios
-        .post(`${BASE_URL}planmaster/`, formattedData)
+        .post(`${BASE_URL} postnatal/`, formattedData)
         .then((response) => {
           if (response.data.status) {
             setLoaderOpen(false);
@@ -112,12 +115,12 @@ const PlanMaster = () => {
               position: "center",
               icon: "success",
               toast: true,
-              title: "Plan master Saved Successfully",
+              title: "Post Natal Saved Successfully",
               showConfirmButton: false,
               timer: 1500,
             });
-            const newPlanData = response.data.values;
-            setData((prevData) => [...prevData, newPlanData]);
+            const newPostData = response.data.values;
+            setData((prevData) => [...prevData, newPostData]);
             handleParentDialogClose();
           } else {
             setLoaderOpen(false);
@@ -125,7 +128,7 @@ const PlanMaster = () => {
               position: "center",
               icon: "error",
               toast: true,
-              title: "Failed to save plan master",
+              title: "Failed to save Post Natal",
               text: response.data.message,
               showConfirmButton: false,
               timer: 1500,
@@ -137,7 +140,7 @@ const PlanMaster = () => {
           Swal.fire({
             icon: "error",
             toast: true,
-            title: "Error saving plan master",
+            title: "Error saving Post Natal",
             text: error.message,
             showConfirmButton: true,
           });
@@ -154,7 +157,7 @@ const PlanMaster = () => {
 
       if (result.isConfirmed) {
         const response = await axios.patch(
-          `${BASE_URL}planmaster/${data._id}`,
+          `${BASE_URL} PostNatal/${data._id}`,
           UpdateObj
         );
         console.log(response);
@@ -191,7 +194,7 @@ const PlanMaster = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${BASE_URL}planmaster/${id}`)
+          .delete(`${BASE_URL} PostNatal/${id}`)
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);
@@ -200,7 +203,7 @@ const PlanMaster = () => {
                 position: "center",
                 icon: "success",
                 toast: true,
-                title: "Plan Master deleted Successfully",
+                title: "Post Natal deleted Successfully",
                 showConfirmButton: false,
                 timer: 1500,
               });
@@ -210,7 +213,7 @@ const PlanMaster = () => {
                 icon: "error",
                 toast: true,
                 title: "Failed",
-                text: "Failed to Delete Plan Master",
+                text: "Failed to Delete Post Natal",
                 showConfirmButton: true,
               });
             }
@@ -334,7 +337,7 @@ const PlanMaster = () => {
           padding={1}
           noWrap
         >
-          Plan Master
+       Post Natal
         </Typography>
       </Grid>
 
@@ -361,7 +364,7 @@ const PlanMaster = () => {
             },
           }}
         >
-          Open Plan Master
+          Open Post Natal
         </Button>
       </Grid>
 
@@ -395,7 +398,7 @@ const PlanMaster = () => {
         // fullWidth
       >
         <DialogTitle>
-          <b>Plan Master</b>
+          <b>Post Natal</b>
           <IconButton
             aria-label="close"
             onClick={handleParentDialogClose}
@@ -488,20 +491,20 @@ const PlanMaster = () => {
             </Grid>
           </Grid>
 
-          <PlanMasterDiet
+          < PostNatalDiet
             sendDataToParent={receiveDataFromDiet}
             dietData={formData.DietIds}
-          />
-          <PlanMasterVaccination
+          /> 
+          < PostNatalVaccination
             sendVaccinationDataToParent={receiveDataFromVaccination} vaccinationData={formData.VaccinationIds}
           />
-          <PlanMasterMedication
+          < PostNatalMedication
             sendMedicationDataToParent={receiveDataFromMedication} medicationData={formData.MedDetailsIds}
           />
-          <PlanMasterExercise
+          < PostNatalExercise
             sendExerciseDataToParent={receiveDataFromExercise} exerciseData={formData.ExerciseIds}
           />
-          <PlanMasterMedical
+          < PostNatalMedical
             sendMedicalTestDataToParent={receiveDataFromMedicalTest} medTestData={formData.MedTestIds}
           />
 
@@ -538,4 +541,5 @@ const PlanMaster = () => {
   );
 };
 
-export default PlanMaster;
+export default  PostNatal;
+

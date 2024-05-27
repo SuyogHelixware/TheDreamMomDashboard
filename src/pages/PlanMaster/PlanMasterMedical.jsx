@@ -136,7 +136,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent,...props}) => {
           <DataGrid
             className="datagrid-style"
             rows={
-              childData.length===0?props.medTestData:childData.map((data, index) => ({
+             (childData.length===0?props.medTestData:childData).map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []

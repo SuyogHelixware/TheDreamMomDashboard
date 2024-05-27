@@ -8,33 +8,28 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  Paper,
+  Paper
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_URL, Bunny_Image_URL } from "../../Constant";
-// import { BASE_URL, Bunny_Image_URL } from "../Constant";
+import { BASE_URL } from "../Constant";
 
-const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
-  console.log("====================================");
-  console.log(props);
-  console.log("====================================");
 
+const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
-  const [dietData, setDietData] = useState([]);
-  const [selectedDietRows, setSelectedDietRows] = useState([]);
+  const [medicalData, setMedicalData] = useState([]);
+  const [selectedMedicalRows, setSelectedMedicalRows] = useState([]);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}diet/`).then((response) => {
-      const updatedDietData = response.data.values.flat().map((item) => ({
+    axios.get(`${BASE_URL}medicaltests/`).then((response) => {
+      const updatedMedicalData = response.data.values.flat().map((item) => ({
         id: item._id,
         Name: item.Name,
         Description: item.Description,
-        Image: item.Image,
       }));
-      setDietData(updatedDietData);
+      setMedicalData(updatedMedicalData);
     });
   }, []);
 
@@ -46,12 +41,12 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
     setChildDialogOpen(false);
   };
 
-  const handleDietRowClick = (id) => {
+  const handleMedicalRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = dietData.filter((row) => selectedIDs.has(row.id));
-    setSelectedDietRows(
+    const selectedRows = medicalData.filter((row) => selectedIDs.has(row._id));
+    setSelectedMedicalRows(
       selectedRows.map((item) => ({
-        _id: item.id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
@@ -67,10 +62,10 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
     });
   };
 
-  const handleSaveDietSelection = () => {
-    setChildData((prev) => [...prev, ...selectedDietRows]);
-    sendDataToParent(selectedDietRows);
+  const handleSaveMedicalSelection = () => {
+    setChildData((prev) => [...prev, ...selectedMedicalRows]);
     setChildDialogOpen(false);
+    sendMedicalTestDataToParent(selectedMedicalRows);
   };
 
   const columns = [
@@ -93,19 +88,6 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
-    {
-      field: "Image",
-      headerName: "Image",
-      width: 250,
-      renderCell: (params) => (
-        <img
-          src={`${Bunny_Image_URL}/Schedule/Diet/${params.row.Image}`}
-          alt=""
-          height={50}
-          width={80}
-        />
-      ),
-    },
   ];
 
   return (
@@ -132,7 +114,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
                 },
               }}
             >
-              Add Diet
+              Add Medical Test
             </Button>
           </Grid>
           <Grid
@@ -146,7 +128,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
               textAlign: "center",
             }}
           >
-            <b>Diet Table</b>
+            <b>Medical Test Table</b>
           </Grid>
         </Grid>
 
@@ -154,7 +136,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
           <DataGrid
             className="datagrid-style"
             rows={
-              (childData.length===0?props.dietData:childData).map((data, index) => ({
+             (childData.length===0?props.medTestData:childData).map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []
@@ -181,7 +163,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
         maxWidth="lg"
       >
         <DialogTitle>
-          <b>Select Diets</b>
+          <b>Select Medical Test</b>
           <IconButton
             aria-label="close"
             onClick={handleChildDialogClose}
@@ -191,36 +173,23 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{ height: 400 }}>
+        <DialogContent sx={{height:400}}>
           <DataGrid
-            rows={dietData}
+            rows={medicalData}
             className="datagrid-style"
             rowHeight={80}
             columns={[
               { field: "id", headerName: "ID", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
-              {
-                field: "Image",
-                headerName: "Image",
-                width: 250,
-                renderCell: (params) => (
-                  <img
-                    src={`${Bunny_Image_URL}/Schedule/Diet/${params.row.Image}`}
-                    alt=""
-                    height={50}
-                    width={80}
-                  />
-                ),
-              },
             ]}
             checkboxSelection
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj._id).includes(params.row.id);
+                : !childData.map((obj) => obj.id).includes(params.row._id);
             }}
-            onRowSelectionModelChange={(ids) => handleDietRowClick(ids)}
+            onRowSelectionModelChange={(ids) => handleMedicalRowClick(ids)}
             disableRowSelectionOnClick
             initialState={{
               pagination: {
@@ -252,7 +221,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
                 marginRight: "10px",
               },
             }}
-            onClick={handleSaveDietSelection}
+            onClick={handleSaveMedicalSelection}
           >
             Save
           </Button>
@@ -262,5 +231,4 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
   );
 };
 
-export default  PlanMasterDiet;
-
+export default PostNatalMedical;

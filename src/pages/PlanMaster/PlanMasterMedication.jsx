@@ -8,14 +8,14 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  Paper
+  Paper,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../Constant";
 
-const PlanMasterMedication = ({ sendMedicationDataToParent,...props }) => {
+const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [MedicationData, setMedicationData] = useState([]);
@@ -24,7 +24,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent,...props }) => {
   useEffect(() => {
     axios.get(`${BASE_URL}medications/`).then((response) => {
       const updatedMedicationData = response.data.values.flat().map((item) => ({
-        id: item._id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
       }));
@@ -42,10 +42,12 @@ const PlanMasterMedication = ({ sendMedicationDataToParent,...props }) => {
 
   const handleMedicationRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = MedicationData.filter((row) => selectedIDs.has(row.id));
+    const selectedRows = MedicationData.filter((row) =>
+      selectedIDs.has(row._id)
+    );
     setSelectedMedicationRows(
       selectedRows.map((item) => ({
-        _id: item.id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
@@ -87,7 +89,6 @@ const PlanMasterMedication = ({ sendMedicationDataToParent,...props }) => {
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
-    
   ];
 
   return (
@@ -136,13 +137,15 @@ const PlanMasterMedication = ({ sendMedicationDataToParent,...props }) => {
           <DataGrid
             className="datagrid-style"
             rows={
-              childData.length===0?props.medicationData:childData.map((data, index) => ({
-                ...data,
-                SrNo: index + 1,
-              })) || []
+              (childData.length === 0 ? props.medicationData : childData).map(
+                (data, index) => ({
+                  ...data,
+                  SrNo: index + 1,
+                })
+              ) || []
             }
             rowHeight={70}
-            getRowId={(row) => row.id}
+            getRowId={(row) => row._id}
             columns={columns}
             initialState={{
               pagination: {
@@ -173,7 +176,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent,...props }) => {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{height:400}}>
+        <DialogContent sx={{ height: 400 }}>
           <DataGrid
             rows={MedicationData}
             className="datagrid-style"
@@ -199,6 +202,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent,...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            getRowId={(row) => row._id}
           />
         </DialogContent>
 
