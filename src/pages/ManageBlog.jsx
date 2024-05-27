@@ -157,7 +157,9 @@ const ManageBlog = () => {
   };
   const handleSubmitForm = async () => {
     const requiredFields = ["Name", "Category", "Description"];
-    const emptyRequiredFields = requiredFields.filter( (field) => !data[field] || !data[field].trim());
+    const emptyRequiredFields = requiredFields.filter(
+      (field) => !data[field] || !data[field].trim()
+    );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -291,17 +293,17 @@ const ManageBlog = () => {
             // setLoaderOpen(false);
             // throw new Error("Failed to Upload Image");
             setLoaderOpen(false);
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Data Updated Successfully",
-                toast: true,
-                showConfirmButton: false,
-                timer: 1500,
-              });
-              handleClose();
-              getAllImgList();
-              setUploadedImg("");
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Data Updated Successfully",
+              toast: true,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            handleClose();
+            getAllImgList();
+            setUploadedImg("");
           }
         } catch (error) {
           setLoaderOpen(false);
@@ -329,27 +331,38 @@ const ManageBlog = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
+
         axios
-          .delete(`${Bunny_Storage_URL}/Blogs/${data.Link}`, {
-            headers: {
-              AccessKey: Bunny_Storage_Access_Key,
-            },
-          })
-          .then((res) => {
-            if (res.data.HttpCode === 200) {
+          .delete(`${BASE_URL}blogs/${data._id}`)
+          .then((response) => {
+            if (response.status === 200) {
               axios
-                .delete(`${BASE_URL}blogs/${data._id}`)
-                .then((response) => {
+                .delete(`${Bunny_Storage_URL}/Blogs/${data.Link}`, {
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
+                })
+                .then((res) => {
                   setLoaderOpen(false);
-                  Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    toast: true,
-                    title: "Blog Deleted Successfully",
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                  getAllImgList();
+                  if (res.data.HttpCode === 200) {
+                    Swal.fire({
+                      position: "center",
+                      icon: "success",
+                      toast: true,
+                      title: "Blog Deleted Successfully",
+                      showConfirmButton: false,
+                      timer: 1500,
+                    });
+                    getAllImgList();
+                  } else {
+                    Swal.fire({
+                      icon: "error",
+                      toast: true,
+                      title: "Failed",
+                      text: "Something went wrong...!",
+                      showConfirmButton: true,
+                    });
+                  }
                 })
                 .catch((error) => {
                   setLoaderOpen(false);
@@ -358,7 +371,7 @@ const ManageBlog = () => {
                     icon: "error",
                     toast: true,
                     title: "Failed",
-                    text: error,
+                    text: error.message || "Error deleting from storage",
                     showConfirmButton: true,
                   });
                 });
@@ -368,7 +381,7 @@ const ManageBlog = () => {
                 icon: "error",
                 toast: true,
                 title: "Failed",
-                text: "Something went wrong...!",
+                text: "Failed to delete blog",
                 showConfirmButton: true,
               });
             }
@@ -380,7 +393,7 @@ const ManageBlog = () => {
               icon: "error",
               toast: true,
               title: "Failed",
-              text: error,
+              text: error.message || "Error deleting blog",
               showConfirmButton: true,
             });
           });
