@@ -8,15 +8,14 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  Paper
+  Paper,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../Constant";
 
-
-const PlanMasterMedical = ({ sendMedicalTestDataToParent,...props}) => {
+const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [medicalData, setMedicalData] = useState([]);
@@ -136,10 +135,12 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent,...props}) => {
           <DataGrid
             className="datagrid-style"
             rows={
-             (childData.length===0?props.medTestData:childData).map((data, index) => ({
-                ...data,
-                SrNo: index + 1,
-              })) || []
+              (childData.length === 0 ? props.medTestData : childData).map(
+                (data, index) => ({
+                  ...data,
+                  SrNo: index + 1,
+                })
+              ) || []
             }
             rowHeight={70}
             getRowId={(row) => row._id}
@@ -173,7 +174,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent,...props}) => {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{height:400}}>
+        <DialogContent sx={{ height: 400 }}>
           <DataGrid
             rows={medicalData}
             className="datagrid-style"
@@ -187,7 +188,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent,...props}) => {
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj.id).includes(params.row.id);
+                : !childData.map((obj) => obj._id).includes(params.row.id);
             }}
             onRowSelectionModelChange={(ids) => handleMedicalRowClick(ids)}
             disableRowSelectionOnClick

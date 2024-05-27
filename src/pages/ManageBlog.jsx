@@ -335,7 +335,7 @@ const ManageBlog = () => {
         axios
           .delete(`${BASE_URL}blogs/${data._id}`)
           .then((response) => {
-            if (response.status === 200) {
+            if (response.data.status) {
               axios
                 .delete(`${Bunny_Storage_URL}/Blogs/${data.Link}`, {
                   headers: {
