@@ -190,7 +190,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj.id).includes(params.row.id);
+                : !childData.map((obj) => obj._id).includes(params.row._id);
             }}
             onRowSelectionModelChange={(ids) => handleMedicationRowClick(ids)}
             disableRowSelectionOnClick

@@ -314,7 +314,6 @@ const Vaccination = () => {
       setTags(response.data.values);
     });
   };
-
   const handleDelete = (data) => {
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -327,19 +326,18 @@ const Vaccination = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${Bunny_Storage_URL}/Schedule/Vaccination/${data.Image}`, {
-            headers: {
-              AccessKey: Bunny_Storage_Access_Key,
-            },
-          })
+          .delete(`${BASE_URL}vaccination/${data._id}`)
           .then((response) => {
-            console.log(response);
-            if (response.data.HttpCode === 200) {
+            if (response.data.status) {
               axios
-                .delete(`${BASE_URL}vaccination/${data._id}`)
-                .then((response) => {
-                  if (response.data.status) {
-                    setLoaderOpen(false);
+                .delete(`${Bunny_Storage_URL}/Schedule/Vaccination/${data.Image}`, {
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
+                })
+                .then((res) => {
+                  setLoaderOpen(false);
+                  if (res.data.HttpCode === 200) {
                     Swal.fire({
                       position: "center",
                       icon: "success",
@@ -350,13 +348,12 @@ const Vaccination = () => {
                     });
                     getAllImgList();
                   } else {
-                    setLoaderOpen(false);
                     Swal.fire({
                       position: "center",
                       icon: "error",
                       toast: true,
                       title: "Failed",
-                      text: "Failed to Delete Data",
+                      text: "Failed to delete image!",
                       showConfirmButton: true,
                     });
                   }
@@ -368,17 +365,18 @@ const Vaccination = () => {
                     icon: "error",
                     toast: true,
                     title: "Failed",
-                    text: error,
+                    text: error.message,
                     showConfirmButton: true,
                   });
                 });
             } else {
               setLoaderOpen(false);
               Swal.fire({
+                position: "center",
                 icon: "error",
                 toast: true,
                 title: "Failed",
-                text: "Something went wrong...!",
+                text: "Failed to delete vaccination entry!",
                 showConfirmButton: true,
               });
             }
@@ -386,17 +384,18 @@ const Vaccination = () => {
           .catch((error) => {
             setLoaderOpen(false);
             Swal.fire({
-              showConfirmButton: true,
-              toast: true,
+              position: "center",
               icon: "error",
+              toast: true,
               title: "Failed",
-              text: error,
+              text: error.message,
+              showConfirmButton: true,
             });
           });
       }
     });
   };
-
+ 
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);

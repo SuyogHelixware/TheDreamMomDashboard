@@ -317,7 +317,7 @@ const ManageDiet = () => {
       setTags(response.data.values);
     });
   };
-
+ 
   const handleDelete = (data) => {
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -330,17 +330,17 @@ const ManageDiet = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`, {
-            headers: {
-              AccessKey: Bunny_Storage_Access_Key,
-            },
-          })
-          .then((res) => {
-            if (res.data.HttpCode === 200) {
+          .delete(`${BASE_URL}diet/${data._id}`)
+          .then((response) => {
+            if (response.data.status) {
               axios
-                .delete(`${BASE_URL}diet/${data._id}`)
-                .then((response) => {
-                  if (response.data.status) {
+                .delete(`${Bunny_Storage_URL}/Schedule/Diet/${data.Image}`, {
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
+                })
+                .then((res) => {
+                  if (res.data.HttpCode === 200) {
                     setLoaderOpen(false);
                     Swal.fire({
                       position: "center",
@@ -377,10 +377,11 @@ const ManageDiet = () => {
             } else {
               setLoaderOpen(false);
               Swal.fire({
+                position: "center",
                 icon: "error",
                 toast: true,
                 title: "Failed",
-                text: "Something went wrong...!",
+                text: "Failed to Delete!",
                 showConfirmButton: true,
               });
             }
@@ -388,6 +389,7 @@ const ManageDiet = () => {
           .catch((error) => {
             setLoaderOpen(false);
             Swal.fire({
+              position: "center",
               icon: "error",
               toast: true,
               title: "Failed",
@@ -398,6 +400,7 @@ const ManageDiet = () => {
       }
     });
   };
+  
 
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");

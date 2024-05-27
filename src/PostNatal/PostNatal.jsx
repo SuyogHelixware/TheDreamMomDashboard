@@ -26,8 +26,7 @@ import PostNatalMedical from "./PostNatalMedical";
 import Loader from "../components/Loader";
 import InputTextField, { InputDescriptionField } from "../components/Component";
 
-
-const  PostNatal = () => {
+const PostNatal = () => {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [open, setOpen] = useState(false);
@@ -64,7 +63,7 @@ const  PostNatal = () => {
   };
 
   React.useEffect(() => {
-  getAllPostNatalData();
+    getAllPostNatalData();
   }, []);
 
   const handleParentDialogOpen = () => {
@@ -88,8 +87,7 @@ const  PostNatal = () => {
       Address: data.Address,
       BloodGroup: data.BloodGroup,
       UserType: "P",
-        };
-      
+    };
 
     setLoaderOpen(true);
 
@@ -101,7 +99,6 @@ const  PostNatal = () => {
         VaccinationIds: formData.VaccinationIds,
         MedTestIds: formData.MedTestIds,
         MedDetailsIds: formData.MedDetailsIds,
-               
       };
       console.log(formattedData);
 
@@ -188,8 +185,8 @@ const  PostNatal = () => {
       text: "Are you sure you want to delete?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -257,7 +254,6 @@ const  PostNatal = () => {
       field: "Sr.No",
       headerName: "SrNo",
       width: 100,
-      
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
@@ -337,7 +333,7 @@ const  PostNatal = () => {
           padding={1}
           noWrap
         >
-       Post Natal
+          Post Natal
         </Typography>
       </Grid>
 
@@ -372,7 +368,7 @@ const  PostNatal = () => {
         <DataGrid
           className="datagrid-style"
           rows={data.map((data, index) => ({
-            ...data,    
+            ...data,
             SrNo: index + 1,
           }))}
           rowHeight={70}
@@ -491,21 +487,25 @@ const  PostNatal = () => {
             </Grid>
           </Grid>
 
-          < PostNatalDiet
+          <PostNatalDiet
             sendDataToParent={receiveDataFromDiet}
             dietData={formData.DietIds}
-          /> 
-          < PostNatalVaccination
-            sendVaccinationDataToParent={receiveDataFromVaccination} vaccinationData={formData.VaccinationIds}
           />
-          < PostNatalMedication
-            sendMedicationDataToParent={receiveDataFromMedication} medicationData={formData.MedDetailsIds}
+          <PostNatalVaccination
+            sendVaccinationDataToParent={receiveDataFromVaccination}
+            vaccinationData={formData.VaccinationIds}
           />
-          < PostNatalExercise
-            sendExerciseDataToParent={receiveDataFromExercise} exerciseData={formData.ExerciseIds}
+          <PostNatalMedication
+            sendMedicationDataToParent={receiveDataFromMedication}
+            medicationData={formData.MedDetailsIds}
           />
-          < PostNatalMedical
-            sendMedicalTestDataToParent={receiveDataFromMedicalTest} medTestData={formData.MedTestIds}
+          <PostNatalExercise
+            sendExerciseDataToParent={receiveDataFromExercise}
+            exerciseData={formData.ExerciseIds}
+          />
+          <PostNatalMedical
+            sendMedicalTestDataToParent={receiveDataFromMedicalTest}
+            medTestData={formData.MedTestIds}
           />
 
           <DialogActions>
@@ -541,5 +541,4 @@ const  PostNatal = () => {
   );
 };
 
-export default  PostNatal;
-
+export default PostNatal;

@@ -43,10 +43,10 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
 
   const handleMedicalRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = medicalData.filter((row) => selectedIDs.has(row._id));
+    const selectedRows = medicalData.filter((row) => selectedIDs.has(row.id));
     setSelectedMedicalRows(
       selectedRows.map((item) => ({
-        _id: item._id,
+        _id: item.id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
@@ -187,7 +187,7 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj.id).includes(params.row._id);
+                : !childData.map((obj) => obj._id).includes(params.row.id);
             }}
             onRowSelectionModelChange={(ids) => handleMedicalRowClick(ids)}
             disableRowSelectionOnClick

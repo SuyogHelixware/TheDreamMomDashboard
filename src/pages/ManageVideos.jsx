@@ -391,33 +391,114 @@ export default function ManageVideos() {
     setIsPlaying(true);
   };
 
+  // const deleteVideo = (data) => {
+  //   console.log(data);
+  //   Swal.fire({
+  //     text: "Are you sure you want to delete?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, delete it!",
+  //   })
+  //     .then((result) => {
+  //       if (result.isConfirmed) {
+  //         setLoaderOpen(true);
+  //         axios
+  //           .delete(`${Bunny_Stream_URL}/${data.StorageVideoId}`, {
+  //             headers: {
+  //               AccessKey: Bunny_Stream_Access_Key,
+  //             },
+  //           })
+  //           .then((res) => {
+  //             console.log(res);
+  //             if (res.data.success) {
+  //               axios
+  //                 .delete(`${BASE_URL}videos/${data._id}`)
+  //                 .then((response) => {
+  //                   if (response.data.status) {
+  //                     setLoaderOpen(false);
+  //                     Swal.fire({
+  //                       position: "center",
+  //                       icon: "success",
+  //                       toast: true,
+  //                       title: "Video deleted Successfully",
+  //                       showConfirmButton: false,
+  //                       timer: 1500,
+  //                     });
+  //                     handleClose();
+  //                     getAllVideoList();
+  //                   } else {
+  //                     setLoaderOpen(false);
+  //                     Swal.fire({
+  //                       icon: "error",
+  //                       toast: true,
+  //                       title: "Failed",
+  //                       text: "Failed to Delete Video",
+  //                       showConfirmButton: true,
+  //                     });
+  //                   }
+  //                 })
+  //                 .catch((error) => {
+  //                   setLoaderOpen(false);
+  //                   Swal.fire({
+  //                     icon: "error",
+  //                     toast: true,
+  //                     title: "Failed",
+  //                     text: error,
+  //                     showConfirmButton: true,
+  //                   });
+  //                 });
+  //             } else {
+  //               setLoaderOpen(false);
+  //               Swal.fire({
+  //                 icon: "error",
+  //                 toast: true,
+  //                 title: "Failed",
+  //                 text: "Failed to Delete Video",
+  //                 showConfirmButton: true,
+  //               });
+  //             }
+  //           });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       Swal.fire({
+  //         icon: "error",
+  //         toast: true,
+  //         title: "Failed",
+  //         text: error,
+  //         showConfirmButton: true,
+  //       });
+  //     });
+  // };
+
   const deleteVideo = (data) => {
     console.log(data);
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     })
       .then((result) => {
         if (result.isConfirmed) {
           setLoaderOpen(true);
           axios
-            .delete(`${Bunny_Stream_URL}/${data.StorageVideoId}`, {
-              headers: {
-                AccessKey: Bunny_Stream_Access_Key,
-              },
-            })
-            .then((res) => {
-              console.log(res);
-              if (res.data.success) {
+            .delete(`${BASE_URL}videos/${data._id}`)
+            .then((response) => {
+              if (response.data.status) {
                 axios
-                  .delete(`${BASE_URL}videos/${data._id}`)
-                  .then((response) => {
-                    if (response.data.status) {
-                      setLoaderOpen(false);
+                  .delete(`${Bunny_Stream_URL}/${data.StorageVideoId}`, {
+                    headers: {
+                      AccessKey: Bunny_Stream_Access_Key,
+                    },
+                  })
+                  .then((res) => {
+                    setLoaderOpen(false);
+                    if (res.data.success) {
                       Swal.fire({
                         position: "center",
                         icon: "success",
@@ -429,12 +510,11 @@ export default function ManageVideos() {
                       handleClose();
                       getAllVideoList();
                     } else {
-                      setLoaderOpen(false);
                       Swal.fire({
                         icon: "error",
                         toast: true,
                         title: "Failed",
-                        text: "Failed to Delete Video",
+                        text: "Failed to Delete Video from storage",
                         showConfirmButton: true,
                       });
                     }
@@ -445,7 +525,7 @@ export default function ManageVideos() {
                       icon: "error",
                       toast: true,
                       title: "Failed",
-                      text: error,
+                      text: error.message,
                       showConfirmButton: true,
                     });
                   });
@@ -455,10 +535,20 @@ export default function ManageVideos() {
                   icon: "error",
                   toast: true,
                   title: "Failed",
-                  text: "Failed to Delete Video",
+                  text: "Failed to Delete Video entry",
                   showConfirmButton: true,
                 });
               }
+            })
+            .catch((error) => {
+              setLoaderOpen(false);
+              Swal.fire({
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: error.message,
+                showConfirmButton: true,
+              });
             });
         }
       })
@@ -467,11 +557,12 @@ export default function ManageVideos() {
           icon: "error",
           toast: true,
           title: "Failed",
-          text: error,
+          text: error.message,
           showConfirmButton: true,
         });
       });
   };
+  
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;

@@ -138,8 +138,10 @@ const Precaution = () => {
   };
 
   const handleSubmitForm = async () => {
-    const requiredFields = ["Name", "Description"];        
-    const emptyRequiredFields = requiredFields.filter(  (field) => !data[field] || !data[field].trim());
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter(
+      (field) => !data[field] || !data[field].trim()
+    );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -229,10 +231,7 @@ const Precaution = () => {
             UpdateObj
           );
 
-        
-
-          
-          if (response.data.status && uploadedImg !== ""){
+          if (response.data.status && uploadedImg !== "") {
             const res = await axios.request({
               method: "PUT",
               maxBodyLength: Infinity,
@@ -243,8 +242,8 @@ const Precaution = () => {
               },
               data: uploadedImg,
             });
-       
-             if (res.data.HttpCode === 201) {
+
+            if (res.data.HttpCode === 201) {
               if (uploadedImg !== "") {
                 await axios.request({
                   method: "DELETE",
@@ -275,17 +274,17 @@ const Precaution = () => {
             // setLoaderOpen(false);
             // throw new Error("Failed to Upload Image");
             setLoaderOpen(false);
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Data Updated Successfully",
-                toast: true,
-                showConfirmButton: false,
-                timer: 1500,
-              });
-              handleClose();
-              getAllImgList();
-              setUploadedImg("");
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Data Updated Successfully",
+              toast: true,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            handleClose();
+            getAllImgList();
+            setUploadedImg("");
           }
         } catch (error) {
           setLoaderOpen(false);
@@ -326,18 +325,21 @@ const Precaution = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${Bunny_Storage_URL}/Schedule/Precaution/${data.Image}`, {
-            headers: {
-              AccessKey: Bunny_Storage_Access_Key,
-            },
-          })
-          .then((res) => {
-            if (res.data.HttpCode === 200) {
+          .delete(`${BASE_URL}precaution/${data._id}`)
+          .then((response) => {
+            if (response.data.status) {
               axios
-                .delete(`${BASE_URL}precaution/${data._id}`)
-                .then((response) => {
-                  if (response.data.status) {
-                    setLoaderOpen(false);
+                .delete(
+                  `${Bunny_Storage_URL}/Schedule/Precaution/${data.Image}`,
+                  {
+                    headers: {
+                      AccessKey: Bunny_Storage_Access_Key,
+                    },
+                  }
+                )
+                .then((res) => {
+                  setLoaderOpen(false);
+                  if (res.data.HttpCode === 200) {
                     Swal.fire({
                       position: "center",
                       icon: "success",
@@ -348,13 +350,12 @@ const Precaution = () => {
                     });
                     getAllImgList();
                   } else {
-                    setLoaderOpen(false);
                     Swal.fire({
                       position: "center",
                       icon: "error",
                       toast: true,
                       title: "Failed",
-                      text: "Something went wrong!",
+                      text: "Failed to delete image!",
                       showConfirmButton: true,
                     });
                   }
@@ -373,10 +374,11 @@ const Precaution = () => {
             } else {
               setLoaderOpen(false);
               Swal.fire({
+                position: "center",
                 icon: "error",
                 toast: true,
                 title: "Failed",
-                text: "Something went wrong...!",
+                text: "Failed to delete precaution entry!",
                 showConfirmButton: true,
               });
             }
@@ -384,10 +386,11 @@ const Precaution = () => {
           .catch((error) => {
             setLoaderOpen(false);
             Swal.fire({
-              toast: true,
+              position: "center",
               icon: "error",
+              toast: true,
               title: "Failed",
-              text: error,  
+              text: error.message,
               showConfirmButton: true,
             });
           });
@@ -736,7 +739,11 @@ const Precaution = () => {
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
-        <Grid item xs={12} style={{display:"flex" , justifyContent:"center"}}>
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
           <Pagination
             count={Math.ceil(imgData.length / 8)}
             color="secondary"
