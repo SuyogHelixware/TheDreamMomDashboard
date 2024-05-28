@@ -5,10 +5,13 @@ import AppSettingsAltIcon from "@mui/icons-material/AppSettingsAlt";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 // import CommentIcon from "@mui/icons-material/Comment";
+import ApprovalIcon from '@mui/icons-material/Approval';
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupsIcon from "@mui/icons-material/Groups";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MenuIcon from "@mui/icons-material/Menu";
+import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import NoFoodIcon from "@mui/icons-material/NoFood";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
@@ -17,10 +20,10 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import QuizIcon from "@mui/icons-material/Quiz";
 import RemoveIcon from "@mui/icons-material/Remove";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
+import TodayIcon from '@mui/icons-material/Today';
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import {
   Avatar,
   Button,
@@ -40,16 +43,13 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import TodayIcon from '@mui/icons-material/Today';
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
-import ApprovalIcon from '@mui/icons-material/Approval';
 import * as React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../src/assets/logo.png";
 import "../Dashboard/Dashboard.css";
-import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import avatar from "../assets/avtar.png";
 
 const drawerWidth = 260;
@@ -150,7 +150,7 @@ export default function Dashboard() {
     Address: "",
     Email: "",
     BloodGroup: "",
-    Avatar:"",
+    Avatar: "",
   });
 
   // const [openMenu, setOpenMenu] = React.useState(false);
@@ -174,10 +174,10 @@ export default function Dashboard() {
     setUserData(JSON.parse(userData));
     if (isMobile) {
       setOpen(false);
-  }
+    }
   }, [isMobile]);
 
- 
+
 
   const location = useLocation();
 
@@ -400,10 +400,52 @@ export default function Dashboard() {
             component="nav"
             aria-labelledby="nested-list-subheader"
           >
-            <Link to="home" className="link_style">
+            <div className="dashboard-menu">
+              <Link to="home" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/home"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Dashboard" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-user" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-user"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <ManageAccountsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage User" />
+                </ListItemButton>
+              </Link>
               <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/home"}
+                onClick={handleClickMasters}
+                selected={location.pathname === "/manage-schedule"}
                 sx={{
                   "&.Mui-selected": {
                     backgroundColor: "#8F00FF",
@@ -416,236 +458,195 @@ export default function Dashboard() {
                 }}
               >
                 <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <DashboardIcon />
+                  <WorkHistoryIcon />
                 </ListItemIcon>
-                <ListItemText primary="Dashboard" />
+                <ListItemText primary="Manage Schedule" />
+
+                {openList ? (
+                  <ExpandLess style={{ marginLeft: "auto" }} />
+                ) : (
+                  <ExpandMore style={{ marginLeft: "auto" }} />
+                )}
               </ListItemButton>
-            </Link>
-            <Link to="manage-user" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-user"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+
+              <Collapse in={openList} timeout="auto">
+                <List component="div" disablePadding>
+                  <Link to="manage-schedule/diet" className="link_style">
+                    <ListItemButton
+                      selected={
+                        router.pathname === "/dashboard/manage-schedule/diet"
+                          ? true
+                          : false
+                      }
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#8F00FF",
+                          // m:0.5,
+                          borderRadius: 1,
+                          "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ pl: 4 }}>
+                        <RemoveIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Diet" sx={{ pl: 2 }} />
+                    </ListItemButton>
+                  </Link>
+
+                  <Link to="manage-schedule/exercise" className="link_style">
+                    <ListItemButton
+                      selected={
+                        router.pathname === "/dashboard/manage-schedule/exercise"
+                          ? true
+                          : false
+                      }
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#8F00FF",
+                          // m:0.5,
+                          borderRadius: 1,
+                          "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ pl: 4 }}>
+                        <RemoveIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Exercise" sx={{ pl: 2 }} />
+                    </ListItemButton>
+                  </Link>
+
+                  <Link to="manage-schedule/medical" className="link_style">
+                    <ListItemButton
+                      selected={
+                        router.pathname === "/dashboard/manage-schedule/medical"
+                          ? true
+                          : false
+                      }
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#8F00FF",
+                          // m:0.5,
+                          borderRadius: 1,
+                          "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ pl: 4 }}>
+                        <RemoveIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Medical Test" sx={{ pl: 2 }} />
+                    </ListItemButton>
+                  </Link>
+
+                  <Link to="manage-schedule/medication" className="link_style">
+                    <ListItemButton
+                      selected={
+                        router.pathname ===
+                          "/dashboard/manage-schedule/medication"
+                          ? true
+                          : false
+                      }
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#8F00FF",
+                          // m:0.5,
+                          borderRadius: 1,
+                          "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ pl: 4 }}>
+                        <RemoveIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Medications" sx={{ pl: 2 }} />
+                    </ListItemButton>
+                  </Link>
+
+                  <Link to="manage-schedule/precaution" className="link_style">
+                    <ListItemButton
+                      selected={
+                        router.pathname ===
+                          "/dashboard/manage-schedule/precaution"
+                          ? true
+                          : false
+                      }
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#8F00FF",
+                          // m:0.5,
+                          borderRadius: 1,
+                          "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ pl: 4 }}>
+                        <RemoveIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Precaution" sx={{ pl: 2 }} />
+                    </ListItemButton>
+                  </Link>
+
+                  <Link to="manage-schedule/vaccination" className="link_style">
+                    <ListItemButton
+                      selected={
+                        router.pathname ===
+                          "/dashboard/manage-schedule/vaccination"
+                          ? true
+                          : false
+                      }
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#8F00FF",
+                          // m:0.5,
+                          borderRadius: 1,
+                          "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ pl: 4 }}>
+                        <RemoveIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Vaccination" sx={{ pl: 2 }} />
+                    </ListItemButton>
+                  </Link>
+                </List>
+              </Collapse>
+              <Link to="post-natal" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/PostNatal/postNatal"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <ManageAccountsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage User" />
-              </ListItemButton>
-            </Link>
-            <ListItemButton
-              onClick={handleClickMasters}
-              selected={location.pathname === "/manage-schedule"}
-              sx={{
-                "&.Mui-selected": {
-                  backgroundColor: "#8F00FF",
-                  // m:0.5,
-                  borderRadius: 1,
-                  "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                    color: "#FFFFFF",
-                  },
-                },
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                <WorkHistoryIcon />
-              </ListItemIcon>
-              <ListItemText primary="Manage Schedule" />
-
-              {openList ? (
-                <ExpandLess style={{ marginLeft: "auto" }} />
-              ) : (
-                <ExpandMore style={{ marginLeft: "auto" }} />
-              )}
-            </ListItemButton>
-
-            <Collapse in={openList} timeout="auto">
-              <List component="div" disablePadding>
-                <Link to="manage-schedule/diet" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname === "/dashboard/manage-schedule/diet"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Diet" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-
-                <Link to="manage-schedule/exercise" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname === "/dashboard/manage-schedule/exercise"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Exercise" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-
-                <Link to="manage-schedule/medical" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname === "/dashboard/manage-schedule/medical"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Medical Test" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-
-                <Link to="manage-schedule/medication" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname ===
-                      "/dashboard/manage-schedule/medication"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Medications" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-
-                <Link to="manage-schedule/precaution" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname ===
-                      "/dashboard/manage-schedule/precaution"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Precaution" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-
-                <Link to="manage-schedule/vaccination" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname ===
-                      "/dashboard/manage-schedule/vaccination"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Vaccination" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-              </List>
-            </Collapse>
-            <Link to="post-natal" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/PostNatal/postNatal"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <ApprovalIcon/>
-                </ListItemIcon>
-                <ListItemText primary="Post Natal" />
-              </ListItemButton>
-            </Link>
-            {/* <Collapse in={list} timeout="auto">
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <ApprovalIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Post Natal" />
+                </ListItemButton>
+              </Link>
+              {/* <Collapse in={list} timeout="auto">
               <List component="div" disablePadding>
                 <Link to="post-natal/pndiet" className="link_style">
                   <ListItemButton
@@ -774,264 +775,264 @@ export default function Dashboard() {
               </List>
             </Collapse> */}
 
-            <Link to="plan-master" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/plan-master"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+              <Link to="plan-master" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/plan-master"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <TodayIcon />
-                </ListItemIcon>
-                <ListItemText primary="Plan Master" />
-              </ListItemButton>
-            </Link>
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <TodayIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Plan Master" />
+                </ListItemButton>
+              </Link>
 
-            <Link to="manage-assesment" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-assesment"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+              <Link to="manage-assesment" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-assesment"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <NoteAltIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Assestment" />
-              </ListItemButton>
-            </Link>
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <NoteAltIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Assestment" />
+                </ListItemButton>
+              </Link>
 
-            <Link to="medical-condition" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/medical-condition"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+              <Link to="medical-condition" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/medical-condition"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <MonitorHeartIcon />
-                </ListItemIcon>
-                <ListItemText primary="Medical Condition" />
-              </ListItemButton>
-            </Link>
-            <Link to="manage-avoid-food" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-avoid-food"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <MonitorHeartIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Medical Condition" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-avoid-food" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-avoid-food"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <NoFoodIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Avoid Foods" />
-              </ListItemButton>
-            </Link>
-            <Link to="manage-videos" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-videos"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <NoFoodIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Avoid Foods" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-videos" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-videos"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <VideoSettingsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Videos" />
-              </ListItemButton>
-            </Link>
-            <Link to="manage-posts" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-posts"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <VideoSettingsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Videos" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-posts" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-posts"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <PostAddIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Posts" />
-              </ListItemButton>
-            </Link>
-            <Link to="manage-faq" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-faq"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <PostAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Posts" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-faq" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-faq"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <QuizIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage FAQ's" />
-              </ListItemButton>
-            </Link>
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <QuizIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage FAQ's" />
+                </ListItemButton>
+              </Link>
 
-            <Link to="manage-subscription" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={
-                  location.pathname === "/dashboard/manage-subscription"
-                }
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+              <Link to="manage-subscription" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={
+                    location.pathname === "/dashboard/manage-subscription"
+                  }
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <SubscriptionsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Subscription" />
-              </ListItemButton>
-            </Link>
-            <Link to="manage-report" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-report"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <SubscriptionsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Subscription" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-report" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-report"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <NoteAddIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Report" />
-              </ListItemButton>
-            </Link>
-            <Link to="manage-advertise" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-advertise"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <NoteAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Report" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-advertise" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-advertise"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <AppSettingsAltIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Advertise" />
-              </ListItemButton>
-            </Link>
-            <Link to="manage-blog" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-blog"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <AppSettingsAltIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Advertise" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-blog" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-blog"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <NewspaperIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Blog & letter" />
-              </ListItemButton>
-            </Link>
-            <Link to="manage-expert" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-expert"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <NewspaperIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Blog & letter" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-expert" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-expert"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <GroupsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Expert ANS" />
-              </ListItemButton>
-            </Link>
-            {/* <Link to="manage-comments" className="link_style">
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <GroupsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Expert ANS" />
+                </ListItemButton>
+              </Link>
+              {/* <Link to="manage-comments" className="link_style">
               <ListItemButton
                 onClick={handleClickTransaction}
                 selected={location.pathname === "/dashboard/manage-comments"}
@@ -1052,48 +1053,49 @@ export default function Dashboard() {
                 <ListItemText primary="Manage Comments" />
               </ListItemButton>
             </Link> */}
-            <Link to="manage-doses" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-doses"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+              <Link to="manage-doses" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-doses"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <VaccinesIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Dosage" />
-              </ListItemButton>
-            </Link>
-            <Link to="manage-tags" className="link_style">
-              <ListItemButton
-                onClick={handleClickTransaction}
-                selected={location.pathname === "/dashboard/manage-tags"}
-                sx={{
-                  "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
-                    // m:0.5,
-                    borderRadius: 1,
-                    "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                      color: "#FFFFFF",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <VaccinesIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Dosage" />
+                </ListItemButton>
+              </Link>
+              <Link to="manage-tags" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-tags"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#8F00FF",
+                      // m:0.5,
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
-                  <LocalOfferIcon />
-                </ListItemIcon>
-                <ListItemText primary="Manage Tags" />
-              </ListItemButton>
-            </Link>
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <LocalOfferIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Tags" />
+                </ListItemButton>
+              </Link>
+            </div>
           </List>
         </Grid>
       </Drawer>
