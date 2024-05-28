@@ -24,13 +24,14 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
   useEffect(() => {
     axios.get(`${BASE_URL}medicaltests/`).then((response) => {
       const updatedMedicalData = response.data.values.flat().map((item) => ({
-        id: item._id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
       }));
       setMedicalData(updatedMedicalData);
+      setChildData(props.medTestData);
     });
-  }, []);
+  }, [props.medTestData]);
 
   const handleChildDialogOpen = () => {
     setChildDialogOpen(true);
@@ -42,10 +43,10 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
 
   const handleMedicalRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = medicalData.filter((row) => selectedIDs.has(row.id));
+    const selectedRows = medicalData.filter((row) => selectedIDs.has(row._id));
     setSelectedMedicalRows(
       selectedRows.map((item) => ({
-        _id: item.id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
@@ -55,16 +56,19 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
 
   const handleDelete = (data) => {
     setChildData((prevState) => {
-      const deleteRow = [...prevState];
-      deleteRow.splice(data.SrNo - 1, 1);
-      return deleteRow;
+      const updatedData = [...prevState];
+      updatedData.splice(data.SrNo - 1, 1);
+
+      sendMedicalTestDataToParent(updatedData);
+
+      return updatedData;
     });
   };
 
   const handleSaveMedicalSelection = () => {
-    setChildData((prev) => [...prev, ...selectedMedicalRows]);
+    setChildData((prev) => [...childData, ...selectedMedicalRows]);
     setChildDialogOpen(false);
-    sendMedicalTestDataToParent(selectedMedicalRows);
+    sendMedicalTestDataToParent([...childData, ...selectedMedicalRows]);
   };
 
   const columns = [
@@ -135,12 +139,10 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
           <DataGrid
             className="datagrid-style"
             rows={
-              (childData.length === 0 ? props.medTestData : childData).map(
-                (data, index) => ({
-                  ...data,
-                  SrNo: index + 1,
-                })
-              ) || []
+              childData.map((data, index) => ({
+                ...data,
+                SrNo: index + 1,
+              })) || []
             }
             rowHeight={70}
             getRowId={(row) => row._id}
@@ -180,15 +182,16 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "id", headerName: "ID", width: 250 },
+              { field: "_id", headerName: "ID", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
             ]}
             checkboxSelection
+            getRowId={(row) => row._id}
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj._id).includes(params.row.id);
+                : !childData.map((obj) => obj._id).includes(params.row._id);
             }}
             onRowSelectionModelChange={(ids) => handleMedicalRowClick(ids)}
             disableRowSelectionOnClick

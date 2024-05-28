@@ -402,6 +402,7 @@ const ManageDiet = () => {
   };
 
   const handleUpdate = (data) => {
+    console.log(data);
     setSaveUpdateButton("UPDATE");
     setOn(true);
     setSelectedTags(data.TagsIds);

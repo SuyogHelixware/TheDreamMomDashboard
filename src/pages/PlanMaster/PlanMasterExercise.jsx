@@ -8,18 +8,19 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  Paper
+  Paper,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
-const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
+const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [exerciseData, setExerciseData] = useState([]);
   const [selectedExerciseRows, setSelectedExerciseRows] = useState([]);
+
 
   useEffect(() => {
     axios.get(`${BASE_URL}Exercise/`).then((response) => {
@@ -30,8 +31,10 @@ const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
         Image: item.Image,
       }));
       setExerciseData(updatedExerciseData);
+      setChildData(props.exerciseData);
     });
-  }, []);
+}, [props.exerciseData]);
+
 
   const handleChildDialogOpen = () => {
     setChildDialogOpen(true);
@@ -56,19 +59,22 @@ const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
 
   const handleDelete = (data) => {
     setChildData((prevState) => {
-      const deleteRow = [...prevState];
-      deleteRow.splice(data.SrNo - 1, 1);
-      return deleteRow;
+      const updatedData = [...prevState];
+      updatedData.splice(data.SrNo - 1, 1);
+
+      sendExerciseDataToParent(updatedData);
+
+      return updatedData;
     });
   };
 
   const handleSaveExerciseSelection = () => {
-
     console.log(selectedExerciseRows);
+    console.log(childData);
 
-    setChildData((prev) => [...prev, ...selectedExerciseRows]);
+    setChildData((prev) => [...childData, ...selectedExerciseRows]);
     setChildDialogOpen(false);
-    sendExerciseDataToParent(selectedExerciseRows);
+    sendExerciseDataToParent([...childData, ...selectedExerciseRows]);
   };
 
   const columns = [
@@ -152,7 +158,7 @@ const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
           <DataGrid
             className="datagrid-style"
             rows={
-             (childData.length===0?props.exerciseData:childData).map((data, index) => ({
+              childData.map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []
@@ -189,12 +195,12 @@ const PlanMasterExercise = ({ sendExerciseDataToParent,...props }) => {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{height:400}}>
+        <DialogContent sx={{ height: 400 }}>
           <DataGrid
             rows={exerciseData}
             className="datagrid-style"
             rowHeight={80}
-            getRowId={(row)=>row._id}
+            getRowId={(row) => row._id}
             columns={[
               { field: "id", headerName: "ID", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
