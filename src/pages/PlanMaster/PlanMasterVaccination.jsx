@@ -30,8 +30,9 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
         Image: item.Image,
       }));
       setVaccinationData(updatedVaccinationData);
+      setChildData(props.vaccinationData)
     });
-  }, []);
+  }, [props.vaccinationData]);
 
   const handleChildDialogOpen = () => {
     setChildDialogOpen(true);
@@ -63,9 +64,9 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
   };
 
   const handleSaveVaccinationSelection = () => {
-    setChildData((prev) => [...prev, ...selectedVaccinationRows]);
+    setChildData((prev) => [...childData, ...selectedVaccinationRows]);
     setChildDialogOpen(false);
-    sendVaccinationDataToParent(selectedVaccinationRows);
+    sendVaccinationDataToParent([...childData, ...selectedVaccinationRows]);
   };
 
   const columns = [
@@ -148,12 +149,8 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
         <Grid container item height={380} lg={12} component={Paper}>
           <DataGrid
             className="datagrid-style"
-            // rows={childData.map((data, index) => ({
-            //   ...data,
-            //   SrNo: index + 1,
-            // }))}
             rows={
-             (childData.length===0?props.vaccinationData:childData).map((data, index) => ({
+             childData.map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []

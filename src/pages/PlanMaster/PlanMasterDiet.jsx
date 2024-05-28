@@ -14,13 +14,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL, Bunny_Image_URL } from "../../Constant";
-// import { BASE_URL, Bunny_Image_URL } from "../Constant";
 
-const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
-  console.log("====================================");
-  console.log(props);
-  console.log("====================================");
-
+const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [dietData, setDietData] = useState([]);
@@ -29,14 +24,15 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
   useEffect(() => {
     axios.get(`${BASE_URL}diet/`).then((response) => {
       const updatedDietData = response.data.values.flat().map((item) => ({
-        id: item._id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
       }));
       setDietData(updatedDietData);
+      setChildData(props.dietData);
     });
-  }, []);
+  }, [props.dietData]);
 
   const handleChildDialogOpen = () => {
     setChildDialogOpen(true);
@@ -48,10 +44,10 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
 
   const handleDietRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = dietData.filter((row) => selectedIDs.has(row.id));
+    const selectedRows = dietData.filter((row) => selectedIDs.has(row._id));
     setSelectedDietRows(
       selectedRows.map((item) => ({
-        _id: item.id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
@@ -61,15 +57,18 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
 
   const handleDelete = (data) => {
     setChildData((prevState) => {
-      const deleteRow = [...prevState];
-      deleteRow.splice(data.SrNo - 1, 1);
-      return deleteRow;
+      const updatedData = [...prevState];
+      updatedData.splice(data.SrNo - 1, 1);
+
+      sendDataToParent(updatedData);
+
+      return updatedData;
     });
   };
 
   const handleSaveDietSelection = () => {
-    setChildData((prev) => [...prev, ...selectedDietRows]);
-    sendDataToParent(selectedDietRows);
+    sendDataToParent([...selectedDietRows]);
+    setChildData((prev) => [...childData, ...selectedDietRows]);
     setChildDialogOpen(false);
   };
 
@@ -154,7 +153,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
           <DataGrid
             className="datagrid-style"
             rows={
-              (childData.length===0?props.dietData:childData).map((data, index) => ({
+              childData.map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []
@@ -197,7 +196,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "id", headerName: "ID", width: 250 },
+              { field: "_id", headerName: "ID", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
               {
@@ -218,7 +217,9 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj._id).includes(params.row.id);
+                : !(childData.length === 0 ? props.dietData : childData)
+                    .map((obj) => obj._id)
+                    .includes(params.row._id);
             }}
             onRowSelectionModelChange={(ids) => handleDietRowClick(ids)}
             disableRowSelectionOnClick
@@ -230,6 +231,7 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            getRowId={(row) => row._id}
           />
         </DialogContent>
 
@@ -262,5 +264,4 @@ const  PlanMasterDiet = ({ sendDataToParent, ...props }) => {
   );
 };
 
-export default  PlanMasterDiet;
-
+export default PlanMasterDiet;

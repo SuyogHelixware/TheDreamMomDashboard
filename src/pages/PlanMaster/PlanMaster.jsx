@@ -46,16 +46,6 @@ const PlanMaster = () => {
     Week: "",
     Status: 1,
   });
-  // const [oldData, setOldData] = useState({
-  //   DietIds: [],
-  //   ExerciseIds: [],
-  //   VaccinationIds: [],
-  //   MedTestIds: [],
-  //   MedDetailsIds: [],
-  // });
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
 
   const getAllPlanMasterData = () => {
     axios.get(`${BASE_URL}planmaster/`).then((response) => {
@@ -77,31 +67,28 @@ const PlanMaster = () => {
   };
 
   const handleSave = async () => {
-    const UpdateObj = {
-      Firstname: data.Firstname,
-      Middlename: data.Middlename,
-      Lastname: data.Lastname,
-      DOB: data.DOB,
-      Password: data.Password,
-      Phone: data.Phone,
-      Email: data.Email,
-      Address: data.Address,
-      BloodGroup: data.BloodGroup,
-      UserType: "P",
+    const formattedData = {
+      ...formData,
+      DietIds: formData.DietIds
+        ? formData.DietIds.map((diet) => diet._id)
+        : [],
+      ExerciseIds: formData.ExerciseIds
+        ? formData.ExerciseIds.map((exercise) => exercise._id)
+        : [],
+      VaccinationIds: formData.VaccinationIds
+        ? formData.VaccinationIds.map((vaccination) => vaccination._id)
+        : [],
+      MedTestIds: formData.MedTestIds
+        ? formData.MedTestIds.map((medTest) => medTest._id)
+        : [],
+      MedDetailsIds: formData.MedDetailsIds
+        ? formData.MedDetailsIds.map((medDet) => medDet._id)
+        : [],
     };
-
+  
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
-      const formattedData = {
-        ...formData,
-        DietIds: formData.DietIds,
-        ExerciseIds: formData.ExerciseIds,
-        VaccinationIds: formData.VaccinationIds,
-        MedTestIds: formData.MedTestIds,
-        MedDetailsIds: formData.MedDetailsIds,
-      };
-
       handleParentDialogClose();
       axios
         .post(`${BASE_URL}planmaster/`, formattedData)
@@ -151,11 +138,10 @@ const PlanMaster = () => {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, Update it!",
       });
-
       if (result.isConfirmed) {
         const response = await axios.patch(
-          `${BASE_URL}planmaster/${data._id}`,
-          UpdateObj
+          `${BASE_URL}planmaster/${formData._id}`,
+          formattedData
         );
         console.log(response);
       }
@@ -174,9 +160,16 @@ const PlanMaster = () => {
     console.log(row);
     setSaveUpdateButton("UPDATE");
     setOpen(true);
-    // setOldData(row);
-    setFormData(row);
-    // setImage(`${Bunny_Image_URL}/Users/${row.Firstname}/${row.Avatar}`);
+    setFormData({
+      ...row,
+      MedDetailsIds: row.MedDetailsIds.map((data) => ({
+        _id: data._id,
+        Name: data.MedId.Name,
+        Description: data.MedId.Description,
+        DosageName: data.DosageId.Name,
+        DosageDescription: data.DosageId.Description,
+      })),
+    });
   };
 
   const handleDelete = (id) => {
@@ -254,7 +247,6 @@ const PlanMaster = () => {
       field: "Sr.No",
       headerName: "SrNo",
       width: 100,
-      
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
@@ -271,35 +263,35 @@ const PlanMaster = () => {
   const receiveDataFromDiet = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      DietIds: data.map((diet) => diet.id),
+      DietIds: [...data],
     }));
   };
 
   const receiveDataFromExercise = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      ExerciseIds: data.map((exercise) => exercise.id),
+      ExerciseIds: [...data],
     }));
   };
 
   const receiveDataFromVaccination = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      VaccinationIds: data.map((vaccination) => vaccination.id),
+      VaccinationIds: [...data],
     }));
   };
 
   const receiveDataFromMedication = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      MedDetailsIds: data.map((medication) => medication.id),
+      MedDetailsIds: [...data],
     }));
   };
 
   const receiveDataFromMedicalTest = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      MedTestIds: data.map((medicalTest) => medicalTest.id),
+      MedTestIds: [...data],
     }));
   };
 
@@ -369,7 +361,7 @@ const PlanMaster = () => {
         <DataGrid
           className="datagrid-style"
           rows={data.map((data, index) => ({
-            ...data,    
+            ...data,
             SrNo: index + 1,
           }))}
           rowHeight={70}
@@ -493,16 +485,20 @@ const PlanMaster = () => {
             dietData={formData.DietIds}
           />
           <PlanMasterVaccination
-            sendVaccinationDataToParent={receiveDataFromVaccination} vaccinationData={formData.VaccinationIds}
+            sendVaccinationDataToParent={receiveDataFromVaccination}
+            vaccinationData={formData.VaccinationIds}
           />
           <PlanMasterMedication
-            sendMedicationDataToParent={receiveDataFromMedication} medicationData={formData.MedDetailsIds}
+            sendMedicationDataToParent={receiveDataFromMedication}
+            medicationData={formData.MedDetailsIds}
           />
           <PlanMasterExercise
-            sendExerciseDataToParent={receiveDataFromExercise} exerciseData={formData.ExerciseIds}
+            sendExerciseDataToParent={receiveDataFromExercise}
+            exerciseData={formData.ExerciseIds}
           />
           <PlanMasterMedical
-            sendMedicalTestDataToParent={receiveDataFromMedicalTest} medTestData={formData.MedTestIds}
+            sendMedicalTestDataToParent={receiveDataFromMedicalTest}
+            medTestData={formData.MedTestIds}
           />
 
           <DialogActions>
