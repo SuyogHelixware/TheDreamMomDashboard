@@ -56,18 +56,19 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
 
   const handleDelete = (data) => {
     setChildData((prevState) => {
-      const deleteRow = [...prevState];
-      deleteRow.splice(data.SrNo - 1, 1);
-      return deleteRow;
+      const updatedData = [...prevState];
+      updatedData.splice(data.SrNo - 1, 1);
+
+      sendMedicalTestDataToParent(updatedData);
+
+      return updatedData;
     });
   };
 
   const handleSaveMedicalSelection = () => {
- 
     setChildData((prev) => [...childData, ...selectedMedicalRows]);
     setChildDialogOpen(false);
     sendMedicalTestDataToParent([...childData, ...selectedMedicalRows]);
-
   };
 
   const columns = [
@@ -186,7 +187,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
               { field: "Description", headerName: "Description", width: 300 },
             ]}
             checkboxSelection
-            getRowId={(row)=>row._id}
+            getRowId={(row) => row._id}
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true

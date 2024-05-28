@@ -57,9 +57,12 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
 
   const handleDelete = (data) => {
     setChildData((prevState) => {
-      const deleteRow = [...prevState];
-      deleteRow.splice(data.SrNo - 1, 1);
-      return deleteRow;
+      const updatedData = [...prevState];
+      updatedData.splice(data.SrNo - 1, 1);
+
+      sendVaccinationDataToParent(updatedData);
+
+      return updatedData;
     });
   };
 

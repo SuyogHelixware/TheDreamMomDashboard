@@ -67,7 +67,7 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
   };
 
   const handleSaveDietSelection = () => {
-    sendDataToParent([...selectedDietRows]);
+    sendDataToParent([...childData, ...selectedDietRows]);
     setChildData((prev) => [...childData, ...selectedDietRows]);
     setChildDialogOpen(false);
   };

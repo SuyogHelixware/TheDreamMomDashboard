@@ -59,9 +59,12 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
 
   const handleDelete = (data) => {
     setChildData((prevState) => {
-      const deleteRow = [...prevState];
-      deleteRow.splice(data.SrNo - 1, 1);
-      return deleteRow;
+      const updatedData = [...prevState];
+      updatedData.splice(data.SrNo - 1, 1);
+
+      sendExerciseDataToParent(updatedData);
+
+      return updatedData;
     });
   };
 

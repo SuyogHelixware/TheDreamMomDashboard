@@ -69,9 +69,7 @@ const PlanMaster = () => {
   const handleSave = async () => {
     const formattedData = {
       ...formData,
-      DietIds: formData.DietIds
-        ? formData.DietIds.map((diet) => diet._id)
-        : [],
+      DietIds: formData.DietIds ? formData.DietIds.map((diet) => diet._id) : [],
       ExerciseIds: formData.ExerciseIds
         ? formData.ExerciseIds.map((exercise) => exercise._id)
         : [],
@@ -85,7 +83,8 @@ const PlanMaster = () => {
         ? formData.MedDetailsIds.map((medDet) => medDet._id)
         : [],
     };
-  
+    console.log(formattedData);
+
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
@@ -95,6 +94,7 @@ const PlanMaster = () => {
         .then((response) => {
           if (response.data.status) {
             setLoaderOpen(false);
+            getAllPlanMasterData();
             Swal.fire({
               position: "center",
               icon: "success",
@@ -143,7 +143,30 @@ const PlanMaster = () => {
           `${BASE_URL}planmaster/${formData._id}`,
           formattedData
         );
-        console.log(response);
+        if (response.data.status) {
+          handleParentDialogClose();
+          setLoaderOpen(false);
+          getAllPlanMasterData();
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title: "Plan master update Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          setLoaderOpen(false);
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed to update plan master",
+            text: response.data.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
       }
     }
   };
