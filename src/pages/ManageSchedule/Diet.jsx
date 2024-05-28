@@ -309,7 +309,7 @@ const ManageDiet = () => {
   const getAllImgList = () => {
     axios.get(`${BASE_URL}diet/`).then((response) => {
       setImgData(response.data.values.flat());
-    });   
+    });
   };
 
   const getTagData = () => {
@@ -317,7 +317,7 @@ const ManageDiet = () => {
       setTags(response.data.values);
     });
   };
- 
+
   const handleDelete = (data) => {
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -400,7 +400,6 @@ const ManageDiet = () => {
       }
     });
   };
-  
 
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
@@ -498,7 +497,6 @@ const ManageDiet = () => {
             </Grid>
 
             <Grid item xs={12}>
-              
               <FormControl fullWidth size="small" required>
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
@@ -557,9 +555,12 @@ const ManageDiet = () => {
                 disabled={isSubmitDisabled()}
                 variant="contained"
                 tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
+                startIcon={<CloudUploadIcon style={{ color: "white" }} />}
                 sx={{
-                  backgroundColor: "#8F00FF",
+                  backgroundColor: "#B636FF",
+                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
+                  // "#8F00FF",
+
                   py: 1.5,
                   "&:hover": {
                     backgroundColor: "#3B444B",
@@ -568,7 +569,7 @@ const ManageDiet = () => {
               >
                 <Typography
                   noWrap
-                  style={{ width: "80%", textAlign: "center" }}
+                  style={{ width: "80%", textAlign: "center", color: "white" }}
                 >
                   {SaveUpdateButton === "UPDATE"
                     ? data.Image
@@ -589,11 +590,14 @@ const ManageDiet = () => {
                   marginTop: 1,
                   p: 1,
                   width: 80,
+                  boxShadow: 5,
                   color: "white",
-                  backgroundColor: "#3B444B",
+                  // backgroundColor: "#4f52b2 ",
+                  backgroundColor: "#463C8A ",
                   mr: 1,
                   "&:hover": {
-                    backgroundColor: "#3B444B",
+                    backgroundColor: "#4f52b2",
+                    // backgroundColor: "#3B444B",
                   },
                 }}
               >
@@ -608,10 +612,12 @@ const ManageDiet = () => {
                   marginTop: 1,
                   p: 1,
                   width: 80,
+                  boxShadow: 5,
+
                   color: "white",
-                  background: "linear-gradient(to right, #EE696B, #523A78)",
+                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
                   "&:hover": {
-                    backgroundColor: "#673AB7",
+                    backgroundColor: "#8F00FF",
                   },
                 }}
               >

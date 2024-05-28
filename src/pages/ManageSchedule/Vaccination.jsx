@@ -140,7 +140,7 @@ const Vaccination = () => {
   const handleSubmitForm = async () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
-      (field) => !data[field] || !data[field].trim()   
+      (field) => !data[field] || !data[field].trim()
     );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
@@ -330,11 +330,14 @@ const Vaccination = () => {
           .then((response) => {
             if (response.data.status) {
               axios
-                .delete(`${Bunny_Storage_URL}/Schedule/Vaccination/${data.Image}`, {
-                  headers: {
-                    AccessKey: Bunny_Storage_Access_Key,
-                  },
-                })
+                .delete(
+                  `${Bunny_Storage_URL}/Schedule/Vaccination/${data.Image}`,
+                  {
+                    headers: {
+                      AccessKey: Bunny_Storage_Access_Key,
+                    },
+                  }
+                )
                 .then((res) => {
                   setLoaderOpen(false);
                   if (res.data.HttpCode === 200) {
@@ -395,7 +398,7 @@ const Vaccination = () => {
       }
     });
   };
- 
+
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);
@@ -553,6 +556,7 @@ const Vaccination = () => {
                 startIcon={<CloudUploadIcon />}
                 sx={{
                   backgroundColor: "#8F00FF",
+                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
                   py: 1.5,
                   "&:hover": {
                     backgroundColor: "#3B444B",
@@ -583,10 +587,10 @@ const Vaccination = () => {
                   p: 1,
                   width: 80,
                   color: "white",
-                  backgroundColor: "#3B444B",
+                  backgroundColor: "#463C8A",
                   mr: 1,
                   "&:hover": {
-                    backgroundColor: "#3B444B",
+                    backgroundColor: "#4f52b2",
                   },
                 }}
               >
@@ -601,8 +605,9 @@ const Vaccination = () => {
                   marginTop: 1,
                   p: 1,
                   width: 80,
+                  boxShadow: 5,
                   color: "white",
-                  background: "linear-gradient(to right, #EE696B, #523A78)",
+                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
                   "&:hover": {
                     backgroundColor: "#673AB7",
                   },

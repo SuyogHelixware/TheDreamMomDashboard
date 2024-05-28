@@ -251,7 +251,7 @@ const PlanMaster = () => {
       ),
     },
     {
-      field: "Sr.No",
+      field: "id",
       headerName: "SrNo",
       width: 100,
       
@@ -368,10 +368,10 @@ const PlanMaster = () => {
       <Grid container item height={500} lg={12} component={Paper}>
         <DataGrid
           className="datagrid-style"
-          rows={data.map((data, index) => ({
-            ...data,    
-            SrNo: index + 1,
-          }))}
+          // rows={data.map((data, index) => ({...data,  SrNo: index + 1,}))}
+
+          rows={data.map((data, id) => ({ ...data, id: id + 1 }))}
+
           rowHeight={70}
           getRowId={(row) => row._id}
           columns={columns}
