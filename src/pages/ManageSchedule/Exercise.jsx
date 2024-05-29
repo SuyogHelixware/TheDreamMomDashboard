@@ -601,6 +601,7 @@ const Exercise = () => {
                   marginTop: 1,
                   p: 1,
                   width: 80,
+                  boxShadow:5,
                   color: "white",
                   background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
                   "&:hover": {

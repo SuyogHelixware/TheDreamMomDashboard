@@ -8,30 +8,31 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  Paper
+  Paper,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_URL } from "../Constant";
+import { BASE_URL, Bunny_Image_URL } from "../Constant";
 
-
-const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
+const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
-  const [medicalData, setMedicalData] = useState([]);
-  const [selectedMedicalRows, setSelectedMedicalRows] = useState([]);
+  const [PrecautionData, setPrecautionData] = useState([]);
+  const [selectedPrecautionRows, setSelectedPrecautionRows] = useState([]);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}medicaltests/`).then((response) => {
-      const updatedMedicalData = response.data.values.flat().map((item) => ({
-        id: item._id,
+    axios.get(`${BASE_URL}precaution/`).then((response) => {
+      const updatedPrecautionData = response.data.values.flat().map((item) => ({
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
+        Image: item.Image,
       }));
-      setMedicalData(updatedMedicalData);
+      setPrecautionData(updatedPrecautionData);
+      setChildData(props.PrecautionData);
     });
-  }, []);
+  }, [props.PrecautionData]);
 
   const handleChildDialogOpen = () => {
     setChildDialogOpen(true);
@@ -41,12 +42,12 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
     setChildDialogOpen(false);
   };
 
-  const handleMedicalRowClick = (id) => {
+  const handlePrecautionRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = medicalData.filter((row) => selectedIDs.has(row.id));
-    setSelectedMedicalRows(
+    const selectedRows = PrecautionData.filter((row) => selectedIDs.has(row._id));
+    setSelectedPrecautionRows(
       selectedRows.map((item) => ({
-        _id: item.id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
@@ -56,16 +57,19 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
 
   const handleDelete = (data) => {
     setChildData((prevState) => {
-      const deleteRow = [...prevState];
-      deleteRow.splice(data.SrNo - 1, 1);
-      return deleteRow;
+      const updatedData = [...prevState];
+      updatedData.splice(data.SrNo - 1, 1);
+
+      sendPrecautionDataToParent(updatedData);
+
+      return updatedData;
     });
   };
 
-  const handleSaveMedicalSelection = () => {
-    setChildData((prev) => [...prev, ...selectedMedicalRows]);
+  const handleSavePrecautionSelection = () => {
+    setChildData((prev) => [...childData, ...selectedPrecautionRows]);
     setChildDialogOpen(false);
-    sendMedicalTestDataToParent(selectedMedicalRows);
+    sendPrecautionDataToParent([...childData, ...selectedPrecautionRows]);
   };
 
   const columns = [
@@ -83,11 +87,25 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
     },
     {
       field: "SrNo",
-      headerName: "SrNo",
+      headerName: "Sr.No",
       width: 100,
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
+    {
+      field: "Image",
+      headerName: "Image",
+      width: 250,
+      renderCell: (params) => (
+        <img
+          src={`${Bunny_Image_URL}/Schedule/Precaution/${params.row.Image}`}
+          alt="Img"
+          height={50}
+          width={80}
+        />
+      ),
+    },
+ 
   ];
 
   return (
@@ -114,7 +132,7 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
                 },
               }}
             >
-              Add Medical Test
+              Add Precautions
             </Button>
           </Grid>
           <Grid
@@ -128,7 +146,7 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
               textAlign: "center",
             }}
           >
-            <b>Medical Test Table</b>
+            <b>Precautions Table</b>
           </Grid>
         </Grid>
 
@@ -136,7 +154,7 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
           <DataGrid
             className="datagrid-style"
             rows={
-             (childData.length===0?props.medTestData:childData).map((data, index) => ({
+              childData.map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []
@@ -163,7 +181,7 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
         maxWidth="lg"
       >
         <DialogTitle>
-          <b>Select Medical Test</b>
+          <b>Select Precautions</b>
           <IconButton
             aria-label="close"
             onClick={handleChildDialogClose}
@@ -173,23 +191,38 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{height:400}}>
+        <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={medicalData}
+            rows={PrecautionData.map((data,index)=>({...data,id:index+1}))}
+         
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "id", headerName: "ID", width: 250 },
+              { field: "id", headerName: "SR.NO", width: 200 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
+              {
+                field: "Image",
+                headerName: "Image",
+                width: 250,
+                renderCell: (params) => (
+                  <img
+                    src={`${Bunny_Image_URL}/Schedule/Precaution/${params.row.Image}`}
+                    alt=""
+                    height={50}
+                    width={80}
+                  />
+                ),
+              },
             ]}
             checkboxSelection
+            getRowId={(row) => row._id}
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj._id).includes(params.row.id);
+                : !childData.map((obj) => obj._id).includes(params.row._id);
             }}
-            onRowSelectionModelChange={(ids) => handleMedicalRowClick(ids)}
+            onRowSelectionModelChange={(ids) => handlePrecautionRowClick(ids)}
             disableRowSelectionOnClick
             initialState={{
               pagination: {
@@ -221,7 +254,7 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
                 marginRight: "10px",
               },
             }}
-            onClick={handleSaveMedicalSelection}
+            onClick={handleSavePrecautionSelection}
           >
             Save
           </Button>
@@ -231,4 +264,4 @@ const PostNatalMedical = ({ sendMedicalTestDataToParent,...props}) => {
   );
 };
 
-export default PostNatalMedical;
+export default PostNatalPrecaution;

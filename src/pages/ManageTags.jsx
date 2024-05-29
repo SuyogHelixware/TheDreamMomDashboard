@@ -308,11 +308,12 @@ export default function ManageTags() {
                   marginTop: 1,
                   p: 1,
                   width: 80,
+                  boxShadow:5,
                   color: "white",
-                  backgroundColor: "#3B444B",
+                  backgroundColor:"#463C8A",
                   mr: 1,
                   "&:hover": {
-                    backgroundColor: "#3B444B",
+                    backgroundColor: "#4f52b2",
                   },
                 }}
               >
@@ -328,9 +329,10 @@ export default function ManageTags() {
                   p: 1,
                   width: 80,
                   color: "white",
-                  background: "linear-gradient(to right, #EE696B, #523A78)",
-                  "&:hover": {
-                    backgroundColor: "#673AB7",
+                  boxShadow:5,
+                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
+                 "&:hover": {
+                    backgroundColor: "#8F00FF",
                   },
                 }}
               >

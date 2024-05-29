@@ -15,7 +15,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
-const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
+const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [vaccinationData, setVaccinationData] = useState([]);
@@ -261,4 +261,4 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
   );
 };
 
-export default PostNatalVaccination;
+export default PlanMasterVaccination;

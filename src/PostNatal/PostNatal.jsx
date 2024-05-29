@@ -14,21 +14,20 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
-
-import PostNatalDiet from "./PostNatalDiet";
-import PostNatalVaccination from "./PostNatalVaccination";
-import PostNatalMedication from "./PostNatalMedication";
-import PostNatalExercise from "./PostNatalExercise";
-import PostNatalMedical from "./PostNatalMedical";
-import Loader from "../components/Loader";
 import InputTextField, { InputDescriptionField } from "../components/Component";
+import Loader from "../components/Loader";
+import PostNatalDiet from "./PostNatalDiet";
+import PostNatalExercise from "./PostNatalExercise";
+import PostNatalMedication from "./PostNatalMedication";
+import PostNatalPrecaution from "./PostNatalPrecaution";
+import PostNatalVaccination from "./PostNatalVaccination";
 
 const PostNatal = () => {
-  const [loaderOpen, setLoaderOpen] = React.useState(false);
-  const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+  const [loaderOpen, setLoaderOpen] = useState(false);
+  const [SaveUpdateButton, setSaveUpdateButton] = useState("UPDATE");
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
   const [formData, setFormData] = useState({
@@ -37,24 +36,11 @@ const PostNatal = () => {
     DietIds: [],
     ExerciseIds: [],
     VaccinationIds: [],
-    MedTestIds: [],
+    PrecautionIds: [],
     MedDetailsIds: [],
-    Age: "",
-    Weight: "",
-    Height: "",
     Week: "",
     Status: 1,
   });
-  // const [oldData, setOldData] = useState({
-  //   DietIds: [],
-  //   ExerciseIds: [],
-  //   VaccinationIds: [],
-  //   MedTestIds: [],
-  //   MedDetailsIds: [],
-  // });
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
 
   const getAllPostNatalData = () => {
     axios.get(`${BASE_URL}postnatal`).then((response) => {
@@ -62,7 +48,7 @@ const PostNatal = () => {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getAllPostNatalData();
   }, []);
 
@@ -76,38 +62,34 @@ const PostNatal = () => {
   };
 
   const handleSave = async () => {
-    const UpdateObj = {
-      Firstname: data.Firstname,
-      Middlename: data.Middlename,
-      Lastname: data.Lastname,
-      DOB: data.DOB,
-      Password: data.Password,
-      Phone: data.Phone,
-      Email: data.Email,
-      Address: data.Address,
-      BloodGroup: data.BloodGroup,
-      UserType: "P",
+    const formattedData = {
+      ...formData,
+      DietIds: formData.DietIds ? formData.DietIds.map((diet) => diet._id) : [],
+      ExerciseIds: formData.ExerciseIds
+        ? formData.ExerciseIds.map((exercise) => exercise._id)
+        : [],
+      VaccinationIds: formData.VaccinationIds
+        ? formData.VaccinationIds.map((vaccination) => vaccination._id)
+        : [],
+      PrecautionIds: formData.PrecautionIds
+        ? formData.PrecautionIds.map((medTest) => medTest._id)
+        : [],
+      MedDetailsIds: formData.MedDetailsIds
+        ? formData.MedDetailsIds.map((medDet) => medDet._id)
+        : [],
     };
+    console.log(formattedData);
 
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
-      const formattedData = {
-        ...formData,
-        DietIds: formData.DietIds,
-        ExerciseIds: formData.ExerciseIds,
-        VaccinationIds: formData.VaccinationIds,
-        MedTestIds: formData.MedTestIds,
-        MedDetailsIds: formData.MedDetailsIds,
-      };
-      console.log(formattedData);
-
       handleParentDialogClose();
       axios
-        .post(`${BASE_URL} postnatal/`, formattedData)
+        .post(`${BASE_URL}postnatal/`, formattedData)
         .then((response) => {
           if (response.data.status) {
             setLoaderOpen(false);
+            getAllPostNatalData();
             Swal.fire({
               position: "center",
               icon: "success",
@@ -154,10 +136,36 @@ const PostNatal = () => {
 
       if (result.isConfirmed) {
         const response = await axios.patch(
-          `${BASE_URL} PostNatal/${data._id}`,
-          UpdateObj
+          `${BASE_URL}postnatal/${formData._id}`,
+          formattedData
         );
+        if (response.data.status) {
+          handleParentDialogClose();
+          setLoaderOpen(false);
+          getAllPostNatalData();
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title: "Post Natal update Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          setLoaderOpen(false);
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            toast: true,
+            title: "Failed to update Post Natal",
+            text: response.data.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
         console.log(response);
+      } else {
+        setLoaderOpen(false);
       }
     }
   };
@@ -174,9 +182,16 @@ const PostNatal = () => {
     console.log(row);
     setSaveUpdateButton("UPDATE");
     setOpen(true);
-    // setOldData(row);
-    setFormData(row);
-    // setImage(`${Bunny_Image_URL}/Users/${row.Firstname}/${row.Avatar}`);
+    setFormData({
+      ...row,
+      MedDetailsIds: row.MedDetailsIds.map((data) => ({
+        _id: data._id,
+        Name: data.MedId.Name,
+        Description: data.MedId.Description,
+        DosageName: data.DosageId.Name,
+        DosageDescription: data.DosageId.Description,
+      })),
+    });
   };
 
   const handleDelete = (id) => {
@@ -191,7 +206,7 @@ const PostNatal = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${BASE_URL} PostNatal/${id}`)
+          .delete(`${BASE_URL}PostNatal/${id}`)
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);
@@ -230,6 +245,11 @@ const PostNatal = () => {
     });
   };
 
+  const validateForm = () => {
+    const { Name, Description, Week } = formData;
+    return Name && Description && Week;
+  };
+
   const columns = [
     {
       field: "actions",
@@ -251,54 +271,54 @@ const PostNatal = () => {
       ),
     },
     {
-      field: "Sr.No",
-      headerName: "SrNo",
+      field: "id",
+      headerName: "Sr.No",
       width: 100,
     },
     { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 400 },
+    { field: "Description", headerName: "Description", width: 340 },
     {
-      field: "Age",
-      headerName: "Age",
-      width: 100,
+      field: "Status",
+      headerName: "Status",
+      width: 150,
+      sortable: false,
+      valueGetter: (params) =>
+        params.row.Status === 1 ? "Active" : "Inactive",
     },
-    { field: "Height", headerName: "Height", width: 100 },
-    { field: "Weight", headerName: "Weight", width: 100 },
-    { field: "Status", headerName: "Status", width: 100 },
   ];
 
   const receiveDataFromDiet = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      DietIds: data.map((diet) => diet.id),
+      DietIds: [...data],
     }));
   };
 
   const receiveDataFromExercise = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      ExerciseIds: data.map((exercise) => exercise.id),
+      ExerciseIds: [...data],
     }));
   };
 
   const receiveDataFromVaccination = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      VaccinationIds: data.map((vaccination) => vaccination.id),
+      VaccinationIds: [...data],
     }));
   };
 
   const receiveDataFromMedication = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      MedDetailsIds: data.map((medication) => medication.id),
+      MedDetailsIds: [...data],
     }));
   };
 
-  const receiveDataFromMedicalTest = (data) => {
+  const receiveDataFromPrecaution = (data) => {
     setFormData((prevData) => ({
       ...prevData,
-      MedTestIds: data.map((medicalTest) => medicalTest.id),
+      PrecautionIds: [...data],
     }));
   };
 
@@ -367,10 +387,7 @@ const PostNatal = () => {
       <Grid container item height={500} lg={12} component={Paper}>
         <DataGrid
           className="datagrid-style"
-          rows={data.map((data, index) => ({
-            ...data,
-            SrNo: index + 1,
-          }))}
+          rows={data.map((data, id) => ({ ...data, id: id + 1 }))}
           rowHeight={70}
           getRowId={(row) => row._id}
           columns={columns}
@@ -391,7 +408,6 @@ const PostNatal = () => {
         aria-labelledby="parent-dialog-title"
         aria-describedby="parent-dialog-description"
         fullScreen
-        // fullWidth
       >
         <DialogTitle>
           <b>Post Natal</b>
@@ -415,7 +431,7 @@ const PostNatal = () => {
             scrollbarWidth: "none",
           }}
         >
-          <Grid container spacing={2} pt={3}>
+          <Grid container spacing={2} pt={3} ml={5}>
             <Grid item xs={12} sm={4}>
               <InputTextField
                 size="small"
@@ -427,14 +443,16 @@ const PostNatal = () => {
                 onChange={handleInputChange}
               />
             </Grid>
+
             <Grid item xs={12} sm={4}>
               <InputTextField
                 size="small"
+                type="number"
                 fullWidth
-                id="Age"
-                label="Enter Age"
-                name="Age"
-                value={formData.Age}
+                id="Week"
+                label="Enter Week"
+                name="Week"
+                value={formData.Week}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -447,41 +465,8 @@ const PostNatal = () => {
                 label="Enter Description"
                 name="Description"
                 multiline
-                rows={3}
+                rows={2}
                 value={formData.Description}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <InputTextField
-                size="small"
-                fullWidth
-                id="Weight"
-                label="Enter Weight"
-                name="Weight"
-                value={formData.Weight}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <InputTextField
-                size="small"
-                fullWidth
-                id="Height"
-                label="Enter Height"
-                name="Height"
-                value={formData.Height}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <InputTextField
-                size="small"
-                fullWidth
-                id="Week"
-                label="Enter Week"
-                name="Week"
-                value={formData.Week}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -503,9 +488,9 @@ const PostNatal = () => {
             sendExerciseDataToParent={receiveDataFromExercise}
             exerciseData={formData.ExerciseIds}
           />
-          <PostNatalMedical
-            sendMedicalTestDataToParent={receiveDataFromMedicalTest}
-            medTestData={formData.MedTestIds}
+          <PostNatalPrecaution
+            sendPrecautionDataToParent={receiveDataFromPrecaution}
+            PrecautionData={formData.PrecautionIds}
           />
 
           <DialogActions>
@@ -514,13 +499,14 @@ const PostNatal = () => {
                 p: 1,
                 px: 4,
                 color: "white",
-                backgroundColor: "#8F00FF",
+                backgroundColor: `${validateForm() ? "#8F00FF" : "gray"}`,
+
                 boxShadow: 5,
                 position: "fixed",
                 bottom: 10,
                 right: 10,
                 "&:hover": {
-                  backgroundColor: "gray",
+                  backgroundColor: `${validateForm() ? "#8F00FF" : "gray"}`,
                 },
                 "& .MuiButton-label": {
                   display: "flex",
@@ -531,6 +517,7 @@ const PostNatal = () => {
                 },
               }}
               onClick={handleSave}
+              disabled={!validateForm()}
             >
               {SaveUpdateButton}
             </Button>

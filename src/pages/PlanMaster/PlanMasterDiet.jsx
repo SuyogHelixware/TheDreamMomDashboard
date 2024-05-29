@@ -143,6 +143,7 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
               justifyContent: "center",
               alignItems: "center",
               textAlign: "center",
+               
             }}
           >
             <b>Diet Table</b>

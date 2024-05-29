@@ -33,6 +33,7 @@ const PlanMaster = () => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
   const [formData, setFormData] = useState({
+    id: "",
     Name: "",
     Description: "",
     DietIds: [],
@@ -167,6 +168,8 @@ const PlanMaster = () => {
             timer: 1500,
           });
         }
+      } else {
+        setLoaderOpen(false);
       }
     }
   };
@@ -280,7 +283,14 @@ const PlanMaster = () => {
     },
     { field: "Height", headerName: "Height", width: 100 },
     { field: "Weight", headerName: "Weight", width: 100 },
-    { field: "Status", headerName: "Status", width: 100 },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 100,
+      sortable: false,
+      valueGetter: (params) =>
+        params.row.Status === 1 ? "Active" : "InActive",
+    },
   ];
 
   const receiveDataFromDiet = (data) => {
@@ -316,6 +326,17 @@ const PlanMaster = () => {
       ...prevData,
       MedTestIds: [...data],
     }));
+  };
+
+  const isSaveDisabled = () => {
+    return (
+      !formData.Name ||
+      !formData.Description ||
+      !formData.Age ||
+      !formData.Weight ||
+      !formData.Height ||
+      !formData.Week
+    );
   };
 
   return (
@@ -383,10 +404,7 @@ const PlanMaster = () => {
       <Grid container item height={500} lg={12} component={Paper}>
         <DataGrid
           className="datagrid-style"
-          rows={data.map((data, index) => ({
-            ...data,
-            SrNo: index + 1,
-          }))}
+          rows={data.map((data, id) => ({ ...data, id: id + 1 }))}
           rowHeight={70}
           getRowId={(row) => row._id}
           columns={columns}
@@ -444,8 +462,10 @@ const PlanMaster = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
+              
               <InputTextField
                 size="small"
+                type="number"                
                 fullWidth
                 id="Age"
                 label="Enter Age"
@@ -472,6 +492,7 @@ const PlanMaster = () => {
               <InputTextField
                 size="small"
                 fullWidth
+                type="number"
                 id="Weight"
                 label="Enter Weight"
                 name="Weight"
@@ -482,6 +503,7 @@ const PlanMaster = () => {
             <Grid item xs={12} sm={4}>
               <InputTextField
                 size="small"
+                type="number"
                 fullWidth
                 id="Height"
                 label="Enter Height"
@@ -493,6 +515,7 @@ const PlanMaster = () => {
             <Grid item xs={12} sm={4}>
               <InputTextField
                 size="small"
+                type="number"
                 fullWidth
                 id="Week"
                 label="Enter Week"
@@ -547,6 +570,7 @@ const PlanMaster = () => {
                 },
               }}
               onClick={handleSave}
+              disabled={isSaveDisabled()}
             >
               {SaveUpdateButton}
             </Button>

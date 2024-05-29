@@ -333,6 +333,7 @@ const ManageAvoidFood = () => {
                   p: 1,
                   width: 80,
                   color: "white",
+                  boxShadow:5,
                   background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
                  "&:hover": {
                     backgroundColor: "#8F00FF",
