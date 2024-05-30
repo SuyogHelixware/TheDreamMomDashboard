@@ -60,7 +60,7 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
       const updatedData = [...prevState];
       updatedData.splice(data.SrNo - 1, 1);
       sendDataToParent(updatedData);
-            return updatedData;
+      return updatedData;
     });
   };
 
@@ -85,9 +85,8 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
     },
     {
       field: "SrNo",
-      headerName: "SrNo",
+      headerName: "Sr.No",
       width: 100,
-
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
@@ -146,6 +145,7 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
           >
             <b>Diet Table</b>
           </Grid>
+           
         </Grid>
 
         <Grid container item height={380} lg={12} component={Paper}>
@@ -192,11 +192,11 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
 
         <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={dietData.map((data,index)=>({...data,id:index+1}))}
+            rows={dietData.map((data, index) => ({ ...data, id: index + 1 }))}
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "id", headerName: "ID", width: 200 },
+              { field: "id", headerName: "SR.NO", width: 200 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
               {

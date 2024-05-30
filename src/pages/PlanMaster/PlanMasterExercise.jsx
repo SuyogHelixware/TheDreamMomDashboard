@@ -197,12 +197,12 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
 
         <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={exerciseData}
+            rows={exerciseData.map((data,index)=>({...data,id:index+1}))}
             className="datagrid-style"
             rowHeight={80}
             getRowId={(row) => row._id}
             columns={[
-              { field: "id", headerName: "ID", width: 250 },
+              { field: "id", headerName: "SR.NO", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
               {

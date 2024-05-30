@@ -178,11 +178,11 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
 
         <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={medicalData}
+            rows={medicalData.map((data,index)=>({...data,id:index+1}))}
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "_id", headerName: "ID", width: 250 },
+              { field: "id", headerName: "SR.NO", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
             ]}

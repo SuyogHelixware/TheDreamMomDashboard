@@ -3,6 +3,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Button,
+  Card,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,7 +15,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../Constant";
 import InputTextField, { InputDescriptionField } from "../components/Component";
@@ -24,7 +25,6 @@ import PostNatalExercise from "./PostNatalExercise";
 import PostNatalMedication from "./PostNatalMedication";
 import PostNatalPrecaution from "./PostNatalPrecaution";
 import PostNatalVaccination from "./PostNatalVaccination";
-
 const PostNatal = () => {
   const [loaderOpen, setLoaderOpen] = useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = useState("UPDATE");
@@ -42,6 +42,20 @@ const PostNatal = () => {
     Status: 1,
   });
 
+  const clearFormData = () => {
+    setFormData({
+      Name: "",
+      Description: "",
+      DietIds: [],
+      ExerciseIds: [],
+      VaccinationIds: [],
+      PrecautionIds: [],
+      MedDetailsIds: [],
+      Week: "",
+      Status: 1,
+    });
+  };
+
   const getAllPostNatalData = () => {
     axios.get(`${BASE_URL}postnatal`).then((response) => {
       setData(response.data.values);
@@ -58,6 +72,7 @@ const PostNatal = () => {
   };
 
   const handleParentDialogClose = () => {
+    clearFormData();
     setOpen(false);
   };
 
@@ -168,6 +183,7 @@ const PostNatal = () => {
         setLoaderOpen(false);
       }
     }
+    clearFormData();
   };
 
   const handleInputChange = (e) => {
@@ -401,22 +417,32 @@ const PostNatal = () => {
           pageSizeOptions={[7]}
         />
       </Grid>
-
+      
       <Dialog
+        elevation={7}
+        component={Paper}
+        boxShadow={20}
         open={open}
         onClose={handleParentDialogClose}
         aria-labelledby="parent-dialog-title"
         aria-describedby="parent-dialog-description"
         fullScreen
       >
-        <DialogTitle>
+        <DialogTitle style={{ color: "white", backgroundColor: "#6f5eb7" }}>
           <b>Post Natal</b>
           <IconButton
             aria-label="close"
             onClick={handleParentDialogClose}
             sx={{ position: "absolute", top: 8, right: 8 }}
           >
-            <CloseIcon />
+            <CloseIcon
+              style={{
+                backgroundColor: "white",
+                borderRadius: 50,
+                height: 32,
+                width: 32,
+              }}
+            ></CloseIcon>
           </IconButton>
         </DialogTitle>
 
@@ -431,46 +457,57 @@ const PostNatal = () => {
             scrollbarWidth: "none",
           }}
         >
-          <Grid container spacing={2} pt={3} ml={5}>
-            <Grid item xs={12} sm={4}>
-              <InputTextField
-                size="small"
-                fullWidth
-                id="Name"
-                label="Enter Name"
-                name="Name"
-                value={formData.Name}
-                onChange={handleInputChange}
-              />
-            </Grid>
+          <Paper
+            elevation={3}
+            sx={{
+              width: "100%",
+              padding: 3,
+              marginTop: 3,
+              textAlign: "center",
+              display: "inline-block",
+            }}
+          >
+            <Grid container spacing={2} pt={3} ml={5}>
+              <Grid item xs={12} sm={4}>
+                <InputTextField
+                  size="small"
+                  fullWidth
+                  id="Name"
+                  label="Enter Name"
+                  name="Name"
+                  value={formData.Name}
+                  onChange={handleInputChange}
+                />
+              </Grid>
 
-            <Grid item xs={12} sm={4}>
-              <InputTextField
-                size="small"
-                type="number"
-                fullWidth
-                id="Week"
-                label="Enter Week"
-                name="Week"
-                value={formData.Week}
-                onChange={handleInputChange}
-              />
+              <Grid item xs={12} sm={4}>
+                <InputTextField
+                  size="small"
+                  type="number"
+                  fullWidth
+                  id="Week"
+                  label="Enter Week"
+                  name="Week"
+                  value={formData.Week}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InputDescriptionField
+                  size="small"
+                  required
+                  fullWidth
+                  id="Description"
+                  label="Enter Description"
+                  name="Description"
+                  multiline
+                  rows={2}
+                  value={formData.Description}
+                  onChange={handleInputChange}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <InputDescriptionField
-                size="small"
-                required
-                fullWidth
-                id="Description"
-                label="Enter Description"
-                name="Description"
-                multiline
-                rows={2}
-                value={formData.Description}
-                onChange={handleInputChange}
-              />
-            </Grid>
-          </Grid>
+          </Paper>
 
           <PostNatalDiet
             sendDataToParent={receiveDataFromDiet}
@@ -499,7 +536,7 @@ const PostNatal = () => {
                 p: 1,
                 px: 4,
                 color: "white",
-                backgroundColor: `${validateForm() ? "#8F00FF" : "gray"}`,
+                backgroundColor: `${validateForm() ? "#8F00FF" : "#6f5eb7"}`,
 
                 boxShadow: 5,
                 position: "fixed",

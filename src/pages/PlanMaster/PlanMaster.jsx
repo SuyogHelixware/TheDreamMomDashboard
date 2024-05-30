@@ -47,6 +47,25 @@ const PlanMaster = () => {
     Week: "",
     Status: 1,
   });
+   
+  const ClearForm=()=>{
+    setFormData({
+      id: "",
+      Name: "",
+      Description: "",
+      DietIds: [],
+      ExerciseIds: [],
+      VaccinationIds: [],
+      MedTestIds: [],
+      MedDetailsIds: [],
+      Age: "",
+      Weight: "",
+      Height: "",
+      Week: "",
+      Status: 1,
+    });
+    
+  }
 
   const getAllPlanMasterData = () => {
     axios.get(`${BASE_URL}planmaster/`).then((response) => {
@@ -64,6 +83,7 @@ const PlanMaster = () => {
   };
 
   const handleParentDialogClose = () => {
+    ClearForm();
     setOpen(false);
   };
 
@@ -172,6 +192,7 @@ const PlanMaster = () => {
         setLoaderOpen(false);
       }
     }
+    ClearForm();
   };
 
   const handleInputChange = (e) => {
@@ -427,19 +448,26 @@ const PlanMaster = () => {
         fullScreen
         // fullWidth
       >
-        <DialogTitle>
+         <DialogTitle style={{ color: "white", backgroundColor: "#6f5eb7" }}>
           <b>Plan Master</b>
           <IconButton
             aria-label="close"
             onClick={handleParentDialogClose}
             sx={{ position: "absolute", top: 8, right: 8 }}
           >
-            <CloseIcon />
+           <CloseIcon
+              style={{
+                backgroundColor: "white",
+                borderRadius: 50,
+                height: 32,
+                width: 32,
+              }}
+            ></CloseIcon>
           </IconButton>
         </DialogTitle>
 
         <DialogContent
-          sx={{
+          sx={{            
             background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
             overflowY: { xs: "scroll", md: "auto" },
             "&::-webkit-scrollbar": {
@@ -449,6 +477,8 @@ const PlanMaster = () => {
             scrollbarWidth: "none",
           }}
         >
+           <Paper elevation={3} sx={{ width:"100%",  padding: 3,marginTop: 3,  textAlign: 'center',      
+      display: 'inline-block'}} >
           <Grid container spacing={2} pt={3}>
             <Grid item xs={12} sm={4}>
               <InputTextField
@@ -524,7 +554,7 @@ const PlanMaster = () => {
                 onChange={handleInputChange}
               />
             </Grid>
-          </Grid>
+          </Grid></Paper>
 
           <PlanMasterDiet
             sendDataToParent={receiveDataFromDiet}

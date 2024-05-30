@@ -192,11 +192,11 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
 
         <DialogContent sx={{height:400}}>
           <DataGrid
-            rows={vaccinationData}
+            rows={vaccinationData.map((data,index)=>({...data,id:index+1}))}
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "id", headerName: "ID", width: 250 },
+              { field: "id", headerName: "SR.NO", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
               {
