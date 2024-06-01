@@ -58,7 +58,7 @@ export default function ManageUsers() {
       reader.readAsDataURL(file);
       setUploadedImg(file);
     }
-    
+
     // const file = event.target.files[0];
     // if (file && file.type.startsWith("image/")) {
     //   setUploadedImg(file);
@@ -138,13 +138,10 @@ export default function ManageUsers() {
   };
 
   const handleClick = (row) => {
-    console.log("====================================");
-    console.log(row);
-    console.log("====================================");
     setSaveUpdateButton("UPDATE");
     setOn(true);
     setData(row);
-    setImage(`${Bunny_Image_URL}/Users/${row.Firstname}/${row.Avatar}`);
+    setImage(`${Bunny_Image_URL}/Users/${row._id}/${row.Avatar}`);
   };
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -239,67 +236,6 @@ export default function ManageUsers() {
 
     setLoaderOpen(true);
 
-    // const axiosRequest =
-    //   SaveUpdateButton === "SAVE"
-    //     ? axios.post(`${BASE_URL}Users`, data)
-    //     : Swal.fire({
-    //         text: "Do you want to Update...?",
-    //         icon: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonColor: "#3085d6",
-    //         cancelButtonColor: "#d33",
-    //         confirmButtonText: "Yes, Update it!",
-    //       }).then((result) => {
-    //         if (result.isConfirmed) {
-    //           return axios.patch(`${BASE_URL}Users/${id}`, data);
-    //         } else {
-    //           throw new Error("Update cancelled");
-    //         }
-    //       });
-
-    // axiosRequest
-    //   .then((response) => {
-    //     setLoaderOpen(false);
-    //     if (response.data.status) {
-    //       Swal.fire({
-    //         position: "center",
-    //         icon: "success",
-    //         toast: true,
-    //         title:
-    //           SaveUpdateButton === "SAVE"
-    //             ? "User Added Successfully"
-    //             : "User Updated Successfully",
-    //         showConfirmButton: false,
-    //         timer: 1500,
-    //       });
-    //       getUserData();
-    //       handleClose();
-    //     } else {
-    //       setLoaderOpen(false);
-    //       Swal.fire({
-    //         position: "center",
-    //         icon: "error",
-    //         toast: true,
-    //         title: "Failed",
-    //         text: response.data.message,
-    //         showConfirmButton: true,
-    //       });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setLoaderOpen(false);
-    //     if (error.message !== "Update cancelled") {
-    //       Swal.fire({
-    //         position: "center",
-    //         icon: "error",
-    //         toast: true,
-    //         title: "Failed",
-    //         text: error.message,
-    //         showConfirmButton: true,
-    //       });
-    //     }
-    //   });
-
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
       Firstname: data.Firstname,
@@ -339,26 +275,29 @@ export default function ManageUsers() {
         return;
       }
       try {
-        const res = await axios.request({
-          method: "PUT",
-          maxBodyLength: Infinity,
-          url: `${Bunny_Storage_URL}/Users/${data.Firstname}/${filename}`,
-          headers: {
-            "Content-Type": "image/jpeg",
-            AccessKey: Bunny_Storage_Access_Key,
-          },
-          data: uploadedImg,
-        });
+        // First, send the request to add the user
+        const response = await axios.post(`${BASE_URL}Users`, saveObj);
 
-        if (res.data.HttpCode === 201) {
-          const response = await axios.post(`${BASE_URL}Users`, saveObj);
-          if (response.data.status) {
+        if (response.data.status) {
+          // If the user is added successfully, upload the image
+          const res = await axios.request({
+            method: "PUT",
+            maxBodyLength: Infinity,
+            url: `${Bunny_Storage_URL}/Users/${response.data.values._id}/${filename}`,
+            headers: {
+              "Content-Type": "image/jpeg",
+              AccessKey: Bunny_Storage_Access_Key,
+            },
+            data: uploadedImg,
+          });
+
+          if (res.data.HttpCode === 201) {
             setLoaderOpen(false);
             Swal.fire({
               position: "center",
               icon: "success",
               toast: true,
-              title: "User Added Successfully",
+              title: "User Added and Image Uploaded Successfully",
               showConfirmButton: false,
               timer: 1500,
             });
@@ -367,11 +306,11 @@ export default function ManageUsers() {
             setUploadedImg("");
           } else {
             setLoaderOpen(false);
-            throw new Error("Failed to Add User");
+            throw new Error("User Added but Failed to Upload Image");
           }
         } else {
           setLoaderOpen(false);
-          throw new Error("Failed to Upload Image");
+          throw new Error("Failed to Add User");
         }
       } catch (error) {
         setLoaderOpen(false);
@@ -405,7 +344,7 @@ export default function ManageUsers() {
             const res = await axios.request({
               method: "PUT",
               maxBodyLength: Infinity,
-              url: `${Bunny_Storage_URL}/Users/${data.Firstname}/${filename}`,
+              url: `${Bunny_Storage_URL}/Users/${data._id}/${filename}`,
               headers: {
                 "Content-Type": "image/jpeg",
                 AccessKey: Bunny_Storage_Access_Key,
@@ -417,7 +356,7 @@ export default function ManageUsers() {
                 await axios.request({
                   method: "DELETE",
                   maxBodyLength: Infinity,
-                  url: `${Bunny_Storage_URL}/Users/${data.Firstname}/${data.Avatar}`,
+                  url: `${Bunny_Storage_URL}/Users/${data._id}/${data.Avatar}`,
                   headers: {
                     AccessKey: Bunny_Storage_Access_Key,
                   },
@@ -454,6 +393,21 @@ export default function ManageUsers() {
             setUploadedImg("");
           }
         } catch (error) {
+          if (error.response.data.HttpCode === 404) {
+            setLoaderOpen(false);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Data Updated Successfully",
+              toast: true,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            handleClose();
+            getUserData();
+            setUploadedImg("");
+            return;
+          }
           setLoaderOpen(false);
           Swal.fire({
             icon: "error",
@@ -573,7 +527,7 @@ export default function ManageUsers() {
       renderCell: (params) => (
         <img
           // src={`${Bunny_Image_URL}/Users/${params.row.Avatar}`}
-          src={`${Bunny_Image_URL}/Users/${params.row.Firstname}/${params.row.Avatar}`}
+          src={`${Bunny_Image_URL}/Users/${params.row._id}/${params.row.Avatar}`}
           alt=""
           height={50}
           width={80}
@@ -688,7 +642,6 @@ export default function ManageUsers() {
                 label="Password"
                 id="Password"
                 onChange={onchangeHandler}
-                // type="password"
                 value={data.Password}
                 name="Password"
                 type={showPassword ? "text" : "password"}
@@ -789,9 +742,9 @@ export default function ManageUsers() {
                   marginTop: 1,
                   p: 1,
                   width: 80,
-                  boxShadow:5,
+                  boxShadow: 5,
                   color: "white",
-                  backgroundColor:"#463C8A",
+                  backgroundColor: "#463C8A",
                   mr: 1,
                   "&:hover": {
                     backgroundColor: "#4f52b2",
@@ -805,14 +758,14 @@ export default function ManageUsers() {
                 type="submit"
                 size="small"
                 onClick={() => updateUser(data._id)}
-                sx={{     
+                sx={{
                   marginTop: 1,
                   p: 1,
                   width: 80,
                   color: "white",
-                  boxShadow:5,
+                  boxShadow: 5,
                   background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
-                 "&:hover": {
+                  "&:hover": {
                     backgroundColor: "#8F00FF",
                   },
                 }}
@@ -891,7 +844,7 @@ export default function ManageUsers() {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 400, width: "100%" }}>
+        <Box sx={{ height: "80vh", width: "100%" }}>
           <DataGrid
             className="datagrid-style"
             rowHeight={70}
@@ -901,11 +854,12 @@ export default function ManageUsers() {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 10,
                 },
               },
             }}
             pageSizeOptions={[5]}
+            // hideFooter
           />
         </Box>
       </Paper>

@@ -47,7 +47,7 @@ const styles = {
 const Vaccination = () => {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [imgData, setImgData] = React.useState([]);
+  const [vaccinationData, setVaccinationData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
@@ -195,7 +195,7 @@ const Vaccination = () => {
               timer: 1500,
             });
             handleClose();
-            getAllImgList();
+            getAllVaccination();
             setUploadedImg("");
           } else {
             setLoaderOpen(false);
@@ -265,7 +265,7 @@ const Vaccination = () => {
                 timer: 1500,
               });
               handleClose();
-              getAllImgList();
+              getAllVaccination();
               setUploadedImg("");
             } else {
               setLoaderOpen(false);
@@ -284,7 +284,7 @@ const Vaccination = () => {
               timer: 1500,
             });
             handleClose();
-            getAllImgList();
+            getAllVaccination();
             setUploadedImg("");
           }
         } catch (error) {
@@ -303,9 +303,9 @@ const Vaccination = () => {
     }
   };
 
-  const getAllImgList = () => {
+  const getAllVaccination = () => {
     axios.get(`${BASE_URL}vaccination/`).then((response) => {
-      setImgData(response.data.values.flat());
+      setVaccinationData(response.data.values.flat());
     });
   };
 
@@ -349,7 +349,7 @@ const Vaccination = () => {
                       showConfirmButton: false,
                       timer: 1500,
                     });
-                    getAllImgList();
+                    getAllVaccination();
                   } else {
                     Swal.fire({
                       position: "center",
@@ -414,7 +414,7 @@ const Vaccination = () => {
   };
 
   React.useEffect(() => {
-    getAllImgList();
+    getAllVaccination();
   }, []);
 
   React.useEffect(() => {
@@ -679,8 +679,8 @@ const Vaccination = () => {
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {Array.isArray(imgData) &&
-          imgData.slice(startIndex, endIndex).map((item, index) => (
+        {Array.isArray(vaccinationData) &&
+          vaccinationData.slice(startIndex, endIndex).map((item, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
               <Card sx={{ width: "100%" }}>
                 <img
@@ -748,7 +748,7 @@ const Vaccination = () => {
           style={{ display: "flex", justifyContent: "center" }}
         >
           <Pagination
-            count={Math.ceil(imgData.length / 8)}
+            count={Math.ceil(vaccinationData.length / 8)}
             color="secondary"
             page={page}
             onChange={handlePageChange}

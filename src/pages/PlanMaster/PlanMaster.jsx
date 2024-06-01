@@ -104,7 +104,6 @@ const PlanMaster = () => {
         ? formData.MedDetailsIds.map((medDet) => medDet._id)
         : [],
     };
-    console.log(formattedData);
 
     setLoaderOpen(true);
 
@@ -204,7 +203,6 @@ const PlanMaster = () => {
   };
 
   const handleClick = (row) => {
-    console.log(row);
     setSaveUpdateButton("UPDATE");
     setOpen(true);
     setFormData({
