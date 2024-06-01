@@ -23,7 +23,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import newsicon from "../../src/assets/news.jpg";
+import pdf from "../../src/assets/pdf.png";
 
 import * as React from "react";
 import { Document, Page } from "react-pdf";
@@ -52,7 +52,6 @@ const ManageBlog = () => {
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [page, setPage] = React.useState(1);
   const [selectedTags, setSelectedTags] = React.useState([]);
   const [tags, setTags] = React.useState([]);
   const [imgData, setImgData] = React.useState([]);
@@ -64,6 +63,9 @@ const ManageBlog = () => {
     Id: "",
     Category: "",
   });
+
+  const [blogPage, setBlogPage] = React.useState(1);
+  const [newsPage, setNewsPage] = React.useState(1);
 
   const clearFormData = () => {
     setData({
@@ -450,12 +452,19 @@ const ManageBlog = () => {
     getAllImgList();
   }, []);
 
-  const handlePageChange = (event, value) => {
-    setPage(value);
+  const handleBlogPageChange = (event, value) => {
+    setBlogPage(value);
   };
 
-  const startIndex = (page - 1) * cardsPerPage;
+  const handleNewsPageChange = (event, value) => {
+    setNewsPage(value);
+  };
+
+  const startIndex = (blogPage - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
+
+  const startIndexPage = (newsPage - 1) * cardsPerPage;
+  const endIndexPage = startIndexPage + cardsPerPage;
 
   React.useEffect(() => {
     getTagData();
@@ -586,12 +595,11 @@ const ManageBlog = () => {
                 variant="contained"
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon style={{ color: "white" }} />}
-                required             
-                              
+                required
                 sx={{
-                  backgroundColor: "#B636FF",
-                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
-                  // backgroundColor: "#8F00FF",
+                  // backgroundColor: "#B636FF",
+                  // background: "linear-gradient(to right, #8F00FF  , #B636FF)",
+                  backgroundColor: "#8F00FF",
                   py: 1.5,
                   "&:hover": {
                     backgroundColor: "#3B444B",
@@ -783,10 +791,10 @@ const ManageBlog = () => {
       <Grid container spacing={3} width="100%" pt={5} pb={5}>
         <Grid item xs={12} style={{ display: "flex", justifyContent: "end" }}>
           <Pagination
-            count={Math.ceil(imgData.length /8)}
+            count={Math.ceil(imgData.length / 8)}
             color="secondary"
-            page={page}
-            onChange={handlePageChange}
+            page={blogPage}
+            onChange={handleBlogPageChange}
           />
         </Grid>
       </Grid>
@@ -804,7 +812,7 @@ const ManageBlog = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          mb: 2,
+          mb: 4,
         }}
         elevation="4"
       >
@@ -825,20 +833,22 @@ const ManageBlog = () => {
         {Array.isArray(imgData) &&
           imgData
             .filter((data) => data.Category === "N")
+            .slice(startIndexPage, endIndexPage)
             .map((item, index) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                 <Card sx={{ width: "100%" }}>
                   <img
-                    src={newsicon}
+                    src={pdf}
                     alt="NewsIcon"
                     onClick={() => {
                       onopen(item.Link);
                     }}
                     style={{
-                      maxWidth: "90%",
-                      maxHeight: "90%",
-                      objectFit: "contain",
-                      paddingTop: 10,
+                      width: "40%",
+                      height: "100%",
+                      objectFit: "fill",
+                      aspectRatio: 5 / 6,
+                      paddingTop: 20,
                     }}
                   />
 
@@ -855,6 +865,7 @@ const ManageBlog = () => {
                     <Typography
                       textAlign={"start"}
                       variant="body2"
+                      style={styles.typography}
                       color="textSecondary"
                       component="div"
                     >
@@ -868,7 +879,12 @@ const ManageBlog = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <IconButton color="primary" onClick={()=>{handleUpdate(item)}}>
+                    <IconButton
+                      color="primary"
+                      onClick={() => {
+                        handleUpdate(item);
+                      }}
+                    >
                       <EditNoteIcon />
                     </IconButton>
                     <Button
@@ -907,10 +923,13 @@ const ManageBlog = () => {
       <Grid container spacing={3} width="100%" pt={5}>
         <Grid item xs={12} style={{ display: "flex", justifyContent: "end" }}>
           <Pagination
-            count={Math.ceil(imgData.filter((data)=>data.Category==="N").length/8)}
+            count={Math.ceil(
+              imgData.filter((data) => data.Category === "N").length /
+                cardsPerPage
+            )}
             color="secondary"
-            page={page}
-            onChange={handlePageChange}
+            page={newsPage}
+            onChange={handleNewsPageChange}
           />
         </Grid>
       </Grid>

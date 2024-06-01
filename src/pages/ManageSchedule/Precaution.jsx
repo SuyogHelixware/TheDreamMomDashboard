@@ -554,7 +554,7 @@ const Precaution = () => {
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon style={{color:"white"}} />}
                 sx={{
-                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
+                  // background: "linear-gradient(to right, #8F00FF  , #B636FF)",
                   backgroundColor: "#8F00FF",
                   py: 1.5,
                   "&:hover": {

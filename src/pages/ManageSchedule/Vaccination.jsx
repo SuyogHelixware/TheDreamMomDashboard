@@ -556,7 +556,7 @@ const Vaccination = () => {
                 startIcon={<CloudUploadIcon />}
                 sx={{
                   backgroundColor: "#8F00FF",
-                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
+                  // background: "linear-gradient(to right, #8F00FF  , #B636FF)",
                   py: 1.5,
                   "&:hover": {
                     backgroundColor: "#3B444B",
