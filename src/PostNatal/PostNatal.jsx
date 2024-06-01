@@ -3,7 +3,6 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   Button,
-  Card,
   Dialog,
   DialogActions,
   DialogContent,
@@ -532,10 +531,11 @@ const PostNatal = () => {
 
           <DialogActions>
             <Button
+             style={{color:"white"}}
               sx={{
                 p: 1,
                 px: 4,
-                color: "white",
+                // color: "red",
                 backgroundColor: `${validateForm() ? "#8F00FF" : "#6f5eb7"}`,
 
                 boxShadow: 5,

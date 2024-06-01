@@ -24,6 +24,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import newsicon from "../../src/assets/news.jpg";
+
 import * as React from "react";
 import { Document, Page } from "react-pdf";
 import Swal from "sweetalert2";
@@ -133,6 +134,7 @@ const ManageBlog = () => {
   };
 
   const handleClose = () => {
+    setOpen(false);
     setOn(false);
   };
 
