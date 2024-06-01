@@ -23,13 +23,7 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
 
   useEffect(() => {
     axios.get(`${BASE_URL}vaccination/`).then((response) => {
-      const updatedVaccinationData = response.data.values.flat().map((item) => ({
-        id: item._id,
-        Name: item.Name,
-        Description: item.Description,
-        Image: item.Image,
-      }));
-      setVaccinationData(updatedVaccinationData);
+      setVaccinationData(response.data.values);
       setChildData(props.vaccinationData)
     });
   }, [props.vaccinationData]);
@@ -44,10 +38,10 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
 
   const handleVaccinationRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = vaccinationData.filter((row) => selectedIDs.has(row.id));
+    const selectedRows = vaccinationData.filter((row) => selectedIDs.has(row._id));
     setSelectedVaccinationRows(
       selectedRows.map((item) => ({
-        _id: item.id,
+        _id: item._id,
         Name: item.Name,
         Description: item.Description,
         Image: item.Image,
@@ -87,7 +81,7 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
     },
     {
       field: "SrNo",
-      headerName: "SrNo",
+      headerName: "Sr.No",
       width: 100,
     },
     { field: "Name", headerName: "Name", width: 250 },
@@ -218,7 +212,7 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
             isRowSelectable={(params) => {
               return childData === undefined
                 ? true
-                : !childData.map((obj) => obj._id).includes(params.row.id);
+                : !childData.map((obj) => obj._id).includes(params.row._id);
             }}
             onRowSelectionModelChange={(ids) => handleVaccinationRowClick(ids)}
             disableRowSelectionOnClick
@@ -229,6 +223,7 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
                 },
               },
             }}
+            getRowId={(row)=>row._id}
             pageSizeOptions={[5]}
           />
         </DialogContent>

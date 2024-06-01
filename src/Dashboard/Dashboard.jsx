@@ -815,7 +815,7 @@ export default function Dashboard() {
                   <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
                     <NoteAltIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Manage Assestment" />
+                  <ListItemText primary="Manage Assesment" />
                 </ListItemButton>
               </Link>
 
