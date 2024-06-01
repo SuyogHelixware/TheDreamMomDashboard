@@ -556,10 +556,12 @@ const ManageAdvertise = () => {
                 disabled={isSubmitDisabled()}
                 variant="contained"
                 tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
+                startIcon={<CloudUploadIcon style={{ color: "white" }} />}
                 required
                 sx={{
-                  backgroundColor: "#8F00FF",
+                  backgroundColor: "#B636FF",
+                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
+
                   py: 1.5,
                   "&:hover": {
                     backgroundColor: "#3B444B",
@@ -589,11 +591,12 @@ const ManageAdvertise = () => {
                   marginTop: 1,
                   p: 1,
                   width: 80,
+                  boxShadow: 5,
                   color: "white",
-                  backgroundColor: "#3B444B",
+                  backgroundColor: "#463C8A",
                   mr: 1,
                   "&:hover": {
-                    backgroundColor: "#3B444B",
+                    backgroundColor: "#4f52b2",
                   },
                 }}
               >
@@ -609,9 +612,10 @@ const ManageAdvertise = () => {
                   p: 1,
                   width: 80,
                   color: "white",
-                  background: "linear-gradient(to right, #EE696B, #523A78)",
+                  boxShadow: 5,
+                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
                   "&:hover": {
-                    backgroundColor: "#673AB7",
+                    backgroundColor: "#8F00FF",
                   },
                 }}
               >

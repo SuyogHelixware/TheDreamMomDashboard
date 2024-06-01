@@ -15,7 +15,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
-const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
+const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [vaccinationData, setVaccinationData] = useState([]);
@@ -192,11 +192,11 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
 
         <DialogContent sx={{height:400}}>
           <DataGrid
-            rows={vaccinationData}
+            rows={vaccinationData.map((data,index)=>({...data,id:index+1}))}
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "id", headerName: "ID", width: 250 },
+              { field: "id", headerName: "SR.NO", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
               {
@@ -261,4 +261,4 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
   );
 };
 
-export default PostNatalVaccination;
+export default PlanMasterVaccination;

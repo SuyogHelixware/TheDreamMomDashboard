@@ -3,6 +3,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
+  Box,
   Card,
   Chip,
   FormControl,
@@ -22,7 +23,10 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
+import newsicon from "../../src/assets/news.jpg";
+
 import * as React from "react";
+import { Document, Page } from "react-pdf";
 import Swal from "sweetalert2";
 import {
   BASE_URL,
@@ -52,7 +56,7 @@ const ManageBlog = () => {
   const [selectedTags, setSelectedTags] = React.useState([]);
   const [tags, setTags] = React.useState([]);
   const [imgData, setImgData] = React.useState([]);
-  const cardsPerPage = 8;
+  const cardsPerPage = 4;
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
@@ -75,15 +79,20 @@ const ManageBlog = () => {
     setUploadedImg("");
   };
 
+  const [open, setOpen] = React.useState(false);
+  // const handleOpen = () => setOpen(true);
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    if (file && file.type.startsWith("image/")) {
+    if (
+      file &&
+      (file.type.startsWith("image/") || file.type === "application/pdf")
+    ) {
       setUploadedImg(file);
     } else {
       Swal.fire({
         icon: "error",
         title: "Invalid File",
-        text: "Please upload a valid image file",
+        text: "Please upload a valid image or PDF file",
         toast: true,
         showConfirmButton: true,
       });
@@ -91,6 +100,9 @@ const ManageBlog = () => {
     }
   };
 
+  const onopen = (pdf) => {
+    window.open(`${Bunny_Image_URL}/Blogs/${pdf}`, "_blank");
+  };
   const isSubmitDisabled = () => {
     if (
       data.Name &&
@@ -122,6 +134,7 @@ const ManageBlog = () => {
   };
 
   const handleClose = () => {
+    setOpen(false);
     setOn(false);
   };
 
@@ -572,10 +585,13 @@ const ManageBlog = () => {
                 disabled={isSubmitDisabled()}
                 variant="contained"
                 tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-                required
+                startIcon={<CloudUploadIcon style={{ color: "white" }} />}
+                required             
+                              
                 sx={{
-                  backgroundColor: "#8F00FF",
+                  backgroundColor: "#B636FF",
+                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
+                  // backgroundColor: "#8F00FF",
                   py: 1.5,
                   "&:hover": {
                     backgroundColor: "#3B444B",
@@ -605,11 +621,12 @@ const ManageBlog = () => {
                   marginTop: 1,
                   p: 1,
                   width: 80,
+                  boxShadow: 5,
                   color: "white",
-                  backgroundColor: "#3B444B",
+                  backgroundColor: "#463C8A",
                   mr: 1,
                   "&:hover": {
-                    backgroundColor: "#3B444B",
+                    backgroundColor: "#4f52b2",
                   },
                 }}
               >
@@ -625,9 +642,10 @@ const ManageBlog = () => {
                   p: 1,
                   width: 80,
                   color: "white",
-                  background: "linear-gradient(to right, #EE696B, #523A78)",
+                  boxShadow: 5,
+                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
                   "&:hover": {
-                    backgroundColor: "#673AB7",
+                    backgroundColor: "#8F00FF",
                   },
                 }}
               >
@@ -664,7 +682,7 @@ const ManageBlog = () => {
           padding={1}
           noWrap
         >
-          Manage Blog and News
+          Manage Blogs
         </Typography>
       </Grid>
 
@@ -698,75 +716,198 @@ const ManageBlog = () => {
 
       <Grid container spacing={3} justifyContent="start">
         {Array.isArray(imgData) &&
-          imgData.slice(startIndex, endIndex).map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card sx={{ width: "100%" }}>
-                <img
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "fill",
-                    aspectRatio: 5 / 3,
-                  }}
-                  src={`${Bunny_Image_URL}/Blogs/${item.Link}`}
-                  alt="img"
-                  title={item.Name}
-                />
-                <CardContent>
-                  <Typography
-                    noWrap
-                    height={25}
-                    gutterBottom
-                    component="div"
-                    textAlign={"start"}
+          imgData
+            .filter((data) => data.Category === "B")
+            .slice(startIndex, endIndex)
+            .map((item, index) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                <Card sx={{ width: "100%" }}>
+                  <img
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "fill",
+                      aspectRatio: 5 / 3,
+                    }}
+                    src={`${Bunny_Image_URL}/Blogs/${item.Link}`}
+                    alt="img"
+                    title={item.Name}
+                  />
+                  <CardContent>
+                    <Typography
+                      noWrap
+                      height={25}
+                      gutterBottom
+                      component="div"
+                      textAlign={"start"}
+                    >
+                      <b>{item.Name}</b>
+                    </Typography>
+                    <Typography
+                      textAlign={"start"}
+                      variant="body2"
+                      style={styles.typography}
+                      color="textSecondary"
+                      component="div"
+                    >
+                      {item.Description}
+                    </Typography>
+                  </CardContent>
+                  <CardActions
+                    sx={{
+                      pt: "0",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
                   >
-                    <b>{item.Name}</b>
-                  </Typography>
-                  <Typography
-                    textAlign={"start"}
-                    variant="body2"
-                    style={styles.typography}
-                    color="textSecondary"
-                    component="div"
-                  >
-                    {item.Description}
-                  </Typography>
-                </CardContent>
-                <CardActions
-                  sx={{
-                    pt: "0",
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleUpdate(item)}
-                  >
-                    <EditNoteIcon />
-                  </IconButton>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleUpdate(item)}
+                    >
+                      <EditNoteIcon />
+                    </IconButton>
 
-                  <Button
-                    size="medium"
-                    sx={{ color: "red" }}
-                    onClick={() => handleDelete(item)}
+                    <Button
+                      size="medium"
+                      sx={{ color: "red" }}
+                      onClick={() => handleDelete(item)}
+                    >
+                      <DeleteForeverIcon />
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+      </Grid>
+
+      <Grid container spacing={3} width="100%" pt={5} pb={5}>
+        <Grid item xs={12} style={{ display: "flex", justifyContent: "end" }}>
+          <Pagination
+            count={Math.ceil(imgData.length /8)}
+            color="secondary"
+            page={page}
+            onChange={handlePageChange}
+          />
+        </Grid>
+      </Grid>
+
+      {/* ----------------------------News Letters------------------------------ */}
+      <Grid
+        container
+        md={12}
+        component={Paper}
+        textAlign={"center"}
+        sx={{
+          width: "100%",
+          px: 5,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+        elevation="4"
+      >
+        <Typography
+          width={"100%"}
+          textAlign="center"
+          textTransform="uppercase"
+          fontWeight="bold"
+          color={"#673AB7"}
+          padding={1}
+          noWrap
+        >
+          Manage NewsLetters
+        </Typography>
+      </Grid>
+
+      <Grid container spacing={3} justifyContent="start">
+        {Array.isArray(imgData) &&
+          imgData
+            .filter((data) => data.Category === "N")
+            .map((item, index) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                <Card sx={{ width: "100%" }}>
+                  <img
+                    src={newsicon}
+                    alt="NewsIcon"
+                    onClick={() => {
+                      onopen(item.Link);
+                    }}
+                    style={{
+                      maxWidth: "90%",
+                      maxHeight: "90%",
+                      objectFit: "contain",
+                      paddingTop: 10,
+                    }}
+                  />
+
+                  <CardContent>
+                    <Typography
+                      noWrap
+                      height={25}
+                      gutterBottom
+                      component="div"
+                      textAlign={"start"}
+                    >
+                      <b>{item.Name}</b>
+                    </Typography>
+                    <Typography
+                      textAlign={"start"}
+                      variant="body2"
+                      color="textSecondary"
+                      component="div"
+                    >
+                      {item.Description}
+                    </Typography>
+                  </CardContent>
+                  <CardActions
+                    sx={{
+                      pt: "0",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
                   >
-                    <DeleteForeverIcon />
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
+                    <IconButton color="primary" onClick={()=>{handleUpdate(item)}}>
+                      <EditNoteIcon />
+                    </IconButton>
+                    <Button
+                      size="medium"
+                      sx={{ color: "red" }}
+                      onClick={() => handleDelete(item)}
+                    >
+                      <DeleteForeverIcon />
+                    </Button>
+                  </CardActions>
+
+                  <Modal open={open} onClose={handleClose}>
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: 400,
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 4,
+                      }}
+                    >
+                      <Document file={`${Bunny_Image_URL}/Blogs/${item.Link}`}>
+                        <Page pageNumber={1} />
+                      </Document>
+                      <Button onClick={handleClose}>Close</Button>
+                    </Box>
+                  </Modal>
+                </Card>
+              </Grid>
+            ))}
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
-        <Grid
-          item
-          xs={12}
-          style={{ display: "flex", justifyContent: "center" }}
-        >
+        <Grid item xs={12} style={{ display: "flex", justifyContent: "end" }}>
           <Pagination
-            count={Math.ceil(imgData.length / 8)}
+            count={Math.ceil(imgData.filter((data)=>data.Category==="N").length/8)}
             color="secondary"
             page={page}
             onChange={handlePageChange}

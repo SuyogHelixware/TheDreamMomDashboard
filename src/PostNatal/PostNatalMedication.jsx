@@ -15,22 +15,28 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../Constant";
 
-const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
+const PostNatalMedication = ({ sendMedicationDataToParent, ...props }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [MedicationData, setMedicationData] = useState([]);
   const [selectedMedicationRows, setSelectedMedicationRows] = useState([]);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}medications/`).then((response) => {
-      const updatedMedicationData = response.data.values.flat().map((item) => ({
-        _id: item._id,
-        Name: item.Name,
-        Description: item.Description,
-      }));
+    axios.get(`${BASE_URL}medicationdet/`).then((response) => {
+      const updatedMedicationData = response.data.values
+        .flat()
+        .map((item, index) => ({
+          _id: item._id,
+          id: index + 1,
+          Name: item.MedId.Name,
+          Description: item.MedId.Description,
+          DosageName: item.DosageId.Name,
+          DosageDescription: item.DosageId.Description,
+        }));
       setMedicationData(updatedMedicationData);
+      setChildData(props.medicationData);
     });
-  }, []);
+  }, [props.medicationData]);
 
   const handleChildDialogOpen = () => {
     setChildDialogOpen(true);
@@ -50,23 +56,27 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
         _id: item._id,
         Name: item.Name,
         Description: item.Description,
-        Image: item.Image,
+        DosageName: item.DosageName,
+        DosageDescription: item.DosageDescription,
       }))
     );
   };
 
   const handleDelete = (data) => {
     setChildData((prevState) => {
-      const deleteRow = [...prevState];
-      deleteRow.splice(data.SrNo - 1, 1);
-      return deleteRow;
+      const updatedData = [...prevState];
+      updatedData.splice(data.SrNo - 1, 1);
+
+      sendMedicationDataToParent(updatedData);
+
+      return updatedData;
     });
   };
 
   const handleSaveMedicationSelection = () => {
-    setChildData((prev) => [...prev, ...selectedMedicationRows]);
+    setChildData((prev) => [...childData, ...selectedMedicationRows]);
     setChildDialogOpen(false);
-    sendMedicationDataToParent(selectedMedicationRows);
+    sendMedicationDataToParent([...childData, ...selectedMedicationRows]);
   };
 
   const columns = [
@@ -89,6 +99,8 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
+    { field: "DosageName", headerName: "DosageName", width: 250 },
+    { field: "DosageDescription", headerName: "DosageDescription", width: 400 },
   ];
 
   return (
@@ -137,12 +149,10 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
           <DataGrid
             className="datagrid-style"
             rows={
-              (childData.length === 0 ? props.medicationData : childData).map(
-                (data, index) => ({
-                  ...data,
-                  SrNo: index + 1,
-                })
-              ) || []
+              childData.map((data, index) => ({
+                ...data,
+                SrNo: index + 1,
+              })) || []
             }
             rowHeight={70}
             getRowId={(row) => row._id}
@@ -178,13 +188,20 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
 
         <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={MedicationData}
+            rows={MedicationData.map((data,index)=>({...data,id:index+1}))}
+         
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "id", headerName: "ID", width: 250 },
+              { field: "id", headerName: "SR.NO", width: 200 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
+              { field: "DosageName", headerName: "DosageName", width: 250 },
+              {
+                field: "DosageDescription",
+                headerName: "DosageDescription",
+                width: 300,
+              },
             ]}
             checkboxSelection
             isRowSelectable={(params) => {
@@ -235,4 +252,4 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
   );
 };
 
-export default PlanMasterMedication;
+export default PostNatalMedication;

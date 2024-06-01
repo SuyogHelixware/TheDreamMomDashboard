@@ -547,8 +547,10 @@ const Exercise = () => {
                 disabled={isSubmitDisabled()}
                 variant="contained"
                 tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
+                startIcon={<CloudUploadIcon  style={{color:"white"}}/>}
                 sx={{
+                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
+                  
                   backgroundColor: "#8F00FF",
                   py: 1.5,
                   "&:hover": {
@@ -579,11 +581,12 @@ const Exercise = () => {
                   marginTop: 1,
                   p: 1,
                   width: 80,
+                  boxShadow: 5,
                   color: "white",
-                  backgroundColor: "#3B444B",
+                  backgroundColor: "#463C8A",
                   mr: 1,
                   "&:hover": {
-                    backgroundColor: "#3B444B",
+                    backgroundColor: "#4f52b2",
                   },
                 }}
               >
@@ -598,10 +601,11 @@ const Exercise = () => {
                   marginTop: 1,
                   p: 1,
                   width: 80,
+                  boxShadow:5,
                   color: "white",
-                  background: "linear-gradient(to right, #EE696B, #523A78)",
+                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
                   "&:hover": {
-                    backgroundColor: "#673AB7",
+                    backgroundColor: "#8F00FF",
                   },
                 }}
               >
