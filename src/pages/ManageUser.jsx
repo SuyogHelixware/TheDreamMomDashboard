@@ -894,6 +894,7 @@ export default function ManageUsers() {
         <Box sx={{ height: 400, width: "100%" }}>
           <DataGrid
             className="datagrid-style"
+            rowHeight={70}
             getRowId={(row) => row._id}
             rows={userData.map((data, id) => ({ ...data, id: id + 1 }))}
             columns={columns}

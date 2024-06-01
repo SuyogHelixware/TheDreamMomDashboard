@@ -87,7 +87,7 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
     },
     {
       field: "SrNo",
-      headerName: "SrNo",
+      headerName: "Sr.No",
       width: 100,
     },
     { field: "Name", headerName: "Name", width: 250 },

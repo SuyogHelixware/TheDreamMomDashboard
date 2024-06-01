@@ -292,7 +292,7 @@ const PlanMaster = () => {
     },
     {
       field: "id",
-      headerName: "SrNo",
+      headerName: "Sr.No",
       width: 100,
     },
     { field: "Name", headerName: "Name", width: 250 },
