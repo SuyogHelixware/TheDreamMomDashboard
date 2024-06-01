@@ -6,10 +6,10 @@
   font-weight: 500 !important ;
   letter-spacing: 1px !important;
 }
-/* .Mui-selected{
+.dashboard-menu .Mui-selected{
   background-color: #8F00FF !important;
   margin: 0.5;
-} */
+}
 .active-link{
   background-color:#8F00FF !important;
   color:red !important;
