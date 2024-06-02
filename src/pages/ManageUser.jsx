@@ -141,7 +141,7 @@ export default function ManageUsers() {
     setSaveUpdateButton("UPDATE");
     setOn(true);
     setData(row);
-    setImage(`${Bunny_Image_URL}/Users/${row._id}/${row.Avatar}`);
+    setImage(row.Avatar!==""?`${Bunny_Image_URL}/Users/${row._id}/${row.Avatar}`:"");
   };
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -248,7 +248,7 @@ export default function ManageUsers() {
       Address: data.Address,
       BloodGroup: data.BloodGroup,
       UserType: "P",
-      Avatar: filename,
+      Avatar: uploadedImg!==""?filename:"",
       Status: data.Status,
     };
     const UpdateObj = {
@@ -269,11 +269,7 @@ export default function ManageUsers() {
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
-      // if (uploadedImg === "") {
-      //   setLoaderOpen(false);
-      //   validationAlert("Please select file");
-      //   return;
-      // }
+      
       try {
         // First, send the request to add the user
         const response = await axios.post(`${BASE_URL}Users`, saveObj);
@@ -532,9 +528,12 @@ export default function ManageUsers() {
       width: 250,
       renderCell: (params) => (
         <img
-          // src={`${Bunny_Image_URL}/Users/${params.row.Avatar}`}
-          src={`${Bunny_Image_URL}/Users/${params.row._id}/${params.row.Avatar}`}
-          alt=""
+          src={
+            params.row.Avatar !== ""
+              ? `${Bunny_Image_URL}/Users/${params.row._id}/${params.row.Avatar}`
+              : avatar
+          }
+          alt="avatar"
           height={50}
           width={80}
         />
