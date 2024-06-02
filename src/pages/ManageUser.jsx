@@ -269,11 +269,11 @@ export default function ManageUsers() {
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
-      if (uploadedImg === "") {
-        setLoaderOpen(false);
-        validationAlert("Please select file");
-        return;
-      }
+      // if (uploadedImg === "") {
+      //   setLoaderOpen(false);
+      //   validationAlert("Please select file");
+      //   return;
+      // }
       try {
         // First, send the request to add the user
         const response = await axios.post(`${BASE_URL}Users`, saveObj);
@@ -310,7 +310,13 @@ export default function ManageUsers() {
           }
         } else {
           setLoaderOpen(false);
-          throw new Error("Failed to Add User");
+          Swal.fire({
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: response.data.message,
+            showConfirmButton: true,
+          });
         }
       } catch (error) {
         setLoaderOpen(false);
