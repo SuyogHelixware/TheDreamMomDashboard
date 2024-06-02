@@ -200,7 +200,7 @@ export default function ManageVideos() {
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
-      (field) => !formData[field].trim()
+      (field)  =>!formData[field]|| !formData[field].trim()
     );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
@@ -243,7 +243,7 @@ export default function ManageVideos() {
         .then((response) => {
           uploadVideo(response.data);
         });
-    } else {
+    } else {   
       Swal.fire({
         text: "Do you want to Update...?",
         icon: "warning",
