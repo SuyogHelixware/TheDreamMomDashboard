@@ -58,20 +58,6 @@ export default function ManageUsers() {
       reader.readAsDataURL(file);
       setUploadedImg(file);
     }
-
-    // const file = event.target.files[0];
-    // if (file && file.type.startsWith("image/")) {
-    //   setUploadedImg(file);
-    // } else {
-    //   Swal.fire({
-    //     icon: "error",
-    //     title: "Invalid File",
-    //     text: "Please upload a valid image file",
-    //     toast: true,
-    //     showConfirmButton: true,
-    //   });
-    // setUploadedImg("");
-    // }
   };
 
   const [data, setData] = React.useState({
@@ -141,7 +127,11 @@ export default function ManageUsers() {
     setSaveUpdateButton("UPDATE");
     setOn(true);
     setData(row);
-    setImage(row.Avatar!==""?`${Bunny_Image_URL}/Users/${row._id}/${row.Avatar}`:"");
+    setImage(
+      row.Avatar !== ""
+        ? `${Bunny_Image_URL}/Users/${row._id}/${row.Avatar}`
+        : ""
+    );
   };
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
@@ -248,7 +238,7 @@ export default function ManageUsers() {
       Address: data.Address,
       BloodGroup: data.BloodGroup,
       UserType: "P",
-      Avatar: uploadedImg!==""?filename:"",
+      Avatar: uploadedImg !== "" ? filename : "",
       Status: data.Status,
     };
     const UpdateObj = {
@@ -269,13 +259,9 @@ export default function ManageUsers() {
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
-      
-      try {
-        // First, send the request to add the user
-        const response = await axios.post(`${BASE_URL}Users`, saveObj);
-
-        if (response.data.status) {
-          // If the user is added successfully, upload the image
+      const response = await axios.post(`${BASE_URL}Users`, saveObj);
+      if (response.data.status) {
+        if (uploadedImg !== "") {
           const res = await axios.request({
             method: "PUT",
             maxBodyLength: Infinity,
@@ -286,7 +272,6 @@ export default function ManageUsers() {
             },
             data: uploadedImg,
           });
-
           if (res.data.HttpCode === 201) {
             setLoaderOpen(false);
             Swal.fire({
@@ -307,20 +292,24 @@ export default function ManageUsers() {
         } else {
           setLoaderOpen(false);
           Swal.fire({
-            icon: "error",
+            position: "center",
+            icon: "success",
             toast: true,
-            title: "Failed",
-            text: response.data.message,
-            showConfirmButton: true,
+            title: "User Added and Image Uploaded Successfully",
+            showConfirmButton: false,
+            timer: 1500,
           });
+          handleClose();
+          getUserData();
+          setUploadedImg("");
         }
-      } catch (error) {
+      } else {
         setLoaderOpen(false);
         Swal.fire({
           icon: "error",
           toast: true,
           title: "Failed",
-          text: error.message,
+          text: response.data.message,
           showConfirmButton: true,
         });
       }
@@ -336,6 +325,7 @@ export default function ManageUsers() {
 
       if (result.isConfirmed) {
         debugger;
+
         try {
           const response = await axios.patch(
             `${BASE_URL}Users/${data._id}`,
@@ -343,6 +333,7 @@ export default function ManageUsers() {
           );
 
           if (response.data.status && uploadedImg !== "") {
+            debugger;
             const res = await axios.request({
               method: "PUT",
               maxBodyLength: Infinity,
@@ -353,8 +344,10 @@ export default function ManageUsers() {
               },
               data: uploadedImg,
             });
+            debugger;
+
             if (res.data.HttpCode === 201) {
-              if (uploadedImg !== "") {
+              if (data.Avatar !== "") {
                 await axios.request({
                   method: "DELETE",
                   maxBodyLength: Infinity,
@@ -528,11 +521,7 @@ export default function ManageUsers() {
       width: 250,
       renderCell: (params) => (
         <img
-          src={
-            params.row.Avatar !== ""
-              ? `${Bunny_Image_URL}/Users/${params.row._id}/${params.row.Avatar}`
-              : avatar
-          }
+          src={`${Bunny_Image_URL}/Users/${params.row._id}/${params.row.Avatar}`}
           alt="avatar"
           height={50}
           width={80}

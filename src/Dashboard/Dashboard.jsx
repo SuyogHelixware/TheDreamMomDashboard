@@ -5,7 +5,7 @@ import AppSettingsAltIcon from "@mui/icons-material/AppSettingsAlt";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 // import CommentIcon from "@mui/icons-material/Comment";
-import ApprovalIcon from '@mui/icons-material/Approval';
+import ApprovalIcon from "@mui/icons-material/Approval";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupsIcon from "@mui/icons-material/Groups";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
@@ -20,7 +20,7 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import QuizIcon from "@mui/icons-material/Quiz";
 import RemoveIcon from "@mui/icons-material/Remove";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
-import TodayIcon from '@mui/icons-material/Today';
+import TodayIcon from "@mui/icons-material/Today";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
@@ -166,7 +166,7 @@ export default function Dashboard() {
     setOn(false);
   };
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   React.useEffect(() => {
     const userData = sessionStorage.getItem("userData");
@@ -176,8 +176,6 @@ export default function Dashboard() {
       setOpen(false);
     }
   }, [isMobile]);
-
-
 
   const location = useLocation();
 
@@ -499,7 +497,8 @@ export default function Dashboard() {
                   <Link to="manage-schedule/exercise" className="link_style">
                     <ListItemButton
                       selected={
-                        router.pathname === "/dashboard/manage-schedule/exercise"
+                        router.pathname ===
+                        "/dashboard/manage-schedule/exercise"
                           ? true
                           : false
                       }
@@ -550,7 +549,7 @@ export default function Dashboard() {
                     <ListItemButton
                       selected={
                         router.pathname ===
-                          "/dashboard/manage-schedule/medication"
+                        "/dashboard/manage-schedule/medication"
                           ? true
                           : false
                       }
@@ -576,7 +575,7 @@ export default function Dashboard() {
                     <ListItemButton
                       selected={
                         router.pathname ===
-                          "/dashboard/manage-schedule/precaution"
+                        "/dashboard/manage-schedule/precaution"
                           ? true
                           : false
                       }
@@ -602,7 +601,7 @@ export default function Dashboard() {
                     <ListItemButton
                       selected={
                         router.pathname ===
-                          "/dashboard/manage-schedule/vaccination"
+                        "/dashboard/manage-schedule/vaccination"
                           ? true
                           : false
                       }
@@ -628,7 +627,9 @@ export default function Dashboard() {
               <Link to="post-natal" className="link_style">
                 <ListItemButton
                   onClick={handleClickTransaction}
-                  selected={location.pathname === "/dashboard/PostNatal/postNatal"}
+                  selected={
+                    location.pathname === "/dashboard/PostNatal/postNatal"
+                  }
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#8F00FF",
@@ -822,7 +823,9 @@ export default function Dashboard() {
               <Link to="medical-condition" className="link_style">
                 <ListItemButton
                   onClick={handleClickTransaction}
-                  selected={location.pathname === "/dashboard/medical-condition"}
+                  selected={
+                    location.pathname === "/dashboard/medical-condition"
+                  }
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#8F00FF",
@@ -843,7 +846,9 @@ export default function Dashboard() {
               <Link to="manage-avoid-food" className="link_style">
                 <ListItemButton
                   onClick={handleClickTransaction}
-                  selected={location.pathname === "/dashboard/manage-avoid-food"}
+                  selected={
+                    location.pathname === "/dashboard/manage-avoid-food"
+                  }
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#8F00FF",

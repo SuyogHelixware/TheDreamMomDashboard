@@ -48,7 +48,6 @@ function Signin() {
         .then((res) => {
           console.log("Response data:", res.data);
           if (res.data.status === true) {
-            
             const data = res.data.values;
             const userData = {
               Name: `${data.Lastname} ${data.Firstname}`,
