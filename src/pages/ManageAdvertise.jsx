@@ -560,7 +560,7 @@ const ManageAdvertise = () => {
                 required
                 sx={{
                   backgroundColor: "#B636FF",
-                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
+                  // background: "linear-gradient(to right, #8F00FF  , #B636FF)",
 
                   py: 1.5,
                   "&:hover": {

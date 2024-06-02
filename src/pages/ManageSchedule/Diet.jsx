@@ -558,8 +558,8 @@ const ManageDiet = () => {
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon style={{ color: "white" }} />}
                 sx={{
-                  backgroundColor: "#B636FF",
-                  background: "linear-gradient(to right, #8F00FF  , #B636FF)",
+                  backgroundColor: "#8F00FF",
+                  // background: "linear-gradient(to right, #8F00FF  , #B636FF)",
                   // "#8F00FF",
 
                   py: 1.5,
