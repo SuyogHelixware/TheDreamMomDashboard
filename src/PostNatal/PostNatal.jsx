@@ -7,9 +7,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -384,7 +388,9 @@ const PostNatal = () => {
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
-              backgroundColor: "gray",
+              backgroundColor: "#E6E6FA",
+              border: "1px solid #5C5CFF",
+              color: "#5C5CFF",
             },
             "& .MuiButton-label": {
               display: "flex",
@@ -403,7 +409,7 @@ const PostNatal = () => {
         <DataGrid
           className="datagrid-style"
           rows={data.map((data, id) => ({ ...data, id: id + 1 }))}
-          rowHeight={70}
+          // rowHeight={70}
           getRowId={(row) => row._id}
           columns={columns}
           initialState={{
@@ -416,7 +422,7 @@ const PostNatal = () => {
           pageSizeOptions={[7]}
         />
       </Grid>
-      
+
       <Dialog
         elevation={7}
         component={Paper}
@@ -447,8 +453,7 @@ const PostNatal = () => {
 
         <DialogContent
           sx={{
-            // background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
-            bgcolor:"#E6E6FA",
+            bgcolor: "#E6E6FA",
             overflowY: { xs: "scroll", md: "auto" },
             "&::-webkit-scrollbar": {
               display: "none",
@@ -473,7 +478,7 @@ const PostNatal = () => {
                   size="small"
                   fullWidth
                   id="Name"
-                  label="Enter Name"
+                  label="Enter Title"
                   name="Name"
                   value={formData.Name}
                   onChange={handleInputChange}
@@ -481,16 +486,31 @@ const PostNatal = () => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <InputTextField
-                  size="small"
-                  type="number"
-                  fullWidth
-                  id="Week"
-                  label="Enter Week"
-                  name="Week"
-                  value={formData.Week}
-                  onChange={handleInputChange}
-                />
+                <FormControl style={{ width: 220 }} size="small" required>
+                  <InputLabel id="demo-select-small-label">
+                    Select Week
+                  </InputLabel>
+
+                  <Select
+                    type="number"
+                    fullWidth
+                    id="Week"
+                    label="Enter Week"
+                    name="Week"
+                    value={formData.Week}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "left" }}
+                    MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                  >
+                    <MenuItem value="1-6">1-6</MenuItem>
+                    <MenuItem value="7-12">7-12</MenuItem>
+                    <MenuItem value="13-18">13-18</MenuItem>
+                    <MenuItem value="19-24">19-24</MenuItem>
+                    <MenuItem value="25-30">25-30</MenuItem>
+                    <MenuItem value="31-36">31-36</MenuItem>
+                    <MenuItem value="37-42">37-42</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <InputDescriptionField
@@ -532,19 +552,20 @@ const PostNatal = () => {
 
           <DialogActions>
             <Button
-             style={{color:"white"}}
               sx={{
                 p: 1,
                 px: 4,
-                // color: "red",
-                backgroundColor: `${validateForm() ? "#8F00FF" : "#5C5CFF"}`,
+                color: "white",
+                backgroundColor: "#5C5CFF",
 
                 boxShadow: 5,
                 position: "fixed",
                 bottom: 10,
                 right: 10,
                 "&:hover": {
-                  backgroundColor: `${validateForm() ? "#8F00FF" : "gray"}`,
+                  backgroundColor: "#E6E6FA",
+                  border: "1px solid #5C5CFF",
+                  color: "#5C5CFF",
                 },
                 "& .MuiButton-label": {
                   display: "flex",

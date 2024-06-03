@@ -118,7 +118,9 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
                 backgroundColor: "#5C5CFF",
                 boxShadow: 5,
                 "&:hover": {
-                  backgroundColor: "gray",
+                  backgroundColor: "#E6E6FA",
+                  border: "1px solid #5C5CFF",
+                  color: "#5C5CFF",
                 },
                 "& .MuiButton-label": {
                   display: "flex",
@@ -145,7 +147,6 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
           >
             <b>Diet Table</b>
           </Grid>
-           
         </Grid>
 
         <Grid container item height={380} lg={12} component={Paper}>
@@ -157,7 +158,6 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
                 SrNo: id + 1,
               })) || []
             }
-            // rows={data.map((data, id) => ({ ...data, id: id + 1 }))}
             rowHeight={70}
             getRowId={(row) => row._id}
             columns={columns}
@@ -244,7 +244,9 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
               backgroundColor: "#5C5CFF",
               boxShadow: 5,
               "&:hover": {
-                backgroundColor: "gray",
+                backgroundColor: "#E6E6FA",
+                border: "1px solid #5C5CFF",
+                color: "#5C5CFF",
               },
               "& .MuiButton-label": {
                 display: "flex",

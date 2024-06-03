@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   FormControl,
   IconButton,
@@ -63,8 +64,6 @@ export default function ManageExpert() {
       width: 400,
       sortable: false,
     },
-
-   
   ];
 
   const rows = [
@@ -108,13 +107,12 @@ export default function ManageExpert() {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#ccccff",
+            bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             justifyContent: "center",
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
           }}
         >
           <Grid
@@ -127,8 +125,17 @@ export default function ManageExpert() {
             padding={4}
             justifyContent={"center"}
           >
-            <Grid item xs={12}>
-              <Typography fontWeight="bold">Add Expert ANS</Typography>
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography fontWeight="bold">Add Expert Ans</Typography>
+              <IconButton onClick={handleClose}>
+                <CloseIcon style={{ color: "black" }} />
+              </IconButton>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -146,9 +153,7 @@ export default function ManageExpert() {
 
             <Grid item xs={12}>
               <FormControl fullWidth size="small" required>
-                <InputLabel id="demo-select-small-label">
-                  Select Tag
-                </InputLabel>
+                <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
                   labelId="ChooseType"
@@ -179,26 +184,7 @@ export default function ManageExpert() {
             </Grid>
 
             <Grid item xs={12} textAlign={"end"}>
-              <Button
-                onClick={handleClose}
-                type="submit"
-                size="small"
-                sx={{
-                  marginTop: 1,
-                  p: 1,
-                  width: 80,
-                  boxShadow: 5,
-                  color: "white",
-                  backgroundColor: "#463C8A",
-                  mr: 1,
-                  "&:hover": {
-                    backgroundColor: "#4f52b2",
-                  },
-                }}
-              >
-                Close
-              </Button>
-
+             
               <Button
                 type="submit"
                 size="small"
@@ -208,9 +194,11 @@ export default function ManageExpert() {
                   width: 80,
                   color: "white",
                   boxShadow: 5,
-                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
+                  backgroundColor: "#5C5CFF",
                   "&:hover": {
-                    backgroundColor: "#8F00FF",
+                    backgroundColor: "#E6E6FA",
+                    border:"1px solid #5C5CFF",
+                    color:"#5C5CFF"
                   },
                 }}
               >
@@ -261,7 +249,9 @@ export default function ManageExpert() {
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
-              backgroundColor: "gray",
+              backgroundColor: "#E6E6FA",
+              border: "1px solid #5C5CFF",
+              color: "#5C5CFF",
             },
 
             "& .MuiButton-label": {

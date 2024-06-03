@@ -8,14 +8,14 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  Paper
+  Paper,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL, Bunny_Image_URL } from "../../Constant";
 
-const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
+const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
   const [childDialogOpen, setChildDialogOpen] = useState(false);
   const [childData, setChildData] = useState([]);
   const [vaccinationData, setVaccinationData] = useState([]);
@@ -23,9 +23,8 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
 
   useEffect(() => {
     axios.get(`${BASE_URL}vaccination/`).then((response) => {
-      
       setVaccinationData(response.data.values);
-      setChildData(props.vaccinationData)
+      setChildData(props.vaccinationData);
     });
   }, [props.vaccinationData]);
 
@@ -117,7 +116,9 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
                 backgroundColor: "#5C5CFF",
                 boxShadow: 5,
                 "&:hover": {
-                  backgroundColor: "gray",
+                  backgroundColor: "#E6E6FA",
+                  border: "1px solid #5C5CFF",
+                  color: "#5C5CFF",
                 },
                 "& .MuiButton-label": {
                   display: "flex",
@@ -150,7 +151,7 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
           <DataGrid
             className="datagrid-style"
             rows={
-             childData.map((data, index) => ({
+              childData.map((data, index) => ({
                 ...data,
                 SrNo: index + 1,
               })) || []
@@ -187,9 +188,12 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{height:400}}>
+        <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={vaccinationData.map((data,index)=>({...data,SrNo:index+1}))}
+            rows={vaccinationData.map((data, index) => ({
+              ...data,
+              SrNo: index + 1,
+            }))}
             className="datagrid-style"
             rowHeight={80}
             columns={[
@@ -239,7 +243,9 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
               backgroundColor: "#5C5CFF",
               boxShadow: 5,
               "&:hover": {
-                backgroundColor: "gray",
+                backgroundColor: "#E6E6FA",
+                border: "1px solid #5C5CFF",
+                color: "#5C5CFF",
               },
               "& .MuiButton-label": {
                 display: "flex",

@@ -21,7 +21,6 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
   const [exerciseData, setExerciseData] = useState([]);
   const [selectedExerciseRows, setSelectedExerciseRows] = useState([]);
 
-
   useEffect(() => {
     axios.get(`${BASE_URL}Exercise/`).then((response) => {
       const updatedExerciseData = response.data.values.flat().map((item) => ({
@@ -33,8 +32,7 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
       setExerciseData(updatedExerciseData);
       setChildData(props.exerciseData);
     });
-}, [props.exerciseData]);
-
+  }, [props.exerciseData]);
 
   const handleChildDialogOpen = () => {
     setChildDialogOpen(true);
@@ -125,7 +123,9 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
                 backgroundColor: "#5C5CFF",
                 boxShadow: 5,
                 "&:hover": {
-                  backgroundColor: "gray",
+                  backgroundColor: "#E6E6FA",
+                  border: "1px solid #5C5CFF",
+                  color: "#5C5CFF",
                 },
                 "& .MuiButton-label": {
                   display: "flex",
@@ -197,7 +197,10 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
 
         <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={exerciseData.map((data,index)=>({...data,id:index+1}))}
+            rows={exerciseData.map((data, index) => ({
+              ...data,
+              id: index + 1,
+            }))}
             className="datagrid-style"
             rowHeight={80}
             getRowId={(row) => row._id}
@@ -247,7 +250,9 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
               backgroundColor: "#5C5CFF",
               boxShadow: 5,
               "&:hover": {
-                backgroundColor: "gray",
+                backgroundColor: "#E6E6FA",
+                border: "1px solid #5C5CFF",
+                color: "#5C5CFF",
               },
               "& .MuiButton-label": {
                 display: "flex",

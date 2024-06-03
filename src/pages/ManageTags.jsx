@@ -1,5 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
+import CloseIcon from "@mui/icons-material/Close";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { IconButton, Modal, Paper } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -51,9 +51,6 @@ export default function ManageTags() {
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
             <EditNoteIcon />
           </IconButton>
-          <IconButton color="error" onClick={() => handleDelete(params.row)}>
-            <DeleteForeverSharpIcon />
-          </IconButton>
         </>
       ),
     },
@@ -99,58 +96,6 @@ export default function ManageTags() {
     });
   };
 
-  const handleDelete = (data) => {
-    Swal.fire({
-      text: "Are you sure you want to delete?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setLoaderOpen(true);
-        axios
-          .delete(`${BASE_URL}tags/${data._id}`)
-          .then((res) => {
-            if (res.data.status) {
-              setLoaderOpen(false);
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                toast: true,
-                title: "Tag deleted successfully",
-                showConfirmButton: false,
-                timer: 1500,
-              });
-              handleClose();
-              getTagData();
-            } else {
-              setLoaderOpen(false);
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                toast: true,
-                title: "Failed",
-                text: "Failed to Delete!",
-                showConfirmButton: true,
-              });
-            }
-          })
-          .catch((error) => {
-            setLoaderOpen(false);
-            Swal.fire({
-              position: "center",
-              icon: "error",
-              toast: true,
-              title: "Failed",
-              text: error,
-              showConfirmButton: true,
-            });
-          });
-      }
-    });
-  };
   const validationAlert = (message) => {
     Swal.fire({
       position: "center",
@@ -163,7 +108,9 @@ export default function ManageTags() {
   };
   const updateUser = (id) => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
+    const emptyRequiredFields = requiredFields.filter(
+      (field) => !data[field].trim()
+    );
 
     if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
@@ -247,13 +194,12 @@ export default function ManageTags() {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#ccccff",
+            bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             justifyContent: "center",
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
           }}
         >
           <Grid
@@ -266,8 +212,17 @@ export default function ManageTags() {
             padding={4}
             justifyContent={"center"}
           >
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Typography fontWeight="bold">Add Tags</Typography>
+              <IconButton onClick={handleClose}>
+                <CloseIcon style={{ color: "black" }} />
+              </IconButton>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -301,26 +256,6 @@ export default function ManageTags() {
 
             <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
-                onClick={handleClose}
-                type="submit"
-                size="small"
-                sx={{
-                  marginTop: 1,
-                  p: 1,
-                  width: 80,
-                  boxShadow:5,
-                  color: "white",
-                  backgroundColor:"#463C8A",
-                  mr: 1,
-                  "&:hover": {
-                    backgroundColor: "#4f52b2",
-                  },
-                }}
-              >
-                Close
-              </Button>
-
-              <Button
                 type="submit"
                 size="small"
                 onClick={() => updateUser(data._id)}
@@ -329,10 +264,12 @@ export default function ManageTags() {
                   p: 1,
                   width: 80,
                   color: "white",
-                  boxShadow:5,
-                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
-                 "&:hover": {
-                    backgroundColor: "#8F00FF",
+                  boxShadow: 5,
+                  backgroundColor: "#5C5CFF",
+                  "&:hover": {
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
                   },
                 }}
               >
@@ -385,7 +322,9 @@ export default function ManageTags() {
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
-              backgroundColor: "gray",
+              backgroundColor: "#E6E6FA",
+              border: "1px solid #5C5CFF",
+              color: "#5C5CFF",
             },
             "& .MuiButton-label": {
               display: "flex",

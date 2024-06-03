@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,
   Grid,
@@ -71,7 +72,9 @@ export default function MedicalCondition() {
 
   const updateUser = (id) => {
     const requiredFields = ["Name", "Description"];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field].trim());
+    const emptyRequiredFields = requiredFields.filter(
+      (field) => !data[field].trim()
+    );
     if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
       return;
@@ -80,12 +83,12 @@ export default function MedicalCondition() {
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
-      Status: data.Status
+      Status: data.Status,
     };
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
-      Status: data.Status
+      Status: data.Status,
     };
 
     setLoaderOpen(true);
@@ -257,7 +260,8 @@ export default function MedicalCondition() {
       headerName: "Status",
       width: 150,
       sortable: false,
-      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
+      valueGetter: (params) =>
+        params.row.Status === 1 ? "Active" : "Inactive",
     },
   ];
   const getUserData = () => {
@@ -278,27 +282,35 @@ export default function MedicalCondition() {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#ccccff",
+            bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             justifyContent: "center",
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
           }}
         >
           <Grid
             container
             xs={12}
             item
-            spacing={3}
+            spacing={4}
             display={"flex"}
             flexDirection={"column"}
             padding={4}
             justifyContent={"center"}
           >
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Typography fontWeight="bold">Add Medical Conditions</Typography>
+              <IconButton onClick={handleClose}>
+                <CloseIcon style={{ color: "black" }} />
+              </IconButton>
             </Grid>
 
             <Grid item xs={12}>
@@ -330,26 +342,6 @@ export default function MedicalCondition() {
 
             <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
-                onClick={handleClose}
-                type="submit"
-                size="small"
-                sx={{
-                  marginTop: 1,
-                  p: 1,
-                  width: 80,
-                  boxShadow:5,
-                  color: "white",
-                  backgroundColor: "#463C8A",
-                  mr: 1,
-                  "&:hover": {
-                    backgroundColor: "#4f52b2",
-                  },
-                }}
-              >
-                Close
-              </Button>
-
-              <Button
                 type="submit"
                 size="small"
                 onClick={() => updateUser(data._id)}
@@ -358,9 +350,11 @@ export default function MedicalCondition() {
                   p: 1,
                   width: 80,
                   color: "white",
-                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
-                   "&:hover": {
-                    backgroundColor: "#8F00FF",
+                  backgroundColor: "#5C5CFF",
+                  "&:hover": {
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
                   },
                 }}
               >
@@ -413,7 +407,9 @@ export default function MedicalCondition() {
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
-              backgroundColor: "gray",
+              backgroundColor: "#E6E6FA",
+              border: "1px solid #5C5CFF",
+              color: "#5C5CFF",
             },
             "& .MuiButton-label": {
               display: "flex",

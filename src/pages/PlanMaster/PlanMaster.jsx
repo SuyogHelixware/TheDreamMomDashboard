@@ -7,9 +7,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -295,6 +299,11 @@ const PlanMaster = () => {
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
     {
+      field: "Week",
+      headerName: "Week",
+      width: 100,
+    },
+    {
       field: "Age",
       headerName: "Age",
       width: 100,
@@ -404,7 +413,9 @@ const PlanMaster = () => {
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
-              backgroundColor: "gray",
+              backgroundColor: "#E6E6FA",
+              border: "1px solid #5C5CFF",
+              color: "#5C5CFF",
             },
             "& .MuiButton-label": {
               display: "flex",
@@ -491,23 +502,39 @@ const PlanMaster = () => {
                   size="small"
                   fullWidth
                   id="Name"
-                  label="Enter Name"
+                  label="Enter Title"
                   name="Name"
                   value={formData.Name}
                   onChange={handleInputChange}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <InputTextField
-                  size="small"
-                  type="number"
-                  fullWidth
-                  id="Age"
-                  label="Enter Age"
-                  name="Age"
-                  value={formData.Age}
-                  onChange={handleInputChange}
-                />
+                <FormControl style={{ width: 220 }} size="small" required>
+                  <InputLabel id="demo-select-small-label">
+                    Select Age
+                  </InputLabel>
+
+                  <Select
+                    type="number"
+                    fullWidth
+                    id="Age"
+                    label="Enter Age"
+                    name="Age"
+                    value={formData.Age}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "left" }}
+                    MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                  >
+                    <MenuItem value="0-20">Below-20</MenuItem>
+                    <MenuItem value="21-25">21-25</MenuItem>
+                    <MenuItem value="26-30">26-30</MenuItem>
+                    <MenuItem value="31-35">31-35</MenuItem>
+                    <MenuItem value="36-40">36-40</MenuItem>
+                    <MenuItem value="41-45">41-45</MenuItem>
+                    <MenuItem value="46-50">46-50</MenuItem>
+                    <MenuItem value="51-99">51-Above</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <InputDescriptionField
@@ -524,40 +551,87 @@ const PlanMaster = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <InputTextField
-                  size="small"
-                  fullWidth
-                  type="number"
-                  id="Weight"
-                  label="Enter Weight"
-                  name="Weight"
-                  value={formData.Weight}
-                  onChange={handleInputChange}
-                />
+                <FormControl size="small" required style={{ width: 220 }}>
+                  <InputLabel id="demo-select-small-label">
+                    Select Weight
+                  </InputLabel>
+
+                  <Select
+                    type="number"
+                    id="Weight"
+                    label="Enter Weight"
+                    name="Weight"
+                    onChange={handleInputChange}
+                    value={formData.Weight}
+                    style={{ textAlign: "left" }}
+                    MenuProps={{
+                      PaperProps: { style: { maxHeight: 150, maxWidth: 220 } },
+                    }}
+                  >
+                    <MenuItem value="0-25">Below-25</MenuItem>
+                    <MenuItem value="26-30">26-30</MenuItem>
+                    <MenuItem value="31-35">31-35</MenuItem>
+                    <MenuItem value="36-40">36-40</MenuItem>
+                    <MenuItem value="41-45">41-45</MenuItem>
+                    <MenuItem value="46-50">46-50</MenuItem>
+                    <MenuItem value="51-55">51-55</MenuItem>
+                    <MenuItem value="56-60">56-60</MenuItem>
+                    <MenuItem value="61-99">61-Above</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
+
               <Grid item xs={12} sm={4}>
-                <InputTextField
-                  size="small"
-                  type="number"
-                  fullWidth
-                  id="Height"
-                  label="Enter Height"
-                  name="Height"
-                  value={formData.Height}
-                  onChange={handleInputChange}
-                />
+                <FormControl style={{ width: 220 }} size="small" required>
+                  <InputLabel id="demo-select-small-label">
+                    Select Height
+                  </InputLabel>
+
+                  <Select
+                    type="number"
+                    fullWidth
+                    id="Height"
+                    label="Enter Height"
+                    name="Height"
+                    value={formData.Height}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "left" }}
+                    MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                  >
+                    <MenuItem value="0-4">0-4 ft</MenuItem>
+                    <MenuItem value="4-5">4-5 ft</MenuItem>
+                    <MenuItem value="5-6">5-6 ft</MenuItem>
+                    <MenuItem value="6-7">6-7 ft</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
+
               <Grid item xs={12} sm={4}>
-                <InputTextField
-                  size="small"
-                  type="number"
-                  fullWidth
-                  id="Week"
-                  label="Enter Week"
-                  name="Week"
-                  value={formData.Week}
-                  onChange={handleInputChange}
-                />
+                <FormControl style={{ width: 220 }} size="small" required>
+                  <InputLabel id="demo-select-small-label">
+                    Select Week
+                  </InputLabel>
+
+                  <Select
+                    type="number"
+                    fullWidth
+                    id="Week"
+                    label="Enter Week"
+                    name="Week"
+                    value={formData.Week}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "left" }}
+                    MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                  >
+                    <MenuItem value="1-6">1-6</MenuItem>
+                    <MenuItem value="7-12">7-12</MenuItem>
+                    <MenuItem value="13-18">13-18</MenuItem>
+                    <MenuItem value="19-24">19-24</MenuItem>
+                    <MenuItem value="25-30">25-30</MenuItem>
+                    <MenuItem value="31-36">31-36</MenuItem>
+                    <MenuItem value="37-42">37-42</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
           </Paper>
@@ -585,7 +659,6 @@ const PlanMaster = () => {
 
           <DialogActions>
             <Button
-             style={{color:"white"}}
               sx={{
                 p: 1,
                 px: 4,
@@ -594,8 +667,11 @@ const PlanMaster = () => {
                 position: "fixed",
                 bottom: 10,
                 right: 10,
+                color: "white",
                 "&:hover": {
-                  backgroundColor: "gray",
+                  backgroundColor: "#E6E6FA",
+                  border: "1px solid #5C5CFF",
+                  color: "#5C5CFF",
                 },
                 "& .MuiButton-label": {
                   display: "flex",

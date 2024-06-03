@@ -114,7 +114,9 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
                 backgroundColor: "#5C5CFF",
                 boxShadow: 5,
                 "&:hover": {
-                  backgroundColor: "gray",
+                  backgroundColor: "#E6E6FA",
+                  border: "1px solid #5C5CFF",
+                  color: "#5C5CFF",
                 },
                 "& .MuiButton-label": {
                   display: "flex",
@@ -237,7 +239,9 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
               backgroundColor: "#5C5CFF",
               boxShadow: 5,
               "&:hover": {
-                backgroundColor: "gray",
+                backgroundColor: "#E6E6FA",
+                border: "1px solid #5C5CFF",
+                color: "#5C5CFF",
               },
               "& .MuiButton-label": {
                 display: "flex",

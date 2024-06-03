@@ -12,6 +12,7 @@ import * as React from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../../Constant";
 import Loader from "../../components/Loader";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Medication = () => {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
@@ -68,8 +69,10 @@ const Medication = () => {
 
   const handleSubmitForm = () => {
     const requiredFileds = ["Name", "Description"];
-    const emptyRequiredFields = requiredFileds.filter((field) =>!data[field] || !data[field].trim());
-        if (emptyRequiredFields.length > 0) {
+    const emptyRequiredFields = requiredFileds.filter(
+      (field) => !data[field] || !data[field].trim()
+    );
+    if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
       return;
     }
@@ -261,27 +264,35 @@ const Medication = () => {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#ccccff",
+            bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             justifyContent: "center",
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
           }}
         >
           <Grid
             container
             item
             xs={12}
-            spacing={2}
+            spacing={4}
             display={"flex"}
             flexDirection={"column"}
             padding={4}
             justifyContent={"center"}
           >
-            <Grid item xs={12}>
-              <Typography fontWeight="bold">Add MedicalTest</Typography>
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography fontWeight="bold">Add Medications</Typography>
+              <IconButton onClick={handleClose}>
+                <CloseIcon style={{ color: "black" }} />
+              </IconButton>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -317,26 +328,6 @@ const Medication = () => {
 
             <Grid item xs={12} md={12} textAlign={"end"}>
               <Button
-                onClick={handleClose}
-                type="reset"
-                size="small"
-                sx={{
-                  marginTop: 1,
-                  p: 1,
-                  width: 80,
-                  boxShadow:5,
-                  color: "white",
-                  backgroundColor: "#463C8A ",
-                  mr: 1,
-                  "&:hover": {
-                    backgroundColor: "#4f52b2",
-                  },
-                }}
-              >
-                Close
-              </Button>
-
-              <Button
                 type="submit"
                 size="small"
                 onClick={() => handleSubmitForm(data._id)}
@@ -345,9 +336,11 @@ const Medication = () => {
                   p: 1,
                   width: 80,
                   color: "white",
-                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
+                  backgroundColor: "#5C5CFF",
                   "&:hover": {
-                    backgroundColor: "#8F00FF",
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
                   },
                 }}
               >
@@ -400,7 +393,9 @@ const Medication = () => {
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
-              backgroundColor: "gray",
+              backgroundColor: "#E6E6FA",
+              border: "1px solid #5C5CFF",
+              color: "#5C5CFF",
             },
             "& .MuiButton-label": {
               display: "flex",

@@ -44,7 +44,9 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
 
   const handlePrecautionRowClick = (id) => {
     const selectedIDs = new Set(id);
-    const selectedRows = PrecautionData.filter((row) => selectedIDs.has(row._id));
+    const selectedRows = PrecautionData.filter((row) =>
+      selectedIDs.has(row._id)
+    );
     setSelectedPrecautionRows(
       selectedRows.map((item) => ({
         _id: item._id,
@@ -105,7 +107,6 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
         />
       ),
     },
- 
   ];
 
   return (
@@ -121,7 +122,9 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
                 backgroundColor: "#5C5CFF",
                 boxShadow: 5,
                 "&:hover": {
-                  backgroundColor: "gray",
+                  backgroundColor: "#E6E6FA",
+                  border: "1px solid #5C5CFF",
+                  color: "#5C5CFF",
                 },
                 "& .MuiButton-label": {
                   display: "flex",
@@ -193,8 +196,10 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
 
         <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={PrecautionData.map((data,index)=>({...data,id:index+1}))}
-         
+            rows={PrecautionData.map((data, index) => ({
+              ...data,
+              id: index + 1,
+            }))}
             className="datagrid-style"
             rowHeight={80}
             columns={[
@@ -244,7 +249,9 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
               backgroundColor: "#5C5CFF",
               boxShadow: 5,
               "&:hover": {
-                backgroundColor: "gray",
+                backgroundColor: "#E6E6FA",
+                border: "1px solid #5C5CFF",
+                color: "#5C5CFF",
               },
               "& .MuiButton-label": {
                 display: "flex",

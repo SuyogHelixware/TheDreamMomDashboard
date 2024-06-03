@@ -2,6 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Card,
   Chip,
@@ -47,7 +48,7 @@ export default function ManageVideos() {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [uploadedVideo, setUploadedVideo] = React.useState("");
-  
+
   const [Videos, setVideos] = React.useState([]);
   const [tags, setTags] = React.useState([]);
   const [on, setOn] = React.useState(false);
@@ -74,8 +75,7 @@ export default function ManageVideos() {
     });
     setSelectedTags([]);
     setUploadedVideo("");
-  };   
- 
+  };
 
   React.useEffect(() => {
     getAllVideoList();
@@ -112,21 +112,6 @@ export default function ManageVideos() {
     setFormData([]);
   };
 
-  // const handleUpdate = (data) => {
-  //   console.log(data);
-  //   setSaveUpdateButton("UPDATE");
-  //   setOn(true);
-  //   setSelectedTags(data.TagsIds);
-  //   setFormData({
-  //     Name: data.Name,
-  //     Description: data.Description,
-  //     Id: data._id,
-  //     TagsIds: data.TagsIds,
-  //     StorageVideoId: data.StorageVideoId,
-  //   });
-  //   console.log("Update Video id", data);
-  // };
-
   const handleUpdate = (data) => {
     console.log(data);
     setSaveUpdateButton("UPDATE");
@@ -140,22 +125,16 @@ export default function ManageVideos() {
       StorageVideoId: data.StorageVideoId,
     });
 
-    // Set the uploaded video name if it exists
     if (data.Link) {
       setUploadedVideo({
         name: data.Link,
       });
     } else {
-      setUploadedVideo(""); // Clear uploaded video if not available
+      setUploadedVideo("");
     }
 
     console.log("Update Video id", data);
   };
-
-  // const handleVideoUpload = (event) => {
-  //   const video = event.target.files[0];
-  //   setUploadedVideo(video);
-  // };
 
   const handleVideoUpload = (event) => {
     const video = event.target.files[0];
@@ -174,7 +153,7 @@ export default function ManageVideos() {
 
     if (formData.Link) {
       setUploadedVideo({
-        name: formData.Link, // Assuming Link contains the video name
+        name: formData.Link,
       });
     }
   };
@@ -200,7 +179,7 @@ export default function ManageVideos() {
   const handleSubmitForm = () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
-      (field)  =>!formData[field]|| !formData[field].trim()
+      (field) => !formData[field] || !formData[field].trim()
     );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
@@ -243,7 +222,7 @@ export default function ManageVideos() {
         .then((response) => {
           uploadVideo(response.data);
         });
-    } else {   
+    } else {
       Swal.fire({
         text: "Do you want to Update...?",
         icon: "warning",
@@ -373,13 +352,11 @@ export default function ManageVideos() {
   const getAllVideoList = () => {
     axios.get(`${BASE_URL}videos/`).then((response) => {
       setVideos(response.data.values);
-      // console.log(response.data.values.flat());
     });
   };
   const getTagData = () => {
     axios.get(`${BASE_URL}tags`).then((response) => {
       setTags(response.data.values);
-      // console.log(response.data.values.flat());
     });
   };
 
@@ -390,88 +367,6 @@ export default function ManageVideos() {
   const play = () => {
     setIsPlaying(true);
   };
-
-  // const deleteVideo = (data) => {
-  //   console.log(data);
-  //   Swal.fire({
-  //     text: "Are you sure you want to delete?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, delete it!",
-  //   })
-  //     .then((result) => {
-  //       if (result.isConfirmed) {
-  //         setLoaderOpen(true);
-  //         axios
-  //           .delete(`${Bunny_Stream_URL}/${data.StorageVideoId}`, {
-  //             headers: {
-  //               AccessKey: Bunny_Stream_Access_Key,
-  //             },
-  //           })
-  //           .then((res) => {
-  //             console.log(res);
-  //             if (res.data.success) {
-  //               axios
-  //                 .delete(`${BASE_URL}videos/${data._id}`)
-  //                 .then((response) => {
-  //                   if (response.data.status) {
-  //                     setLoaderOpen(false);
-  //                     Swal.fire({
-  //                       position: "center",
-  //                       icon: "success",
-  //                       toast: true,
-  //                       title: "Video deleted Successfully",
-  //                       showConfirmButton: false,
-  //                       timer: 1500,
-  //                     });
-  //                     handleClose();
-  //                     getAllVideoList();
-  //                   } else {
-  //                     setLoaderOpen(false);
-  //                     Swal.fire({
-  //                       icon: "error",
-  //                       toast: true,
-  //                       title: "Failed",
-  //                       text: "Failed to Delete Video",
-  //                       showConfirmButton: true,
-  //                     });
-  //                   }
-  //                 })
-  //                 .catch((error) => {
-  //                   setLoaderOpen(false);
-  //                   Swal.fire({
-  //                     icon: "error",
-  //                     toast: true,
-  //                     title: "Failed",
-  //                     text: error,
-  //                     showConfirmButton: true,
-  //                   });
-  //                 });
-  //             } else {
-  //               setLoaderOpen(false);
-  //               Swal.fire({
-  //                 icon: "error",
-  //                 toast: true,
-  //                 title: "Failed",
-  //                 text: "Failed to Delete Video",
-  //                 showConfirmButton: true,
-  //               });
-  //             }
-  //           });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       Swal.fire({
-  //         icon: "error",
-  //         toast: true,
-  //         title: "Failed",
-  //         text: error,
-  //         showConfirmButton: true,
-  //       });
-  //     });
-  // };
 
   const deleteVideo = (data) => {
     console.log(data);
@@ -562,7 +457,6 @@ export default function ManageVideos() {
         });
       });
   };
-  
 
   const startIndex = (page - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
@@ -571,7 +465,6 @@ export default function ManageVideos() {
     if (formData.Name && formData.Description && selectedTags.length > 0) {
       return false;
     } else {
-      // console.log("Please fill all fields");
       return true;
     }
   };
@@ -596,13 +489,12 @@ export default function ManageVideos() {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#ccccff",
+            bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             justifyContent: "center",
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
           }}
         >
           <Grid
@@ -615,8 +507,17 @@ export default function ManageVideos() {
             padding={4}
             justifyContent={"center"}
           >
-            <Grid item xs={12}>
-              <Typography fontWeight="bold">Add Video</Typography>
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography fontWeight="bold">Add Videos</Typography>
+              <IconButton onClick={handleClose}>
+                <CloseIcon style={{ color: "black" }} />
+              </IconButton>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -630,21 +531,6 @@ export default function ManageVideos() {
                 autoFocus
                 value={formData.Name}
                 style={{ borderRadius: 10, width: "100%" }}
-                onChange={handleInputChange}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                size="small"
-                required
-                fullWidth
-                id="Description"
-                label="Enter Description"
-                multiline
-                name="Description"
-                value={formData.Description}
-                rows={3}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -684,6 +570,21 @@ export default function ManageVideos() {
             </Grid>
 
             <Grid item xs={12}>
+              <TextField
+                size="small"
+                required
+                fullWidth
+                id="Description"
+                label="Enter Description"
+                multiline
+                name="Description"
+                value={formData.Description}
+                rows={3}
+                onChange={handleInputChange}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <Button
                 fullWidth
                 onChange={handleVideoUpload}
@@ -694,11 +595,12 @@ export default function ManageVideos() {
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
                 sx={{
-                  backgroundColor: "#8F00FF",
-
+                  backgroundColor: "#5C5CFF",
                   py: 1.5,
                   "&:hover": {
-                    backgroundColor: "#3B444B",
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
                   },
                 }}
               >
@@ -715,37 +617,19 @@ export default function ManageVideos() {
 
             <Grid item xs={12} textAlign={"end"}>
               <Button
-                onClick={handleClose}
-                type="reset"
-                size="small"
-                sx={{
-                  marginTop: 1,
-                  p: 1,
-                  width: 80,
-                  boxShadow:5,
-                  color: "white",
-                  backgroundColor:"#463C8A",
-                  mr: 1,
-                  "&:hover": {
-                    backgroundColor: "#4f52b2",
-                  },
-                }}
-              >
-                Close
-              </Button>
-
-              <Button
                 type="submit"
                 size="small"
                 sx={{
                   marginTop: 1,
                   p: 1,
                   width: 80,
-                  boxShadow:5,
+                  boxShadow: 5,
                   color: "white",
-                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
+                  backgroundColor: "#5C5CFF",
                   "&:hover": {
-                    backgroundColor: "#8F00FF",
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
                   },
                 }}
                 onClick={handleSubmitForm}
@@ -798,7 +682,9 @@ export default function ManageVideos() {
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
-              backgroundColor: "gray",
+              backgroundColor: "#E6E6FA",
+              border: "1px solid #5C5CFF",
+              color: "#5C5CFF",
             },
             "& .MuiButton-label": {
               display: "flex",
@@ -878,15 +764,18 @@ export default function ManageVideos() {
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
-        <Grid item xs={12} style={{display:"flex", justifyContent:"center"}}>
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
           <Pagination
             count={Math.ceil(Videos.length / 8)}
-            color="secondary"
+            color="primary"
             page={page}
             onChange={handlePageChange}
           />
         </Grid>
-       
       </Grid>
     </>
   );

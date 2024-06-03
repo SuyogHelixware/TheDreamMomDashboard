@@ -106,7 +106,9 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
                 backgroundColor: "#5C5CFF",
                 boxShadow: 5,
                 "&:hover": {
-                  backgroundColor: "gray",
+                  backgroundColor: "#E6E6FA",
+                  border: "1px solid #5C5CFF",
+                  color: "#5C5CFF",
                 },
                 "& .MuiButton-label": {
                   display: "flex",
@@ -178,7 +180,10 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
 
         <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={medicalData.map((data,index)=>({...data,id:index+1}))}
+            rows={medicalData.map((data, index) => ({
+              ...data,
+              id: index + 1,
+            }))}
             className="datagrid-style"
             rowHeight={80}
             columns={[
@@ -215,7 +220,9 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
               backgroundColor: "#5C5CFF",
               boxShadow: 5,
               "&:hover": {
-                backgroundColor: "gray",
+                backgroundColor: "#E6E6FA",
+                border: "1px solid #5C5CFF",
+                color: "#5C5CFF",
               },
               "& .MuiButton-label": {
                 display: "flex",

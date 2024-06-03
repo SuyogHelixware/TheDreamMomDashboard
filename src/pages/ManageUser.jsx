@@ -2,6 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Badge,
   Button,
@@ -540,7 +541,6 @@ export default function ManageUsers() {
 
   return (
     <>
-      {/* =======================Modal================== */}
       {loaderOpen && <Loader open={loaderOpen} />}
       <Modal open={on} onClose={handleClose}>
         <Paper
@@ -549,7 +549,7 @@ export default function ManageUsers() {
             width: "90%",
             maxWidth: 600,
             height: 500,
-            bgcolor: "#ccccff",
+            bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -557,7 +557,6 @@ export default function ManageUsers() {
             padding: 4,
             justifyContent: "center",
             textAlign: "center",
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
             overflowY: { xs: "scroll", md: "auto" },
             "&::-webkit-scrollbar": {
               display: "none",
@@ -566,6 +565,17 @@ export default function ManageUsers() {
             scrollbarWidth: "none",
           }}
         >
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              color: "black",
+            }}
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButton>
           <Grid container rowSpacing={2.2} columnSpacing={2}>
             <Grid
               container
@@ -729,26 +739,6 @@ export default function ManageUsers() {
 
             <Grid item xs={12} textAlign={"end"}>
               <Button
-                onClick={handleClose}
-                type="submit"
-                size="small"
-                sx={{
-                  marginTop: 1,
-                  p: 1,
-                  width: 80,
-                  boxShadow: 5,
-                  color: "white",
-                  backgroundColor: "#463C8A",
-                  mr: 1,
-                  "&:hover": {
-                    backgroundColor: "#4f52b2",
-                  },
-                }}
-              >
-                Close
-              </Button>
-
-              <Button
                 type="submit"
                 size="small"
                 onClick={() => updateUser(data._id)}
@@ -758,9 +748,11 @@ export default function ManageUsers() {
                   width: 80,
                   color: "white",
                   boxShadow: 5,
-                  background: "linear-gradient(to right, #8F00FF  , #8F00FF)",
+                  backgroundColor: "#5C5CFF",
                   "&:hover": {
-                    backgroundColor: "#8F00FF",
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
                   },
                 }}
               >
@@ -770,7 +762,6 @@ export default function ManageUsers() {
           </Grid>
         </Paper>
       </Modal>
-      {/* =============END====================== */}
       <Grid
         container
         xs={12}
@@ -813,7 +804,9 @@ export default function ManageUsers() {
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
-              backgroundColor: "gray",
+              backgroundColor: "#E6E6FA",
+              border: "1px solid #5C5CFF",
+              color: "#5C5CFF",
             },
             "& .MuiButton-label": {
               display: "flex",

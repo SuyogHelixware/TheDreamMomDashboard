@@ -120,7 +120,9 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
                 backgroundColor: "#5C5CFF",
                 boxShadow: 5,
                 "&:hover": {
-                  backgroundColor: "gray",
+                  backgroundColor: "#E6E6FA",
+                  border: "1px solid #5C5CFF",
+                  color: "#5C5CFF",
                 },
                 "& .MuiButton-label": {
                   display: "flex",
@@ -143,7 +145,6 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
               justifyContent: "center",
               alignItems: "center",
               textAlign: "center",
-               
             }}
           >
             <b>Diet Table</b>
@@ -193,7 +194,7 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
 
         <DialogContent sx={{ height: 400 }}>
           <DataGrid
-            rows={dietData.map((data,index)=>({...data,id:index+1}))}
+            rows={dietData.map((data, index) => ({ ...data, id: index + 1 }))}
             className="datagrid-style"
             rowHeight={80}
             columns={[
@@ -245,7 +246,9 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
               backgroundColor: "#5C5CFF",
               boxShadow: 5,
               "&:hover": {
-                backgroundColor: "gray",
+                backgroundColor: "#E6E6FA",
+                border: "1px solid #5C5CFF",
+                color: "#5C5CFF",
               },
               "& .MuiButton-label": {
                 display: "flex",
