@@ -81,7 +81,7 @@ export class InputPasswordField extends React.Component {
               <InputAdornment position="end">
                 <IconButton
                   edge="end"
-                  sx={{ color: "#9370db " }}
+                  sx={{ color: "#5C5CFF " }}
                   onClick={this.props.onClick}
                   onMouseDown={this.props.onMouseDown}
                 >

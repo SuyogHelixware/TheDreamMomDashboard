@@ -649,6 +649,7 @@ export default function ManageUsers() {
                 value={data.Password}
                 name="Password"
                 type={showPassword ? "text" : "password"}
+                showPassword={showPassword}
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
               />
