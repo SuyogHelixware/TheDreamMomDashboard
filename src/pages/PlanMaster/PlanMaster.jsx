@@ -167,6 +167,7 @@ const PlanMaster = () => {
           formattedData
         );
         if (response.data.status) {
+          ClearForm();
           handleParentDialogClose();
           setLoaderOpen(false);
           getAllPlanMasterData();
@@ -194,7 +195,7 @@ const PlanMaster = () => {
         setLoaderOpen(false);
       }
     }
-    ClearForm();
+    
   };
 
   const handleInputChange = (e) => {
@@ -434,7 +435,7 @@ const PlanMaster = () => {
         <DataGrid
           className="datagrid-style"
           rows={data.map((data, id) => ({ ...data, id: id + 1 }))}
-          rowHeight={70}
+          // rowHeight={70}
           getRowId={(row) => row._id}
           columns={columns}
           initialState={{

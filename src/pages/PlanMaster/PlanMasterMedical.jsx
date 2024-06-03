@@ -146,7 +146,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
                 SrNo: index + 1,
               })) || []
             }
-            rowHeight={70}
+            // rowHeight={70}
             getRowId={(row) => row._id}
             columns={columns}
             initialState={{
@@ -185,7 +185,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
               id: index + 1,
             }))}
             className="datagrid-style"
-            rowHeight={80}
+            // rowHeight={80}
             columns={[
               { field: "id", headerName: "SR.NO", width: 250 },
               { field: "Name", headerName: "Name", width: 250 },

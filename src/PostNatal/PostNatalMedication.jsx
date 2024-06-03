@@ -99,8 +99,8 @@ const PostNatalMedication = ({ sendMedicationDataToParent, ...props }) => {
     },
     { field: "Name", headerName: "Name", width: 250 },
     { field: "Description", headerName: "Description", width: 400 },
-    { field: "DosageName", headerName: "DosageName", width: 250 },
-    { field: "DosageDescription", headerName: "DosageDescription", width: 400 },
+    { field: "DosageName", headerName: "Dosage Name", width: 250 },
+    { field: "DosageDescription", headerName: "Dosage Description", width: 400 },
   ];
 
   return (
@@ -156,7 +156,7 @@ const PostNatalMedication = ({ sendMedicationDataToParent, ...props }) => {
                 SrNo: index + 1,
               })) || []
             }
-            rowHeight={70}
+            // rowHeight={70}
             getRowId={(row) => row._id}
             columns={columns}
             initialState={{
@@ -193,15 +193,15 @@ const PostNatalMedication = ({ sendMedicationDataToParent, ...props }) => {
             rows={MedicationData.map((data,index)=>({...data,id:index+1}))}
          
             className="datagrid-style"
-            rowHeight={80}
+            // rowHeight={80}
             columns={[
               { field: "id", headerName: "SR.NO", width: 200 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
-              { field: "DosageName", headerName: "DosageName", width: 250 },
+              { field: "DosageName", headerName: "Dosage Name", width: 250 },
               {
-                field: "DosageDescription",
-                headerName: "DosageDescription",
+                field: "Dosage Description",
+                headerName: "Dosage Description",
                 width: 300,
               },
             ]}

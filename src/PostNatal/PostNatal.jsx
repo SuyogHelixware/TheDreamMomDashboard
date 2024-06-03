@@ -158,6 +158,7 @@ const PostNatal = () => {
           formattedData
         );
         if (response.data.status) {
+          clearFormData();
           handleParentDialogClose();
           setLoaderOpen(false);
           getAllPostNatalData();
@@ -186,7 +187,7 @@ const PostNatal = () => {
         setLoaderOpen(false);
       }
     }
-    clearFormData();
+    
   };
 
   const handleInputChange = (e) => {
