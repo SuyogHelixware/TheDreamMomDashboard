@@ -114,7 +114,7 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
               sx={{
                 p: 1,
                 color: "white",
-                backgroundColor: "#8F00FF",
+                backgroundColor: "#5C5CFF",
                 boxShadow: 5,
                 "&:hover": {
                   backgroundColor: "gray",
@@ -236,7 +236,7 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent,...props}) => {
               p: 1,
               px: 3,
               color: "white",
-              backgroundColor: "#8F00FF",
+              backgroundColor: "#5C5CFF",
               boxShadow: 5,
               "&:hover": {
                 backgroundColor: "gray",

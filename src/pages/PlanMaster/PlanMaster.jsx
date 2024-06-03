@@ -47,8 +47,8 @@ const PlanMaster = () => {
     Week: "",
     Status: 1,
   });
-   
-  const ClearForm=()=>{
+
+  const ClearForm = () => {
     setFormData({
       id: "",
       Name: "",
@@ -64,8 +64,7 @@ const PlanMaster = () => {
       Week: "",
       Status: 1,
     });
-    
-  }
+  };
 
   const getAllPlanMasterData = () => {
     axios.get(`${BASE_URL}planmaster/`).then((response) => {
@@ -385,7 +384,7 @@ const PlanMaster = () => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#673AB7"}
+          color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -402,7 +401,7 @@ const PlanMaster = () => {
             pr: 2,
             mb: 2,
             color: "white",
-            backgroundColor: "#8F00FF",
+            backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
               backgroundColor: "gray",
@@ -446,14 +445,14 @@ const PlanMaster = () => {
         fullScreen
         // fullWidth
       >
-         <DialogTitle style={{ color: "white", backgroundColor: "#6f5eb7" }}>
+        <DialogTitle style={{ color: "white", backgroundColor: "#5C5CFF" }}>
           <b>Plan Master</b>
           <IconButton
             aria-label="close"
             onClick={handleParentDialogClose}
             sx={{ position: "absolute", top: 8, right: 8 }}
           >
-           <CloseIcon
+            <CloseIcon
               style={{
                 backgroundColor: "white",
                 borderRadius: 50,
@@ -465,8 +464,9 @@ const PlanMaster = () => {
         </DialogTitle>
 
         <DialogContent
-          sx={{            
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
+          sx={{
+            // background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
+            bgcolor: "#E6E6FA",
             overflowY: { xs: "scroll", md: "auto" },
             "&::-webkit-scrollbar": {
               display: "none",
@@ -475,84 +475,92 @@ const PlanMaster = () => {
             scrollbarWidth: "none",
           }}
         >
-           <Paper elevation={3} sx={{ width:"100%",  padding: 3,marginTop: 3,  textAlign: 'center',      
-      display: 'inline-block'}} >
-          <Grid container spacing={2} pt={3}>
-            <Grid item xs={12} sm={4}>
-              <InputTextField
-                size="small"
-                fullWidth
-                id="Name"
-                label="Enter Name"
-                name="Name"
-                value={formData.Name}
-                onChange={handleInputChange}
-              />
+          <Paper
+            elevation={3}
+            sx={{
+              width: "100%",
+              padding: 3,
+              marginTop: 3,
+              textAlign: "center",
+              display: "inline-block",
+            }}
+          >
+            <Grid container spacing={2} pt={3}>
+              <Grid item xs={12} sm={4}>
+                <InputTextField
+                  size="small"
+                  fullWidth
+                  id="Name"
+                  label="Enter Name"
+                  name="Name"
+                  value={formData.Name}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InputTextField
+                  size="small"
+                  type="number"
+                  fullWidth
+                  id="Age"
+                  label="Enter Age"
+                  name="Age"
+                  value={formData.Age}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InputDescriptionField
+                  size="small"
+                  required
+                  fullWidth
+                  id="Description"
+                  label="Enter Description"
+                  name="Description"
+                  multiline
+                  rows={3}
+                  value={formData.Description}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InputTextField
+                  size="small"
+                  fullWidth
+                  type="number"
+                  id="Weight"
+                  label="Enter Weight"
+                  name="Weight"
+                  value={formData.Weight}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InputTextField
+                  size="small"
+                  type="number"
+                  fullWidth
+                  id="Height"
+                  label="Enter Height"
+                  name="Height"
+                  value={formData.Height}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <InputTextField
+                  size="small"
+                  type="number"
+                  fullWidth
+                  id="Week"
+                  label="Enter Week"
+                  name="Week"
+                  value={formData.Week}
+                  onChange={handleInputChange}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              
-              <InputTextField
-                size="small"
-                type="number"                
-                fullWidth
-                id="Age"
-                label="Enter Age"
-                name="Age"
-                value={formData.Age}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <InputDescriptionField
-                size="small"
-                required
-                fullWidth
-                id="Description"
-                label="Enter Description"
-                name="Description"
-                multiline
-                rows={3}
-                value={formData.Description}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <InputTextField
-                size="small"
-                fullWidth
-                type="number"
-                id="Weight"
-                label="Enter Weight"
-                name="Weight"
-                value={formData.Weight}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <InputTextField
-                size="small"
-                type="number"
-                fullWidth
-                id="Height"
-                label="Enter Height"
-                name="Height"
-                value={formData.Height}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <InputTextField
-                size="small"
-                type="number"
-                fullWidth
-                id="Week"
-                label="Enter Week"
-                name="Week"
-                value={formData.Week}
-                onChange={handleInputChange}
-              />
-            </Grid>
-          </Grid></Paper>
+          </Paper>
 
           <PlanMasterDiet
             sendDataToParent={receiveDataFromDiet}
@@ -577,11 +585,11 @@ const PlanMaster = () => {
 
           <DialogActions>
             <Button
+             style={{color:"white"}}
               sx={{
                 p: 1,
                 px: 4,
-                color: "white",
-                backgroundColor: "#8F00FF",
+                backgroundColor: "#5C5CFF",
                 boxShadow: 5,
                 position: "fixed",
                 bottom: 10,

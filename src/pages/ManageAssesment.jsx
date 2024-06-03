@@ -139,7 +139,7 @@ export default function ManageAssesment() {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#673AB7"}
+          color={"#5C5CFF"}
           padding={1}
           noWrap
         >

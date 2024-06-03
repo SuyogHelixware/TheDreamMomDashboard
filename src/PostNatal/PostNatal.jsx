@@ -364,7 +364,7 @@ const PostNatal = () => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#673AB7"}
+          color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -381,7 +381,7 @@ const PostNatal = () => {
             pr: 2,
             mb: 2,
             color: "white",
-            backgroundColor: "#8F00FF",
+            backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
               backgroundColor: "gray",
@@ -427,7 +427,7 @@ const PostNatal = () => {
         aria-describedby="parent-dialog-description"
         fullScreen
       >
-        <DialogTitle style={{ color: "white", backgroundColor: "#6f5eb7" }}>
+        <DialogTitle style={{ color: "white", backgroundColor: "#5C5CFF" }}>
           <b>Post Natal</b>
           <IconButton
             aria-label="close"
@@ -447,7 +447,8 @@ const PostNatal = () => {
 
         <DialogContent
           sx={{
-            background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
+            // background: "linear-gradient(to right,#E5D9F2, #CDC1FF)",
+            bgcolor:"#E6E6FA",
             overflowY: { xs: "scroll", md: "auto" },
             "&::-webkit-scrollbar": {
               display: "none",
@@ -536,7 +537,7 @@ const PostNatal = () => {
                 p: 1,
                 px: 4,
                 // color: "red",
-                backgroundColor: `${validateForm() ? "#8F00FF" : "#6f5eb7"}`,
+                backgroundColor: `${validateForm() ? "#8F00FF" : "#5C5CFF"}`,
 
                 boxShadow: 5,
                 position: "fixed",

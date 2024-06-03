@@ -7,10 +7,10 @@
   letter-spacing: 1px !important;
 }
 .dashboard-menu .Mui-selected{
-  background-color: #8F00FF !important;
+  background-color: #5C5CFF !important;
   margin: 0.5;
 }
 .active-link{
-  background-color:#8F00FF !important;
+  background-color:#5C5CFF !important;
   color:red !important;
 }

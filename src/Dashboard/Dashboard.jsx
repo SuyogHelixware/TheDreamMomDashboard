@@ -87,7 +87,7 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  backgroundColor: "#8F00FF",
+  backgroundColor: "#5C5CFF",
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -237,7 +237,7 @@ export default function Dashboard() {
                 height={100}
                 width={"100%"}
                 style={{
-                  backgroundColor: "#8F00FF",
+                  backgroundColor: "#5C5CFF",
                   backgroundImage:
                     "linear-gradient(360deg, #647DEE 0%, #7F53AC 74%)",
                 }}
@@ -405,7 +405,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/home"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -426,7 +426,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-user"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -446,7 +446,7 @@ export default function Dashboard() {
                 selected={location.pathname === "/manage-schedule"}
                 sx={{
                   "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
+                    backgroundColor: "#5C5CFF",
                     // m:0.5,
                     borderRadius: 1,
                     "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -478,7 +478,7 @@ export default function Dashboard() {
                       }
                       sx={{
                         "&.Mui-selected": {
-                          backgroundColor: "#8F00FF",
+                          backgroundColor: "#5C5CFF",
                           // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -504,7 +504,7 @@ export default function Dashboard() {
                       }
                       sx={{
                         "&.Mui-selected": {
-                          backgroundColor: "#8F00FF",
+                          backgroundColor: "#5C5CFF",
                           // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -529,7 +529,7 @@ export default function Dashboard() {
                       }
                       sx={{
                         "&.Mui-selected": {
-                          backgroundColor: "#8F00FF",
+                          backgroundColor: "#5C5CFF",
                           // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -555,7 +555,7 @@ export default function Dashboard() {
                       }
                       sx={{
                         "&.Mui-selected": {
-                          backgroundColor: "#8F00FF",
+                          backgroundColor: "#5C5CFF",
                           // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -581,7 +581,7 @@ export default function Dashboard() {
                       }
                       sx={{
                         "&.Mui-selected": {
-                          backgroundColor: "#8F00FF",
+                          backgroundColor: "#5C5CFF",
                           // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -607,7 +607,7 @@ export default function Dashboard() {
                       }
                       sx={{
                         "&.Mui-selected": {
-                          backgroundColor: "#8F00FF",
+                          backgroundColor: "#5C5CFF",
                           // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -628,11 +628,11 @@ export default function Dashboard() {
                 <ListItemButton
                   onClick={handleClickTransaction}
                   selected={
-                    location.pathname === "/dashboard/PostNatal/postNatal"
+                    location.pathname === "/dashboard/post-natal"
                   }
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -647,134 +647,6 @@ export default function Dashboard() {
                   <ListItemText primary="Post Natal" />
                 </ListItemButton>
               </Link>
-              {/* <Collapse in={list} timeout="auto">
-              <List component="div" disablePadding>
-                <Link to="post-natal/pndiet" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname === "/dashboard/post-natal/pndiet"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Diet" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-
-                <Link to="post-natal/pnexercise" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname === "/dashboard/post-natal/pnexercise"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Exercise" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-
-                <Link to="post-natal/pnprecaution" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname === "/dashboard/post-natal/pnprecaution"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Precautions" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-
-                <Link to="post-natal/pnmedication" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname === "/dashboard/post-natal/pnmedication"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Medications" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-
-                <Link to="post-natal/pnvaccination" className="link_style">
-                  <ListItemButton
-                    selected={
-                      router.pathname === "/dashboard/post-natal/pnvaccination"
-                        ? true
-                        : false
-                    }
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#8F00FF",
-                        // m:0.5,
-                        borderRadius: 1,
-                        "& .MuiListItemIcon-root, & .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ pl: 4 }}>
-                      <RemoveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Vaccination" sx={{ pl: 2 }} />
-                  </ListItemButton>
-                </Link>
-              </List>
-            </Collapse> */}
 
               <Link to="plan-master" className="link_style">
                 <ListItemButton
@@ -782,7 +654,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/plan-master"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -804,7 +676,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-assesment"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -828,7 +700,7 @@ export default function Dashboard() {
                   }
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -851,7 +723,7 @@ export default function Dashboard() {
                   }
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -872,7 +744,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-videos"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -893,7 +765,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-posts"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -914,7 +786,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-faq"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -938,7 +810,7 @@ export default function Dashboard() {
                   }
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -959,7 +831,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-report"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -980,7 +852,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-advertise"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -1001,7 +873,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-blog"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -1022,7 +894,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-expert"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -1043,7 +915,7 @@ export default function Dashboard() {
                 selected={location.pathname === "/dashboard/manage-comments"}
                 sx={{
                   "&.Mui-selected": {
-                    backgroundColor: "#8F00FF",
+                    backgroundColor: "#5C5CFF",
                     // m:0.5,
                     borderRadius: 1,
                     "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -1064,7 +936,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-doses"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
@@ -1085,7 +957,7 @@ export default function Dashboard() {
                   selected={location.pathname === "/dashboard/manage-tags"}
                   sx={{
                     "&.Mui-selected": {
-                      backgroundColor: "#8F00FF",
+                      backgroundColor: "#5C5CFF",
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {

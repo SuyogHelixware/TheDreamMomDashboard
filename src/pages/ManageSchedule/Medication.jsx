@@ -380,7 +380,7 @@ const Medication = () => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#673AB7"}
+          color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -397,7 +397,7 @@ const Medication = () => {
             pr: 2,
             mb: 2,
             color: "white",
-            backgroundColor: "#8F00FF",
+            backgroundColor: "#5C5CFF",
             boxShadow: 5,
             "&:hover": {
               backgroundColor: "gray",
