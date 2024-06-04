@@ -208,7 +208,7 @@ export default function ManageUsers() {
       "DOB",
       "BloodGroup",
     ];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field]);
+    const emptyRequiredFields = requiredFields.filter((field) => !data[field] || !String(data[field]).trim());
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.Email);
 
     if (emptyRequiredFields.length > 0) {
@@ -242,6 +242,7 @@ export default function ManageUsers() {
       Avatar: uploadedImg !== "" ? filename : "",
       Status: data.Status,
     };
+    console.log(saveObj);
     const UpdateObj = {
       Firstname: data.Firstname,
       Middlename: data.Middlename,
@@ -253,7 +254,7 @@ export default function ManageUsers() {
       Address: data.Address,
       BloodGroup: data.BloodGroup,
       Status: data.Status,
-      UserType: "P",
+      // UserType: "P",
       Avatar: uploadedImg === "" ? data.Avatar : filename,
     };
 
@@ -325,7 +326,7 @@ export default function ManageUsers() {
       });
 
       if (result.isConfirmed) {
-        debugger;
+        // debugger;
 
         try {
           const response = await axios.patch(
@@ -334,7 +335,7 @@ export default function ManageUsers() {
           );
 
           if (response.data.status && uploadedImg !== "") {
-            debugger;
+            // debugger;
             const res = await axios.request({
               method: "PUT",
               maxBodyLength: Infinity,
@@ -345,7 +346,7 @@ export default function ManageUsers() {
               },
               data: uploadedImg,
             });
-            debugger;
+            // debugger;
 
             if (res.data.HttpCode === 201) {
               if (data.Avatar !== "") {
@@ -617,6 +618,7 @@ export default function ManageUsers() {
               <InputTextField
                 label="First Name"
                 id="Firstname"
+                type="text"
                 onChange={onchangeHandler}
                 value={data.Firstname}
                 name="Firstname"
