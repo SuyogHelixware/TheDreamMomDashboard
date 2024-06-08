@@ -50,7 +50,8 @@ import * as React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../src/assets/logo.png";
 import "../Dashboard/Dashboard.css";
-import avatar from "../assets/avtar.png";
+// import avatar from "../assets/avtar.png";
+import { Bunny_Image_URL } from "../Constant";
 
 const drawerWidth = 260;
 const openedMixin = (theme) => ({
@@ -151,6 +152,7 @@ export default function Dashboard() {
     Email: "",
     BloodGroup: "",
     Avatar: "",
+    _id:""
   });
 
   // const [openMenu, setOpenMenu] = React.useState(false);
@@ -160,6 +162,7 @@ export default function Dashboard() {
     React.useState(false);
 
   const handleOn = () => {
+    console.log(`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}`);
     setOn(true);
   };
   const handleClose = () => {
@@ -220,7 +223,8 @@ export default function Dashboard() {
             >
               <Avatar
                 alt="Avatar"
-                src={avatar}
+                
+                src=  {`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}`}
                 sx={{
                   width: 80,
                   height: 80,
@@ -229,8 +233,16 @@ export default function Dashboard() {
                   left: "50%",
                   transform: "translateX(-50%)",
                   zIndex: 1,
+                  border:"1px solid black"
                 }}
               />
+               {/* <img
+                  src={`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}`}
+                  alt="Upload"
+                  height={70}
+                  width={70}
+                  style={{ borderRadius: "50%" }}
+                /> */}
 
               <Grid
                 item

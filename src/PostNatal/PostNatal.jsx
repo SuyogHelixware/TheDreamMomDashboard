@@ -33,6 +33,7 @@ const PostNatal = () => {
   const [SaveUpdateButton, setSaveUpdateButton] = useState("UPDATE");
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
+
   const [formData, setFormData] = useState({
     Name: "",
     Description: "",
@@ -80,7 +81,8 @@ const PostNatal = () => {
   };
 
   const handleSave = async () => {
-    const formattedData = {
+
+         const formattedData = {
       ...formData,
       DietIds: formData.DietIds ? formData.DietIds.map((diet) => diet._id) : [],
       ExerciseIds: formData.ExerciseIds
@@ -187,7 +189,6 @@ const PostNatal = () => {
         setLoaderOpen(false);
       }
     }
-    
   };
 
   const handleInputChange = (e) => {

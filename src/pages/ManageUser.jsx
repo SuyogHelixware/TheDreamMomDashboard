@@ -1,8 +1,10 @@
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AddIcon from "@mui/icons-material/Add";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import CloseIcon from "@mui/icons-material/Close";
+import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import {
   Badge,
   Button,
@@ -42,22 +44,38 @@ export default function ManageUsers() {
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [Image, setImage] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  // const [selectedTags, setSelectedTags] = React.useState([]);
+  const handleImageUploadAndClose = (event) => {
+    handleImageUpload(event);
+    handleProfileClose();
+  };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = () => {
         setImage(reader.result);
       };
       reader.readAsDataURL(file);
       setUploadedImg(file);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid File",
+        text: "Please upload a valid image file",
+        toast: true,
+        showConfirmButton: true,
+      });
+      setUploadedImg("");
     }
   };
 
@@ -123,7 +141,73 @@ export default function ManageUsers() {
   const handleClose = () => {
     setOn(false);
   };
+  const handleProfileClose = () => {
+    setOpen(false);
+  };
+  ///////////////////////////////////////
+  const handleProfile = async () => {
+    const saveObj = {
+      Avatar: "",
+    };
+    console.log(saveObj);
 
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await axios.patch(
+          `${BASE_URL}Users/${data._id}`,
+          saveObj
+        );
+
+        if (response.data.status) {
+          await axios
+            .request({
+              method: "DELETE",
+              maxBodyLength: Infinity,
+              url: `${Bunny_Storage_URL}/Users/${data._id}/${data.Avatar}`,
+              headers: {
+                AccessKey: Bunny_Storage_Access_Key,
+              },
+            })
+            .then((response) => {
+              if (response.data.HttpCode === 200) {
+                console.log(response);
+                setUploadedImg("");
+
+                Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  title: "Profile deleted successfully",
+                  showConfirmButton: false,
+                  timer: 1500,
+                  toast: true,
+                });
+                handleProfileClose();
+                handleClose();
+                getUserData();
+                setImage("");
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  toast: true,
+                  title: "Failed",
+                  text: "Failed to delete profile",
+                  showConfirmButton: true,
+                });
+              }
+            });
+        }
+      }
+    });
+  };
+
+  /////////////////////////
   const handleClick = (row) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);
@@ -134,6 +218,11 @@ export default function ManageUsers() {
         : ""
     );
   };
+
+  const handleUploadProfile = () => {
+    setOpen(true);
+  };
+
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
@@ -208,7 +297,11 @@ export default function ManageUsers() {
       "DOB",
       "BloodGroup",
     ];
-    const emptyRequiredFields = requiredFields.filter((field) => !data[field] || !String(data[field]).trim());
+    const emptyRequiredFields = requiredFields.filter(
+      (field) => !data[field] || !String(data[field]).trim()
+    );
+   
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.Email);
 
     if (emptyRequiredFields.length > 0) {
@@ -326,16 +419,12 @@ export default function ManageUsers() {
       });
 
       if (result.isConfirmed) {
-        // debugger;
-
         try {
           const response = await axios.patch(
             `${BASE_URL}Users/${data._id}`,
             UpdateObj
           );
-
           if (response.data.status && uploadedImg !== "") {
-            // debugger;
             const res = await axios.request({
               method: "PUT",
               maxBodyLength: Infinity,
@@ -346,7 +435,6 @@ export default function ManageUsers() {
               },
               data: uploadedImg,
             });
-            // debugger;
 
             if (res.data.HttpCode === 201) {
               if (data.Avatar !== "") {
@@ -523,7 +611,11 @@ export default function ManageUsers() {
       width: 250,
       renderCell: (params) => (
         <img
-          src={`${Bunny_Image_URL}/Users/${params.row._id}/${params.row.Avatar}`}
+          src={
+            params.row.Avatar === ""
+              ? avatar
+              : `${Bunny_Image_URL}/Users/${params.row._id}/${params.row.Avatar}`
+          }
           alt="avatar"
           height={50}
           width={80}
@@ -536,6 +628,7 @@ export default function ManageUsers() {
       setUserData(response.data.values.flat());
     });
   };
+
   useEffect(() => {
     getUserData();
   }, []);
@@ -589,27 +682,18 @@ export default function ManageUsers() {
               <Badge
                 overlap="circular"
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                badgeContent={
-                  <label htmlFor="upload-image">
-                    <CameraAltIcon
-                      style={{ cursor: "pointer", color: "white" }}
-                    />
-                    <input
-                      accept="image/*"
-                      id="upload-image"
-                      type="file"
-                      style={{ display: "none" }}
-                      onChange={handleImageUpload}
-                    />
-                  </label>
-                }
+                onClick={handleUploadProfile}
               >
                 <img
                   src={Image || avatar}
                   alt="Upload"
                   height={70}
                   width={70}
-                  style={{ display: "block", borderRadius: "50%" }}
+                  style={{
+                    display: "block",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                  }}
                 />
               </Badge>
             </Grid>
@@ -765,6 +849,80 @@ export default function ManageUsers() {
           </Grid>
         </Paper>
       </Modal>
+
+      <Modal open={open} onClose={handleProfileClose}>
+        <Paper
+          elevation={10}
+          sx={{
+            width: "90%",
+            maxWidth: 400,
+            height: 250,
+            bgcolor: "#E6E6FA",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            padding: 4,
+            justifyContent: "center",
+            textAlign: "center",
+            overflowY: { xs: "scroll", md: "auto" },
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+          }}
+        >
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              color: "black",
+            }}
+            onClick={handleProfileClose}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <AccountCircleOutlinedIcon
+                sx={{ width: 70, height: 70, margin: "auto", color: "#5C5CFF" }}
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ textAlign: "center", mt: 0 }}>
+              <input
+                accept="image/*"
+                style={{ display: "none" }}
+                id="contained-button-file"
+                type="file"
+                onChange={handleImageUploadAndClose}
+              />
+              <label htmlFor="contained-button-file">
+                <Button
+                  variant="contained"
+                  component="span"
+                  startIcon={<PhotoLibraryIcon />}
+                >
+                  Add new Profile Picture
+                </Button>
+              </label>
+            </Grid>
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={handleProfile}
+                disabled={!Image}
+              >
+                Remove Current Profile
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Modal>
+
       <Grid
         container
         xs={12}
@@ -849,7 +1007,6 @@ export default function ManageUsers() {
               },
             }}
             pageSizeOptions={[5]}
-            // hideFooter
           />
         </Box>
       </Paper>
