@@ -127,9 +127,8 @@ const Drawer = styled(MuiDrawer, {
 }));
 const style = {
   position: "absolute",
-  top: "25%",
-  left: "87%",
-  transform: "translate(-50%, -50%)",
+  top: 15,
+  right: 10,
   width: 400,
   bgcolor: "background.paper",
   boxShadow: 24,
@@ -236,14 +235,6 @@ export default function Dashboard() {
                   border:"1px solid black"
                 }}
               />
-               {/* <img
-                  src={`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}`}
-                  alt="Upload"
-                  height={70}
-                  width={70}
-                  style={{ borderRadius: "50%" }}
-                /> */}
-
               <Grid
                 item
                 height={100}
@@ -724,7 +715,7 @@ export default function Dashboard() {
                   <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
                     <MonitorHeartIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Medical Condition" />
+                  <ListItemText  primary="Medical Condition" />
                 </ListItemButton>
               </Link>
               <Link to="manage-avoid-food" className="link_style">

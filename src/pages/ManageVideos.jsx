@@ -1,8 +1,9 @@
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import CloseIcon from "@mui/icons-material/Close";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import {
   Card,
   Chip,
@@ -30,6 +31,7 @@ import {
   Bunny_Stream_Access_Key,
   Bunny_Stream_GET_URL,
   Bunny_Stream_URL,
+  Bunny_Thumbnail_URL,
 } from "../Constant";
 import Loader from "../components/Loader";
 
@@ -45,6 +47,7 @@ const styles = {
 };
 
 export default function ManageVideos() {
+  const [play, setPlay] = React.useState(null);
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [uploadedVideo, setUploadedVideo] = React.useState("");
@@ -54,17 +57,12 @@ export default function ManageVideos() {
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const cardsPerPage = 8;
-  const [isPlaying, setIsPlaying] = React.useState(false);
   const [selectedTags, setSelectedTags] = React.useState([]);
   const [formData, setFormData] = React.useState({
     Name: "",
     Description: "",
     Id: "",
   });
-
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
 
   const clearFormData = () => {
     setFormData({
@@ -79,9 +77,6 @@ export default function ManageVideos() {
 
   React.useEffect(() => {
     getAllVideoList();
-  }, []);
-
-  React.useEffect(() => {
     getTagData();
   }, []);
   const handleClose = () => {
@@ -174,6 +169,10 @@ export default function ManageVideos() {
       showConfirmButton: false,
       timer: 1500,
     });
+  };
+
+  const handleOnPlay = (id) => {
+    setPlay(id);
   };
 
   const handleSubmitForm = () => {
@@ -299,7 +298,7 @@ export default function ManageVideos() {
               Link: `${Bunny_Stream_GET_URL}/${data.videoLibraryId}/${data.guid}`,
               StorageLabId: data.videoLibraryId,
               StorageVideoId: data.guid,
-              // TagsIds: formData.tag,
+              Thumbnail: data.thumbnailFileName,
               TagsIds: selectedTags.map((tag) => tag._id),
             })
             .then((response) => {
@@ -362,10 +361,6 @@ export default function ManageVideos() {
 
   const handlePageChange = (event, value) => {
     setPage(value);
-  };
-
-  const play = () => {
-    setIsPlaying(true);
   };
 
   const deleteVideo = (data) => {
@@ -480,6 +475,28 @@ export default function ManageVideos() {
     whiteSpace: "nowrap",
     width: 6,
   });
+
+  const containerStyle = {
+    position: "relative",
+    width: "100%",
+  };
+
+  const buttonStyle = {
+    position: "absolute",
+    top: "50px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    backgroundColor: "#C0C0C0",
+    border: "none",
+    borderRadius: "50%",
+    padding: "5px",
+    cursor: "pointer",
+    opacity: 0.9,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
@@ -643,7 +660,6 @@ export default function ManageVideos() {
       </Modal>
       <Grid
         container
-        // xs={12}
         component={Paper}
         textAlign={"center"}
         elevation={4}
@@ -700,25 +716,47 @@ export default function ManageVideos() {
         </Button>
       </Grid>
 
-      <Grid container spacing={3} justifyContent="start">
+      <Grid container spacing={3} justifyContent="start" sx={{ color: "red" }}>
         {Videos.slice(startIndex, endIndex).map((item, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ width: "100%" }}>
-              <iframe
-                src={`${Bunny_Stream_GET_URL}/${item.StorageLabId}/${item.StorageVideoId}`}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "fill",
-                  aspectRatio: 5 / 3,
-                }}
-                title="Video Player"
-                frameBorder="0"
-                autoPlay={play}
-                onClick={togglePlay}
-                allowFullScreen
-              />
+              {item.StorageVideoId === play ? (
+                <iframe
+                  src={`${Bunny_Stream_GET_URL}/${item.StorageLabId}/${item.StorageVideoId}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "fill",
+                    aspectRatio: "5 / 3",
+                  }}
+                  title="Video Player"
+                  autoPlay={play}
+                  allowFullScreen
+                />
+              ) : (
+                <div style={containerStyle}>
+                  <button
+                    style={buttonStyle}
+                    onClick={() => {
+                      handleOnPlay(item.StorageVideoId);
+                    }}
+                  >
+                    <PlayCircleFilledIcon
+                      sx={{ color: "#318CE7", fontSize: "40px" }}
+                    />
+                  </button>
 
+                  <img
+                    src={`${Bunny_Thumbnail_URL}/${item.StorageVideoId}/${item.Thumbnail}`}
+                    alt="Thumbnail"
+                    style={{
+                      width: "100%",
+                      objectFit: "cover",
+                      aspectRatio: "5 / 3",
+                    }}
+                  />
+                </div>
+              )}
               <CardContent>
                 <Typography
                   noWrap
@@ -749,7 +787,6 @@ export default function ManageVideos() {
                 <IconButton color="primary" onClick={() => handleUpdate(item)}>
                   <EditNoteIcon />
                 </IconButton>
-
                 <Button
                   size="medium"
                   sx={{ color: "red" }}

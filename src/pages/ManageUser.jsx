@@ -373,7 +373,7 @@ export default function ManageUsers() {
               position: "center",
               icon: "success",
               toast: true,
-              title: "User Added and Image Uploaded Successfully",
+              title: "User Added Successfully",
               showConfirmButton: false,
               timer: 1500,
             });
