@@ -1,13 +1,13 @@
  import { ThemeProvider, useTheme } from "@mui/material/styles";
+import React from "react";
 import "./App.css";
 import Routing from "./Routes/Routing";
-import React, { useEffect } from "react";
 
 function App() {
   const theme = useTheme();
-  //     window.onload = function() {
-  //       document.body.style.zoom = "80%";
-  //     };   
+      // window.onload = function() {
+      //   document.body.style.zoom = "80%";
+      // };   
      /// OR///
   // useEffect(() => {
   //   document.body.style.zoom = "80%";

@@ -52,6 +52,7 @@ import logo from "../../src/assets/logo.png";
 import "../Dashboard/Dashboard.css";
 // import avatar from "../assets/avtar.png";
 import { Bunny_Image_URL } from "../Constant";
+import { isLogin } from "./Auth";
 
 const drawerWidth = 260;
 const openedMixin = (theme) => ({
@@ -151,7 +152,7 @@ export default function Dashboard() {
     Email: "",
     BloodGroup: "",
     Avatar: "",
-    _id:""
+    _id: "",
   });
 
   // const [openMenu, setOpenMenu] = React.useState(false);
@@ -204,7 +205,16 @@ export default function Dashboard() {
       setList(!list);
     }
   };
+
   const menuId = "primary-search-account-menu";
+
+
+  React.useEffect(() => {
+    if (!isLogin()) {
+      Navigate("/");
+    } 
+  });
+
   return (
     <Box sx={{ display: "flex", backgroundColor: "#F5F6FA" }}>
       <CssBaseline />
@@ -222,8 +232,7 @@ export default function Dashboard() {
             >
               <Avatar
                 alt="Avatar"
-                
-                src=  {`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}`}
+                src={`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}`}
                 sx={{
                   width: 80,
                   height: 80,
@@ -232,7 +241,7 @@ export default function Dashboard() {
                   left: "50%",
                   transform: "translateX(-50%)",
                   zIndex: 1,
-                  border:"1px solid black"
+                  border: "1px solid black",
                 }}
               />
               <Grid
@@ -630,9 +639,7 @@ export default function Dashboard() {
               <Link to="post-natal" className="link_style">
                 <ListItemButton
                   onClick={handleClickTransaction}
-                  selected={
-                    location.pathname === "/dashboard/post-natal"
-                  }
+                  selected={location.pathname === "/dashboard/post-natal"}
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
@@ -715,7 +722,7 @@ export default function Dashboard() {
                   <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
                     <MonitorHeartIcon />
                   </ListItemIcon>
-                  <ListItemText  primary="Medical Condition" />
+                  <ListItemText primary="Medical Condition" />
                 </ListItemButton>
               </Link>
               <Link to="manage-avoid-food" className="link_style">

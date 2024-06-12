@@ -3,7 +3,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import {
   Card,
   Chip,
@@ -481,21 +480,21 @@ export default function ManageVideos() {
     width: "100%",
   };
 
-  const buttonStyle = {
-    position: "absolute",
-    top: "50px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    backgroundColor: "#C0C0C0",
-    border: "none",
-    borderRadius: "50%",
-    padding: "5px",
-    cursor: "pointer",
-    opacity: 0.9,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  };
+  // const buttonStyle = {
+  //   position: "absolute",
+  //   top: "50px",
+  //   left: "50%",
+  //   transform: "translateX(-50%)",
+  //   backgroundColor: "#C0C0C0",
+  //   border: "none",
+  //   borderRadius: "50%",
+  //   padding: "5px",
+  //   cursor: "pointer",
+  //   opacity: 0.9,
+  //   display: "flex",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  // };
 
   return (
     <>
@@ -735,7 +734,7 @@ export default function ManageVideos() {
                 />
               ) : (
                 <div style={containerStyle}>
-                  <button
+                  {/* <button
                     style={buttonStyle}
                     onClick={() => {
                       handleOnPlay(item.StorageVideoId);
@@ -744,11 +743,14 @@ export default function ManageVideos() {
                     <PlayCircleFilledIcon
                       sx={{ color: "#318CE7", fontSize: "40px" }}
                     />
-                  </button>
+                  </button> */}
 
                   <img
                     src={`${Bunny_Thumbnail_URL}/${item.StorageVideoId}/${item.Thumbnail}`}
                     alt="Thumbnail"
+                    onClick={() => {
+                      handleOnPlay(item.StorageVideoId);
+                    }}
                     style={{
                       width: "100%",
                       objectFit: "cover",
@@ -784,13 +786,13 @@ export default function ManageVideos() {
                   justifyContent: "space-between",
                 }}
               >
-                <IconButton color="primary" onClick={() => handleUpdate(item)}>
+                <IconButton color="primary" onClick={() =>handleUpdate(item)}>
                   <EditNoteIcon />
                 </IconButton>
                 <Button
                   size="medium"
                   sx={{ color: "red" }}
-                  onClick={() => deleteVideo(item)}
+                  onClick={() =>deleteVideo(item)}
                 >
                   <DeleteForeverIcon />
                 </Button>
