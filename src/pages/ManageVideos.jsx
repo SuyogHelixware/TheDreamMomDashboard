@@ -673,6 +673,7 @@ export default function ManageVideos() {
         }}
       >
         <Typography
+        className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -732,6 +733,8 @@ export default function ManageVideos() {
                   autoPlay={play}
                   allowFullScreen
                 />
+                // <iframe src="https://iframe.mediadelivery.net/embed/222011/47d67bce-03aa-47d3-bad8-f5c89bcbe746?autoplay=true&loop=false&muted=true&preload=false&responsive=true" loading="lazy"   allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen="true"></iframe>
+
               ) : (
                 <div style={containerStyle}>
                   {/* <button

@@ -625,6 +625,7 @@ const Exercise = () => {
         elevation={4}
       >
         <Typography
+        className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"

@@ -83,23 +83,45 @@ const ManageBlog = () => {
   };
 
   const [open, setOpen] = React.useState(false);
-  // const handleOpen = () => setOpen(true);
+  const errorMessage = (message) => {
+    Swal.fire({
+      icon: "error",
+      title: "Invalid File",
+      text: message,
+      toast: true,
+      showConfirmButton: true,
+    });
+    setUploadedImg("");
+  };
   const handleFileUpload = (event) => {
+    debugger;
     const file = event.target.files[0];
-    if (
-      file &&
-      (file.type.startsWith("image/") || file.type === "application/pdf")
-    ) {
-      setUploadedImg(file);
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid File",
-        text: "Please upload a valid image or PDF file",
-        toast: true,
-        showConfirmButton: true,
-      });
-      setUploadedImg("");
+
+    // Check if file exists
+    if (!file) {
+      errorMessage("No file selected");
+      return;
+    }
+
+    // Handle Category N
+    if (data.Category === "N") {
+      if (file.type.startsWith("image/") || file.type === "application/pdf") {
+        setUploadedImg(file);
+      } else {
+        errorMessage("Please upload a valid image or PDF file");
+      }
+    }
+    // Handle Category B
+    else if (data.Category === "B") {
+      if (file.type.startsWith("image/")) {
+        setUploadedImg(file);
+      } else {
+        errorMessage("Please upload a valid image file");
+      }
+    }
+    // Handle other categories if necessary
+    else {
+      errorMessage("Invalid category");
     }
   };
 
@@ -541,7 +563,7 @@ const ManageBlog = () => {
                   MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                 >
                   <MenuItem value="B">Blogs</MenuItem>
-                  <MenuItem value="N">News</MenuItem>
+                  <MenuItem value="N">Newsletter</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -607,11 +629,11 @@ const ManageBlog = () => {
                 required
                 sx={{
                   backgroundColor: "#5C5CFF",
-                  py:1.5,
+                  py: 1.5,
                   "&:hover": {
                     backgroundColor: "#E6E6FA",
-                    border:"1px solid #5C5CFF",
-                    color:"#5C5CFF"
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
                   },
                 }}
               >
@@ -625,12 +647,11 @@ const ManageBlog = () => {
                     ? uploadedImg.name
                     : "Upload File"}
                 </Typography>
-                <VisuallyHiddenInput type="file" />
+                <VisuallyHiddenInput type="file" accept=".pdf,image/*" />
               </Button>
             </Grid>
 
             <Grid item xs={12} md={12} textAlign={"end"}>
-
               <Button
                 type="submit"
                 size="small"
@@ -644,8 +665,8 @@ const ManageBlog = () => {
                   backgroundColor: "#5C5CFF",
                   "&:hover": {
                     backgroundColor: "#E6E6FA",
-                    border:"1px solid #5C5CFF",
-                    color:"#5C5CFF"
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
                   },
                 }}
               >
@@ -674,6 +695,7 @@ const ManageBlog = () => {
         elevation="4"
       >
         <Typography
+        className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -785,7 +807,10 @@ const ManageBlog = () => {
       <Grid container spacing={3} width="100%" pt={5} pb={5}>
         <Grid item xs={12} style={{ display: "flex", justifyContent: "end" }}>
           <Pagination
-            count={Math.ceil(imgData.length / 8)}
+            count={Math.ceil(
+              imgData.filter((data) => data.Category === "B").length /
+                cardsPerPage
+            )}
             color="primary"
             page={blogPage}
             onChange={handleBlogPageChange}
@@ -810,7 +835,8 @@ const ManageBlog = () => {
         }}
         elevation="4"
       >
-        <Typography
+        <Typography 
+        className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"

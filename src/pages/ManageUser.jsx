@@ -706,6 +706,16 @@ export default function ManageUsers() {
                 onChange={onchangeHandler}
                 value={data.Firstname}
                 name="Firstname"
+
+                // onChange={(event) => {  
+                //   const value = event.target.value; 
+                //   const validValue = value.replace(/[^a-zA-Z]/g, ''); 
+          
+                //   setData({ 
+                //     ...data,
+                //     Firstname: validValue, 
+                //   }); 
+                // }} 
               />
             </Grid>
             <Grid item md={6} sm={6} xs={12}>
@@ -943,6 +953,7 @@ export default function ManageUsers() {
         elevation="4"
       >
         <Typography
+         className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"

@@ -254,6 +254,7 @@ export default function MedicalCondition() {
       headerName: "Description",
       width: 500,
       sortable: false,
+      flex:1,
     },
     {
       field: "Status",
@@ -385,6 +386,7 @@ export default function MedicalCondition() {
         elevation="4"
       >
         <Typography
+        className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"

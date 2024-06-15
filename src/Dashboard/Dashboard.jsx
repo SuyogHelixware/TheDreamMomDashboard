@@ -208,11 +208,10 @@ export default function Dashboard() {
 
   const menuId = "primary-search-account-menu";
 
-
   React.useEffect(() => {
     if (!isLogin()) {
       Navigate("/");
-    } 
+    }
   });
 
   return (
@@ -295,6 +294,7 @@ export default function Dashboard() {
                       Navigate("/");
                     }}
                     sx={{
+                      boxShadow:9,
                       borderRadius: 10,
                       backgroundColor: "#70b2d9",
                       backgroundImage:
@@ -328,8 +328,10 @@ export default function Dashboard() {
             variant="h6"
             noWrap
             component="div"
-            textAlign={"center"}
-            width={"100%"}
+            textAlign="center"
+            width="100%"
+            className="flash-animation"
+            sx={{ elevation: 6 }}
           >
             The Dream Mom
           </Typography>
@@ -426,7 +428,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }} onClick={handleDrawerOpen}>
                     <DashboardIcon />
                   </ListItemIcon>
                   <ListItemText primary="Dashboard" />
@@ -447,7 +449,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}   onClick={handleDrawerOpen}>
                     <ManageAccountsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage User" />
@@ -467,7 +469,7 @@ export default function Dashboard() {
                   },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }} onClick={handleDrawerOpen}> 
                   <WorkHistoryIcon />
                 </ListItemIcon>
                 <ListItemText primary="Manage Schedule" />
@@ -499,7 +501,7 @@ export default function Dashboard() {
                         },
                       }}
                     >
-                      <ListItemIcon sx={{ pl: 4 }}>
+                      <ListItemIcon sx={{ pl: 4 }} >
                         <RemoveIcon />
                       </ListItemIcon>
                       <ListItemText primary="Diet" sx={{ pl: 2 }} />
@@ -651,7 +653,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}   onClick={handleDrawerOpen}>
                     <ApprovalIcon />
                   </ListItemIcon>
                   <ListItemText primary="Post Natal" />
@@ -673,7 +675,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <TodayIcon />
                   </ListItemIcon>
                   <ListItemText primary="Plan Master" />
@@ -695,7 +697,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <NoteAltIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Assesment" />
@@ -719,7 +721,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <MonitorHeartIcon />
                   </ListItemIcon>
                   <ListItemText primary="Medical Condition" />
@@ -742,7 +744,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <NoFoodIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Avoid Foods" />
@@ -763,7 +765,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <VideoSettingsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Videos" />
@@ -784,7 +786,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <PostAddIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Posts" />
@@ -805,7 +807,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <QuizIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage FAQ's" />
@@ -829,7 +831,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <SubscriptionsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Subscription" />
@@ -850,7 +852,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <NoteAddIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Report" />
@@ -871,7 +873,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <AppSettingsAltIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Advertise" />
@@ -892,7 +894,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <NewspaperIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Blog & letter" />
@@ -913,7 +915,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <GroupsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Expert ANS" />
@@ -955,7 +957,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <VaccinesIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Dosage" />
@@ -976,7 +978,7 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
                     <LocalOfferIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Tags" />
@@ -1000,7 +1002,7 @@ export default function Dashboard() {
             },
           }),
         }}
-      >
+       >
         <DrawerHeader />
         <Outlet />
       </Box>
