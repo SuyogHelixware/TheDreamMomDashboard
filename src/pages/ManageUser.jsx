@@ -587,7 +587,7 @@ export default function ManageUsers() {
     },
     {
       field: "BloodGroup",
-      headerName: "BloodGroup",
+      headerName: "Blood Group",
       width: 130,
       sortable: false,
     },
@@ -602,7 +602,7 @@ export default function ManageUsers() {
     {
       field: "Email",
       headerName: "Email",
-      width: 100,
+      width: 140,
       sortable: false,
     },
     {
@@ -700,13 +700,15 @@ export default function ManageUsers() {
 
             <Grid item md={6} sm={6} xs={12}>
               <InputTextField
+                
                 label="First Name"
                 id="Firstname"
                 type="text"
                 onChange={onchangeHandler}
                 value={data.Firstname}
                 name="Firstname"
-
+                  className="custom-required-field"
+                
                 // onChange={(event) => {  
                 //   const value = event.target.value; 
                 //   const validValue = value.replace(/[^a-zA-Z]/g, ''); 
@@ -731,6 +733,7 @@ export default function ManageUsers() {
             <Grid item md={6} sm={6} xs={12}>
               <InputTextField
                 label="Last Name"
+                
                 id="Lastname"
                 onChange={onchangeHandler}
                 value={data.Lastname}

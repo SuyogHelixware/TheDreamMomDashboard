@@ -205,13 +205,13 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
             rowHeight={80}
             getRowId={(row) => row._id}
             columns={[
-              { field: "id", headerName: "SR.NO", width: 250 },
-              { field: "Name", headerName: "Name", width: 250 },
-              { field: "Description", headerName: "Description", width: 300 },
+              { field: "id", headerName: "SR.NO", width: 100 },
+              { field: "Name", headerName: "Name", width: 300 },
+              { field: "Description", headerName: "Description", flex:1},
               {
                 field: "Image",
                 headerName: "Image",
-                width: 250,
+                width: 150,
                 renderCell: (params) => (
                   <img
                     src={`${Bunny_Image_URL}/Schedule/Exercise/${params.row.Image}`}

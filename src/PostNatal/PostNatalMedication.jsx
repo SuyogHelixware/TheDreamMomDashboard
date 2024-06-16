@@ -195,7 +195,7 @@ const PostNatalMedication = ({ sendMedicationDataToParent, ...props }) => {
             className="datagrid-style"
             // rowHeight={80}
             columns={[
-              { field: "id", headerName: "SR.NO", width: 200 },
+              { field: "id", headerName: "SR.NO", width: 100 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
               { field: "DosageName", headerName: "Dosage Name", width: 250 },

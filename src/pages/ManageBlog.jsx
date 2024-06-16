@@ -527,7 +527,7 @@ const ManageBlog = () => {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography fontWeight="bold">Add Blog</Typography>
+              <Typography fontWeight="bold">Add Blog & Newsletter</Typography>
               <IconButton onClick={handleClose}>
                 <CloseIcon style={{ color: "black" }} />
               </IconButton>
@@ -536,7 +536,7 @@ const ManageBlog = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
@@ -548,7 +548,9 @@ const ManageBlog = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
+              <FormControl fullWidth size="small" 
+              // required
+              >
                 <InputLabel id="demo-select-small-label">
                   Select Type
                 </InputLabel>
@@ -568,7 +570,9 @@ const ManageBlog = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
+              <FormControl fullWidth size="small"
+              //  required
+               >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -603,7 +607,7 @@ const ManageBlog = () => {
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                required
+                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"
@@ -734,7 +738,7 @@ const ManageBlog = () => {
           }}
         >
           <AddIcon />
-          Add Blog
+          Add Blog & Newsletter
         </Button>
       </Grid>
 

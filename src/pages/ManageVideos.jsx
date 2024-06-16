@@ -539,7 +539,7 @@ export default function ManageVideos() {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Name"
                 label="Enter Title"
@@ -552,7 +552,9 @@ export default function ManageVideos() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
+              <FormControl fullWidth size="small"
+              //  required
+               >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -588,7 +590,7 @@ export default function ManageVideos() {
             <Grid item xs={12}>
               <TextField
                 size="small"
-                required
+                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"

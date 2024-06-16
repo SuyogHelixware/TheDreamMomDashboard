@@ -225,7 +225,7 @@ const Medical = () => {
     },
     { field: "id", headerName: "SR.No", width: 100, sortable: false },
     { field: "Name", headerName: "Title", width: 250 },
-    { field: "Description", headerName: "Description", width: 300 },
+    { field: "Description", headerName: "Description", width: 300 ,flex:1},
   ];
 
   const handleDelete = (data) => {
@@ -344,7 +344,7 @@ const Medical = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
@@ -357,7 +357,9 @@ const Medical = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
+              <FormControl fullWidth size="small" 
+              // required
+              >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -393,7 +395,7 @@ const Medical = () => {
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                required
+                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"
@@ -459,7 +461,7 @@ const Medical = () => {
           padding={1}
           noWrap
         >
-          Manage MedicalTest
+          Manage Medical Test
         </Typography>
       </Grid>
 

@@ -485,7 +485,7 @@ const Exercise = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
@@ -498,7 +498,9 @@ const Exercise = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
+              <FormControl fullWidth size="small" 
+              // required
+              >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -533,7 +535,7 @@ const Exercise = () => {
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                required
+                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"

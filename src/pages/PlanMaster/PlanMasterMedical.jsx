@@ -187,9 +187,9 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
             className="datagrid-style"
             // rowHeight={80}
             columns={[
-              { field: "id", headerName: "SR.NO", width: 250 },
-              { field: "Name", headerName: "Name", width: 250 },
-              { field: "Description", headerName: "Description", width: 300 },
+              { field: "id", headerName: "SR.NO", width: 100 },
+              { field: "Name", headerName: "Name", width: 300 },
+              { field: "Description", headerName: "Description", flex:1 },
             ]}
             checkboxSelection
             getRowId={(row) => row._id}

@@ -203,9 +203,9 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "id", headerName: "SR.NO", width: 200 },
-              { field: "Name", headerName: "Name", width: 250 },
-              { field: "Description", headerName: "Description", width: 300 },
+              { field: "id", headerName: "SR.NO", width: 100 },
+              { field: "Name", headerName: "Name", width: 300 },
+              { field: "Description", headerName: "Description", width: 300 ,flex:1 },
               {
                 field: "Image",
                 headerName: "Image",

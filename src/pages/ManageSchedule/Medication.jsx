@@ -235,9 +235,9 @@ const Medication = () => {
         </strong>
       ),
     },
-    { field: "id", headerName: "SR.No", width: 100, sortable: false },
-    { field: "Name", headerName: "Title", width: 250 },
-    { field: "Description", headerName: "Description", width: 300 },
+    { field: "id", headerName: "SR.No", width: 120, sortable: false },
+    { field: "Name", headerName: "Title", width: 300 },
+    { field: "Description", headerName: "Description", width: 300 ,flex:1},
   ];
 
   const handleUpdate = (data) => {
@@ -298,7 +298,7 @@ const Medication = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
@@ -313,7 +313,7 @@ const Medication = () => {
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                required
+                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"

@@ -494,7 +494,7 @@ const ManageDiet = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
@@ -507,7 +507,11 @@ const ManageDiet = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
+              <FormControl
+                fullWidth
+                size="small"
+                // required
+              >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -543,7 +547,7 @@ const ManageDiet = () => {
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                required
+                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"
@@ -578,7 +582,7 @@ const ManageDiet = () => {
               >
                 <Typography
                   noWrap
-                  style={{ width: "80%", textAlign: "center"}}
+                  style={{ width: "80%", textAlign: "center" }}
                 >
                   {SaveUpdateButton === "UPDATE"
                     ? data.Image
@@ -634,7 +638,7 @@ const ManageDiet = () => {
         elevation={4}
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"

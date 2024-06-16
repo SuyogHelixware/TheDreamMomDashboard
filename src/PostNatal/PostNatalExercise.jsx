@@ -204,7 +204,7 @@ const PostNatalExercise = ({ sendExerciseDataToParent, ...props }) => {
             rowHeight={80}
             getRowId={(row) => row._id}
             columns={[
-              { field: "id", headerName: "SR.NO", width: 200 },
+              { field: "id", headerName: "SR.NO", width: 100 },
               { field: "Name", headerName: "Name", width: 250 },
               { field: "Description", headerName: "Description", width: 300 },
               {

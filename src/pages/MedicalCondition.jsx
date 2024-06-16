@@ -317,7 +317,7 @@ export default function MedicalCondition() {
             <Grid item xs={12}>
               <TextField
                 name="Name"
-                required
+                // required
                 size="small"
                 id="Name"
                 label="Enter Name"
@@ -329,14 +329,14 @@ export default function MedicalCondition() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
+                // required
                 label="Enter Description"
                 name="Description"
                 id="Description"
                 style={{ borderRadius: 10, width: "100%" }}
                 value={data.Description}
                 multiline
-                rows={2}
+                rows={5}
                 onChange={onchangeHandler}
               />
             </Grid>

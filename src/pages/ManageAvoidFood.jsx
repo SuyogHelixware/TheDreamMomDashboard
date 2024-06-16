@@ -231,7 +231,7 @@ const ManageAvoidFood = () => {
     },
     { field: "id", headerName: "SR.NO", width: 100, sortable: false },
     { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 300 },
+    { field: "Description", headerName: "Description", width: 300,flex:1 },
   ];
 
   const handleUpdate = (rowData) => {
@@ -287,7 +287,7 @@ const ManageAvoidFood = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
@@ -303,13 +303,14 @@ const ManageAvoidFood = () => {
               <TextField
                 size="small"
                 fullWidth
+                // required
                 id="Description"
                 label="Enter Description"
                 name="Description"
                 value={data.Description}
                 onChange={onChangeHandler}
                 multiline
-                rows={3}
+                rows={5}
                 placeholder="Enter your Description..."
               />
             </Grid>

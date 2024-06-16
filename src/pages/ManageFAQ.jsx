@@ -274,7 +274,7 @@ const ManageFAQ = () => {
     },
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Question", headerName: "Question", width: 350 },
-    { field: "Answer", headerName: "Answer", width: 350 },
+    { field: "Answer", headerName: "Answer", width: 350, flex:1 },
   ];
 
   const handleUpdate = (rowData) => {
@@ -332,7 +332,7 @@ const ManageFAQ = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Question"
                 label="Enter Question"
@@ -345,7 +345,9 @@ const ManageFAQ = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth size="small" required>
+              <FormControl fullWidth size="small"
+              //  required
+               >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -382,6 +384,7 @@ const ManageFAQ = () => {
               <TextField
                 size="small"
                 fullWidth
+                // required
                 id="Answer"
                 label="Enter Answer"
                 name="Answer"

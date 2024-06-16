@@ -241,7 +241,7 @@ const ManagePosts = () => {
 
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 300 },
+    { field: "Description", headerName: "Description", width: 300,flex:1 },
     {
       field: "Status",
       headerName: "Status",
@@ -305,7 +305,7 @@ const ManagePosts = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
@@ -320,6 +320,7 @@ const ManagePosts = () => {
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
+                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"
@@ -327,7 +328,7 @@ const ManagePosts = () => {
                 value={data.Description}
                 onChange={onChangeHandler}
                 multiline
-                rows={3}
+                rows={5}
                 placeholder="Enter your Description..."
               />
             </Grid>

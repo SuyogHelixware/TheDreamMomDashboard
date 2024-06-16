@@ -71,6 +71,7 @@ export default function ManageTags() {
       headerName: "Description",
       width: 500,
       sortable: false,
+      flex:1,
     },
   ];
 
@@ -227,7 +228,7 @@ export default function ManageTags() {
             <Grid item xs={12}>
               <TextField
                 name="Name"
-                required
+                // required
                 size="small"
                 id="Name"
                 label="Enter Name"
@@ -241,7 +242,7 @@ export default function ManageTags() {
             <Grid item xs={12}>
               <TextField
                 size="small"
-                required
+                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"
@@ -249,7 +250,7 @@ export default function ManageTags() {
                 multiline
                 value={data.Description}
                 onChange={onchangeHandler}
-                rows={3}
+                rows={5}
                 placeholder="Enter your Description..."
               />
             </Grid>

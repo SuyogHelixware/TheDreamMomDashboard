@@ -67,7 +67,7 @@ export class InputPasswordField extends React.Component {
     return (
       <>
         <TextField
-          required
+          // required
           label={this.props.label}
           onChange={this.props.onChange}
           id={this.props.id}
@@ -114,7 +114,7 @@ export class DatePickerField extends React.Component {
             slotProps={{
               textField: {
                 size: "small",
-                required: true,
+                // required: true,
                 // Check for small view and apply fullWidth accordingly
                 fullWidth: window.innerWidth < 400 ? true : false,
               },
@@ -146,7 +146,7 @@ export class InputSelectField extends React.Component {
             label={this.props.label}
             onChange={this.props.onChange}
             value={this.props.value}
-            required
+            // required
             MenuProps={{
               PaperProps: {
                 style: {

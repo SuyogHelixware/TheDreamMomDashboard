@@ -79,7 +79,7 @@ export default function ManageAssesment() {
     },
     {
       field: "BabyGender",
-      headerName: "BabyGender",
+      headerName: "Baby Gender",
       width: 130,
       sortable: false,
     },
@@ -99,7 +99,7 @@ export default function ManageAssesment() {
     {
       field: "DOB",
       headerName: "DOB",
-      width: 100,
+      width: 120,
       sortable: false,
       valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },

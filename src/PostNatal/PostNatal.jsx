@@ -297,7 +297,7 @@ const PostNatal = () => {
       width: 100,
     },
     { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 340 },
+    { field: "Description", headerName: "Description", width:340, flex:1 },
     {
       field: "Status",
       headerName: "Status",
@@ -436,7 +436,7 @@ const PostNatal = () => {
         aria-describedby="parent-dialog-description"
         fullScreen
       >
-        <DialogTitle style={{ color: "white", backgroundColor: "#5C5CFF" }}>
+        <DialogTitle style={{ color: "white", backgroundColor: "#5C5CFF"}}>
           <b>Post Natal</b>
           <IconButton
             aria-label="close"
@@ -449,6 +449,7 @@ const PostNatal = () => {
                 borderRadius: 50,
                 height: 32,
                 width: 32,
+                boxShadow: "0px 6px 6px 0px rgba(0, 0, 0, 0.25)", 
               }}
             ></CloseIcon>
           </IconButton>
@@ -489,7 +490,7 @@ const PostNatal = () => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormControl style={{ width: 220 }} size="small" required>
+                <FormControl style={{ width: 220 }} size="small"  >
                   <InputLabel id="demo-select-small-label">
                     Select Week
                   </InputLabel>
@@ -518,7 +519,7 @@ const PostNatal = () => {
               <Grid item xs={12} sm={4}>
                 <InputDescriptionField
                   size="small"
-                  required
+                  
                   fullWidth
                   id="Description"
                   label="Enter Description"

@@ -298,7 +298,7 @@ const PlanMaster = () => {
       width: 100,
     },
     { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 400 },
+    { field: "Description", headerName: "Description", width: 400, flex:1 },
     {
       field: "Week",
       headerName: "Week",
@@ -471,6 +471,7 @@ const PlanMaster = () => {
                 borderRadius: 50,
                 height: 32,
                 width: 32,
+                boxShadow: "0px 6px 6px 0px rgba(0, 0, 0, 0.25)", 
               }}
             ></CloseIcon>
           </IconButton>
@@ -511,7 +512,7 @@ const PlanMaster = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <FormControl style={{ width: 220 }} size="small" required>
+                <FormControl style={{ width: 220 }} size="small"  >
                   <InputLabel id="demo-select-small-label">
                     Select Age
                   </InputLabel>
@@ -541,7 +542,7 @@ const PlanMaster = () => {
               <Grid item xs={12} sm={4}>
                 <InputDescriptionField
                   size="small"
-                  required
+                   
                   fullWidth
                   id="Description"
                   label="Enter Description"
@@ -553,7 +554,7 @@ const PlanMaster = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <FormControl size="small" required style={{ width: 220 }}>
+                <FormControl size="small"   style={{ width: 220 }}>
                   <InputLabel id="demo-select-small-label">
                     Select Weight
                   </InputLabel>
@@ -584,7 +585,7 @@ const PlanMaster = () => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormControl style={{ width: 220 }} size="small" required>
+                <FormControl style={{ width: 220 }} size="small"  >
                   <InputLabel id="demo-select-small-label">
                     Select Height
                   </InputLabel>
@@ -609,7 +610,7 @@ const PlanMaster = () => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormControl style={{ width: 220 }} size="small" required>
+                <FormControl style={{ width: 220 }} size="small"  >
                   <InputLabel id="demo-select-small-label">
                     Select Week
                   </InputLabel>

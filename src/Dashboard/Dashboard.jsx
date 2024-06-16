@@ -312,14 +312,17 @@ export default function Dashboard() {
         </Paper>
       </Modal>
       <AppBar position="fixed" open={open}>
-        <Toolbar>
+    <Toolbar sx={{
+              boxShadow: '0px 5px 7px rgba(0, 0, 0, 0.1)',  
+              elevation:8,
+              display: 'flex',}}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
             sx={{
-              marginRight: 5,
+                         marginRight: 5,
             }}
           >
             <MenuIcon />
@@ -420,7 +423,6 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",

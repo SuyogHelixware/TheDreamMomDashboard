@@ -197,13 +197,13 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "SrNo", headerName: "SR.NO", width: 250 },
-              { field: "Name", headerName: "Name", width: 250 },
-              { field: "Description", headerName: "Description", width: 300 },
+              { field: "SrNo", headerName: "SR.NO", width: 100 },
+              { field: "Name", headerName: "Name", width: 300 },
+              { field: "Description", headerName: "Description", flex:1 },
               {
                 field: "Image",
                 headerName: "Image",
-                width: 250,
+                width: 150,
                 renderCell: (params) => (
                   <img
                     src={`${Bunny_Image_URL}/Schedule/Vaccination/${params.row.Image}`}

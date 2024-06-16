@@ -230,7 +230,7 @@ const ManageDoses = () => {
     },
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 300 },
+    { field: "Description", headerName: "Description", width: 300 , flex:1},
   ];
 
   const handleUpdate = (data) => {
@@ -287,7 +287,7 @@ const ManageDoses = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                required
+                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
@@ -302,7 +302,7 @@ const ManageDoses = () => {
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                required
+                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"
@@ -310,7 +310,7 @@ const ManageDoses = () => {
                 value={data.Description}
                 onChange={onchangeHandler}
                 multiline
-                rows={3}
+                rows={5}
                 placeholder="Enter your Description..."
               />
             </Grid>
