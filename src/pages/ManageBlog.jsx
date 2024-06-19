@@ -738,7 +738,7 @@ const ManageBlog = () => {
           }}
         >
           <AddIcon />
-          Add Blog & Newsletter
+          Add Blog 
         </Button>
       </Grid>
 
@@ -851,6 +851,36 @@ const ManageBlog = () => {
         >
           Manage NewsLetters
         </Typography>
+      </Grid>
+  
+      <Grid textAlign={"end"} marginBottom={1}>
+        <Button
+          onClick={handleOnSave}
+          type="text"
+          size="medium"
+          sx={{
+            pr: 2,
+            mb: 2,
+            color: "white",
+            backgroundColor: "#5C5CFF",
+            boxShadow: 5,
+            "&:hover": {
+              backgroundColor: "#E6E6FA",
+              border: "1px solid #5C5CFF",
+              color: "#5C5CFF",
+            },
+            "& .MuiButton-label": {
+              display: "flex",
+              alignItems: "center",
+            },
+            "& .MuiSvgIcon-root": {
+              marginRight: "10px",
+            },
+          }}
+        >
+          <AddIcon />
+          Add Newsletter
+        </Button>
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">

@@ -47,6 +47,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
 import * as React from "react";
+import AdUnitsOutlinedIcon from "@mui/icons-material/AdUnitsOutlined";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../src/assets/logo.png";
 import "../Dashboard/Dashboard.css";
@@ -145,6 +146,7 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(true);
   const [openList, setOpenList] = React.useState(false);
   const [on, setOn] = React.useState(false);
+  // const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [userData, setUserData] = React.useState({
     Name: "",
     Phone: "",
@@ -183,6 +185,7 @@ export default function Dashboard() {
   const location = useLocation();
 
   const handleDrawerOpen = () => {
+    // setDrawerOpen(true);
     setOpen(!open);
     handleClickTransaction();
   };
@@ -294,7 +297,7 @@ export default function Dashboard() {
                       Navigate("/");
                     }}
                     sx={{
-                      boxShadow:9,
+                      boxShadow: 9,
                       borderRadius: 10,
                       backgroundColor: "#70b2d9",
                       backgroundImage:
@@ -312,17 +315,20 @@ export default function Dashboard() {
         </Paper>
       </Modal>
       <AppBar position="fixed" open={open}>
-    <Toolbar sx={{
-              boxShadow: '0px 5px 7px rgba(0, 0, 0, 0.1)',  
-              elevation:8,
-              display: 'flex',}}>
+        <Toolbar
+          sx={{
+            boxShadow: "0px 5px 7px rgba(0, 0, 0, 0.1)",
+            elevation: 8,
+            display: "flex",
+          }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
             sx={{
-                         marginRight: 5,
+              marginRight: 5,
             }}
           >
             <MenuIcon />
@@ -351,7 +357,7 @@ export default function Dashboard() {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={open} onClick={handleDrawerOpen}>
         <DrawerHeader>
           <IconButton>
             {theme.direction === "rtl" ? (
@@ -430,7 +436,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }} onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <DashboardIcon />
                   </ListItemIcon>
                   <ListItemText primary="Dashboard" />
@@ -451,7 +460,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}   onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <ManageAccountsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage User" />
@@ -471,7 +483,10 @@ export default function Dashboard() {
                   },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }} onClick={handleDrawerOpen}> 
+                <ListItemIcon
+                  sx={{ minWidth: "32px", marginRight: "8px" }}
+                  // onClick={handleDrawerOpen}
+                >
                   <WorkHistoryIcon />
                 </ListItemIcon>
                 <ListItemText primary="Manage Schedule" />
@@ -503,7 +518,7 @@ export default function Dashboard() {
                         },
                       }}
                     >
-                      <ListItemIcon sx={{ pl: 4 }} >
+                      <ListItemIcon sx={{ pl: 4 }}>
                         <RemoveIcon />
                       </ListItemIcon>
                       <ListItemText primary="Diet" sx={{ pl: 2 }} />
@@ -655,7 +670,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}   onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <ApprovalIcon />
                   </ListItemIcon>
                   <ListItemText primary="Post Natal" />
@@ -677,7 +695,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <TodayIcon />
                   </ListItemIcon>
                   <ListItemText primary="Plan Master" />
@@ -699,7 +720,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <NoteAltIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Assesment" />
@@ -723,7 +747,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <MonitorHeartIcon />
                   </ListItemIcon>
                   <ListItemText primary="Medical Condition" />
@@ -746,7 +773,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <NoFoodIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Avoid Foods" />
@@ -767,7 +797,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <VideoSettingsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Videos" />
@@ -788,7 +821,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <PostAddIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Posts" />
@@ -809,7 +845,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <QuizIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage FAQ's" />
@@ -833,7 +872,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <SubscriptionsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Subscription" />
@@ -854,7 +896,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <NoteAddIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Report" />
@@ -875,7 +920,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <AppSettingsAltIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Advertise" />
@@ -896,7 +944,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <NewspaperIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Blog & letter" />
@@ -917,7 +968,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <GroupsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Expert ANS" />
@@ -944,6 +998,29 @@ export default function Dashboard() {
                 <ListItemText primary="Manage Comments" />
               </ListItemButton>
             </Link> */}
+              {/* ------------------------------------------ */}
+
+              <Link to="manage-banner" className="link_style">
+                <ListItemButton
+                  onClick={handleClickTransaction}
+                  selected={location.pathname === "/dashboard/manage-banner"}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "#5C5CFF",
+                      borderRadius: 1,
+                      "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                        color: "#FFFFFF",
+                      },
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                    <AdUnitsOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage Banners" />
+                </ListItemButton>
+              </Link>
+              {/* ----------------------------------------- */}
               <Link to="manage-doses" className="link_style">
                 <ListItemButton
                   onClick={handleClickTransaction}
@@ -959,7 +1036,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <VaccinesIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Dosage" />
@@ -980,7 +1060,10 @@ export default function Dashboard() {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}  onClick={handleDrawerOpen}>
+                  <ListItemIcon
+                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    onClick={handleDrawerOpen}
+                  >
                     <LocalOfferIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Tags" />
@@ -1004,7 +1087,7 @@ export default function Dashboard() {
             },
           }),
         }}
-       >
+      >
         <DrawerHeader />
         <Outlet />
       </Box>

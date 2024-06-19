@@ -31,6 +31,7 @@ import ManageTags from "../pages/ManageTags";
 import PlanMaster from "../pages/PlanMaster/PlanMaster";
 import Precaution from "../pages/ManageSchedule/Precaution";
 import PostNatal from "../PostNatal/PostNatal";
+import ManageBanner from "../pages/ManageBanner";
 
 export default function Routing() {
   return (
@@ -75,6 +76,7 @@ export default function Routing() {
             <Route path="manage-advertise" element={<ManageAdvertise />} />
             <Route path="manage-report" element={<ManageReport />} />
             <Route path="medical-condition" element={<MedicalCondition />} />
+            <Route path="manage-banner" element={<ManageBanner/>}/>
             {/* <Route path="login" element={<Login />} /> */}
           </Route>
         </Routes>
