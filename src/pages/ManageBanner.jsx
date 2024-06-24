@@ -18,7 +18,7 @@ import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import axios from "axios";
+// import axios from "axios";
 import * as React from "react";
 import Swal from "sweetalert2";
 import Loader from "../components/Loader";
@@ -37,12 +37,12 @@ const styles = {
 const ManageBanner = () => {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
-  const [imgData, setImgData] = React.useState([]);
+  // const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [page, setPage] = React.useState(1);
 
-  const cardsPerPage = 8;
+  // const cardsPerPage = 8;
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
@@ -279,102 +279,102 @@ const ManageBanner = () => {
     // });
   };
 
-  const handleDelete = (data) => {
-    Swal.fire({
-      text: "Are you sure you want to delete?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // setLoaderOpen(true);
-        axios
-          //   .delete(`${BASE_URL} /${data._id}`)
-          //   .then((response) => {
-          //     if (response.data.status) {
-          //       axios
-          //         .delete(`${Bunny_Storage_URL}/${data.Image}`, {
-          //           headers: {
-          //             AccessKey: Bunny_Storage_Access_Key,
-          //           },
-          //         })
-          //         .then((res) => {
-          //           if (res.data.HttpCode === 200) {
-          //             // setLoaderOpen(false);
-          //             Swal.fire({
-          //               position: "center",
-          //               icon: "success",
-          //               toast: true,
-          //               title: "Data deleted successfully",
-          //               showConfirmButton: false,
-          //               timer: 1500,
-          //             });
-          //             getAllImgList();
-          //           } else {
-          //             // setLoaderOpen(false);
-          //             Swal.fire({
-          //               position: "center",
-          //               icon: "error",
-          //               toast: true,
-          //               title: "Failed",
-          //               text: "Failed to Delete!",
-          //               showConfirmButton: true,
-          //             });
-          //           }
-          //         })
-          //         .catch((error) => {
-          //         //   setLoaderOpen(false);
-          //           Swal.fire({
-          //             position: "center",
-          //             icon: "error",
-          //             toast: true,
-          //             title: "Failed",
-          //             text: error.message,
-          //             showConfirmButton: true,
-          //           });
-          //         });
-          //     } else {
-          //     //   setLoaderOpen(false);
-          //       Swal.fire({
-          //         position: "center",
-          //         icon: "error",
-          //         toast: true,
-          //         title: "Failed",
-          //         text: "Failed to Delete!",
-          //         showConfirmButton: true,
-          //       });
-          //     }
-          //   })
-          .catch((error) => {
-            // setLoaderOpen(false);
-            Swal.fire({
-              position: "center",
-              icon: "error",
-              toast: true,
-              title: "Failed",
-              text: error.message,
-              showConfirmButton: true,
-            });
-          });
-      }
-    });
-  };
+  // const handleDelete = (data) => {
+  //   Swal.fire({
+  //     text: "Are you sure you want to delete?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#d33",
+  //     cancelButtonColor: "#3085d6",
+  //     confirmButtonText: "Yes, delete it!",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       // setLoaderOpen(true);
+  //       axios
+  //         //   .delete(`${BASE_URL} /${data._id}`)
+  //         //   .then((response) => {
+  //         //     if (response.data.status) {
+  //         //       axios
+  //         //         .delete(`${Bunny_Storage_URL}/${data.Image}`, {
+  //         //           headers: {
+  //         //             AccessKey: Bunny_Storage_Access_Key,
+  //         //           },
+  //         //         })
+  //         //         .then((res) => {
+  //         //           if (res.data.HttpCode === 200) {
+  //         //             // setLoaderOpen(false);
+  //         //             Swal.fire({
+  //         //               position: "center",
+  //         //               icon: "success",
+  //         //               toast: true,
+  //         //               title: "Data deleted successfully",
+  //         //               showConfirmButton: false,
+  //         //               timer: 1500,
+  //         //             });
+  //         //             getAllImgList();
+  //         //           } else {
+  //         //             // setLoaderOpen(false);
+  //         //             Swal.fire({
+  //         //               position: "center",
+  //         //               icon: "error",
+  //         //               toast: true,
+  //         //               title: "Failed",
+  //         //               text: "Failed to Delete!",
+  //         //               showConfirmButton: true,
+  //         //             });
+  //         //           }
+  //         //         })
+  //         //         .catch((error) => {
+  //         //         //   setLoaderOpen(false);
+  //         //           Swal.fire({
+  //         //             position: "center",
+  //         //             icon: "error",
+  //         //             toast: true,
+  //         //             title: "Failed",
+  //         //             text: error.message,
+  //         //             showConfirmButton: true,
+  //         //           });
+  //         //         });
+  //         //     } else {
+  //         //     //   setLoaderOpen(false);
+  //         //       Swal.fire({
+  //         //         position: "center",
+  //         //         icon: "error",
+  //         //         toast: true,
+  //         //         title: "Failed",
+  //         //         text: "Failed to Delete!",
+  //         //         showConfirmButton: true,
+  //         //       });
+  //         //     }
+  //         //   })
+  //         .catch((error) => {
+  //           // setLoaderOpen(false);
+  //           Swal.fire({
+  //             position: "center",
+  //             icon: "error",
+  //             toast: true,
+  //             title: "Failed",
+  //             text: error.message,
+  //             showConfirmButton: true,
+  //           });
+  //         });
+  //     }
+  //   });
+  // };
 
-  const handleUpdate = (data) => {
-    console.log(data);
-    setSaveUpdateButton("UPDATE");
-    setOn(true);
+  // const handleUpdate = (data) => {
+  //   console.log(data);
+  //   setSaveUpdateButton("UPDATE");
+  //   setOn(true);
 
-    setData({
-      Name: data.Name,
-      Description: data.Description,
-      Image: data.Image,
-      Id: data._id,
-    });
-    console.log(data);
-  };
+  //   setData({
+  //     Name: data.Name,
+  //     Description: data.Description,
+  //     Image: data.Image,
+  //     Id: data._id,
+  //   });
+  //   console.log(data);
+  // };
 
   React.useEffect(() => {
     getAllImgList();
@@ -392,8 +392,8 @@ const ManageBanner = () => {
     }
   };
 
-  const startIndex = (page - 1) * cardsPerPage;
-  const endIndex = startIndex + cardsPerPage;
+  // const startIndex = (page - 1) * cardsPerPage;
+  // const endIndex = startIndex + cardsPerPage;
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -598,9 +598,9 @@ const ManageBanner = () => {
       </Grid>
 
       <Grid container spacing={3} justifyContent="start">
-        {Array.isArray(imgData) &&
-          imgData.slice(startIndex, endIndex).map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+        {/* {Array.isArray(imgData) && */}
+          {/* imgData.slice(startIndex, endIndex).map((item, index) => ( */}
+            {/* <Grid item xs={12} sm={6} md={4} lg={3} key={index}> */}
               <Card sx={{ width: "100%" }}>
                 <img
                   style={{
@@ -611,7 +611,7 @@ const ManageBanner = () => {
                   }}
                   //   src={`${Bunny_Image_URL}/${item.Image}`}
                   alt="img"
-                  title={item.Name}
+                  // title={item.Name}
                 />
                 <CardContent>
                   <Typography
@@ -621,7 +621,7 @@ const ManageBanner = () => {
                     component="div"
                     textAlign={"start"}
                   >
-                    <b>{item.Name}</b>
+                    {/* <b>{item.Name}</b> */}
                   </Typography>
                   <Typography
                     textAlign={"start"}
@@ -630,7 +630,7 @@ const ManageBanner = () => {
                     color="textSecondary"
                     component="div"
                   >
-                    {item.Description}
+                    {/* {item.Description} */}
                   </Typography>
                 </CardContent>
                 <CardActions
@@ -642,7 +642,7 @@ const ManageBanner = () => {
                 >
                   <IconButton
                     color="primary"
-                    onClick={() => handleUpdate(item)}
+                    // onClick={() => handleUpdate(item)}
                   >
                     <EditNoteIcon />
                   </IconButton>
@@ -650,14 +650,14 @@ const ManageBanner = () => {
                   <Button
                     size="medium"
                     sx={{ color: "red" }}
-                    onClick={() => handleDelete(item)}
+                    // onClick={() => handleDelete(item)}
                   >
                     <DeleteForeverIcon />
                   </Button>
                 </CardActions>
               </Card>
-            </Grid>
-          ))}
+            {/* </Grid> */}
+           {/* ))}  */}
       </Grid>
 
       <Grid container spacing={3} width="100%" pt={5}>
@@ -667,7 +667,7 @@ const ManageBanner = () => {
           style={{ display: "flex", justifyContent: "center" }}
         >
           <Pagination
-            count={Math.ceil(imgData.length / 8)}
+            // count={Math.ceil(imgData.length / 8)}
             color="primary"
             page={page}
             onChange={handlePageChange}
