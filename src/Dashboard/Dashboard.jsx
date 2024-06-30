@@ -357,7 +357,9 @@ export default function Dashboard() {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open} onClick={handleDrawerOpen}>
+      <Drawer variant="permanent" open={open}
+      //  onClick={handleDrawerOpen}
+       >
         <DrawerHeader>
           <IconButton>
             {theme.direction === "rtl" ? (
@@ -575,6 +577,34 @@ export default function Dashboard() {
                       <ListItemText primary="Medical Test" sx={{ pl: 2 }} />
                     </ListItemButton>
                   </Link>
+
+                   
+                  <Link to="manage-schedule/MedDetils" className="link_style">
+                    <ListItemButton
+                      selected={
+                        router.pathname === "/dashboard/manage-schedule/MedDetils"
+                          ? true
+                          : false
+                      }
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#5C5CFF",
+                          // m:0.5,
+                          borderRadius: 1,
+                          "& .MuiListItemIcon-root, & .MuiTypography-root": {
+                            color: "#FFFFFF",
+                          },
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ pl: 4 }}>
+                        <RemoveIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Medical Details" sx={{ pl: 2 }} />
+                    </ListItemButton>
+                  </Link>
+
+
 
                   <Link to="manage-schedule/medication" className="link_style">
                     <ListItemButton
