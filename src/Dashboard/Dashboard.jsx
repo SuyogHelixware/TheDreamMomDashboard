@@ -11,6 +11,8 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MenuIcon from "@mui/icons-material/Menu";
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import NoFoodIcon from "@mui/icons-material/NoFood";
@@ -55,6 +57,14 @@ import "../Dashboard/Dashboard.css";
 import { Bunny_Image_URL } from "../Constant";
 import { isLogin } from "./Auth";
 
+
+import {
+  Tooltip,
+} from '@mui/material';
+import {
+  Menu as 
+  FullscreenExit,
+} from '@mui/icons-material';
 const drawerWidth = 260;
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -141,6 +151,8 @@ const style = {
 };
 
 export default function Dashboard() {
+const [fullscreen, setFullscreen] = React.useState(false);
+
   const Navigate = useNavigate();
   const router = useLocation();
   const [open, setOpen] = React.useState(true);
@@ -172,6 +184,16 @@ export default function Dashboard() {
   };
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+// ------------------Full Screen-------------------
+const toggleFullscreen = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().then(() => setFullscreen(true));
+  } else {
+    document.exitFullscreen().then(() => setFullscreen(false));
+  }
+}; 
+// ---------------------------------------
 
   React.useEffect(() => {
     const userData = sessionStorage.getItem("userData");
@@ -315,48 +337,59 @@ export default function Dashboard() {
         </Paper>
       </Modal>
       <AppBar position="fixed" open={open}>
-        <Toolbar
+      <Toolbar
+        sx={{
+          boxShadow: "0px 5px 7px rgba(0, 0, 0, 0.1)",
+          elevation: 8,
+          display: "flex",
+        }}
+      >
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={handleDrawerOpen}
+          edge="start"
           sx={{
-            boxShadow: "0px 5px 7px rgba(0, 0, 0, 0.1)",
-            elevation: 8,
-            display: "flex",
+            marginRight: 5,
           }}
         >
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            textAlign="center"
-            width="100%"
-            className="flash-animation"
-            sx={{ elevation: 6 }}
-          >
-            The Dream Mom
-          </Typography>
+          <MenuIcon />
+        </IconButton>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          textAlign="center"
+          width="100%"
+          className="flash-animation"
+          sx={{ elevation: 6 }}
+        >
+          The Dream Mom
+        </Typography>
+        <Tooltip title={fullscreen ? "Exit Fullscreen" : "Fullscreen"}>
           <IconButton
             size="large"
             edge="end"
-            aria-label="account of current user"
-            aria-controls={menuId}
-            aria-haspopup="true"
-            onClick={handleOn}
+            aria-label="toggle fullscreen"
+            onClick={toggleFullscreen}
             color="inherit"
           >
-            <AccountCircle />
+            {fullscreen ? <FullscreenIcon/> : <FullscreenExitIcon />}
           </IconButton>
-        </Toolbar>
-      </AppBar>
+        </Tooltip>
+        <IconButton
+          size="large"
+          edge="end"
+          aria-label="account of current user"
+          aria-controls={menuId}
+          aria-haspopup="true"
+          onClick={handleOn}
+          color="inherit"
+        >
+          <AccountCircle />
+        </IconButton>
+      </Toolbar>
+    </AppBar>
       <Drawer variant="permanent" open={open}
       //  onClick={handleDrawerOpen}
        >

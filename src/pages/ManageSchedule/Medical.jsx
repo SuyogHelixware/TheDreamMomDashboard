@@ -340,6 +340,32 @@ const Medical = () => {
                 <CloseIcon style={{ color: "black" }} />
               </IconButton>
             </Grid>
+    
+    {/* <Grid item xs={12}>
+              <FormControl sx={{ width: "110px" }} size="small">
+                <InputLabel id="demo-select-large-Choose-Lang">
+                  Change Lang
+                </InputLabel>
+
+                <Select
+                  id="Category"
+                  label="Category"
+                  name="Category"
+                  onChange={onchangeHandler}
+                  value={data.Category}
+                >
+                  <MenuItem value="en" onClick={HandleEnglish}>
+                    English
+                  </MenuItem>
+                  <MenuItem value="mr" onClick={HandleMarathi}>
+                    Marathi
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid> */}
+
+     
+
             <Grid item xs={12}>
               <TextField
                 size="small"
@@ -358,7 +384,6 @@ const Medical = () => {
 
             <Grid item xs={12}>
               <FormControl fullWidth size="small" 
-              // required
               >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 

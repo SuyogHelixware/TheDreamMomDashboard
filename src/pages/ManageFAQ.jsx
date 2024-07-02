@@ -34,7 +34,10 @@ const ManageFAQ = () => {
   const [data, setData] = React.useState({
     Question: "",
     Answer: "",
+    QuestionL1: "",
+    AnswerL1: "",
     Id: "",
+    Category: "en",
   });
 
   const handleChange = (event) => {
@@ -59,6 +62,8 @@ const ManageFAQ = () => {
       Id: "",
       Question: "",
       Answer: "",
+      QuestionL1: "",
+      AnswerL1: "",
       TagsIds: [],
       Status: 1,
     });
@@ -73,6 +78,14 @@ const ManageFAQ = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
+    setData({
+      Question: "",
+      Answer: "",
+      QuestionL1: "",
+      AnswerL1: "",
+      Id: "",
+      Category: "en",
+    });
   };
 
   const onChangeHandler = (event) => {
@@ -106,11 +119,15 @@ const ManageFAQ = () => {
     const saveObj = {
       Question: data.Question,
       Answer: data.Answer,
+      QuestionL1: data.QuestionL1,
+      AnswerL1: data.AnswerL1,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
     const UpdateObj = {
       Question: data.Question,
       Answer: data.Answer,
+      QuestionL1: data.QuestionL1,
+      AnswerL1: data.AnswerL1,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
 
@@ -274,7 +291,7 @@ const ManageFAQ = () => {
     },
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Question", headerName: "Question", width: 350 },
-    { field: "Answer", headerName: "Answer", width: 350, flex:1 },
+    { field: "Answer", headerName: "Answer", width: 350, flex: 1 },
   ];
 
   const handleUpdate = (rowData) => {
@@ -284,8 +301,11 @@ const ManageFAQ = () => {
     setData({
       Question: rowData.Question,
       Answer: rowData.Answer,
+      QuestionL1: rowData.QuestionL1,
+      AnswerL1: rowData.AnswerL1,
       Id: rowData._id,
       TagsIds: rowData.TagsIds,
+      Category: "en",
     });
   };
 
@@ -328,6 +348,35 @@ const ManageFAQ = () => {
                 <CloseIcon style={{ color: "black" }} />
               </IconButton>
             </Grid>
+
+            <Grid item xs={12}>
+              <FormControl
+                sx={{ width: "150px" }}
+                size="small"
+                disabled={SaveUpdateButton === "SAVE"}
+              >
+                <InputLabel id="demo-select-large">
+                  Select Language
+                </InputLabel>
+
+                <Select
+                  id="Category"
+                  label="Category"
+                  name="Category"
+                  onChange={onChangeHandler}
+                  value={data.Category}
+                  disabled={SaveUpdateButton === "SAVE"}
+                >
+                  <MenuItem key="en" value="en">
+                    English
+                  </MenuItem>
+                  <MenuItem key="mr" value="mr">
+                    Marathi
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid item xs={12}>
               <TextField
                 size="small"
@@ -336,8 +385,8 @@ const ManageFAQ = () => {
                 fullWidth
                 id="Question"
                 label="Enter Question"
-                name="Question"
-                value={data.Question}
+                name={data.Category === "en" ? "Question" : "QuestionL1"}
+                value={data.Category === "en" ? data.Question : data.QuestionL1}
                 onChange={onChangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
@@ -345,9 +394,11 @@ const ManageFAQ = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth size="small"
-              //  required
-               >
+              <FormControl
+                fullWidth
+                size="small"
+                //  required
+              >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -387,8 +438,8 @@ const ManageFAQ = () => {
                 // required
                 id="Answer"
                 label="Enter Answer"
-                name="Answer"
-                value={data.Answer}
+                name={data.Category === "en" ? "Answer" : "AnswerL1"}
+                value={data.Category === "en" ? data.Answer : data.AnswerL1}
                 onChange={onChangeHandler}
                 multiline
                 rows={5}
@@ -441,7 +492,7 @@ const ManageFAQ = () => {
         elevation={4}
       >
         <Typography
-         className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
