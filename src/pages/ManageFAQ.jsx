@@ -381,7 +381,6 @@ const ManageFAQ = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                // required
                 fullWidth
                 id="Question"
                 label="Enter Question"

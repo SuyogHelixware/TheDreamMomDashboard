@@ -60,9 +60,12 @@ const ManageBlog = () => {
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
+    NameL1: "",
+    DescriptionL1: "",
     Link: "",
     Id: "",
     Category: "",
+    Language:"en",
   });
 
   const [blogPage, setBlogPage] = React.useState(1);
@@ -73,10 +76,13 @@ const ManageBlog = () => {
       Id: "",
       Name: "",
       Description: "",
+      NameL1: "",
+    DescriptionL1: "",
       Link: "",
       TagsIds: [],
       Status: 1,
       Category: "",
+      Language:"",
     });
     setSelectedTags([]);
     setUploadedImg("");
@@ -165,9 +171,18 @@ const ManageBlog = () => {
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
-    setData([]);
+    
     clearFormData();
     setOn(true);
+    setData({  Name: "",
+      Description: "",
+      NameL1: "",
+      DescriptionL1: "",
+      Link: "",
+      Id: "",
+      Category: "",
+      Language:"en",
+    });
   };
 
   const onchangeHandler = (event) => {
@@ -205,7 +220,9 @@ const ManageBlog = () => {
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
       Name: data.Name,
+      NameL1: data.NameL1,
       Description: data.Description,
+      DescriptionL1: data.DescriptionL1,
       Link: filename,
       TagsIds: selectedTags.map((tag) => tag._id),
       Category: data.Category,
@@ -213,6 +230,8 @@ const ManageBlog = () => {
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
       Link: uploadedImg === "" ? data.Link : filename,
       Category: data.Category,
       TagsIds: selectedTags.map((tag) => tag._id),
@@ -447,9 +466,12 @@ const ManageBlog = () => {
       Id: data._id,
       Name: data.Name,
       Description: data.Description,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
       Link: data.Link,
       TagsIds: data.TagsIds,
       Category: data.Category,
+      Language:"en",
     });
   };
 
@@ -532,6 +554,34 @@ const ManageBlog = () => {
                 <CloseIcon style={{ color: "black" }} />
               </IconButton>
             </Grid>
+
+
+            <Grid item xs={12}>
+              <FormControl sx={{ width: "110px" }} size="small"
+              disabled={SaveUpdateButton === "SAVE"}
+               >
+                <InputLabel id="demo-select-large-Choose-Lang">
+                  Select Lang
+                </InputLabel>
+
+                <Select
+                  id="Language"
+                  label="Language"
+                  name="Language"
+                  onChange={onchangeHandler}
+                  value={data.Language}
+                  disabled={SaveUpdateButton === "SAVE"}
+                >
+                  <MenuItem value="en" >
+                    English
+                  </MenuItem>
+                  <MenuItem value="mr" >
+                    Marathi
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid item xs={12}>
               <TextField
                 size="small"
@@ -540,8 +590,8 @@ const ManageBlog = () => {
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name="Name"
-                value={data.Name}
+                name={data.Language==="en"? "Name" :"NameL1"}
+                value={data.Language==="en"? data.Name : data.NameL1}
                 onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
@@ -611,8 +661,8 @@ const ManageBlog = () => {
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name="Description"
-                value={data.Description}
+                name={data.Language==="en"? "Description": "DescriptionL1"}
+                value={data.Language==="en"? data.Description : data.DescriptionL1 }
                 onChange={onchangeHandler}
                 multiline
                 rows={3}

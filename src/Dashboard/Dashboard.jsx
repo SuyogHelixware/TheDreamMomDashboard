@@ -5,14 +5,15 @@ import AppSettingsAltIcon from "@mui/icons-material/AppSettingsAlt";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 // import CommentIcon from "@mui/icons-material/Comment";
+import AdUnitsOutlinedIcon from "@mui/icons-material/AdUnitsOutlined";
 import ApprovalIcon from "@mui/icons-material/Approval";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import GroupsIcon from "@mui/icons-material/Groups";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MenuIcon from "@mui/icons-material/Menu";
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import NoFoodIcon from "@mui/icons-material/NoFood";
@@ -26,8 +27,10 @@ import TodayIcon from "@mui/icons-material/Today";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
+import avatar from "../../src/assets/avtar.png";
 import {
   Avatar,
+  Badge,
   Button,
   Collapse,
   Grid,
@@ -49,7 +52,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
 import * as React from "react";
-import AdUnitsOutlinedIcon from "@mui/icons-material/AdUnitsOutlined";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../src/assets/logo.png";
 import "../Dashboard/Dashboard.css";
@@ -57,14 +59,7 @@ import "../Dashboard/Dashboard.css";
 import { Bunny_Image_URL } from "../Constant";
 import { isLogin } from "./Auth";
 
-
-import {
-  Tooltip,
-} from '@mui/material';
-import {
-  Menu as 
-  FullscreenExit,
-} from '@mui/icons-material';
+import { Tooltip } from "@mui/material";
 const drawerWidth = 260;
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -151,7 +146,7 @@ const style = {
 };
 
 export default function Dashboard() {
-const [fullscreen, setFullscreen] = React.useState(false);
+  const [fullscreen, setFullscreen] = React.useState(false);
 
   const Navigate = useNavigate();
   const router = useLocation();
@@ -185,15 +180,17 @@ const [fullscreen, setFullscreen] = React.useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-// ------------------Full Screen-------------------
-const toggleFullscreen = () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().then(() => setFullscreen(true));
-  } else {
-    document.exitFullscreen().then(() => setFullscreen(false));
-  }
-}; 
-// ---------------------------------------
+  // ------------------Full Screen-------------------
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement
+        .requestFullscreen()
+        .then(() => setFullscreen(true));
+    } else {
+      document.exitFullscreen().then(() => setFullscreen(false));
+    }
+  };
+  // ---------------------------------------
 
   React.useEffect(() => {
     const userData = sessionStorage.getItem("userData");
@@ -232,6 +229,10 @@ const toggleFullscreen = () => {
   };
 
   const menuId = "primary-search-account-menu";
+
+  const handleUploadProfile = () => {
+    setOpen(true);
+  };
 
   React.useEffect(() => {
     if (!isLogin()) {
@@ -337,47 +338,47 @@ const toggleFullscreen = () => {
         </Paper>
       </Modal>
       <AppBar position="fixed" open={open}>
-      <Toolbar
-        sx={{
-          boxShadow: "0px 5px 7px rgba(0, 0, 0, 0.1)",
-          elevation: 8,
-          display: "flex",
-        }}
-      >
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          edge="start"
+        <Toolbar
           sx={{
-            marginRight: 5,
+            boxShadow: "0px 5px 7px rgba(0, 0, 0, 0.1)",
+            elevation: 8,
+            display: "flex",
           }}
         >
-          <MenuIcon />
-        </IconButton>
-        <Typography
-          variant="h6"
-          noWrap
-          component="div"
-          textAlign="center"
-          width="100%"
-          className="flash-animation"
-          sx={{ elevation: 6 }}
-        >
-          The Dream Mom
-        </Typography>
-        <Tooltip title={fullscreen ? "Exit Fullscreen" : "Fullscreen"}>
           <IconButton
-            size="large"
-            edge="end"
-            aria-label="toggle fullscreen"
-            onClick={toggleFullscreen}
             color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{
+              marginRight: 5,
+            }}
           >
-            {fullscreen ? <FullscreenIcon/> : <FullscreenExitIcon />}
+            <MenuIcon />
           </IconButton>
-        </Tooltip>
-        <IconButton
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            textAlign="center"
+            width="100%"
+            className="flash-animation"
+            sx={{ elevation: 6 }}
+          >
+            The Dream Mom
+          </Typography>
+          <Tooltip title={fullscreen ? "Exit Fullscreen" : "Fullscreen"}>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="toggle fullscreen"
+              onClick={toggleFullscreen}
+              color="inherit"
+            >
+              {fullscreen ? <FullscreenIcon /> : <FullscreenExitIcon />}
+            </IconButton>
+          </Tooltip>
+          {/* <IconButton
           size="large"
           edge="end"
           aria-label="account of current user"
@@ -387,12 +388,30 @@ const toggleFullscreen = () => {
           color="inherit"
         >
           <AccountCircle />
-        </IconButton>
-      </Toolbar>
-    </AppBar>
-      <Drawer variant="permanent" open={open}
-      //  onClick={handleDrawerOpen}
-       >
+        </IconButton> */}
+
+ <Tooltip title={userData.Name}>
+          <IconButton
+            size="small"
+            edge="end"
+            aria-label="account of current user"
+            aria-controls={menuId}
+            aria-haspopup="true"
+            onClick={handleOn}
+            color="inherit"
+          >
+            <Avatar    src={`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}` ||<AccountCircle />} />
+
+          </IconButton>
+          </Tooltip>
+                     
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        open={open}
+        //  onClick={handleDrawerOpen}
+      >
         <DrawerHeader>
           <IconButton>
             {theme.direction === "rtl" ? (
@@ -611,11 +630,11 @@ const toggleFullscreen = () => {
                     </ListItemButton>
                   </Link>
 
-                   
                   <Link to="manage-schedule/MedDetils" className="link_style">
                     <ListItemButton
                       selected={
-                        router.pathname === "/dashboard/manage-schedule/MedDetils"
+                        router.pathname ===
+                        "/dashboard/manage-schedule/MedDetils"
                           ? true
                           : false
                       }
@@ -636,8 +655,6 @@ const toggleFullscreen = () => {
                       <ListItemText primary="Medical Details" sx={{ pl: 2 }} />
                     </ListItemButton>
                   </Link>
-
-
 
                   <Link to="manage-schedule/medication" className="link_style">
                     <ListItemButton

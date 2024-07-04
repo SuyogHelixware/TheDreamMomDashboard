@@ -74,7 +74,6 @@ const ManageDiet = () => {
       NameL1: "",
       Description: "",
       DescriptionL1: "",
-
       Image: "",
       TagsIds: [],
       Status: 1,
@@ -522,7 +521,7 @@ const ManageDiet = () => {
                 disabled={SaveUpdateButton === "SAVE"}
               >
                 <InputLabel id="demo-select-large-Choose-Lang">
-                  Change Lang
+                  Select Lang
                 </InputLabel>
 
                 <Select

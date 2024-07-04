@@ -4,9 +4,13 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
   Modal,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -30,7 +34,10 @@ export default function MedicalCondition() {
     Id: "",
     Name: "",
     Description: "",
+    NameL1: "",
+    DescriptionL1: "",
     Status: 1,
+    Category:"en",
   });
 
   const clearFormData = () => {
@@ -38,7 +45,10 @@ export default function MedicalCondition() {
       Id: "",
       Name: "",
       Description: "",
+      NameL1: "",
+      DescriptionL1: "",
       Status: 1,
+      Category:"en",
     });
   };
 
@@ -83,11 +93,15 @@ export default function MedicalCondition() {
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
       Status: data.Status,
     };
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
       Status: data.Status,
     };
 
@@ -218,7 +232,10 @@ export default function MedicalCondition() {
     setData({
       Name: rowData.Name,
       Description: rowData.Description,
+      NameL1: rowData.NameL1,
+      DescriptionL1: rowData.DescriptionL1,
       Id: rowData._id,
+      Category:"en"
     });
   };
 
@@ -313,10 +330,34 @@ export default function MedicalCondition() {
                 <CloseIcon style={{ color: "black" }} />
               </IconButton>
             </Grid>
+            <Grid item xs={12}>
+              <FormControl sx={{ width: "110px" }} size="small"
+              disabled={SaveUpdateButton === "SAVE"}
+               >
+                <InputLabel id="demo-select-large-Choose-Lang">
+                  Select Lang
+                </InputLabel>
 
+                <Select
+                  id="Category"
+                  label="Category"
+                  name="Category"
+                  onChange={onchangeHandler}
+                  value={data.Category}
+                  disabled={SaveUpdateButton === "SAVE"}
+                >
+                  <MenuItem value="en" >
+                    English
+                  </MenuItem>
+                  <MenuItem value="mr" >
+                    Marathi
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid item xs={12}>
               <TextField
-                name="Name"
+              
                 // required
                 size="small"
                 id="Name"
@@ -324,17 +365,18 @@ export default function MedicalCondition() {
                 style={{ borderRadius: 10, width: "100%" }}
                 autoFocus
                 onChange={onchangeHandler}
-                value={data.Name}
+                  name={data.Category==="en"? "Name" : "NameL1" }
+                  value={data.Category==="en" ? data.Name: data.NameL1}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 // required
                 label="Enter Description"
-                name="Description"
                 id="Description"
                 style={{ borderRadius: 10, width: "100%" }}
-                value={data.Description}
+                name={data.Category==="en"? "Description": "DescriptionL1"}
+                value={data.Category==="en"? data.Description : data.DescriptionL1 }
                 multiline
                 rows={5}
                 onChange={onchangeHandler}

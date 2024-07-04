@@ -57,8 +57,11 @@ const Exercise = () => {
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
+    NameL1: "",
+    DescriptionL1: "",
     Image: "",
     Id: "",
+    Category:"en",
   });
 
   const clearFormData = () => {
@@ -66,6 +69,8 @@ const Exercise = () => {
       Id: "",
       Name: "",
       Description: "",
+      NameL1: "",
+    DescriptionL1: "",
       Image: "",
       TagsIds: [],
       Status: 1,
@@ -98,7 +103,14 @@ const Exercise = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setData([]);
+    setData( { Name: "",
+      Description: "",
+      NameL1: "",
+      DescriptionL1: "",
+      Image: "",
+      Id: "",
+     Category:"en",
+    });
   };
 
   const handleChange = (event) => {
@@ -149,6 +161,8 @@ const Exercise = () => {
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
+      NameL1:data.NameL1,
+    DescriptionL1:data.DescriptionL1,
       Image: filename,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
@@ -156,6 +170,8 @@ const Exercise = () => {
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
+      NameL1:data.NameL1,
+    DescriptionL1:data.DescriptionL1,
       Image: uploadedImg === "" ? data.Image : filename,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
@@ -400,9 +416,12 @@ const Exercise = () => {
     setData({
       Name: data.Name,
       Description: data.Description,
+      NameL1:data.NameL1,
+    DescriptionL1:data.DescriptionL1,
       Image: data.Image,
       Id: data._id,
       TagsIds: data.TagsIds,
+      Category:"en",
     });
     console.log(data);
   };
@@ -481,16 +500,45 @@ const Exercise = () => {
                 <CloseIcon style={{ color: "black" }} />
               </IconButton>
             </Grid>
+
+            <Grid item xs={12}>
+              <FormControl
+                sx={{ width: "110px" }}
+                size="small"
+                disabled={SaveUpdateButton === "SAVE"}
+              >
+                <InputLabel id="demo-select-large-Choose-Lang">
+                  Select Lang
+                </InputLabel>
+
+                <Select
+                  id="Category"
+                  label="Category"
+                  name="Category"
+                  onChange={onchangeHandler}
+                  
+                  value={data.Category}
+                  disabled={SaveUpdateButton === "SAVE"}
+                >
+                  <MenuItem key="en" value="en">
+                    English
+                  </MenuItem>
+                  <MenuItem key="mr" value="mr">
+                    Marathi
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid item xs={12}>
               <TextField
                 size="small"
                 spacing={"5"}
-                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name="Name"
-                value={data.Name}
+                name={data.Category==="en"?"Name":"NameL1"}
+                value={data.Category==="en"?data.Name:data.NameL1}
                 onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
@@ -535,12 +583,12 @@ const Exercise = () => {
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name="Description"
-                value={data.Description}
+                name={data.Category==="en" ? "Description" : "DescriptionL1"}
+                value={data.Category==="en" ? data.Description : data.DescriptionL1}
+                
                 onChange={onchangeHandler}
                 multiline
                 rows={3}

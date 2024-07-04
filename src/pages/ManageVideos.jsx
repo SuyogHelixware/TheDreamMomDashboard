@@ -61,12 +61,18 @@ export default function ManageVideos() {
     Name: "",
     Description: "",
     Id: "",
+    NameL1: "",
+    DescriptionL1: "",
+    Category:"en",
   });
 
   const clearFormData = () => {
     setFormData({
       Name: "",
       Description: "",
+      NameL1: "",
+      DescriptionL1: "",
+      Category:"en",
       TagsIds: "",
       Status: 1,
     });
@@ -103,7 +109,14 @@ export default function ManageVideos() {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setFormData([]);
+    setFormData({ 
+       Name: "",
+      Description: "",
+      Id: "",
+      NameL1: "",
+      DescriptionL1: "",
+      Category:"en",
+    });
   };
 
   const handleUpdate = (data) => {
@@ -113,10 +126,13 @@ export default function ManageVideos() {
     setSelectedTags(data.TagsIds);
     setFormData({
       Name: data.Name,
+      NameL1: data.NameL1,
       Description: data.Description,
+      DescriptionL1: data.DescriptionL1,        
       Id: data._id,
       TagsIds: data.TagsIds,
       StorageVideoId: data.StorageVideoId,
+      Category:"en",
     });
 
     if (data.Link) {
@@ -189,8 +205,11 @@ export default function ManageVideos() {
     const UpdateObj = {
       Name: formData.Name,
       Description: formData.Description,
+      NameL1: formData.NameL1,
+      DescriptionL1: formData.DescriptionL1,
       Link: videoname,
       TagsIds: selectedTags.map((tag) => tag._id),
+      
     };
 
     console.log(UpdateObj);
@@ -294,6 +313,8 @@ export default function ManageVideos() {
             .post(`${BASE_URL}videos`, {
               Name: formData.Name,
               Description: formData.Description,
+              NameL1: formData.NameL1,
+              DescriptionL1: formData.DescriptionL1,
               Link: `${Bunny_Stream_GET_URL}/${data.videoLibraryId}/${data.guid}`,
               StorageLabId: data.videoLibraryId,
               StorageVideoId: data.guid,
@@ -536,6 +557,32 @@ export default function ManageVideos() {
               </IconButton>
             </Grid>
             <Grid item xs={12}>
+              <FormControl sx={{ width: "110px" }} size="small"
+              disabled={SaveUpdateButton === "SAVE"}
+               >
+                <InputLabel id="demo-select-large-Choose-Lang">
+                  Select Lang
+                </InputLabel>
+
+                <Select
+                  id="Category"
+                  label="Category"
+                  name="Category"
+                  onChange={handleInputChange}
+                  value={formData.Category}
+                  disabled={SaveUpdateButton === "SAVE"}
+                >
+                  <MenuItem value="en" >
+                    English
+                  </MenuItem>
+                  <MenuItem value="mr" >
+                    Marathi
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
               <TextField
                 size="small"
                 spacing={"5"}
@@ -543,9 +590,9 @@ export default function ManageVideos() {
                 fullWidth
                 id="Name"
                 label="Enter Title"
-                name="Name"
                 autoFocus
-                value={formData.Name}
+                name={formData.Category==="en"? "Name" :"NameL1"}
+                value={formData.Category==="en"? formData.Name : formData.NameL1}
                 style={{ borderRadius: 10, width: "100%" }}
                 onChange={handleInputChange}
               />
@@ -595,8 +642,8 @@ export default function ManageVideos() {
                 id="Description"
                 label="Enter Description"
                 multiline
-                name="Description"
-                value={formData.Description}
+                name={formData.Category==="en"? "Description": "DescriptionL1"}
+                value={formData.Category==="en"? formData.Description : formData.DescriptionL1 }
                 rows={3}
                 onChange={handleInputChange}
               />

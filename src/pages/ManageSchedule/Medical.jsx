@@ -27,7 +27,10 @@ const Medical = () => {
   const [imgData, setImgData] = React.useState({
     Name: "",
     Description: "",
-    Image: "",
+    NameL1: "",
+    DescriptionL1: "",
+    // Image: "",
+    Category:"en",
   });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
@@ -35,17 +38,21 @@ const Medical = () => {
   const [tags, setTags] = React.useState([]);
   const [data, setData] = React.useState({
     Name: "",
+    NameL1: "",
     Description: "",
-    Image: "",
+    DescriptionL1: "",
     Id: "",
+    Category:"en",
   });
 
   const clearFormData = () => {
     setData({
       Id: "",
       Name: "",
+      NameL1: "",
       Description: "",
-      Image: "",
+      DescriptionL1: "",
+      // Image: "",
       TagsIds: [],
       Status: 1,
     });
@@ -77,7 +84,13 @@ const Medical = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setData([]);
+    setData({ 
+        Name: "",
+      Description: "",
+      NameL1: "",
+      DescriptionL1: "",
+      Category:"en",
+    });
   };
 
   const onchangeHandler = (event) => {
@@ -112,11 +125,15 @@ const Medical = () => {
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
       TagsIds: selectedTags.map((tag) => tag._id),
     };
     setLoaderOpen(true);
@@ -289,9 +306,12 @@ const Medical = () => {
     setData({
       Name: data.Name,
       Description: data.Description,
-      Image: data.Image,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
+      // Image: data.Image,
       Id: data._id,
       TagsIds: data.TagsIds,
+      Category:"en",
     });
     console.log(data);
   };
@@ -341,10 +361,12 @@ const Medical = () => {
               </IconButton>
             </Grid>
     
-    {/* <Grid item xs={12}>
-              <FormControl sx={{ width: "110px" }} size="small">
+    <Grid item xs={12}>
+              <FormControl sx={{ width: "110px" }} size="small"
+              disabled={SaveUpdateButton === "SAVE"}
+               >
                 <InputLabel id="demo-select-large-Choose-Lang">
-                  Change Lang
+                  Select Lang
                 </InputLabel>
 
                 <Select
@@ -353,16 +375,17 @@ const Medical = () => {
                   name="Category"
                   onChange={onchangeHandler}
                   value={data.Category}
+                  disabled={SaveUpdateButton === "SAVE"}
                 >
-                  <MenuItem value="en" onClick={HandleEnglish}>
+                  <MenuItem value="en" >
                     English
                   </MenuItem>
-                  <MenuItem value="mr" onClick={HandleMarathi}>
+                  <MenuItem value="mr" >
                     Marathi
                   </MenuItem>
                 </Select>
               </FormControl>
-            </Grid> */}
+            </Grid>
 
      
 
@@ -374,8 +397,8 @@ const Medical = () => {
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name="Name"
-                value={data.Name}
+                name={data.Category==="en"? "Name" :"NameL1"}
+                value={data.Category==="en"? data.Name : data.NameL1}
                 onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
@@ -420,12 +443,12 @@ const Medical = () => {
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name="Description"
-                value={data.Description}
+                name={data.Category==="en"? "Description": "DescriptionL1"}
+                value={data.Category==="en"? data.Description : data.DescriptionL1 }
+               
                 onChange={onchangeHandler}
                 multiline
                 rows={3}

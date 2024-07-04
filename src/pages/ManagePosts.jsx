@@ -5,10 +5,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
   Modal,
   Paper,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -27,7 +31,10 @@ const ManagePosts = () => {
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
+    NameL1: "",
+    DescriptionL1: "",
     Id: "",
+    Category:"en",
   });
 
   const clearFormData = () => {
@@ -35,7 +42,10 @@ const ManagePosts = () => {
       Id: "",
       Name: "",
       Description: "",
+      NameL1: "",
+    DescriptionL1: "",
       Status: 1,
+      Category:"en",
     });
   };
 
@@ -47,6 +57,13 @@ const ManagePosts = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
+     setData({ Name: "",
+      Description: "",
+      NameL1: "",
+      DescriptionL1: "",
+      Id: "",
+      Category:"en",
+    })
   };
 
   const onChangeHandler = (event) => {
@@ -80,10 +97,14 @@ const ManagePosts = () => {
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
     };
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
     };
 
     setLoaderOpen(true);
@@ -258,7 +279,10 @@ const ManagePosts = () => {
     setData({
       Name: rowData.Name,
       Description: rowData.Description,
+      NameL1: rowData.NameL1,
+      DescriptionL1: rowData.DescriptionL1,
       Id: rowData._id,
+      Category:"en",
     });
   };
 
@@ -301,6 +325,35 @@ const ManagePosts = () => {
                 <CloseIcon style={{ color: "black" }} />
               </IconButton>
             </Grid>
+
+            <Grid item xs={12}>
+              <FormControl
+                sx={{ width: "110px" }}
+                size="small"
+                disabled={SaveUpdateButton === "SAVE"}
+              >
+                <InputLabel id="demo-select-large-Choose-Lang">
+                  Select Lang
+                </InputLabel>
+
+                <Select
+                  id="Category"
+                  label="Category"
+                  name="Category"
+                  onChange={onChangeHandler}
+                  value={data.Category}
+                  disabled={SaveUpdateButton === "SAVE"}
+                >
+                  <MenuItem key="en" value="en">
+                    English
+                  </MenuItem>
+                  <MenuItem key="mr" value="mr">
+                    Marathi
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid item xs={12}>
               <TextField
                 size="small"
@@ -309,8 +362,8 @@ const ManagePosts = () => {
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name="Name"
-                value={data.Name}
+                name={data.Category==="en"?"Name":"NameL1"}
+                value={data.Category==="en"? data.Name:data.NameL1}
                 onChange={onChangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
@@ -324,8 +377,10 @@ const ManagePosts = () => {
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name="Description"
-                value={data.Description}
+                name={data.Category === "en"?"Description":"DescriptionL1"}
+                value={
+                  data.Category === "en" ? data.Description : data.DescriptionL1
+                }
                 onChange={onChangeHandler}
                 multiline
                 rows={5}
