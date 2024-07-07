@@ -1,41 +1,86 @@
-import { Box, Paper } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
+import ArticleIcon from "@mui/icons-material/Article";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  Box,
+  Card,
+  CardContent,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import * as React from "react";
-import { BASE_URL } from "../Constant";
 import dayjs from "dayjs";
 
+import * as React from "react";
+import { BASE_URL, Bunny_Image_URL } from "../Constant";
+
 export default function ManageAssesment() {
-  const [data, setData] = React.useState([
-    {
-      id: "",
-      Weight: "",
-      Height: "",
-      SonogramDate: "",
-      DueDate: "",
-      DelDate: "",
-      DelType: "",
-      BabyGender: "",
-      MaternityHistory: "",
-      Remarks: "",
-      Status: " ",
-      DOB: "",
-      BloodGroup: "",
-      UserId: "",
-    },
-  ]);
+  const PaperItem = ({ children }) => (
+    <Paper
+      variant="outlined"
+      style={{ padding: "8px", margin: "4px", borderRadius: "4px" }}
+    >
+      {children}
+    </Paper>
+  );
+  const [open, setOpen] = React.useState(false);
+  const [selectedData, setSelectedData] = React.useState({
+    MedConIds: [],
+    Documents: [],
+  });
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const [data, setData] = React.useState([]);
+
   const getUserData = () => {
     axios.get(`${BASE_URL}assesment/`).then((response) => {
       setData(response.data.values || []);
+      // const medCon = response.data.values[0]?.MedConIds?.[0]?.Name || '';
+      // setMedConName(medCon);
     });
   };
+
   React.useEffect(() => {
     getUserData();
   }, []);
-  
+
   const columns = [
+    {
+      field: "Action",
+      headerName: "Action",
+      width: 100,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <IconButton
+            sx={{
+              "& .MuiButtonBase-root,": {
+                padding: 0,
+              },
+            }}
+            color="primary"
+            // size="small"
+            onClick={() => handleOpenModal(params.row)}
+          >
+            <RemoveRedEyeIcon />
+          </IconButton>
+        </>
+      ),
+    },
+
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     {
       field: "Weight",
@@ -51,7 +96,7 @@ export default function ManageAssesment() {
     },
     {
       field: "SonogramDate",
-      headerName: "SonogramDate",
+      headerName: "Sonogram Date",
       width: 150,
       sortable: false,
       valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
@@ -59,21 +104,21 @@ export default function ManageAssesment() {
 
     {
       field: "DueDate",
-      headerName: "DueDate",
+      headerName: "Due Date",
       width: 160,
       sortable: false,
       valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
     {
       field: "DelDate",
-      headerName: "DelDate",
+      headerName: "Delivery Date",
       width: 150,
       sortable: false,
       valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
     {
       field: "DelType",
-      headerName: "DelType",
+      headerName: "Delivery Type",
       width: 150,
       sortable: false,
     },
@@ -85,7 +130,7 @@ export default function ManageAssesment() {
     },
     {
       field: "MaternityHistory",
-      headerName: "MaternityHistory",
+      headerName: "Maternity History",
       width: 100,
       sortable: false,
     },
@@ -94,30 +139,237 @@ export default function ManageAssesment() {
       headerName: "Status",
       width: 100,
       sortable: false,
-      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
+      valueGetter: (params) =>
+        params.row.Status === 1 ? "Active" : "Inactive",
     },
     {
       field: "DOB",
-      headerName: "DOB",
+      headerName: "Date of Birth",
       width: 120,
       sortable: false,
       valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
     {
       field: "BloodGroup",
-      headerName: "BloodGroup",
+      headerName: "Blood Group",
       width: 100,
       sortable: false,
     },
-    // {
-    //   field: "MedConIds",
-    //   headerName: "MedConIds",
-    //   width: 100,
-    //   sortable: false,
-    // },
   ];
+
+  const handleOpenModal = (rowData) => {
+    setSelectedData(rowData);
+    console.log("--------------");
+    console.log(rowData);
+    handleOpen();
+  };
+
+  const onopen = (userId, fileName) => {
+    window.open(`${Bunny_Image_URL}/Users/${userId}/${fileName}`, "_blank");
+  };
+
   return (
     <>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="dialog-title"
+        aria-describedby="dialog-description"
+        // sx={{width:"100%"}}
+        fullWidth={true}
+        maxWidth="md"
+      > 
+      
+      <DialogTitle id="dialog-title" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',  textAlign: 'center' }}>
+  <b style={{ flexGrow: 1 }}>Assessment Details</b>
+  <IconButton onClick={handleClose} style={{ color: "black" }}>
+    <CloseIcon />
+  </IconButton>
+</DialogTitle>
+
+        <DialogContent>
+          {selectedData && (
+            <Paper elevation={3} style={{ marginBottom: 0 }}>
+              <Grid container spacing={1}>
+                <Grid item xs={4}>
+                  <PaperItem>
+                    <Typography variant="body1">
+                      <strong>Baby Gender:</strong> {selectedData.BabyGender}
+                    </Typography>
+                  </PaperItem>
+                </Grid>
+                <Grid item xs={4}>
+                  <PaperItem>
+                    <Typography variant="body1">
+                      <strong>Blood Group:</strong> {selectedData.BloodGroup}
+                    </Typography>
+                  </PaperItem>
+                </Grid>
+                <Grid item xs={4}>
+                  <PaperItem>
+                    <Typography variant="body1">
+                      <strong>Due Date:</strong>{" "}
+                      {dayjs(selectedData.DueDate).format("YYYY-MM-DD")}
+                    </Typography>
+                  </PaperItem>
+                </Grid>
+
+                <Grid item xs={4}>
+                  <PaperItem>
+                    <Typography variant="body1">
+                      <strong>Height:</strong> {selectedData.Height}
+                    </Typography>
+                  </PaperItem>
+                </Grid>
+                <Grid item xs={4}>
+                  <PaperItem>
+                    <Typography variant="body1">
+                      <strong>Mat History:</strong>{" "}
+                      {selectedData.MaternityHistory || "NA"}
+                    </Typography>
+                  </PaperItem>
+                </Grid>
+                <Grid item xs={4}>
+                  <PaperItem>
+                    <Typography variant="body1">
+                      <strong>Date of Birth:</strong>{" "}
+                      {dayjs(selectedData.DOB).format("YYYY-MM-DD")}
+                    </Typography>
+                  </PaperItem>
+                </Grid>
+
+                <Grid item xs={4}>
+                  <PaperItem>
+                    <Typography variant="body1">
+                      <strong>Weight:</strong> {selectedData.Weight}
+                    </Typography>
+                  </PaperItem>
+                </Grid>
+                <Grid item xs={4}>
+                  <PaperItem>
+                    <Typography variant="body1">
+                      <strong>Remarks:</strong> {selectedData.Remarks || "NA"}
+                    </Typography>
+                  </PaperItem>
+                </Grid>
+                <Grid item xs={4}>
+                  <PaperItem>
+                    <Typography variant="body1">
+                      <strong>Sono Date:</strong>{" "}
+                      {dayjs(selectedData.SonogramDate).format("YYYY-MM-DD")}
+                    </Typography>
+                  </PaperItem>
+                </Grid>
+              </Grid>
+            </Paper>
+          )}
+
+          <Paper
+            elevation={3}
+            style={{ textAlign: "center", padding: 10, marginBottom: 20 }}
+          >
+            <Typography variant="h6" gutterBottom>
+              <b>Complications</b>
+            </Typography>
+            <Divider />
+            <Grid
+              container
+              spacing={2}
+              // sx={{ justifyContent: "center", textAlign: "center" }}
+            >
+              <Grid item>
+                <List dense>
+                  {selectedData.MedConIds.length > 0 ? (
+                    selectedData.MedConIds.map((data, index) => (
+                      <ListItem key={index}>
+                        <FiberManualRecordIcon
+                          sx={{ color: "#1B1212", fontSize: "0.8rem" }}
+                        />
+                        &nbsp;&nbsp;
+                        <ListItemText primary={data.Name} />
+                      </ListItem>
+                    ))
+                  ) : (
+                    <Typography
+                      sx={{
+                        pt: 5,
+                      }}
+                    >
+                      No documents available
+                    </Typography>
+                  )}
+                </List>
+              </Grid>
+            </Grid>
+          </Paper>
+
+          {/* ----------------------------------- */}
+          <Paper elevation={3} style={{ textAlign: "center", marginBottom: 4 }}>
+            <Typography variant="h6" gutterBottom>
+              <b>Documents </b>
+            </Typography>
+
+            {/* <Grid container spacing={2}>
+              
+              {selectedData.Documents.map((item, index) => (
+                <Grid item key={index}  sx={{ width: "33.33%"}}>
+                   <Card sx={{ width: "100%" ,display:"flex"}}  onClick={() => {
+                      onopen(selectedData.UserId , item.DocFile,);
+                    }}>
+                      <ArticleIcon sx={{ fontSize: "4.5rem" , color:"#5C5CFF" }}  />
+                      <CardContent> 
+                        <Typography noWrap width={"60%"} height={35} >
+                          <b>{item.Name}</b>
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                </Grid>
+              ))}
+            </Grid> */}
+            <Grid container spacing={2}>
+              {selectedData.Documents.length > 0 ? (
+                selectedData.Documents.map((item, index) => (
+                  <Grid item key={index} sx={{ width: "33.33%" }}>
+                    <Card
+                      sx={{ width: "100%", display: "flex" }}
+                      onClick={() => onopen(selectedData.UserId, item.DocFile)}
+                    >
+                      <ArticleIcon
+                        sx={{ fontSize: "4.5rem", color: "#5C5CFF" }}
+                      />
+                      <CardContent sx={{ flex: 1, overflow: "hidden" }}>
+                        <Typography
+                          noWrap
+                          sx={{
+                            width: "100%",
+                            height: 35,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          <b>{item.Name}</b>
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))
+              ) : (
+                <Typography
+                  sx={{
+                    pt: 5,
+                    width: "100%",
+                  }}
+                >
+                  No documents available
+                </Typography>
+              )}
+            </Grid>
+          </Paper>
+
+          {/* -------------------------------------- */}
+        </DialogContent>
+      </Dialog>
+
       <Grid
         container
         md={12}
@@ -135,7 +387,7 @@ export default function ManageAssesment() {
         elevation="4"
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -147,34 +399,6 @@ export default function ManageAssesment() {
           Manage Assesment
         </Typography>
       </Grid>
-
-      {/* <Grid textAlign={"end"} marginBottom={1}>
-        <Button
-          onClick={handleOnSave}
-          type="text"
-          size="medium"
-          sx={{
-            pr: 2,
-            mb: 2,
-            color: "white",
-            backgroundColor: "#8F00FF",
-            boxShadow: 5,
-            "&:hover": {
-              backgroundColor: "gray",
-            },
-            "& .MuiButton-label": {
-              display: "flex",
-              alignItems: "center",
-            },
-            "& .MuiSvgIcon-root": {
-              marginRight: "10px",
-            },
-          }}
-        >
-          <AddIcon />
-          Add Assesment
-        </Button>
-      </Grid> */}
 
       <Paper
         sx={{
