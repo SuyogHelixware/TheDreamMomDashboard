@@ -25,11 +25,9 @@ import Loader from "../../components/Loader";
 const MedDetails = () => {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [imgData, setImgData] = React.useState([]);
-  // const [selectedmedications, setSelectedmedications] = React.useState([]);
-  // const [selectedDosage, setSelectedDosage] = React.useState([]);
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  const [medications, setmedications] = React.useState([]);
+  const [medications, setMedications] = React.useState([]);
   const [Dosage, setDosage] = React.useState([]);
   const [data, setData] = React.useState({
     medication: "",
@@ -41,8 +39,6 @@ const MedDetails = () => {
       medication: "",
       Dosage: "",
     });
-    // setSelectedmedications([]);
-    // setSelectedDosage([]);
   };
 
   const handleClose = () => {
@@ -62,24 +58,11 @@ const MedDetails = () => {
     });
   };
 
-  // const validationAlert = (message) => {
-  //   Swal.fire({
-  //     position: "center",
-  //     icon: "warning",
-  //     toast: true,
-  //     title: message,
-  //     showConfirmButton: false,
-  //     timer: 1500,
-  //   });
-  // };
-
   const handleSubmitForm = () => {
     const saveObj = {
       MedId: data.medication,
       DosageId: data.Dosage,
     };
-    console.log(saveObj);
-   
 
     setLoaderOpen(true);
 
@@ -107,9 +90,7 @@ const MedDetails = () => {
     axiosRequest
       .then((response) => {
         setLoaderOpen(false);
-        console.log(response);  
         if (response.data.status) {
-          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "success",
@@ -124,7 +105,6 @@ const MedDetails = () => {
           getAllMedDetails();
           handleClose();
         } else {
-          setLoaderOpen(false);
           Swal.fire({
             position: "center",
             icon: "error",
@@ -137,7 +117,6 @@ const MedDetails = () => {
       })
       .catch((error) => {
         setLoaderOpen(false);
-        console.log(error); // Log the error to the console
         if (error.message !== "Update cancelled") {
           Swal.fire({
             position: "center",
@@ -158,11 +137,10 @@ const MedDetails = () => {
         .map((item, index) => ({
           _id: item._id,
           id: index + 1,
-          Medication: item.MedId.Name,
-          MedicationId:item.MedId._id,
-          Dosage: item.DosageId.Name,
-          DosageId: item.DosageId._id,
-
+          Medication: item.MedId?.Name || '',
+          MedicationId: item.MedId?._id || '',
+          Dosage: item.DosageId?.Name || '',
+          DosageId: item.DosageId?._id || '',
         }));
       setImgData(updatedMedicationData);
     });
@@ -182,9 +160,7 @@ const MedDetails = () => {
         axios
           .delete(`${BASE_URL}medicationdet/${rowData._id}`)
           .then((response) => {
-            console.log(response); // Log the response to the console
             if (response.data.status) {
-              setLoaderOpen(false);
               Swal.fire({
                 position: "center",
                 icon: "success",
@@ -196,7 +172,6 @@ const MedDetails = () => {
               handleClose();
               getAllMedDetails();
             } else {
-              setLoaderOpen(false);
               Swal.fire({
                 position: "center",
                 icon: "error",
@@ -208,8 +183,6 @@ const MedDetails = () => {
             }
           })
           .catch((error) => {
-            setLoaderOpen(false);
-            console.log(error); 
             Swal.fire({
               position: "center",
               icon: "error",
@@ -218,14 +191,15 @@ const MedDetails = () => {
               text: error,
               showConfirmButton: true,
             });
-          });
+          })
+          .finally(() => setLoaderOpen(false));
       }
     });
   };
 
-  const getmedicationData = () => {
+  const getMedicationData = () => {
     axios.get(`${BASE_URL}medications`).then((response) => {
-      setmedications(response.data.values);
+      setMedications(response.data.values);
     });
   };
 
@@ -236,7 +210,7 @@ const MedDetails = () => {
   };
 
   React.useEffect(() => {
-    getmedicationData();
+    getMedicationData();
     getDosageData();
     getAllMedDetails();
   }, []);
@@ -267,13 +241,12 @@ const MedDetails = () => {
   ];
 
   const handleUpdate = (rowData) => {
-    console.log(rowData);
     setSaveUpdateButton("UPDATE");
     setOn(true);
     setData({
       Id: rowData._id,
-      Dosage:rowData.DosageId,
-      medication:rowData.MedicationId
+      Dosage: rowData.DosageId,
+      medication: rowData.MedicationId,
     });
   };
 
@@ -375,7 +348,7 @@ const MedDetails = () => {
               <Button
                 type="submit"
                 size="small"
-                onClick={() => handleSubmitForm(data._id)}
+                onClick={handleSubmitForm}
                 sx={{
                   marginTop: 1,
                   p: 1,

@@ -45,10 +45,26 @@ const PlanMaster = () => {
     VaccinationIds: [],
     MedTestIds: [],
     MedDetailsIds: [],
-    Age: "",
-    Weight: "",
-    Height: "",
-    Week: "",
+    Weight: {
+      FromWeight: "",
+      ToWeight: "",
+    },
+
+    Age: {
+      FromAge: "",
+      ToAge: "",
+    },
+
+    Height: {
+      FromHeight: "",
+      ToHeight: "",
+    },
+
+    Week: {
+      FromWeek: "",
+      ToWeek: "",
+    },
+
     Status: 1,
   });
 
@@ -62,10 +78,25 @@ const PlanMaster = () => {
       VaccinationIds: [],
       MedTestIds: [],
       MedDetailsIds: [],
-      Age: "",
-      Weight: "",
-      Height: "",
-      Week: "",
+      Age: {
+        FromAge: "",
+        ToAge: "",
+      },
+
+      Weight: {
+        FromWeight: "",
+        ToWeight: "",
+      },
+
+      Height: {
+        FromHeight: "",
+        ToHeight: "",
+      },
+
+      Week: {
+        FromWeek: "",
+        ToWeek: "",
+      },
       Status: 1,
     });
   };
@@ -107,7 +138,8 @@ const PlanMaster = () => {
         ? formData.MedDetailsIds.map((medDet) => medDet._id)
         : [],
     };
-
+    console.log(formattedData);
+    // return;
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
@@ -195,11 +227,15 @@ const PlanMaster = () => {
         setLoaderOpen(false);
       }
     }
-    
   };
 
   const handleInputChange = (e) => {
+    // const selectedValue = e.target.value;
+    // const [fromHeight, toHeight] = selectedValue.split("-");
+
+    // console.log(formData);
     const { name, value } = e.target;
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -297,20 +333,114 @@ const PlanMaster = () => {
       headerName: "Sr.No",
       width: 100,
     },
-    { field: "Name", headerName: "Name", width: 150 },
+    { field: "Name", headerName: "Name", width: 200 },
     { field: "Description", headerName: "Description", width: 250 },
+    // {
+    //   field: "FromWeek",
+    //   headerName: "FromWeek",
+    //   width: 100,
+    //   valueGetter: (params) => {
+    //     return params.row.Week.FromWeek;
+    //   },
+    // },
+    // {
+    //   field: "ToWeek",
+    //   headerName: "ToWeek",
+    //   width: 100,
+    //   valueGetter: (params) => {
+    //     return params.row.Week.ToWeek;
+    //   },
+    // },
     {
       field: "Week",
       headerName: "Week",
-      width: 100,
+      width: 200,
+      valueGetter: (params) => {
+        const FromWeek = params.row.Week.FromWeek;
+        const ToWeek = params.row.Week.ToWeek;
+        return `${FromWeek}-${ToWeek}`;
+      },
     },
+    // {
+    //   field: "FromAge",
+    //   headerName: "FromAge",
+    //   width: 100,
+    //   valueGetter: (params) => {
+    //     return params.row.Age.FromAge;
+    //   },
+    // },
+    // {
+    //   field: "ToAge",
+    //   headerName: "ToAge",
+    //   width: 100,
+    //   valueGetter: (params) => {
+    //     return params.row.Age.ToAge;
+    //   },
+    // },
+
     {
       field: "Age",
       headerName: "Age",
-      width: 100,
+      width: 200,
+      valueGetter: (params) => {
+        const fromAge = params.row.Age.FromAge;
+        const toAge = params.row.Age.ToAge;
+        return `${fromAge}-${toAge}`;
+      },
     },
-    { field: "Height", headerName: "Height", width: 100 },
-    { field: "Weight", headerName: "Weight", width: 100 },
+
+    // {
+    //   field: "FromWeight",
+    //   headerName: "FromWeight",
+    //   width: 100,
+    //   valueGetter: (params) => {
+    //     return params.row.Weight.FromWeight;
+    //   },
+    // },
+    // {
+    //   field: "ToWeight",
+    //   headerName: "ToWeight",
+    //   width: 100,
+    //   valueGetter: (params) => {
+    //     return params.row.Weight.ToWeight;
+    //   },
+    // },
+    {
+      field: "Weight",
+      headerName: "Weight",
+      width: 200,
+      valueGetter: (params) => {
+        const FromWeight = params.row.Weight.FromWeight;
+        const ToWeight = params.row.Weight.ToWeight;
+        return `${FromWeight}-${ToWeight}`;
+      },
+    },
+    // {
+    //   field: "FromHeight",
+    //   headerName: "FromHeight",
+    //   width: 100,
+    //   valueGetter: (params) => {
+    //     return params.row.Height.FromHeight;
+    //   },
+    // },
+    // {
+    //   field: "ToHeight",
+    //   headerName: "ToHeight",
+    //   width: 100,
+    //   valueGetter: (params) => {
+    //     return params.row.Height.ToHeight;
+    //   },
+    // },
+    {
+      field: "Height",
+      headerName: "Height",
+      width: 200,
+      valueGetter: (params) => {
+        const FromHeight = params.row.Height.FromHeight;
+        const ToHeight = params.row.Height.ToHeight;
+        return `${FromHeight}-${ToHeight}`;
+      },
+    },
     {
       field: "Status",
       headerName: "Status",
@@ -360,12 +490,46 @@ const PlanMaster = () => {
     return (
       !formData.Name ||
       !formData.Description ||
-      !formData.Age ||
-      !formData.Weight ||
-      !formData.Height ||
-      !formData.Week
+      !formData.Age.FromAge ||
+      !formData.Age.ToAge ||
+      !formData.Weight.FromWeight ||
+      !formData.Weight.ToWeight ||
+      !formData.Height.FromHeight ||
+      !formData.Height.ToHeight ||
+      !formData.Week.FromWeek ||
+      !formData.Week.ToWeek
     );
   };
+
+  const handleFromWeekChange = (e) => {
+    const fromWeekValue = e.target.value;
+    const toWeekValue = formData.Week.ToWeek;
+
+    setFormData({
+      ...formData,
+      Week: {
+        FromWeek: fromWeekValue,
+        ToWeek: toWeekValue,
+      },
+    });
+  };
+
+  const handleToWeekChange = (e) => {
+    const toWeekValue = e.target.value;
+
+    setFormData({
+      ...formData,
+      Week: {
+        ...formData.Week,
+        ToWeek: toWeekValue,
+      },
+    });
+  };
+  
+  
+ 
+    
+       
 
   return (
     <>
@@ -390,7 +554,7 @@ const PlanMaster = () => {
         elevation={4}
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -471,7 +635,7 @@ const PlanMaster = () => {
                 borderRadius: 50,
                 height: 32,
                 width: 32,
-                boxShadow: "0px 6px 6px 0px rgba(0, 0, 0, 0.25)", 
+                boxShadow: "0px 6px 6px 0px rgba(0, 0, 0, 0.25)",
               }}
             ></CloseIcon>
           </IconButton>
@@ -512,7 +676,7 @@ const PlanMaster = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <FormControl style={{ width: 220 }} size="small"  >
+                <FormControl style={{ width: 220 }} size="small">
                   <InputLabel id="demo-select-small-label">
                     Select Age
                   </InputLabel>
@@ -523,8 +687,20 @@ const PlanMaster = () => {
                     id="Age"
                     label="Enter Age"
                     name="Age"
-                    value={formData.Age}
-                    onChange={handleInputChange}
+                    // value={formData.Age}
+                    // onChange={handleInputChange}
+                    value={`${formData.Age.FromAge}-${formData.Age.ToAge}`}
+                    onChange={(e) => {
+                      const selectedValue = e.target.value;
+                      const [FromAge, ToAge] = selectedValue.split("-");
+                      setFormData({
+                        ...formData,
+                        Age: {
+                          FromAge: FromAge,
+                          ToAge: ToAge,
+                        },
+                      });
+                    }}
                     style={{ textAlign: "left" }}
                     MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                   >
@@ -539,10 +715,10 @@ const PlanMaster = () => {
                   </Select>
                 </FormControl>
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <InputDescriptionField
-                  size="small"
-                   
+                  // size="small"
                   fullWidth
                   id="Description"
                   label="Enter Description"
@@ -553,8 +729,9 @@ const PlanMaster = () => {
                   onChange={handleInputChange}
                 />
               </Grid>
+
               <Grid item xs={12} sm={4}>
-                <FormControl size="small"   style={{ width: 220 }}>
+                <FormControl size="small" style={{ width: 220 }}>
                   <InputLabel id="demo-select-small-label">
                     Select Weight
                   </InputLabel>
@@ -564,8 +741,18 @@ const PlanMaster = () => {
                     id="Weight"
                     label="Enter Weight"
                     name="Weight"
-                    onChange={handleInputChange}
-                    value={formData.Weight}
+                    value={`${formData.Weight.FromWeight}-${formData.Weight.ToWeight}`}
+                    onChange={(e) => {
+                      const selectedValue = e.target.value;
+                      const [FromWeight, ToWeight] = selectedValue.split("-");
+                      setFormData({
+                        ...formData,
+                        Weight: {
+                          FromWeight: FromWeight,
+                          ToWeight: ToWeight,
+                        },
+                      });
+                    }}
                     style={{ textAlign: "left" }}
                     MenuProps={{
                       PaperProps: { style: { maxHeight: 150, maxWidth: 220 } },
@@ -583,9 +770,180 @@ const PlanMaster = () => {
                   </Select>
                 </FormControl>
               </Grid>
+              {/* <Grid item xs={12} sm={4} width={200}>
+                <Paper
+                  elevation={0}
+                  style={{ padding: "1rem", textAlign: "center" }}
+                >
+                  <Typography variant="subtitle1" gutterBottom>
+                    Select Weight
+                  </Typography>
+
+                  <Grid
+                    container
+                    spacing={1}
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Grid item>
+                      <FormControl style={{ width: 110 }} size="small">
+                        <InputLabel id="from-select-label">From</InputLabel>
+                        <Select
+                          type="number"
+                          fullWidth
+                          id="FromWeight"
+                          label="From"
+                          name="FromWeight"
+                          value={formData.Weight.FromWeight}
+                          onChange={(e) => {
+                            console.log(e.target.value);
+                            setFormData({
+                              ...formData,
+                              Weight: {
+                                ...formData.Weight,
+                                FromWeight: e.target.value,
+                              },
+                            });
+                          }}
+                          MenuProps={{
+                            PaperProps: { style: { maxHeight: 150 } },
+                          }}
+                        >
+                          {[...Array(42).keys()].map((index) => (
+                            <MenuItem key={index + 1} value={index + 1}>
+                              {index + 1}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item>
+                      <FormControl style={{ width: 110 }} size="small">
+                        <InputLabel id="to-select-label">To</InputLabel>
+                        <Select
+                          type="number"
+                          fullWidth
+                          id="ToWeight"
+                          label="To"
+                          name="ToWeight"
+                          value={formData.Weight.ToWeight}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              Weight: {
+                                ...formData.Weight,
+                                ToWeight: e.target.value,
+                              },
+                            })
+                          }
+                          MenuProps={{
+                            PaperProps: { style: { maxHeight: 150 } },
+                          }}
+                        >
+                          {[...Array(42).keys()].map((index) => (
+                            <MenuItem
+                              key={index + 1}
+                              value={index + 1}
+                              disabled={index + 1 < formData.Weight.FromWeight}
+                            >
+                              {index + 1}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid> */}
+
+              {/* <Grid item xs={12} sm={4} width={200}>
+                <Paper
+                  elevation={0}
+                  style={{ padding: "1rem", textAlign: "center" }}
+                >
+                  <Typography variant="subtitle1" gutterBottom>
+                    Select Height
+                  </Typography>
+
+                  <Grid
+                    container
+                    spacing={1}
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Grid item>
+                      <FormControl style={{ width: 110 }} size="small">
+                        <InputLabel id="from-select-label">From</InputLabel>
+                        <Select
+                          type="number"
+                          fullWidth
+                          id="FromHeight"
+                          label="From"
+                          name="FromHeight"
+                          value={formData.Height.FromHeight}
+                          onChange={(e) => {
+                            console.log(e.target.value);
+                            setFormData({
+                              ...formData,
+                              Height: {
+                                ...formData.Height,
+                                FromHeight: e.target.value,
+                              },
+                            });
+                          }}
+                          MenuProps={{
+                            PaperProps: { style: { maxHeight: 150 } },
+                          }}
+                        >
+                          {[...Array(7).keys()].map((index) => (
+                            <MenuItem key={index + 1} value={index + 1}>
+                              {index + 1}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item>
+                      <FormControl style={{ width: 110 }} size="small">
+                        <InputLabel id="to-select-label">To</InputLabel>
+                        <Select
+                          type="number"
+                          fullWidth
+                          id="ToHeight"
+                          label="To"
+                          name="ToHeight"
+                          value={formData.Height.ToHeight}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              Height: {
+                                ...formData.Height,
+                                ToHeight: e.target.value,
+                              },
+                            })
+                          }
+                          MenuProps={{
+                            PaperProps: { style: { maxHeight: 150 } },
+                          }}
+                        >
+                          {[...Array(7).keys()].map((index) => (
+                            <MenuItem
+                              key={index + 1}
+                              value={index + 1}
+                              disabled={index + 1 < formData.Height.FromHeight}
+                            >
+                              {index + 1}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid> */}
 
               <Grid item xs={12} sm={4}>
-                <FormControl style={{ width: 220 }} size="small"  >
+                <FormControl style={{ width: 220 }} size="small">
                   <InputLabel id="demo-select-small-label">
                     Select Height
                   </InputLabel>
@@ -596,8 +954,18 @@ const PlanMaster = () => {
                     id="Height"
                     label="Enter Height"
                     name="Height"
-                    value={formData.Height}
-                    onChange={handleInputChange}
+                    value={`${formData.Height.FromHeight}-${formData.Height.ToHeight}`}
+                    onChange={(e) => {
+                      const selectedValue = e.target.value;
+                      const [FromHeight, ToHeight] = selectedValue.split("-");
+                      setFormData({
+                        ...formData,
+                        Height: {
+                          FromHeight: FromHeight,
+                          ToHeight: ToHeight,
+                        },
+                      });
+                    }}
                     style={{ textAlign: "left" }}
                     MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
                   >
@@ -609,33 +977,65 @@ const PlanMaster = () => {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={4}>
-                <FormControl style={{ width: 220 }} size="small"  >
-                  <InputLabel id="demo-select-small-label">
-                    Select Week
-                  </InputLabel>
-
-                  <Select
-                    type="number"
-                    fullWidth
-                    id="Week"
-                    label="Enter Week"
-                    name="Week"
-                    value={formData.Week}
-                    onChange={handleInputChange}
-                    style={{ textAlign: "left" }}
-                    MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+              <Grid item xs={12} sm={4} width={200}>
+      <Paper elevation={0} style={{ padding: '0rem', textAlign: 'center' }}>
+        <Grid container spacing={1} justifyContent="center" alignItems="center">
+          <Grid item>
+            <FormControl style={{ width: 120 }} size="small">
+              <InputLabel id="from-select-label">From week</InputLabel>
+              <Select
+                type="number"
+                fullWidth
+                id="FromWeek"
+                label="From"
+                name="FromWeek"
+                value={formData.Week.FromWeek}
+                onChange={handleFromWeekChange}
+                MenuProps={{
+                  PaperProps: { style: { maxHeight: 150 } },
+                }}
+              >
+                {[...Array(42).keys()].map((index) => (
+                  <MenuItem key={index + 1} value={index + 1}>
+                    {index + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item>
+            <FormControl style={{ width: 120 }} size="small">
+              <InputLabel id="to-select-label">To week</InputLabel>
+              <Select
+                type="number"
+                fullWidth
+                id="ToWeek"
+                label="To"
+                name="ToWeek"
+                value={formData.Week.ToWeek}
+                onChange={handleToWeekChange}
+                disabled={!formData.Week.FromWeek}
+                MenuProps={{
+                  PaperProps: { style: { maxHeight: 150 } },
+                }}
+              >
+                {[...Array(42).keys()].map((index) => (
+                  <MenuItem
+                    key={index + 1}
+                    value={index + 1}
+                    disabled={index + 1 < formData.Week.FromWeek}
+                    style={{ opacity: index + 1 < formData.Week.FromWeek ? 0.5 : 1 }}
                   >
-                    <MenuItem value="1-6">1-6</MenuItem>
-                    <MenuItem value="7-12">7-12</MenuItem>
-                    <MenuItem value="13-18">13-18</MenuItem>
-                    <MenuItem value="19-24">19-24</MenuItem>
-                    <MenuItem value="25-30">25-30</MenuItem>
-                    <MenuItem value="31-36">31-36</MenuItem>
-                    <MenuItem value="37-42">37-42</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
+                    {index + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Grid>
+
             </Grid>
           </Paper>
 

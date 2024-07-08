@@ -28,13 +28,13 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
         .map((item, index) => ({
           _id: item._id,
           id: index + 1,
-          Name: item.MedId.Name,
-          Description: item.MedId.Description,
-          DosageName: item.DosageId.Name,
-          DosageDescription: item.DosageId.Description,
+          Name: item.MedId?.Name || '',
+          Description: item.MedId?.Description || '',
+          DosageName: item.DosageId?.Name || '',
+          DosageDescription: item.DosageId?.Description || '',
         }));
       setMedicationData(updatedMedicationData);
-      setChildData(props.medicationData);
+      setChildData(props.medicationData || []);
     });
   }, [props.medicationData]);
 
@@ -202,7 +202,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
               { field: "Description", headerName: "Description", width: 300 },
               { field: "DosageName", headerName: "Dosage Name", width: 250 },
               {
-                field: "Dosage Description",
+                field: "DosageDescription",
                 headerName: "Dosage Description",
                 width: 300,
               },

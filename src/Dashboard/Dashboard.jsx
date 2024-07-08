@@ -390,26 +390,32 @@ export default function Dashboard() {
           <AccountCircle />
         </IconButton> */}
 
- <Tooltip title={userData.Name}>
-          <IconButton
-            size="small"
-            edge="end"
-            aria-label="account of current user"
-            aria-controls={menuId}
-            aria-haspopup="true"
-            onClick={handleOn}
-            color="inherit"
-          >
-            <Avatar    src={`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}` ||<AccountCircle />} />
-
-          </IconButton>
+          <Tooltip title={userData.Name}>
+            <IconButton
+              size="small"
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleOn}
+              color="inherit"
+            >
+              <Avatar
+                src={
+                  `${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}` || (
+                    <AccountCircle />
+                  )
+                }
+              />
+            </IconButton>
           </Tooltip>
-                     
         </Toolbar>
       </AppBar>
       <Drawer
         variant="permanent"
         open={open}
+        PaperProps={{ elevation:7}}
+      
         //  onClick={handleDrawerOpen}
       >
         <DrawerHeader>

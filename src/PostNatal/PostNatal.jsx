@@ -42,7 +42,10 @@ const PostNatal = () => {
     VaccinationIds: [],
     PrecautionIds: [],
     MedDetailsIds: [],
-    Week: "",
+    Week: {
+      FromWeek: "",
+      ToWeek: "",
+    },
     Status: 1,
   });
 
@@ -55,7 +58,10 @@ const PostNatal = () => {
       VaccinationIds: [],
       PrecautionIds: [],
       MedDetailsIds: [],
-      Week: "",
+      Week: {
+        FromWeek: "",
+        ToWeek: "",
+      },
       Status: 1,
     });
   };
@@ -81,8 +87,7 @@ const PostNatal = () => {
   };
 
   const handleSave = async () => {
-
-         const formattedData = {
+    const formattedData = {
       ...formData,
       DietIds: formData.DietIds ? formData.DietIds.map((diet) => diet._id) : [],
       ExerciseIds: formData.ExerciseIds
@@ -297,7 +302,17 @@ const PostNatal = () => {
       width: 100,
     },
     { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width:340, flex:1 },
+    { field: "Description", headerName: "Description", width: 250 },
+    {
+      field: "Week",
+      headerName: "Week",
+      width: 200,
+      valueGetter: (params) => {
+        const FromWeek = params.row.Week.FromWeek;
+        const ToWeek = params.row.Week.ToWeek;
+        return `${FromWeek}-${ToWeek}`;
+      },
+    },
     {
       field: "Status",
       headerName: "Status",
@@ -343,6 +358,31 @@ const PostNatal = () => {
     }));
   };
 
+  const handleFromWeekChange = (e) => {
+    const fromWeekValue = e.target.value;
+    const toWeekValue = formData.Week.ToWeek;
+
+    setFormData({
+      ...formData,
+      Week: {
+        FromWeek: fromWeekValue,
+        ToWeek: toWeekValue,
+      },
+    });
+  };
+
+  const handleToWeekChange = (e) => {
+    const toWeekValue = e.target.value;
+
+    setFormData({
+      ...formData,
+      Week: {
+        ...formData.Week,
+        ToWeek: toWeekValue,
+      },
+    });
+  };
+
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
@@ -366,7 +406,7 @@ const PostNatal = () => {
         elevation={4}
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -436,7 +476,7 @@ const PostNatal = () => {
         aria-describedby="parent-dialog-description"
         fullScreen
       >
-        <DialogTitle style={{ color: "white", backgroundColor: "#5C5CFF"}}>
+        <DialogTitle style={{ color: "white", backgroundColor: "#5C5CFF" }}>
           <b>Post Natal</b>
           <IconButton
             aria-label="close"
@@ -449,7 +489,7 @@ const PostNatal = () => {
                 borderRadius: 50,
                 height: 32,
                 width: 32,
-                boxShadow: "0px 6px 6px 0px rgba(0, 0, 0, 0.25)", 
+                boxShadow: "0px 6px 6px 0px rgba(0, 0, 0, 0.25)",
               }}
             ></CloseIcon>
           </IconButton>
@@ -476,7 +516,7 @@ const PostNatal = () => {
               display: "inline-block",
             }}
           >
-            <Grid container spacing={2} pt={3} ml={5}>
+            <Grid container spacing={2} pt={3}>
               <Grid item xs={12} sm={4}>
                 <InputTextField
                   size="small"
@@ -489,7 +529,7 @@ const PostNatal = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={4}>
+              {/* <Grid item xs={12} sm={4}>
                 <FormControl style={{ width: 220 }} size="small"  >
                   <InputLabel id="demo-select-small-label">
                     Select Week
@@ -515,11 +555,69 @@ const PostNatal = () => {
                     <MenuItem value="37-42">37-42</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
+              </Grid> */}
+              {/* --------------------------------------------- */}
+              <Grid item xs={12} sm={4} width={200}>
+      <Paper elevation={0} style={{ padding: '0rem', textAlign: 'center' }}>
+        <Grid container spacing={1} justifyContent="center" alignItems="center">
+          <Grid item>
+            <FormControl style={{ width: 120 }} size="small">
+              <InputLabel id="from-select-label">From week</InputLabel>
+              <Select
+                type="number"
+                fullWidth
+                id="FromWeek"
+                label="From"
+                name="FromWeek"
+                value={formData.Week.FromWeek}
+                onChange={handleFromWeekChange}
+                MenuProps={{
+                  PaperProps: { style: { maxHeight: 150 } },
+                }}
+              >
+                {[...Array(42).keys()].map((index) => (
+                  <MenuItem key={index + 1} value={index + 1}>
+                    {index + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item>
+            <FormControl style={{ width: 120 }} size="small">
+              <InputLabel id="to-select-label">To week</InputLabel>
+              <Select
+                type="number"
+                fullWidth
+                id="ToWeek"
+                label="To"
+                name="ToWeek"
+                value={formData.Week.ToWeek}
+                onChange={handleToWeekChange}
+                disabled={!formData.Week.FromWeek}
+                MenuProps={{
+                  PaperProps: { style: { maxHeight: 150 } },
+                }}
+              >
+                {[...Array(42).keys()].map((index) => (
+                  <MenuItem
+                    key={index + 1}
+                    value={index + 1}
+                    disabled={index + 1 < formData.Week.FromWeek}
+                  >
+                    {index + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Grid>
+              {/* --------------------------------------------- */}
               <Grid item xs={12} sm={4}>
                 <InputDescriptionField
                   size="small"
-                  
                   fullWidth
                   id="Description"
                   label="Enter Description"
@@ -532,7 +630,6 @@ const PostNatal = () => {
               </Grid>
             </Grid>
           </Paper>
-
           <PostNatalDiet
             sendDataToParent={receiveDataFromDiet}
             dietData={formData.DietIds}
