@@ -171,7 +171,7 @@ export default function Dashboard() {
     React.useState(false);
 
   const handleOn = () => {
-    console.log(`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}`);
+    // console.log(`${Bunny_Image_URL}/Users/${userData._id}/${userData.Avatar}`);
     setOn(true);
   };
   const handleClose = () => {
@@ -194,7 +194,7 @@ export default function Dashboard() {
 
   React.useEffect(() => {
     const userData = sessionStorage.getItem("userData");
-    console.log(JSON.parse(userData));
+    // console.log(JSON.parse(userData));
     setUserData(JSON.parse(userData));
     if (isMobile) {
       setOpen(false);

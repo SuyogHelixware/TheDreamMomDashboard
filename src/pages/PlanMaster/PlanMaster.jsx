@@ -138,8 +138,7 @@ const PlanMaster = () => {
         ? formData.MedDetailsIds.map((medDet) => medDet._id)
         : [],
     };
-    console.log(formattedData);
-    // return;
+ 
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {

@@ -149,7 +149,7 @@ export default function ManageUsers() {
     const saveObj = {
       Avatar: "",
     };
-    console.log(saveObj);
+    // console.log(saveObj);
 
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -335,7 +335,7 @@ export default function ManageUsers() {
       Avatar: uploadedImg !== "" ? filename : "",
       Status: data.Status,
     };
-    console.log(saveObj);
+    // console.log(saveObj);
     const UpdateObj = {
       Firstname: data.Firstname,
       Middlename: data.Middlename,

@@ -103,7 +103,6 @@ const PostNatal = () => {
         ? formData.MedDetailsIds.map((medDet) => medDet._id)
         : [],
     };
-    console.log(formattedData);
 
     setLoaderOpen(true);
 
@@ -189,7 +188,7 @@ const PostNatal = () => {
             timer: 1500,
           });
         }
-        console.log(response);
+        // console.log(response);
       } else {
         setLoaderOpen(false);
       }
@@ -205,7 +204,7 @@ const PostNatal = () => {
   };
 
   const handleClick = (row) => {
-    console.log(row);
+    // console.log(row);
     setSaveUpdateButton("UPDATE");
     setOpen(true);
     setFormData({
