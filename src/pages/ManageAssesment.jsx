@@ -295,7 +295,7 @@ export default function ManageAssesment() {
                         pt: 5,
                       }}
                     >
-                      No documents available
+                      No Complications Available
                     </Typography>
                   )}
                 </List>
@@ -326,7 +326,7 @@ export default function ManageAssesment() {
                 </Grid>
               ))}
             </Grid> */}
-            <Grid container spacing={2}>
+            <Grid container Spacing={2}>
               {selectedData.Documents.length > 0 ? (
                 selectedData.Documents.map((item, index) => (
                   <Grid item key={index} sx={{ width: "33.33%" }}>
@@ -335,7 +335,7 @@ export default function ManageAssesment() {
                       onClick={() => onopen(selectedData.UserId, item.DocFile)}
                     >
                       <ArticleIcon
-                        sx={{ fontSize: "4.5rem", color: "#5C5CFF" }}
+                        sx={{ fontSize: "4rem", color: "#5C5CFF" }}
                       />
                       <CardContent sx={{ flex: 1, overflow: "hidden" }}>
                         <Typography

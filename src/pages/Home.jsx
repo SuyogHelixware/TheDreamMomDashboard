@@ -29,6 +29,7 @@ export default function Home() {
                 justifyContent: "center",
                 borderRadius: 3,
                 height: 130,
+                // backgroundColor:"#E8E8FF",
               }}
               elevation={7}
             >
@@ -83,7 +84,7 @@ export default function Home() {
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Paper elevation={7} sx={{ borderRadius: 3, py: 3 }}>
+            <Paper elevation={7} sx={{ borderRadius: 3, py: 3   }}>
               <BarChart
                 series={[
                   { data: [35, 44, 30, 45, 30] },

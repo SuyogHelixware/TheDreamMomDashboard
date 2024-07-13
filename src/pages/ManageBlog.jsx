@@ -1,4 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
@@ -17,7 +18,6 @@ import {
   styled,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import CloseIcon from "@mui/icons-material/Close";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
@@ -25,7 +25,6 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import pdf from "../../src/assets/pdf.png";
-
 import * as React from "react";
 import { Document, Page } from "react-pdf";
 import Swal from "sweetalert2";
@@ -52,6 +51,7 @@ const ManageBlog = () => {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [on, setOn] = React.useState(false);
+  // const [ison, setisOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [selectedTags, setSelectedTags] = React.useState([]);
   const [tags, setTags] = React.useState([]);
@@ -65,11 +65,12 @@ const ManageBlog = () => {
     Link: "",
     Id: "",
     Category: "",
-    Language:"en",
+    Language: "en",
   });
 
   const [blogPage, setBlogPage] = React.useState(1);
   const [newsPage, setNewsPage] = React.useState(1);
+  const [category, setCategory] = React.useState("");
 
   const clearFormData = () => {
     setData({
@@ -77,18 +78,19 @@ const ManageBlog = () => {
       Name: "",
       Description: "",
       NameL1: "",
-    DescriptionL1: "",
+      DescriptionL1: "",
       Link: "",
       TagsIds: [],
       Status: 1,
       Category: "",
-      Language:"",
+      Language: "",
     });
     setSelectedTags([]);
     setUploadedImg("");
   };
 
   const [open, setOpen] = React.useState(false);
+  const [isopen, setisopen] = React.useState(false);
   const errorMessage = (message) => {
     Swal.fire({
       icon: "error",
@@ -99,6 +101,38 @@ const ManageBlog = () => {
     });
     setUploadedImg("");
   };
+  // const handleFileUpload = (event) => {
+  //   debugger;
+  //   const file = event.target.files[0];
+
+  //   // Check if file exists
+  //   if (!file) {
+  //     errorMessage("No file selected");
+  //     return;
+  //   }
+
+  //   // Handle Category N
+  //   // if (data.Category === "N") {
+  //   //   if (file.type.startsWith("image/") || file.type === "application/pdf") {
+  //   //     setUploadedImg(file);
+  //   //   } else {
+  //   //     errorMessage("Please upload a valid image or PDF file");
+  //   //   }
+  //   // }
+  //   // Handle Category B
+  //   // else if (data.Category === "B") {
+  //    else if (file.type.startsWith("image/")) {
+  //       setUploadedImg(file);
+  //     } else {
+  //       errorMessage("Please upload a valid image file");
+  //     }
+  //   // }
+  //   // Handle other categories if necessary
+  //   // else {
+  //   //   errorMessage("Invalid category");
+  //   // }
+  // };
+
   const handleFileUpload = (event) => {
     debugger;
     const file = event.target.files[0];
@@ -109,25 +143,28 @@ const ManageBlog = () => {
       return;
     }
 
-    // Handle Category N
-    if (data.Category === "N") {
-      if (file.type.startsWith("image/") || file.type === "application/pdf") {
-        setUploadedImg(file);
-      } else {
-        errorMessage("Please upload a valid image or PDF file");
-      }
+    // Handle file upload based on type
+    if (file.type.startsWith("image/")) {
+      setUploadedImg(file);
+    } else {
+      errorMessage("Please upload a valid image file");
     }
-    // Handle Category B
-    else if (data.Category === "B") {
-      if (file.type.startsWith("image/")) {
-        setUploadedImg(file);
-      } else {
-        errorMessage("Please upload a valid image file");
-      }
+  };
+
+  const handleLetterUpload = (event) => {
+    const file = event.target.files[0];
+
+    // Check if file exists
+    if (!file) {
+      errorMessage("No file selected");
+      return;
     }
-    // Handle other categories if necessary
-    else {
-      errorMessage("Invalid category");
+
+    // Check if it's an image or PDF file
+    if (file.type.startsWith("image/") || file.type === "application/pdf") {
+      setUploadedImg(file); // Assuming setUploadedImg handles both image and PDF files
+    } else {
+      errorMessage("Please upload a valid image or PDF file");
     }
   };
 
@@ -135,12 +172,7 @@ const ManageBlog = () => {
     window.open(`${Bunny_Image_URL}/Blogs/${pdf}`, "_blank");
   };
   const isSubmitDisabled = () => {
-    if (
-      data.Name &&
-      data.Description &&
-      data.Category &&
-      selectedTags.length > 0
-    ) {
+    if (data.Name && data.Description && selectedTags.length > 0) {
       return false;
     } else {
       return true;
@@ -166,25 +198,46 @@ const ManageBlog = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setisopen(false);
     setOn(false);
+    setisopen(false);
   };
 
   const handleOnSave = () => {
+    setCategory("N");
     setSaveUpdateButton("SAVE");
-    
+
     clearFormData();
     setOn(true);
-    setData({  Name: "",
+
+    setData({
+      Name: "",
       Description: "",
       NameL1: "",
       DescriptionL1: "",
       Link: "",
       Id: "",
-      Category: "",
-      Language:"en",
+      // Category: "",
+      Language: "en",
     });
   };
+  const handleOnBlogSave = () => {
+    setSaveUpdateButton("SAVE");
 
+    setCategory("B");
+    clearFormData();
+    setisopen(true);
+    setData({
+      Name: "",
+      Description: "",
+      NameL1: "",
+      DescriptionL1: "",
+      Link: "",
+      Id: "",
+      // Category: "",
+      Language: "en",
+    });
+  };
   const onchangeHandler = (event) => {
     setData({
       ...data,
@@ -209,9 +262,10 @@ const ManageBlog = () => {
     });
   };
   const handleSubmitForm = async () => {
-    const requiredFields = ["Name", "Category", "Description"];
+    const newData = { ...data, Category: category };
+    const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
-      (field) => !data[field] || !data[field].trim()
+      (field) => !newData[field] || !newData[field].trim()
     );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
       validationAlert("Please fill in all required fields");
@@ -219,23 +273,23 @@ const ManageBlog = () => {
     }
     const filename = new Date().getTime() + "_" + uploadedImg.name;
     const saveObj = {
-      Name: data.Name,
-      NameL1: data.NameL1,
-      Description: data.Description,
-      DescriptionL1: data.DescriptionL1,
+      Name: newData.Name,
+      NameL1: newData.NameL1,
+      Description: newData.Description,
+      DescriptionL1: newData.DescriptionL1,
       Link: filename,
       TagsIds: selectedTags.map((tag) => tag._id),
-      Category: data.Category,
+      Category: "B",
     };
     const UpdateObj = {
-      Name: data.Name,
-      Description: data.Description,
-      NameL1: data.NameL1,
-      DescriptionL1: data.DescriptionL1,
-      Link: uploadedImg === "" ? data.Link : filename,
-      Category: data.Category,
+      Name: newData.Name,
+      Description: newData.Description,
+      NameL1: newData.NameL1,
+      DescriptionL1: newData.DescriptionL1,
+      Link: uploadedImg === "" ? newData.Link : filename,
+      Category: "B",
       TagsIds: selectedTags.map((tag) => tag._id),
-      Id: data.Id,
+      Id: newData.Id,
     };
 
     setLoaderOpen(true);
@@ -266,7 +320,7 @@ const ManageBlog = () => {
               position: "center",
               icon: "success",
               toast: true,
-              title: "Data Added Successfully",
+              title: "Blog Added Successfully",
               showConfirmButton: false,
               timer: 1500,
             });
@@ -275,7 +329,7 @@ const ManageBlog = () => {
             setUploadedImg("");
           } else {
             setLoaderOpen(false);
-            throw new Error("Failed to Add Data");
+            throw new Error("Failed to Add Blog");
           }
         } else {
           setLoaderOpen(false);
@@ -304,7 +358,7 @@ const ManageBlog = () => {
       if (result.isConfirmed) {
         try {
           const response = await axios.patch(
-            `${BASE_URL}blogs/${data.Id}`,
+            `${BASE_URL}blogs/${newData.Id}`,
             UpdateObj
           );
 
@@ -324,7 +378,7 @@ const ManageBlog = () => {
                 await axios.request({
                   method: "DELETE",
                   maxBodyLength: Infinity,
-                  url: `${Bunny_Storage_URL}/Blogs/${data.Link}`,
+                  url: `${Bunny_Storage_URL}/Blogs/${newData.Link}`,
                   headers: {
                     AccessKey: Bunny_Storage_Access_Key,
                   },
@@ -334,7 +388,7 @@ const ManageBlog = () => {
               Swal.fire({
                 position: "center",
                 icon: "success",
-                title: "Data Updated Successfully",
+                title: "Blog Updated Successfully",
                 toast: true,
                 showConfirmButton: false,
                 timer: 1500,
@@ -347,13 +401,11 @@ const ManageBlog = () => {
               throw new Error("Failed to Update Data");
             }
           } else {
-            // setLoaderOpen(false);
-            // throw new Error("Failed to Upload Image");
             setLoaderOpen(false);
             Swal.fire({
               position: "center",
               icon: "success",
-              title: "Data Updated Successfully",
+              title: "Blog Updated Successfully",
               toast: true,
               showConfirmButton: false,
               timer: 1500,
@@ -377,6 +429,182 @@ const ManageBlog = () => {
       }
     }
   };
+
+  const handleSubmitNewsletter = async () => {
+    const newData = { ...data, Category: category };
+    const requiredFields = ["Name", "Description"];
+    const emptyRequiredFields = requiredFields.filter(
+      (field) => !newData[field] || !newData[field].trim()
+    );
+    if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {
+      validationAlert("Please fill in all required fields");
+      return;
+    }
+    const filename = new Date().getTime() + "_" + uploadedImg.name;
+    const saveNewletterObj = {
+      Name: newData.Name,
+      NameL1: newData.NameL1,
+      Description: newData.Description,
+      DescriptionL1: newData.DescriptionL1,
+      Link: filename,
+      TagsIds: selectedTags.map((tag) => tag._id),
+      Category: "N",
+    };
+    const UpdateNewletterObj = {
+      Name: newData.Name,
+      Description: newData.Description,
+      NameL1: newData.NameL1,
+      DescriptionL1: newData.DescriptionL1,
+      Link: uploadedImg === "" ? newData.Link : filename,
+      Category: "N",
+      TagsIds: selectedTags.map((tag) => tag._id),
+      Id: newData.Id,
+    };
+console.log(UpdateNewletterObj);
+// return
+    setLoaderOpen(true);
+
+    if (SaveUpdateButton === "SAVE") {
+      if (uploadedImg === "") {
+        setLoaderOpen(false);
+        validationAlert("Please select file");
+        return;
+      }
+      try {
+        const res = await axios.request({
+          method: "PUT",
+          maxBodyLength: Infinity,
+          url: `${Bunny_Storage_URL}/Blogs/${filename}`,
+          headers: {
+            "Content-Type": "image/jpeg",
+            AccessKey: Bunny_Storage_Access_Key,
+          },
+          data: uploadedImg,
+        });
+
+        if (res.data.HttpCode === 201) {
+          const response = await axios.post(
+            `${BASE_URL}blogs`,
+            saveNewletterObj
+          );
+          if (response.data.status) {
+            setLoaderOpen(false);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              toast: true,
+              title: "Newsletter Added Successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            handleClose();
+            getAllImgList();
+            setUploadedImg("");
+          } else {
+            setLoaderOpen(false);
+            throw new Error("Failed to Add Newsletter");
+          }
+        } else {
+          setLoaderOpen(false);
+          throw new Error("Failed to Upload Image");
+        }
+      } catch (error) {
+        setLoaderOpen(false);
+        Swal.fire({
+          icon: "error",
+          toast: true,
+          title: "Failed",
+          text: error.message,
+          showConfirmButton: true,
+        });
+      }
+    } else {
+      const result = await Swal.fire({
+        text: "Do you want to Update...?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Update it!",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.patch(
+            `${BASE_URL}blogs/${newData.Id}`,
+            UpdateNewletterObj
+          );
+
+          if (response.data.status && uploadedImg !== "") {
+            const res = await axios.request({
+              method: "PUT",
+              maxBodyLength: Infinity,
+              url: `${Bunny_Storage_URL}/Blogs/${filename}`,
+              headers: {
+                "Content-Type": "image/jpeg",
+                AccessKey: Bunny_Storage_Access_Key,
+              },
+              data: uploadedImg,
+            });
+            if (res.data.HttpCode === 201) {
+              if (uploadedImg !== "") {
+                await axios.request({
+                  method: "DELETE",
+                  maxBodyLength: Infinity,
+                  url: `${Bunny_Storage_URL}/Blogs/${newData.Link}`,
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
+                });
+              }
+              setLoaderOpen(false);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Newsletter Updated Successfully",
+                toast: true,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              handleClose();
+              getAllImgList();
+              setUploadedImg("");
+            } else {
+              setLoaderOpen(false);
+              throw new Error("Failed to Update Newsletter");
+            }
+          } else {
+            // setLoaderOpen(false);
+            // throw new Error("Failed to Upload Image");
+            setLoaderOpen(false);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Newsletter Updated Successfully",
+              toast: true,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            handleClose();
+            getAllImgList();
+            setUploadedImg("");
+          }
+        } catch (error) {
+          setLoaderOpen(false);
+          Swal.fire({
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
+      } else {
+        setLoaderOpen(false);
+      }
+    }
+  };
+
   const handleDelete = (data) => {
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -458,9 +686,91 @@ const ManageBlog = () => {
     });
   };
 
+  const handleLeterDelete = (data) => {
+    Swal.fire({
+      text: "Are you sure you want to delete?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setLoaderOpen(true);
+
+        axios
+          .delete(`${BASE_URL}blogs/${data._id}`)
+          .then((response) => {
+            if (response.data.status) {
+              axios
+                .delete(`${Bunny_Storage_URL}/Blogs/${data.Link}`, {
+                  headers: {
+                    AccessKey: Bunny_Storage_Access_Key,
+                  },
+                })
+                .then((res) => {
+                  setLoaderOpen(false);
+                  if (res.data.HttpCode === 200) {
+                    Swal.fire({
+                      position: "center",
+                      icon: "success",
+                      toast: true,
+                      title: "Newsletter Deleted Successfully",
+                      showConfirmButton: false,
+                      timer: 1500,
+                    });
+                    getAllImgList();
+                  } else {
+                    Swal.fire({
+                      icon: "error",
+                      toast: true,
+                      title: "Failed",
+                      text: "Something went wrong...!",
+                      showConfirmButton: true,
+                    });
+                  }
+                })
+                .catch((error) => {
+                  setLoaderOpen(false);
+                  Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    toast: true,
+                    title: "Failed",
+                    text: error.message || "Error deleting from storage",
+                    showConfirmButton: true,
+                  });
+                });
+            } else {
+              setLoaderOpen(false);
+              Swal.fire({
+                icon: "error",
+                toast: true,
+                title: "Failed",
+                text: "Failed to delete Newsletter",
+                showConfirmButton: true,
+              });
+            }
+          })
+          .catch((error) => {
+            setLoaderOpen(false);
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              toast: true,
+              title: "Failed",
+              text: error.message || "Error deleting Newsletter",
+              showConfirmButton: true,
+            });
+          });
+      }
+    });
+  };
+
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
-    setOn(true);
+    setisopen(true);
+    // setisOn(true);
     setSelectedTags(data.TagsIds);
     setData({
       Id: data._id,
@@ -471,7 +781,25 @@ const ManageBlog = () => {
       Link: data.Link,
       TagsIds: data.TagsIds,
       Category: data.Category,
-      Language:"en",
+      Language: "en",
+    });
+  };
+
+  const handleLetterUpdate = (data) => {
+    setSaveUpdateButton("UPDATE");
+    setOn(true);
+    // setisOn(true);
+    setSelectedTags(data.TagsIds);
+    setData({
+      Id: data._id,
+      Name: data.Name,
+      Description: data.Description,
+      NameL1: data.NameL1,
+      DescriptionL1: data.DescriptionL1,
+      Link: data.Link,
+      TagsIds: data.TagsIds,
+      Category: data.Category,
+      Language: "en",
     });
   };
 
@@ -518,6 +846,213 @@ const ManageBlog = () => {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
+      <Modal open={isopen} onClose={handleClose}>
+        <Paper
+          elevation={10}
+          sx={{
+            width: "90%",
+            maxWidth: 800,
+            bgcolor: "#E6E6FA",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            justifyContent: "center",
+          }}
+        >
+          <Grid
+            container
+            xs={12}
+            item
+            spacing={2}
+            display={"flex"}
+            flexDirection={"column"}
+            padding={4}
+            justifyContent={"center"}
+          >
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography fontWeight="bold">Add Blog </Typography>
+              <IconButton onClick={handleClose}>
+                <CloseIcon style={{ color: "black" }} />
+              </IconButton>
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControl
+                sx={{ width: "110px" }}
+                size="small"
+                disabled={SaveUpdateButton === "SAVE"}
+              >
+                <InputLabel id="demo-select-large-Choose-Lang">
+                  Select Lang
+                </InputLabel>
+                <Select
+                  id="Language"
+                  label="Language"
+                  name="Language"
+                  onChange={onchangeHandler}
+                  value={data.Language}
+                  disabled={SaveUpdateButton === "SAVE"}
+                >
+                  <MenuItem value="en">English</MenuItem>
+                  <MenuItem value="mr">Marathi</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                size="small"
+                fullWidth
+                id="Name"
+                label="Enter Name"
+                name={data.Language === "en" ? "Name" : "NameL1"}
+                value={data.Language === "en" ? data.Name : data.NameL1}
+                onChange={onchangeHandler}
+                autoFocus
+                style={{ borderRadius: 10, width: "100%" }}
+              />
+            </Grid>
+
+            {/* <Grid item xs={12}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-select-small-label">
+                  Select Type
+                </InputLabel>
+                <Select
+                  id="Category"
+                  label="Category"
+                  name="Category"
+                  onChange={onchangeHandler}
+                  value={data.Category}
+                  style={{ textAlign: "left" }}
+                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                >
+                  <MenuItem value="B">Blogs</MenuItem>
+                  <MenuItem value="N">Newsletter</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid> */}
+
+            <Grid item xs={12}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
+                <Select
+                  id="Tag"
+                  label="Tag"
+                  name="Tag"
+                  multiple
+                  value={selectedTags}
+                  onChange={handleChange}
+                  renderValue={(selected) => (
+                    <div>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value._id}
+                          label={tags.find((tag) => tag._id === value._id).Name}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  style={{ textAlign: "left" }}
+                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                >
+                  {tags.map((item) => (
+                    <MenuItem key={item._id} value={item}>
+                      {item.Name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} paddingTop={1}>
+              <TextField
+                size="small"
+                fullWidth
+                id="Description"
+                label="Enter Description"
+                name={data.Language === "en" ? "Description" : "DescriptionL1"}
+                value={
+                  data.Language === "en" ? data.Description : data.DescriptionL1
+                }
+                onChange={onchangeHandler}
+                multiline
+                rows={5}
+                placeholder="Enter your Description..."
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                onChange={handleFileUpload}
+                component="label"
+                role={undefined}
+                disabled={isSubmitDisabled()}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  backgroundColor: "#5C5CFF",
+                  py: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
+                  },
+                }}
+              >
+                <Typography
+                  noWrap
+                  style={{ width: "80%", textAlign: "center" }}
+                >
+                  {SaveUpdateButton === "UPDATE"
+                    ? data.Link
+                    : uploadedImg && uploadedImg.name
+                    ? uploadedImg.name
+                    : "Upload File"}
+                </Typography>
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                />
+              </Button>
+            </Grid>
+
+            <Grid item xs={12} md={12} textAlign={"end"}>
+              <Button
+                type="submit"
+                size="small"
+                onClick={handleSubmitForm}
+                sx={{
+                  marginTop: 1,
+                  p: 1,
+                  width: 80,
+                  color: "white",
+                  boxShadow: 5,
+                  backgroundColor: "#5C5CFF",
+                  "&:hover": {
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
+                  },
+                }}
+              >
+                {SaveUpdateButton}
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Modal>
+      {/* ------------------------------------------------------------------ */}
       <Modal open={on} onClose={handleClose}>
         <Paper
           elevation={10}
@@ -549,17 +1084,18 @@ const ManageBlog = () => {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography fontWeight="bold">Add Blog & Newsletter</Typography>
+              <Typography fontWeight="bold">Add Newsletter</Typography>
               <IconButton onClick={handleClose}>
                 <CloseIcon style={{ color: "black" }} />
               </IconButton>
             </Grid>
 
-
             <Grid item xs={12}>
-              <FormControl sx={{ width: "110px" }} size="small"
-              disabled={SaveUpdateButton === "SAVE"}
-               >
+              <FormControl
+                sx={{ width: "110px" }}
+                size="small"
+                disabled={SaveUpdateButton === "SAVE"}
+              >
                 <InputLabel id="demo-select-large-Choose-Lang">
                   Select Lang
                 </InputLabel>
@@ -572,12 +1108,8 @@ const ManageBlog = () => {
                   value={data.Language}
                   disabled={SaveUpdateButton === "SAVE"}
                 >
-                  <MenuItem value="en" >
-                    English
-                  </MenuItem>
-                  <MenuItem value="mr" >
-                    Marathi
-                  </MenuItem>
+                  <MenuItem value="en">English</MenuItem>
+                  <MenuItem value="mr">Marathi</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -590,16 +1122,18 @@ const ManageBlog = () => {
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name={data.Language==="en"? "Name" :"NameL1"}
-                value={data.Language==="en"? data.Name : data.NameL1}
+                name={data.Language === "en" ? "Name" : "NameL1"}
+                value={data.Language === "en" ? data.Name : data.NameL1}
                 onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth size="small" 
-              // required
+            {/* <Grid item xs={12}>
+              <FormControl
+                fullWidth
+                size="small"
+                // required
               >
                 <InputLabel id="demo-select-small-label">
                   Select Type
@@ -618,11 +1152,13 @@ const ManageBlog = () => {
                   <MenuItem value="N">Newsletter</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
-              <FormControl fullWidth size="small"
-              //  required
-               >
+              <FormControl
+                fullWidth
+                size="small"
+                //  required
+              >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -661,8 +1197,10 @@ const ManageBlog = () => {
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name={data.Language==="en"? "Description": "DescriptionL1"}
-                value={data.Language==="en"? data.Description : data.DescriptionL1 }
+                name={data.Language === "en" ? "Description" : "DescriptionL1"}
+                value={
+                  data.Language === "en" ? data.Description : data.DescriptionL1
+                }
                 onChange={onchangeHandler}
                 multiline
                 rows={3}
@@ -673,7 +1211,7 @@ const ManageBlog = () => {
             <Grid item xs={12}>
               <Button
                 fullWidth
-                onChange={handleFileUpload}
+                onChange={handleLetterUpload}
                 component="label"
                 role={undefined}
                 disabled={isSubmitDisabled()}
@@ -709,7 +1247,7 @@ const ManageBlog = () => {
               <Button
                 type="submit"
                 size="small"
-                onClick={handleSubmitForm}
+                onClick={handleSubmitNewsletter}
                 sx={{
                   marginTop: 1,
                   p: 1,
@@ -749,7 +1287,7 @@ const ManageBlog = () => {
         elevation="4"
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -764,7 +1302,7 @@ const ManageBlog = () => {
 
       <Grid textAlign={"end"} marginBottom={1}>
         <Button
-          onClick={handleOnSave}
+          onClick={handleOnBlogSave}
           type="text"
           size="medium"
           sx={{
@@ -788,7 +1326,7 @@ const ManageBlog = () => {
           }}
         >
           <AddIcon />
-          Add Blog 
+          Add Blog
         </Button>
       </Grid>
 
@@ -889,8 +1427,8 @@ const ManageBlog = () => {
         }}
         elevation="4"
       >
-        <Typography 
-        className="slide-in-text"
+        <Typography
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -902,7 +1440,7 @@ const ManageBlog = () => {
           Manage NewsLetters
         </Typography>
       </Grid>
-  
+
       <Grid textAlign={"end"} marginBottom={1}>
         <Button
           onClick={handleOnSave}
@@ -986,7 +1524,7 @@ const ManageBlog = () => {
                     <IconButton
                       color="primary"
                       onClick={() => {
-                        handleUpdate(item);
+                        handleLetterUpdate(item);
                       }}
                     >
                       <EditNoteIcon />
@@ -994,7 +1532,7 @@ const ManageBlog = () => {
                     <Button
                       size="medium"
                       sx={{ color: "red" }}
-                      onClick={() => handleDelete(item)}
+                      onClick={() => handleLeterDelete(item)}
                     >
                       <DeleteForeverIcon />
                     </Button>

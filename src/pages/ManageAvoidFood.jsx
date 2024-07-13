@@ -255,8 +255,8 @@ const ManageAvoidFood = () => {
       { field: "id", headerName: "SR.NO", width: 100, sortable: false },
       { field: "Name", headerName: "Name", width: 250 },
       { field: "NameL1", headerName: "Name", width: 200 },
-      { field: "Description", headerName: "Description", width: 300},
-      { field: "DescriptionL1", headerName: "Description", width: 300 }
+      { field: "Description", headerName: "Description", width: 350},
+      { field: "DescriptionL1", headerName: "Description", width:350}
     
     
   ];

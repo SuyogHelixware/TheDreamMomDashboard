@@ -27,17 +27,15 @@ import TodayIcon from "@mui/icons-material/Today";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import avatar from "../../src/assets/avtar.png";
 import {
   Avatar,
-  Badge,
   Button,
   Collapse,
   Grid,
   MenuItem,
   Modal,
   Paper,
-  useMediaQuery,
+  useMediaQuery
 } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -230,9 +228,9 @@ export default function Dashboard() {
 
   const menuId = "primary-search-account-menu";
 
-  const handleUploadProfile = () => {
-    setOpen(true);
-  };
+  // const handleUploadProfile = () => {
+  //   setOpen(true);
+  // };
 
   React.useEffect(() => {
     if (!isLogin()) {
@@ -337,12 +335,13 @@ export default function Dashboard() {
           </center>
         </Paper>
       </Modal>
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed"  open={open}>
         <Toolbar
           sx={{
             boxShadow: "0px 5px 7px rgba(0, 0, 0, 0.1)",
             elevation: 8,
             display: "flex",
+            
           }}
         >
           <IconButton
@@ -460,7 +459,7 @@ export default function Dashboard() {
             width: "100%",
             maxWidth: 340,
             height: "100%",
-            backgroundColor: "white",
+            backgroundColor: "White",
             overflow: "hidden",
             "&:hover": {
               overflowY: "auto",

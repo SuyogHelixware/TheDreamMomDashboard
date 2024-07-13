@@ -262,7 +262,9 @@ const ManagePosts = () => {
 
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 300,flex:1 },
+    { field: "NameL1", headerName: "Name", width: 250 },
+    { field: "Description", headerName: "Description", width: 300},
+    { field: "DescriptionL1", headerName: "Description", width: 300},
     {
       field: "Status",
       headerName: "Status",

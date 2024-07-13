@@ -1,7 +1,16 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Box, FormControl, IconButton, InputLabel, MenuItem, Modal, Paper, Select } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Paper,
+  Select,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -25,7 +34,7 @@ const ManageDoses = () => {
     NameL1: "",
     DescriptionL1: "",
     Id: "",
-    Category:"en",
+    Category: "en",
   });
 
   const clearFormData = () => {
@@ -36,7 +45,7 @@ const ManageDoses = () => {
       NameL1: "",
       DescriptionL1: "",
       Status: 1,
-      Category:"en",
+      Category: "en",
     });
   };
 
@@ -48,12 +57,13 @@ const ManageDoses = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setData({  Name: "",
+    setData({
+      Name: "",
       Description: "",
       NameL1: "",
       DescriptionL1: "",
       Id: "",
-      Category:"en",
+      Category: "en",
     });
   };
 
@@ -246,7 +256,9 @@ const ManageDoses = () => {
     },
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 300 , flex:1},
+    { field: "NameL1", headerName: "Name", width: 250 },
+    { field: "Description", headerName: "Description", width: 350 },
+    { field: "DescriptionL1", headerName: "Description", width: 400 },
   ];
 
   const handleUpdate = (data) => {
@@ -258,7 +270,7 @@ const ManageDoses = () => {
       NameL1: data.NameL1,
       DescriptionL1: data.DescriptionL1,
       Id: data._id,
-      Category:"en",
+      Category: "en",
     });
     console.log(data);
   };
@@ -337,8 +349,8 @@ const ManageDoses = () => {
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name={data.Category==="en"?"Name":"NameL1"}
-                value={data.Category==="en"? data.Name:data.NameL1}
+                name={data.Category === "en" ? "Name" : "NameL1"}
+                value={data.Category === "en" ? data.Name : data.NameL1}
                 onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
@@ -352,7 +364,7 @@ const ManageDoses = () => {
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name={data.Category === "en"?"Description":"DescriptionL1"}
+                name={data.Category === "en" ? "Description" : "DescriptionL1"}
                 value={
                   data.Category === "en" ? data.Description : data.DescriptionL1
                 }
@@ -377,8 +389,8 @@ const ManageDoses = () => {
                   backgroundColor: "#5C5CFF",
                   "&:hover": {
                     backgroundColor: "#E6E6FA",
-                    border:"1px solid #5C5CFF",
-                    color:"#5C5CFF"
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
                   },
                 }}
               >
@@ -407,7 +419,7 @@ const ManageDoses = () => {
         elevation={4}
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"

@@ -236,8 +236,8 @@ const MedDetails = () => {
       ),
     },
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
-    { field: "Medication", headerName: "Medication", width: 350 },
-    { field: "Dosage", headerName: "Dosage", width: 350, flex: 1 },
+    { field: "Medication", headerName: "Medication", width: 400 },
+    { field: "Dosage", headerName: "Dosage", width: 400, },
   ];
 
   const handleUpdate = (rowData) => {

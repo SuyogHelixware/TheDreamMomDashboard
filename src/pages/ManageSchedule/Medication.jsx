@@ -1,7 +1,17 @@
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Box, FormControl, IconButton, InputLabel, MenuItem, Modal, Paper, Select } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Paper,
+  Select,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -12,7 +22,6 @@ import * as React from "react";
 import Swal from "sweetalert2";
 import { BASE_URL } from "../../Constant";
 import Loader from "../../components/Loader";
-import CloseIcon from "@mui/icons-material/Close";
 
 const Medication = () => {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
@@ -22,7 +31,7 @@ const Medication = () => {
     NameL1: "",
     DescriptionL1: "",
     Image: "",
-    Category:"en",
+    Category: "en",
   });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
@@ -32,7 +41,7 @@ const Medication = () => {
     NameL1: "",
     DescriptionL1: "",
     Id: "",
-     Category:"en",
+    Category: "en",
   });
 
   const clearFormData = () => {
@@ -43,7 +52,7 @@ const Medication = () => {
       NameL1: "",
       DescriptionL1: "",
       Status: 1,
-      Category:"en",
+      Category: "en",
     });
   };
 
@@ -55,14 +64,14 @@ const Medication = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setData({ 
-       Name: "",
+    setData({
+      Name: "",
       Description: "",
       NameL1: "",
       DescriptionL1: "",
       Id: "",
-       Category:"en",
-      });
+      Category: "en",
+    });
   };
 
   const onchangeHandler = (event) => {
@@ -256,8 +265,10 @@ const Medication = () => {
       ),
     },
     { field: "id", headerName: "SR.No", width: 120, sortable: false },
-    { field: "Name", headerName: "Title", width: 300 },
-    { field: "Description", headerName: "Description", width: 300 ,flex:1},
+    { field: "Name", headerName: "Name", width: 300 },
+    { field: "NameL1", headerName: "Name", width: 300 },
+    { field: "Description", headerName: "Description", width: 350 },
+    { field: "DescriptionL1", headerName: "Description", width:300},
   ];
 
   const handleUpdate = (data) => {
@@ -269,7 +280,7 @@ const Medication = () => {
       NameL1: data.NameL1,
       DescriptionL1: data.DescriptionL1,
       Id: data._id,
-      Category:"en",
+      Category: "en",
     });
     console.log(data);
   };
@@ -278,12 +289,9 @@ const Medication = () => {
     getAllImgList();
   }, []);
 
+  // const HandleEnglish = () => {};
 
-  const HandleEnglish=()=>{ 
-
-  }
-
-  const HandleMarathi=()=>{}
+  // const HandleMarathi = () => {};
 
   return (
     <>
@@ -354,29 +362,6 @@ const Medication = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl sx={{ width: "110px" }} size="small">
-                <InputLabel id="demo-select-large-Choose-Lang">
-                  Change Lang
-                </InputLabel>
-
-                <Select
-                  id="Category"
-                  label="Category"
-                  name="Category"
-                  onChange={onchangeHandler}
-                  value={data.Category}
-                >
-                  <MenuItem value="en" onClick={HandleEnglish}>
-                    English
-                  </MenuItem>
-                  <MenuItem value="mr" onClick={HandleMarathi}>
-                    Marathi
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12}>
               <TextField
                 size="small"
                 spacing={"5"}
@@ -384,8 +369,8 @@ const Medication = () => {
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name={data.Category==="en"? "Name" :"NameL1"}
-                value={data.Category==="en"? data.Name : data.NameL1}
+                name={data.Category === "en" ? "Name" : "NameL1"}
+                value={data.Category === "en" ? data.Name : data.NameL1}
                 onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
@@ -399,8 +384,10 @@ const Medication = () => {
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name={data.Category==="en"? "Description": "DescriptionL1"}
-                value={data.Category==="en"? data.Description : data.DescriptionL1 }
+                name={data.Category === "en" ? "Description" : "DescriptionL1"}
+                value={
+                  data.Category === "en" ? data.Description : data.DescriptionL1
+                }
                 onChange={onchangeHandler}
                 multiline
                 rows={3}
@@ -451,7 +438,7 @@ const Medication = () => {
         elevation={4}
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"

@@ -267,11 +267,24 @@ export default function MedicalCondition() {
       sortable: false,
     },
     {
+      field: "NameL1",
+      headerName: "Name",
+      width: 200,
+      sortable: false,
+    },
+    {
       field: "Description",
       headerName: "Description",
       width: 500,
       sortable: false,
-      flex:1,
+      
+    },
+    {
+      field: "DescriptionL1",
+      headerName: "Description",
+      width: 400,
+      sortable: false,
+      
     },
     {
       field: "Status",

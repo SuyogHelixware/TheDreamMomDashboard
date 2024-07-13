@@ -291,7 +291,10 @@ const ManageFAQ = () => {
     },
     { field: "id", headerName: "SR.NO", width: 90, sortable: false },
     { field: "Question", headerName: "Question", width: 350 },
-    { field: "Answer", headerName: "Answer", width: 350, flex: 1 },
+    { field: "QuestionL1", headerName: "Question", width: 350 },
+    { field: "Answer", headerName: "Answer", width: 350, },
+    { field: "AnswerL1", headerName: "Answer", width:400 },
+
   ];
 
   const handleUpdate = (rowData) => {
