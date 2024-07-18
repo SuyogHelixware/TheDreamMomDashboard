@@ -565,7 +565,7 @@ const Vaccination = () => {
                   id="Tag"
                   label="Tag"
                   name="Tag"
-                  multiple
+                  multiple                                    
                   value={selectedTags}
                   onChange={handleChange}
                   renderValue={(selected) => (
@@ -578,8 +578,8 @@ const Vaccination = () => {
                       ))}
                     </div>
                   )}
-                  style={{ textAlign: "left" }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
+                  style={{ textAlign: "left"}}
+                  MenuProps={{ PaperProps: { style: { maxHeight: 150  } } }}
                 >
                   {tags.map((item) => (
                     <MenuItem key={item._id} value={item}>

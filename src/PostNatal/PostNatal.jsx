@@ -312,14 +312,30 @@ const PostNatal = () => {
         return `${FromWeek}-${ToWeek}`;
       },
     },
+    // {
+    //   field: "Status",
+    //   headerName: "Status",
+    //   width: 150,
+    //   sortable: false,
+    //   valueGetter: (params) =>
+    //     params.row.Status === 1 ? "Active" : "Inactive",
+    // },
     {
       field: "Status",
       headerName: "Status",
-      width: 150,
+      width: 100,
       sortable: false,
-      valueGetter: (params) =>
-        params.row.Status === 1 ? "Active" : "Inactive",
-    },
+      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
+      renderCell: (params) => {
+        const isActive = params.row.Status === 1;
+        return (
+          <span style={{ color: isActive ? 'green' : 'red' }}>
+            {isActive ? 'Active' : 'Inactive'}
+          </span>
+        );
+      },
+    }
+    
   ];
 
   const receiveDataFromDiet = (data) => {

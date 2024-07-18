@@ -35,6 +35,7 @@ import InputTextField, {
   InputSelectField,
 } from "../components/Component";
 import Loader from "../components/Loader";
+import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 
 export default function ManageUsers() {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
@@ -81,7 +82,7 @@ export default function ManageUsers() {
 
   const [data, setData] = React.useState({
     id: "",
-    Password: "",
+    password: "",
     Firstname: "",
     Middlename: "",
     Lastname: "",
@@ -97,7 +98,7 @@ export default function ManageUsers() {
   const clearFormData = () => {
     setData({
       id: "",
-      Password: "",
+      password: "",
       Firstname: "",
       Middlename: "",
       Lastname: "",
@@ -112,29 +113,67 @@ export default function ManageUsers() {
     setImage("");
   };
 
+  // const onchangeHandler = (event) => {
+  //   if (event.target.name === "password") {
+  //     const password = event.target.value;
+  //     if (password.length > 16) {
+  //       validationAlert("password must be at most 16 characters long.");
+  //       return;
+  //     }
+  //   }
+
+  //   if (event.target.name === "Phone") {
+  //     const phone = event.target.value;
+  //     if (phone.length > 10) {
+  //       validationAlert("Phone number must be exactly 10 digits long.");
+  //       return;
+  //     } else if (phone.includes("e")) {
+  //       validationAlert("Please enter valid number");
+  //       return;
+  //     }
+  //   }
+
+  //   if (data === "Email") {
+  //     if (!data) {
+  //       validationAlert("Email is required");
+  //       return;
+  //     }
+
+  //     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //     if (!emailPattern.test(data)) {
+  //       validationAlert("Please enter a valid email address");
+  //       return;
+  //     }
+  //   }
+  //   setData({
+  //     ...data,
+  //     [event.target.name]: event.target.value,
+  //   });
+  // };
+
   const onchangeHandler = (event) => {
-    if (event.target.name === "Password") {
-      const password = event.target.value;
-      if (password.length > 16) {
-        validationAlert("Password must be at most 16 characters long.");
+    const { name, value } = event.target;
+
+    if (name === "password") {
+      if (value.length > 16) {
+        validationAlert("password must be at most 16 characters long.");
         return;
       }
     }
 
-    if (event.target.name === "Phone") {
-      const phone = event.target.value;
-      if (phone.length > 10) {
+    if (name === "Phone") {
+      if (value.length > 10) {
         validationAlert("Phone number must be exactly 10 digits long.");
         return;
-      } else if (phone.includes("e")) {
-        validationAlert("Please enter valid number");
+      } else if (value.includes("e")) {
+        validationAlert("Please enter a valid number");
         return;
       }
     }
 
     setData({
       ...data,
-      [event.target.name]: event.target.value,
+      [name]: value,
     });
   };
 
@@ -292,15 +331,14 @@ export default function ManageUsers() {
     const requiredFields = [
       "Firstname",
       "Lastname",
-      "Password",
       "Phone",
       "DOB",
       "BloodGroup",
+      "Email",
     ];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !data[field] || !String(data[field]).trim()
     );
-   
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.Email);
 
@@ -310,8 +348,12 @@ export default function ManageUsers() {
     } else if (!isValidPhoneNumber(data.Phone)) {
       validationAlert("Please enter a valid 10-digit phone number.");
       return;
-    } else if (data.Password.length < 6 || data.Password.length > 16) {
-      validationAlert("Password must be at least 8 characters long.");
+    } else if (
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/.test(data.password) && SaveUpdateButton==="SAVE"
+    ) {
+      validationAlert(
+        "password must contain at least one numeric digit, one alphabet, and one capital letter, @ Not allow..."
+      );
       return;
     } else if (data.Email.length > 0 && !emailRegex) {
       validationAlert("Please enter a valid email address.");
@@ -326,7 +368,7 @@ export default function ManageUsers() {
       Middlename: data.Middlename,
       Lastname: data.Lastname,
       DOB: data.DOB,
-      Password: data.Password,
+      Password: data.password,
       Phone: data.Phone,
       Email: data.Email,
       Address: data.Address,
@@ -341,7 +383,6 @@ export default function ManageUsers() {
       Middlename: data.Middlename,
       Lastname: data.Lastname,
       DOB: data.DOB,
-      Password: data.Password,
       Phone: data.Phone,
       Email: data.Email,
       Address: data.Address,
@@ -352,7 +393,12 @@ export default function ManageUsers() {
     };
 
     setLoaderOpen(true);
+    if(data.password !=="" || data.password!==undefined){
+      saveObj.Password= data.password
+      UpdateObj.Password= data.password
+    }
 
+ 
     if (SaveUpdateButton === "SAVE") {
       const response = await axios.post(`${BASE_URL}Users`, saveObj);
       if (response.data.status) {
@@ -598,7 +644,16 @@ export default function ManageUsers() {
       sortable: false,
       valueGetter: (params) =>
         params.row.Status === 1 ? "Active" : "Inactive",
+      renderCell: (params) => {
+        const isActive = params.row.Status === 1;
+        return (
+          <span style={{ color: isActive ? "green" : "red" }}>
+            {isActive ? "Active" : "Inactive"}
+          </span>
+        );
+      },
     },
+
     {
       field: "Email",
       headerName: "Email",
@@ -679,10 +734,31 @@ export default function ManageUsers() {
               alignItems="flex-end"
               style={{ position: "relative" }}
             >
+              {/* <Badge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                onClick={handleUploadProfile}
+              >
+                <CameraAltOutlinedIcon/>
+
+                <img
+                  src={Image || avatar}
+                  alt="Upload"
+                  height={70}
+                  width={70}
+                  style={{
+                    display: "block",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    
+                  }}
+                />
+              </Badge> */}
               <Badge
                 overlap="circular"
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 onClick={handleUploadProfile}
+                style={{ position: "relative", cursor: "pointer" }}
               >
                 <img
                   src={Image || avatar}
@@ -695,29 +771,40 @@ export default function ManageUsers() {
                     cursor: "pointer",
                   }}
                 />
+
+                <CameraAltOutlinedIcon
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    right: 35,
+                    transform: "translate(50%, 50%)",
+                    backgroundColor: "white",
+                    borderRadius: "70%",
+                    padding: "1px",
+                  }}
+                />
               </Badge>
             </Grid>
 
             <Grid item md={6} sm={6} xs={12}>
               <InputTextField
-                
                 label="First Name"
                 id="Firstname"
                 type="text"
                 onChange={onchangeHandler}
                 value={data.Firstname}
                 name="Firstname"
-                  className="custom-required-field"
-                
-                // onChange={(event) => {  
-                //   const value = event.target.value; 
-                //   const validValue = value.replace(/[^a-zA-Z]/g, ''); 
-          
-                //   setData({ 
+                className="custom-required-field"
+
+                // onChange={(event) => {
+                //   const value = event.target.value;
+                //   const validValue = value.replace(/[^a-zA-Z]/g, '');
+
+                //   setData({
                 //     ...data,
-                //     Firstname: validValue, 
-                //   }); 
-                // }} 
+                //     Firstname: validValue,
+                //   });
+                // }}
               />
             </Grid>
             <Grid item md={6} sm={6} xs={12}>
@@ -733,7 +820,6 @@ export default function ManageUsers() {
             <Grid item md={6} sm={6} xs={12}>
               <InputTextField
                 label="Last Name"
-                
                 id="Lastname"
                 onChange={onchangeHandler}
                 value={data.Lastname}
@@ -742,16 +828,18 @@ export default function ManageUsers() {
             </Grid>
             <Grid item md={6} sm={6} xs={12}>
               <InputPasswordField
-                label="Password"
-                id="Password"
+                label="password"
+                id="password"
                 onChange={onchangeHandler}
-                value={data.Password}
-                name="Password"
+                value={data.password}
+                name="password"
                 type={showPassword ? "text" : "password"}
                 showPassword={showPassword}
+
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
-              />
+              /> 
+              &nbsp; &nbsp;  Leave blank to current password here
             </Grid>
             <Grid item md={6} sm={6} xs={12}>
               <InputTextField
@@ -775,11 +863,13 @@ export default function ManageUsers() {
             <Grid item md={6} sm={6} xs={12}>
               <InputTextField
                 label="Email ID"
+                name="Email"
                 id="Email"
                 onChange={onchangeHandler}
                 type="email"
+                required
                 value={data.Email}
-                name="Email"
+                className="custom-required-field"
               />
             </Grid>
 
@@ -956,7 +1046,7 @@ export default function ManageUsers() {
         elevation="4"
       >
         <Typography
-         className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"

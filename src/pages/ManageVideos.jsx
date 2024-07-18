@@ -63,7 +63,7 @@ export default function ManageVideos() {
     Id: "",
     NameL1: "",
     DescriptionL1: "",
-    Category:"en",
+    Category: "en",
   });
 
   const clearFormData = () => {
@@ -72,7 +72,7 @@ export default function ManageVideos() {
       Description: "",
       NameL1: "",
       DescriptionL1: "",
-      Category:"en",
+      Category: "en",
       TagsIds: "",
       Status: 1,
     });
@@ -109,13 +109,13 @@ export default function ManageVideos() {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setFormData({ 
-       Name: "",
+    setFormData({
+      Name: "",
       Description: "",
       Id: "",
       NameL1: "",
       DescriptionL1: "",
-      Category:"en",
+      Category: "en",
     });
   };
 
@@ -128,11 +128,11 @@ export default function ManageVideos() {
       Name: data.Name,
       NameL1: data.NameL1,
       Description: data.Description,
-      DescriptionL1: data.DescriptionL1,        
+      DescriptionL1: data.DescriptionL1,
       Id: data._id,
       TagsIds: data.TagsIds,
       StorageVideoId: data.StorageVideoId,
-      Category:"en",
+      Category: "en",
     });
 
     if (data.Link) {
@@ -209,7 +209,6 @@ export default function ManageVideos() {
       DescriptionL1: formData.DescriptionL1,
       Link: videoname,
       TagsIds: selectedTags.map((tag) => tag._id),
-      
     };
 
     console.log(UpdateObj);
@@ -516,6 +515,8 @@ export default function ManageVideos() {
   //   justifyContent: "center",
   //   alignItems: "center",
   // };
+ 
+ 
 
   return (
     <>
@@ -557,9 +558,11 @@ export default function ManageVideos() {
               </IconButton>
             </Grid>
             <Grid item xs={12}>
-              <FormControl sx={{ width: "110px" }} size="small"
-              disabled={SaveUpdateButton === "SAVE"}
-               >
+              <FormControl
+                sx={{ width: "110px" }}
+                size="small"
+                disabled={SaveUpdateButton === "SAVE"}
+              >
                 <InputLabel id="demo-select-large-Choose-Lang">
                   Select Lang
                 </InputLabel>
@@ -572,12 +575,8 @@ export default function ManageVideos() {
                   value={formData.Category}
                   disabled={SaveUpdateButton === "SAVE"}
                 >
-                  <MenuItem value="en" >
-                    English
-                  </MenuItem>
-                  <MenuItem value="mr" >
-                    Marathi
-                  </MenuItem>
+                  <MenuItem value="en">English</MenuItem>
+                  <MenuItem value="mr">Marathi</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -591,17 +590,21 @@ export default function ManageVideos() {
                 id="Name"
                 label="Enter Title"
                 autoFocus
-                name={formData.Category==="en"? "Name" :"NameL1"}
-                value={formData.Category==="en"? formData.Name : formData.NameL1}
+                name={formData.Category === "en" ? "Name" : "NameL1"}
+                value={
+                  formData.Category === "en" ? formData.Name : formData.NameL1
+                }
                 style={{ borderRadius: 10, width: "100%" }}
                 onChange={handleInputChange}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth size="small"
-              //  required
-               >
+              <FormControl
+                fullWidth
+                size="small"
+                //  required
+              >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -642,8 +645,14 @@ export default function ManageVideos() {
                 id="Description"
                 label="Enter Description"
                 multiline
-                name={formData.Category==="en"? "Description": "DescriptionL1"}
-                value={formData.Category==="en"? formData.Description : formData.DescriptionL1 }
+                name={
+                  formData.Category === "en" ? "Description" : "DescriptionL1"
+                }
+                value={
+                  formData.Category === "en"
+                    ? formData.Description
+                    : formData.DescriptionL1
+                }
                 rows={3}
                 onChange={handleInputChange}
               />
@@ -722,7 +731,7 @@ export default function ManageVideos() {
         }}
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -782,21 +791,10 @@ export default function ManageVideos() {
                   autoPlay={play}
                   allowFullScreen
                 />
+              ) : (
                 // <iframe src="https://iframe.mediadelivery.net/embed/222011/47d67bce-03aa-47d3-bad8-f5c89bcbe746?autoplay=true&loop=false&muted=true&preload=false&responsive=true" loading="lazy"   allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen="true"></iframe>
 
-              ) : (
                 <div style={containerStyle}>
-                  {/* <button
-                    style={buttonStyle}
-                    onClick={() => {
-                      handleOnPlay(item.StorageVideoId);
-                    }}
-                  >
-                    <PlayCircleFilledIcon
-                      sx={{ color: "#318CE7", fontSize: "40px" }}
-                    />
-                  </button> */}
-
                   <img
                     src={`${Bunny_Thumbnail_URL}/${item.StorageVideoId}/${item.Thumbnail}`}
                     alt="Thumbnail"
@@ -838,13 +836,13 @@ export default function ManageVideos() {
                   justifyContent: "space-between",
                 }}
               >
-                <IconButton color="primary" onClick={() =>handleUpdate(item)}>
+                <IconButton color="primary" onClick={() => handleUpdate(item)}>
                   <EditNoteIcon />
                 </IconButton>
                 <Button
                   size="medium"
                   sx={{ color: "red" }}
-                  onClick={() =>deleteVideo(item)}
+                  onClick={() => deleteVideo(item)}
                 >
                   <DeleteForeverIcon />
                 </Button>
@@ -853,7 +851,7 @@ export default function ManageVideos() {
           </Grid>
         ))}
       </Grid>
-
+ 
       <Grid container spacing={3} width="100%" pt={5}>
         <Grid
           item

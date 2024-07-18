@@ -1481,6 +1481,7 @@ console.log(UpdateNewletterObj);
                 <Card sx={{ width: "100%" }}>
                   <img
                     src={pdf}
+                    
                     alt="NewsIcon"
                     onClick={() => {
                       onopen(item.Link);
@@ -1488,6 +1489,7 @@ console.log(UpdateNewletterObj);
                     style={{
                       width: "40%",
                       height: "100%",
+                      cursor:"pointer",
                       objectFit: "fill",
                       aspectRatio: 5 / 6,
                       paddingTop: 20,
