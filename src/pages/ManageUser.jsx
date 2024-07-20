@@ -349,7 +349,8 @@ export default function ManageUsers() {
       validationAlert("Please enter a valid 10-digit phone number.");
       return;
     } else if (
-      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/.test(data.password) && SaveUpdateButton==="SAVE"
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/.test(data.password) &&
+      SaveUpdateButton === "SAVE"
     ) {
       validationAlert(
         "password must contain at least one numeric digit, one alphabet, and one capital letter, @ Not allow..."
@@ -393,12 +394,11 @@ export default function ManageUsers() {
     };
 
     setLoaderOpen(true);
-    if(data.password !=="" || data.password!==undefined){
-      saveObj.Password= data.password
-      UpdateObj.Password= data.password
+    if (data.password !== "" || data.password !== undefined) {
+      saveObj.Password = data.password;
+      UpdateObj.Password = data.password;
     }
 
- 
     if (SaveUpdateButton === "SAVE") {
       const response = await axios.post(`${BASE_URL}Users`, saveObj);
       if (response.data.status) {
@@ -835,11 +835,13 @@ export default function ManageUsers() {
                 name="password"
                 type={showPassword ? "text" : "password"}
                 showPassword={showPassword}
-
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
-              /> 
-              &nbsp; &nbsp;  Leave blank to current password here
+              />
+
+              <Typography fontSize={"small"} color={"red"}>
+                Leave blank to current password here
+              </Typography>
             </Grid>
             <Grid item md={6} sm={6} xs={12}>
               <InputTextField

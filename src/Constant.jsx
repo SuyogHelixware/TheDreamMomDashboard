@@ -1,5 +1,5 @@
-export const BASE_URL = "http://34.232.150.10:3011/api/"; 
-// export const BASE_URL = "http://192.168.1.31:3012/api/";
+// export const BASE_URL = "http://34.232.150.10:3011/api/"; 
+export const BASE_URL = "http://192.168.1.31:3012/api/";
 
 export const Bunny_Storage_URL =
   "https://storage.bunnycdn.com/thedreammomstoragezone1";

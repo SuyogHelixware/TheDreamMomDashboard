@@ -101,49 +101,13 @@ const ManageBlog = () => {
     });
     setUploadedImg("");
   };
-  // const handleFileUpload = (event) => {
-  //   debugger;
-  //   const file = event.target.files[0];
-
-  //   // Check if file exists
-  //   if (!file) {
-  //     errorMessage("No file selected");
-  //     return;
-  //   }
-
-  //   // Handle Category N
-  //   // if (data.Category === "N") {
-  //   //   if (file.type.startsWith("image/") || file.type === "application/pdf") {
-  //   //     setUploadedImg(file);
-  //   //   } else {
-  //   //     errorMessage("Please upload a valid image or PDF file");
-  //   //   }
-  //   // }
-  //   // Handle Category B
-  //   // else if (data.Category === "B") {
-  //    else if (file.type.startsWith("image/")) {
-  //       setUploadedImg(file);
-  //     } else {
-  //       errorMessage("Please upload a valid image file");
-  //     }
-  //   // }
-  //   // Handle other categories if necessary
-  //   // else {
-  //   //   errorMessage("Invalid category");
-  //   // }
-  // };
-
+   
   const handleFileUpload = (event) => {
-    debugger;
     const file = event.target.files[0];
-
-    // Check if file exists
     if (!file) {
       errorMessage("No file selected");
       return;
     }
-
-    // Handle file upload based on type
     if (file.type.startsWith("image/")) {
       setUploadedImg(file);
     } else {
@@ -154,15 +118,13 @@ const ManageBlog = () => {
   const handleLetterUpload = (event) => {
     const file = event.target.files[0];
 
-    // Check if file exists
     if (!file) {
       errorMessage("No file selected");
       return;
     }
 
-    // Check if it's an image or PDF file
     if (file.type.startsWith("image/") || file.type === "application/pdf") {
-      setUploadedImg(file); // Assuming setUploadedImg handles both image and PDF files
+      setUploadedImg(file); 
     } else {
       errorMessage("Please upload a valid image or PDF file");
     }
@@ -217,7 +179,6 @@ const ManageBlog = () => {
       DescriptionL1: "",
       Link: "",
       Id: "",
-      // Category: "",
       Language: "en",
     });
   };
@@ -234,7 +195,6 @@ const ManageBlog = () => {
       DescriptionL1: "",
       Link: "",
       Id: "",
-      // Category: "",
       Language: "en",
     });
   };
@@ -461,7 +421,6 @@ const ManageBlog = () => {
       Id: newData.Id,
     };
 console.log(UpdateNewletterObj);
-// return
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
@@ -574,8 +533,7 @@ console.log(UpdateNewletterObj);
               throw new Error("Failed to Update Newsletter");
             }
           } else {
-            // setLoaderOpen(false);
-            // throw new Error("Failed to Upload Image");
+ 
             setLoaderOpen(false);
             Swal.fire({
               position: "center",
@@ -770,7 +728,6 @@ console.log(UpdateNewletterObj);
   const handleUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
     setisopen(true);
-    // setisOn(true);
     setSelectedTags(data.TagsIds);
     setData({
       Id: data._id,
@@ -788,7 +745,6 @@ console.log(UpdateNewletterObj);
   const handleLetterUpdate = (data) => {
     setSaveUpdateButton("UPDATE");
     setOn(true);
-    // setisOn(true);
     setSelectedTags(data.TagsIds);
     setData({
       Id: data._id,
@@ -919,27 +875,7 @@ console.log(UpdateNewletterObj);
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
-
-            {/* <Grid item xs={12}>
-              <FormControl fullWidth size="small">
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
-                <Select
-                  id="Category"
-                  label="Category"
-                  name="Category"
-                  onChange={onchangeHandler}
-                  value={data.Category}
-                  style={{ textAlign: "left" }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
-                >
-                  <MenuItem value="B">Blogs</MenuItem>
-                  <MenuItem value="N">Newsletter</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid> */}
-
+ 
             <Grid item xs={12}>
               <FormControl fullWidth size="small">
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
@@ -1118,7 +1054,6 @@ console.log(UpdateNewletterObj);
               <TextField
                 size="small"
                 spacing={"5"}
-                // required
                 fullWidth
                 id="Name"
                 label="Enter Name"
@@ -1129,35 +1064,11 @@ console.log(UpdateNewletterObj);
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
-            {/* <Grid item xs={12}>
-              <FormControl
-                fullWidth
-                size="small"
-                // required
-              >
-                <InputLabel id="demo-select-small-label">
-                  Select Type
-                </InputLabel>
-
-                <Select
-                  id="Category"
-                  label="Category"
-                  name="Category"
-                  onChange={onchangeHandler}
-                  value={data.Category}
-                  style={{ textAlign: "left" }}
-                  MenuProps={{ PaperProps: { style: { maxHeight: 150 } } }}
-                >
-                  <MenuItem value="B">Blogs</MenuItem>
-                  <MenuItem value="N">Newsletter</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid> */}
+            
             <Grid item xs={12}>
               <FormControl
                 fullWidth
                 size="small"
-                //  required
               >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
@@ -1193,7 +1104,6 @@ console.log(UpdateNewletterObj);
             <Grid item xs={12} paddingTop={1}>
               <TextField
                 size="small"
-                // required
                 fullWidth
                 id="Description"
                 label="Enter Description"
