@@ -1,5 +1,5 @@
-// export const BASE_URL = "http://34.232.150.10:3011/api/"; 
-export const BASE_URL = "http://192.168.1.31:3012/api/";
+export const BASE_URL = "http://34.232.150.10:3011/api/"; 
+// export const BASE_URL = "http://192.168.1.6:3012/api/";
 
 export const Bunny_Storage_URL =
   "https://storage.bunnycdn.com/thedreammomstoragezone1";
@@ -14,4 +14,4 @@ export const Bunny_Stream_GET_URL = "https://video.bunnycdn.com/embed";
 
 export const Bunny_Image_URL = "https://theDreamMomPullZone1.b-cdn.net";
 
-export const Bunny_Thumbnail_URL="https://vz-b51db09c-870.b-cdn.net"
+export const Bunny_Thumbnail_URL="https://vz-b51db09c-870.b-cdn.net";

@@ -84,6 +84,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      sortable:false,
       renderCell: (params) => (
         <>
           <IconButton color="error" onClick={() => handleDelete(params.row)}>
@@ -96,11 +97,12 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
       field: "SrNo",
       headerName: "Sr.No",
       width: 100,
+      sortable:true,
     },
-    { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 400 },
-    { field: "DosageName", headerName: "Dosage Name", width: 250 },
-    { field: "DosageDescription", headerName: "Dosage Description", width: 400 },
+    { field: "Name", headerName: "Name", width: 250 ,sortable:false },
+    { field: "Description", headerName: "Description", width: 400 ,sortable:false},
+    { field: "DosageName", headerName: "Dosage Name", width: 250 ,sortable:false},
+    { field: "DosageDescription", headerName: "Dosage Description", width: 400 ,sortable:false},
   ];
 
   return (
@@ -197,13 +199,14 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
             className="datagrid-style"
             // rowHeight={80}
             columns={[
-              { field: "id", headerName: "SR.NO", width: 250 },
-              { field: "Name", headerName: "Name", width: 250 },
-              { field: "Description", headerName: "Description", width: 300 },
-              { field: "DosageName", headerName: "Dosage Name", width: 250 },
+              { field: "id", headerName: "SR.NO", width: 250   ,  sortable:true},
+              { field: "Name", headerName: "Name", width: 250 ,  sortable:false },
+              { field: "Description", headerName: "Description", width: 300 ,  sortable:false },
+              { field: "DosageName", headerName: "Dosage Name", width: 250 ,  sortable:false },
               {
                 field: "DosageDescription",
                 headerName: "Dosage Description",
+                 sortable:false,
                 width: 300,
               },
             ]}

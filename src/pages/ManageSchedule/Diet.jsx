@@ -163,7 +163,6 @@ const ManageDiet = () => {
   const handleSubmitForm = async () => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
-      // (field) => !data[field]||"".trim()
       (field) => !data[field] || !data[field].trim()
     );
     if (emptyRequiredFields.length > 0 || selectedTags.length === 0) {

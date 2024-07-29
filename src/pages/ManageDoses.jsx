@@ -239,6 +239,7 @@ const ManageDoses = () => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      sortable:false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -254,11 +255,11 @@ const ManageDoses = () => {
         </strong>
       ),
     },
-    { field: "id", headerName: "SR.NO", width: 90, sortable: false },
-    { field: "Name", headerName: "Name", width: 250 },
-    { field: "NameL1", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 350 },
-    { field: "DescriptionL1", headerName: "Description", width: 400 },
+    { field: "id", headerName: "SR.NO", width: 90, sortable: true },
+    { field: "Name", headerName: "Name", width: 250 ,sortable:false},
+    { field: "NameL1", headerName: "Name", width: 250 ,sortable:false},
+    { field: "Description", headerName: "Description", width: 350,sortable:false },
+    { field: "DescriptionL1", headerName: "Description", width: 400 ,sortable:false},
   ];
 
   const handleUpdate = (data) => {
@@ -345,10 +346,9 @@ const ManageDoses = () => {
               <TextField
                 size="small"
                 spacing={"5"}
-                // required
                 fullWidth
                 id="Name"
-                label="Enter Name"
+                label="Enter Doses Name"
                 name={data.Category === "en" ? "Name" : "NameL1"}
                 value={data.Category === "en" ? data.Name : data.NameL1}
                 onChange={onchangeHandler}
@@ -363,7 +363,7 @@ const ManageDoses = () => {
                 // required
                 fullWidth
                 id="Description"
-                label="Enter Description"
+                label="Enter Doses Description"
                 name={data.Category === "en" ? "Description" : "DescriptionL1"}
                 value={
                   data.Category === "en" ? data.Description : data.DescriptionL1

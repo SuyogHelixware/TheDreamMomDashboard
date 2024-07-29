@@ -72,7 +72,6 @@ export default function ManageAssesment() {
               },
             }}
             color="primary"
-            // size="small"
             onClick={() => handleOpenModal(params.row)}
           >
             <RemoveRedEyeIcon />
@@ -81,7 +80,7 @@ export default function ManageAssesment() {
       ),
     },
 
-    { field: "id", headerName: "SR.NO", width: 90, sortable: false },
+    { field: "id", headerName: "SR.NO", width: 90, sortable:true},
     {
       field: "Weight",
       headerName: "Weight",

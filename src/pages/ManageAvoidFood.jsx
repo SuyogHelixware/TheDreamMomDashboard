@@ -236,6 +236,7 @@ const ManageAvoidFood = () => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      sortable:false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -252,11 +253,11 @@ const ManageAvoidFood = () => {
       ),
     },
     
-      { field: "id", headerName: "SR.NO", width: 100, sortable: false },
-      { field: "Name", headerName: "Name", width: 250 },
-      { field: "NameL1", headerName: "Name", width: 200 },
-      { field: "Description", headerName: "Description", width: 350},
-      { field: "DescriptionL1", headerName: "Description", width:350}
+      { field: "id", headerName: "SR.NO", width: 100, sortable: true },
+      { field: "Name", headerName: "Name", width: 250, sortable:false },
+      { field: "NameL1", headerName: "Name", width: 200, sortable:false},
+      { field: "Description", headerName: "Description", width: 350, sortable:false},
+      { field: "DescriptionL1", headerName: "Description", width:350, sortable:false}
     
     
   ];

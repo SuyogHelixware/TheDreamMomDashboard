@@ -73,6 +73,7 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      sortable:false,
       renderCell: (params) => (
         <>
           <IconButton color="error" onClick={() => handleDelete(params.row)}>
@@ -85,12 +86,15 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
       field: "SrNo",
       headerName: "Sr.No",
       width: 100,
+      sortable:true,
+
     },
-    { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 400 },
+    { field: "Name", headerName: "Name", width: 250 ,sortable:false },
+    { field: "Description", headerName: "Description", width: 400 ,sortable:false},
     {
       field: "Image",
       headerName: "Image",
+      sortable:false,
       width: 250,
       renderCell: (params) => (
         <img
@@ -197,12 +201,13 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "SrNo", headerName: "SR.NO", width: 100 },
-              { field: "Name", headerName: "Name", width: 300 },
-              { field: "Description", headerName: "Description", flex:1 },
+              { field: "SrNo", headerName: "SR.NO", width: 100  ,  sortable:true},
+              { field: "Name", headerName: "Name", width: 300  ,  sortable:false},
+              { field: "Description", headerName: "Description",  sortable:false ,  flex:1 },
               {
                 field: "Image",
                 headerName: "Image",
+                 sortable:false,
                 width: 150,
                 renderCell: (params) => (
                   <img

@@ -79,6 +79,7 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      sortable:false,
       renderCell: (params) => (
         <>
           <IconButton color="error" onClick={() => handleDelete(params.row)}>
@@ -91,13 +92,15 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
       field: "SrNo",
       headerName: "Sr.No",
       width: 100,
+      sortable:true,
     },
-    { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 400 },
+    { field: "Name", headerName: "Name", width: 250,sortable:false },
+    { field: "Description", headerName: "Description", width: 400,sortable:false },
     {
       field: "Image",
       headerName: "Image",
       width: 250,
+      sortable:false,
       renderCell: (params) => (
         <img
           src={`${Bunny_Image_URL}/Schedule/Precaution/${params.row.Image}`}
@@ -203,13 +206,14 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
             className="datagrid-style"
             rowHeight={80}
             columns={[
-              { field: "id", headerName: "SR.NO", width: 100 },
-              { field: "Name", headerName: "Name", width: 300 },
-              { field: "Description", headerName: "Description", width: 300 ,flex:1 },
+              { field: "id", headerName: "SR.NO", width: 100 ,sortable:true },
+              { field: "Name", headerName: "Name", width: 300 ,sortable:false},
+              { field: "Description", headerName: "Description", width: 300 ,sortable:false, flex:1 },
               {
                 field: "Image",
                 headerName: "Image",
                 width: 250,
+                sortable:false,
                 renderCell: (params) => (
                   <img
                     src={`${Bunny_Image_URL}/Schedule/Precaution/${params.row.Image}`}

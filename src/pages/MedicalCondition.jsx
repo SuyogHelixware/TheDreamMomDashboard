@@ -243,6 +243,7 @@ export default function MedicalCondition() {
     {
       field: "actions",
       headerName: "Action",
+      sortable:false,
       width: 150,
       renderCell: (params) => (
         <strong>
@@ -259,7 +260,7 @@ export default function MedicalCondition() {
         </strong>
       ),
     },
-    { field: "id", headerName: "SR.NO", width: 100, sortable: false },
+    { field: "id", headerName: "SR.NO", width: 100, sortable: true },
     {
       field: "Name",
       headerName: "Name",

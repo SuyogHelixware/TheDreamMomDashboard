@@ -593,7 +593,7 @@ export default function ManageUsers() {
         </>
       ),
     },
-    { field: "id", headerName: "SR.No", width: 90, sortable: false },
+    { field: "id", headerName: "SR.No", width: 90, sortable: true },
     {
       field: "Firstname",
       headerName: "First Name",
@@ -634,7 +634,7 @@ export default function ManageUsers() {
     {
       field: "BloodGroup",
       headerName: "Blood Group",
-      width: 130,
+      width: 110,
       sortable: false,
     },
     {
@@ -657,13 +657,14 @@ export default function ManageUsers() {
     {
       field: "Email",
       headerName: "Email",
-      width: 140,
+      width: 150,
       sortable: false,
     },
     {
       field: "Avatar",
       headerName: "Image",
-      width: 250,
+      width: 150,
+      sortable:false,
       renderCell: (params) => (
         <img
           src={

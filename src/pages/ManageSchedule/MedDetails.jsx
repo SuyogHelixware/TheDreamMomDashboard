@@ -220,6 +220,7 @@ const MedDetails = () => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      sortable:false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -235,9 +236,9 @@ const MedDetails = () => {
         </strong>
       ),
     },
-    { field: "id", headerName: "SR.NO", width: 90, sortable: false },
-    { field: "Medication", headerName: "Medication", width: 400 },
-    { field: "Dosage", headerName: "Dosage", width: 400, },
+    { field: "id", headerName: "SR.NO", width: 90, sortable: true },
+    { field: "Medication", headerName: "Medication", width: 400  ,sortable:false},
+    { field: "Dosage", headerName: "Dosage", width: 400,sortable:false },
   ];
 
   const handleUpdate = (rowData) => {

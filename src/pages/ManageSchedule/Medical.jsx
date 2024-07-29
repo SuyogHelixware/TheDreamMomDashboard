@@ -225,6 +225,7 @@ const Medical = () => {
       field: "actions",
       headerName: "Action",
       width: 130,
+      sortable:false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -240,11 +241,11 @@ const Medical = () => {
         </strong>
       ),
     },
-    { field: "id", headerName: "SR.No", width: 80, sortable: false },
-    { field: "Name", headerName: "Name", width: 300 },
-    { field: "NameL1", headerName: "Name", width: 300 },
-    { field: "Description", headerName: "Description", width: 350 },
-    { field: "DescriptionL1", headerName: "Description" , width:300},
+    { field: "id", headerName: "SR.No", width: 80, sortable: true },
+    { field: "Name", headerName: "Name", width: 300 ,sortable: false },
+    { field: "NameL1", headerName: "Name", width: 300  ,sortable: false },
+    { field: "Description", headerName: "Description", width: 350 ,sortable: false },
+    { field: "DescriptionL1", headerName: "Description" , width:300,sortable: false },
   ];
 
   const handleDelete = (data) => {

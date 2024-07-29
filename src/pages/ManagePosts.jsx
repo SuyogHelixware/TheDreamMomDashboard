@@ -244,6 +244,7 @@ const ManagePosts = () => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      sortable:false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -260,11 +261,11 @@ const ManagePosts = () => {
       ),
     },
 
-    { field: "id", headerName: "SR.NO", width: 90, sortable: false },
-    { field: "Name", headerName: "Name", width: 250 },
-    { field: "NameL1", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 300},
-    { field: "DescriptionL1", headerName: "Description", width: 300},
+    { field: "id", headerName: "SR.NO", width: 90, sortable: true },
+    { field: "Name", headerName: "Name", width: 250 ,sortable:false },
+    { field: "NameL1", headerName: "Name", width: 250 ,sortable:false },
+    { field: "Description", headerName: "Description", width: 300 ,sortable:false} ,
+    { field: "DescriptionL1", headerName: "Description", width: 300 ,sortable:false},
     {
       field: "Status",
       headerName: "Status",

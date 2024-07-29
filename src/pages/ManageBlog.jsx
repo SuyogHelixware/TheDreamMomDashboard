@@ -24,9 +24,10 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import pdf from "../../src/assets/pdf.png";
 import * as React from "react";
 import { Document, Page } from "react-pdf";
+import "react-quill/dist/quill.snow.css";
+import pdf from "../../src/assets/pdf.png";
 import Swal from "sweetalert2";
 import {
   BASE_URL,
@@ -47,7 +48,7 @@ const styles = {
   },
 };
 
-const ManageBlog = () => {
+const ManageBlog = ({ item }) => {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [on, setOn] = React.useState(false);
@@ -101,7 +102,7 @@ const ManageBlog = () => {
     });
     setUploadedImg("");
   };
-   
+
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) {
@@ -124,7 +125,7 @@ const ManageBlog = () => {
     }
 
     if (file.type.startsWith("image/") || file.type === "application/pdf") {
-      setUploadedImg(file); 
+      setUploadedImg(file);
     } else {
       errorMessage("Please upload a valid image or PDF file");
     }
@@ -420,7 +421,7 @@ const ManageBlog = () => {
       TagsIds: selectedTags.map((tag) => tag._id),
       Id: newData.Id,
     };
-console.log(UpdateNewletterObj);
+    console.log(UpdateNewletterObj);
     setLoaderOpen(true);
 
     if (SaveUpdateButton === "SAVE") {
@@ -533,7 +534,6 @@ console.log(UpdateNewletterObj);
               throw new Error("Failed to Update Newsletter");
             }
           } else {
- 
             setLoaderOpen(false);
             Swal.fire({
               position: "center",
@@ -875,7 +875,7 @@ console.log(UpdateNewletterObj);
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
- 
+
             <Grid item xs={12}>
               <FormControl fullWidth size="small">
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
@@ -1064,12 +1064,9 @@ console.log(UpdateNewletterObj);
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
-            
+
             <Grid item xs={12}>
-              <FormControl
-                fullWidth
-                size="small"
-              >
+              <FormControl fullWidth size="small">
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -1391,7 +1388,6 @@ console.log(UpdateNewletterObj);
                 <Card sx={{ width: "100%" }}>
                   <img
                     src={pdf}
-                    
                     alt="NewsIcon"
                     onClick={() => {
                       onopen(item.Link);
@@ -1399,12 +1395,14 @@ console.log(UpdateNewletterObj);
                     style={{
                       width: "40%",
                       height: "100%",
-                      cursor:"pointer",
+                      cursor: "pointer",
                       objectFit: "fill",
                       aspectRatio: 5 / 6,
                       paddingTop: 20,
                     }}
                   />
+
+ 
 
                   <CardContent>
                     <Typography

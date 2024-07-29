@@ -274,6 +274,7 @@ const ManageFAQ = () => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      sortable:false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -289,11 +290,11 @@ const ManageFAQ = () => {
         </strong>
       ),
     },
-    { field: "id", headerName: "SR.NO", width: 90, sortable: false },
-    { field: "Question", headerName: "Question", width: 350 },
-    { field: "QuestionL1", headerName: "Question", width: 350 },
-    { field: "Answer", headerName: "Answer", width: 350, },
-    { field: "AnswerL1", headerName: "Answer", width:400 },
+    { field: "id", headerName: "SR.NO", width: 90, sortable: true },
+    { field: "Question", headerName: "Question", width: 350 ,sortable:false},
+    { field: "QuestionL1", headerName: "Question", width: 350,sortable:false },
+    { field: "Answer", headerName: "Answer", width: 350,sortable:false },
+    { field: "AnswerL1", headerName: "Answer", width:400 ,sortable:false},
 
   ];
 
@@ -399,7 +400,6 @@ const ManageFAQ = () => {
               <FormControl
                 fullWidth
                 size="small"
-                //  required
               >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 

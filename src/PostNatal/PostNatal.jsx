@@ -203,18 +203,33 @@ const PostNatal = () => {
     }));
   };
 
+  // const handleClick = (row) => {
+  //   // console.log(row);
+  //   setSaveUpdateButton("UPDATE");
+  //   setOpen(true);
+  //   setFormData({
+  //     ...row,
+  //     MedDetailsIds: row.MedDetailsIds.map((data) => ({
+  //       _id: data._id,
+  //       Name: data.MedId.Name,
+  //       Description: data.MedId.Description,
+  //       DosageName: data.DosageId.Name,
+  //       DosageDescription: data.DosageId.Description,
+  //     })),
+  //   });
+  // };
+
   const handleClick = (row) => {
-    // console.log(row);
     setSaveUpdateButton("UPDATE");
     setOpen(true);
     setFormData({
       ...row,
       MedDetailsIds: row.MedDetailsIds.map((data) => ({
         _id: data._id,
-        Name: data.MedId.Name,
-        Description: data.MedId.Description,
-        DosageName: data.DosageId.Name,
-        DosageDescription: data.DosageId.Description,
+        Name: data.MedId ? data.MedId.Name : "",
+        Description: data.MedId ? data.MedId.Description : "",
+        DosageName: data.DosageId ? data.DosageId.Name : "",
+        DosageDescription: data.DosageId ? data.DosageId.Description : "",
       })),
     });
   };
@@ -280,6 +295,7 @@ const PostNatal = () => {
       field: "actions",
       headerName: "Action",
       width: 150,
+      sortable:false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
@@ -299,13 +315,15 @@ const PostNatal = () => {
       field: "id",
       headerName: "Sr.No",
       width: 100,
+      sortable:true,
     },
-    { field: "Name", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 250 },
+    { field: "Name", headerName: "Name", width: 250 ,sortable:false },
+    { field: "Description", headerName: "Description", width: 300 ,sortable:false},
     {
       field: "Week",
       headerName: "Week",
-      width: 200,
+      width: 150,
+      sortable:false,
       valueGetter: (params) => {
         const FromWeek = params.row.Week.FromWeek;
         const ToWeek = params.row.Week.ToWeek;
@@ -335,8 +353,7 @@ const PostNatal = () => {
         );
       },
     }
-    
-  ];
+      ];
 
   const receiveDataFromDiet = (data) => {
     setFormData((prevData) => ({

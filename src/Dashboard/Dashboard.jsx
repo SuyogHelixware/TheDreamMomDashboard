@@ -10,7 +10,7 @@ import ApprovalIcon from "@mui/icons-material/Approval";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
-import GroupsIcon from "@mui/icons-material/Groups";
+// import GroupsIcon from "@mui/icons-material/Groups";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -145,7 +145,6 @@ const style = {
 
 export default function Dashboard() {
   const [fullscreen, setFullscreen] = React.useState(false);
-
   const Navigate = useNavigate();
   const router = useLocation();
   const [open, setOpen] = React.useState(true);
@@ -511,7 +510,6 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
@@ -1038,7 +1036,7 @@ export default function Dashboard() {
                   <ListItemText primary="Manage Blog & letter" />
                 </ListItemButton>
               </Link>
-              <Link to="manage-expert" className="link_style">
+              {/* <Link to="manage-expert" className="link_style">
                 <ListItemButton
                   onClick={handleClickTransaction}
                   selected={location.pathname === "/dashboard/manage-expert"}
@@ -1061,7 +1059,7 @@ export default function Dashboard() {
                   </ListItemIcon>
                   <ListItemText primary="Manage Expert ANS" />
                 </ListItemButton>
-              </Link>
+              </Link> */}
               {/* <Link to="manage-comments" className="link_style">
               <ListItemButton
                 onClick={handleClickTransaction}

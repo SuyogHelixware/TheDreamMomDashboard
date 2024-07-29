@@ -241,6 +241,21 @@ const PlanMaster = () => {
     }));
   };
 
+  // const handleClick = (row) => {
+  //   setSaveUpdateButton("UPDATE");
+  //   setOpen(true);
+  //   setFormData({
+  //     ...row,
+  //     MedDetailsIds: row.MedDetailsIds.map((data) => ({
+  //       _id: data._id,
+  //       Name: data.MedId.Name,
+  //       Description: data.MedId.Description,
+  //       DosageName: data.DosageId.Name,
+  //       DosageDescription: data.DosageId.Description,
+  //     })),
+  //   });
+  // };
+
   const handleClick = (row) => {
     setSaveUpdateButton("UPDATE");
     setOpen(true);
@@ -248,14 +263,14 @@ const PlanMaster = () => {
       ...row,
       MedDetailsIds: row.MedDetailsIds.map((data) => ({
         _id: data._id,
-        Name: data.MedId.Name,
-        Description: data.MedId.Description,
-        DosageName: data.DosageId.Name,
-        DosageDescription: data.DosageId.Description,
+        Name: data.MedId ? data.MedId.Name : "",
+        Description: data.MedId ? data.MedId.Description : "",
+        DosageName: data.DosageId ? data.DosageId.Name : "",
+        DosageDescription: data.DosageId ? data.DosageId.Description : "",
       })),
     });
   };
-
+  
   const handleDelete = (id) => {
     setLoaderOpen(true);
     Swal.fire({
@@ -331,9 +346,10 @@ const PlanMaster = () => {
       field: "id",
       headerName: "Sr.No",
       width: 100,
+      sortable:true,
     },
-    { field: "Name", headerName: "Name", width: 200 },
-    { field: "Description", headerName: "Description", width: 250 },
+    { field: "Name", headerName: "Name", width: 200 , sortable:false },
+    { field: "Description", headerName: "Description", width: 250, sortable:false},
     // {
     //   field: "FromWeek",
     //   headerName: "FromWeek",
@@ -353,6 +369,7 @@ const PlanMaster = () => {
     {
       field: "Week",
       headerName: "Week",
+      sortable:false,
       width: 200,
       valueGetter: (params) => {
         const FromWeek = params.row.Week.FromWeek;
@@ -380,6 +397,7 @@ const PlanMaster = () => {
     {
       field: "Age",
       headerName: "Age",
+      sortable:false,
       width: 200,
       valueGetter: (params) => {
         const fromAge = params.row.Age.FromAge;
@@ -408,6 +426,7 @@ const PlanMaster = () => {
       field: "Weight",
       headerName: "Weight",
       width: 200,
+      sortable:false,
       valueGetter: (params) => {
         const FromWeight = params.row.Weight.FromWeight;
         const ToWeight = params.row.Weight.ToWeight;
@@ -433,6 +452,7 @@ const PlanMaster = () => {
     {
       field: "Height",
       headerName: "Height",
+      sortable:false,
       width: 200,
       valueGetter: (params) => {
         const FromHeight = params.row.Height.FromHeight;
