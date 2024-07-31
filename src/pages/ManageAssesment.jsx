@@ -166,7 +166,7 @@ export default function ManageAssesment() {
     {
       field: "BloodGroup",
       headerName: "Blood Group",
-      width: 100,
+      width: 120,
       sortable: false,
     },
   ];
