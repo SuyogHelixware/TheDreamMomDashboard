@@ -56,6 +56,23 @@ export default function ManageAssesment() {
   React.useEffect(() => {
     getUserData();
   }, []);
+  const genderMap = {
+    M: "Male",
+    F: "Female",
+    O: "Other",
+    U: "Unknown",
+  };
+
+  const DelTypeMap = {
+    Normal: "Normal" || "Caesarean",
+  };
+
+  // Value formatter function
+  const genderFormatter = (params) =>
+    genderMap[params.value] || "Not Specified";
+
+  const DelTypeFormatter = (params) =>
+    DelTypeMap[params.value] || "Not Specified";
 
   const columns = [
     {
@@ -80,7 +97,7 @@ export default function ManageAssesment() {
       ),
     },
 
-    { field: "id", headerName: "SR.NO", width: 90, sortable:true},
+    { field: "id", headerName: "SR.NO", width: 90, sortable: true },
     {
       field: "Weight",
       headerName: "Weight",
@@ -116,23 +133,36 @@ export default function ManageAssesment() {
       valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
     {
+      field: "DOB",
+      headerName: "Date of Birth",
+      width: 120,
+      sortable: false,
+      valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
+    },
+    {
       field: "DelType",
       headerName: "Delivery Type",
       width: 150,
       sortable: false,
+      valueFormatter: DelTypeFormatter,
     },
+
     {
       field: "BabyGender",
       headerName: "Baby Gender",
-      width: 130,
+      width: 120,
       sortable: false,
+      valueFormatter: genderFormatter,
     },
     {
       field: "MaternityHistory",
       headerName: "Maternity History",
       width: 100,
       sortable: false,
+      valueGetter: (params) => 
+        params.row.MaternityHistory? params.row.MaternityHistory : "0",
     },
+    
     // {
     //   field: "Status",
     //   headerName: "Status",
@@ -141,35 +171,83 @@ export default function ManageAssesment() {
     //   valueGetter: (params) =>
     //     params.row.Status === 1 ? "Active" : "Inactive",
     // },
+
+    {
+      field: "BloodGroup",
+      headerName: "Blood Group",
+      width: 100,
+      sortable: false,
+      renderCell: (params) => {
+        const bloodGroup = params.row.BloodGroup;
+        const color = badgeColors[bloodGroup] || "#6c757d"; // Default gray if no match
+        return (
+          <span style={{ ...badgeStyles, backgroundColor: color, width: 35 }}>
+            {bloodGroup}
+          </span>
+        );
+      },
+    },
+
     {
       field: "Status",
       headerName: "Status",
       width: 100,
       sortable: false,
-      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
+      valueGetter: (params) =>
+        params.row.Status === 1 ? "Active" : "Inactive",
       renderCell: (params) => {
         const isActive = params.row.Status === 1;
         return (
-          <span style={{ color: isActive ? 'green' : 'red' }}>
-            {isActive ? 'Active' : 'Inactive'}
-          </span>
+          <button
+            style={isActive ? activeButtonStyle : inactiveButtonStyle}
+            disabled
+          >
+            {isActive ? "Active" : "Inactive"}
+          </button>
         );
       },
     },
-    {
-      field: "DOB",
-      headerName: "Date of Birth",
-      width: 120,
-      sortable: false,
-      valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
-    },
-    {
-      field: "BloodGroup",
-      headerName: "Blood Group",
-      width: 120,
-      sortable: false,
-    },
   ];
+ 
+  const badgeStyles = {         // Blood Group
+    borderRadius: "12px",
+    padding: "2px 6px",
+    fontSize: "12px",
+    width: "12",
+    color: "#fff",
+    display: "inline-block",
+    textAlign: "center",
+  };
+
+  const badgeColors = {          // Blood Group
+    "A+": "#007bff", // Blue for A+
+    "A-": "#0056b3", // Darker Blue for A-
+    "B+": "#28a745", // Green for B+
+    "B-": "#1e7e34", // Darker Green for B-
+    "AB+": "#ffc107", // Yellow for AB+
+    "AB-": "#e0a800", // Darker Yellow for AB-
+    "O+": "#dc3545", // Red for O+
+    "O-": "#c82333", // Darker Red for O-
+  };
+
+  const buttonStyles = {     // Status
+    border: "none",
+    borderRadius: "4px",
+    padding: "4px 8px",
+    fontSize: "12px",
+    cursor: "pointer",
+    color: "#fff",
+  };
+
+  const activeButtonStyle = {     // Status
+    ...buttonStyles,
+    backgroundColor: "green",
+  };
+
+  const inactiveButtonStyle = {     // Status
+    ...buttonStyles,
+    backgroundColor: "red",
+  };
 
   const handleOpenModal = (rowData) => {
     setSelectedData(rowData);
@@ -192,14 +270,21 @@ export default function ManageAssesment() {
         // sx={{width:"100%"}}
         fullWidth={true}
         maxWidth="md"
-      > 
-      
-      <DialogTitle id="dialog-title" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',  textAlign: 'center' }}>
-  <b style={{ flexGrow: 1 }}>Assessment Details</b>
-  <IconButton onClick={handleClose} style={{ color: "black" }}>
-    <CloseIcon />
-  </IconButton>
-</DialogTitle>
+      >
+        <DialogTitle
+          id="dialog-title"
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <b style={{ flexGrow: 1 }}>Assessment Details</b>
+          <IconButton onClick={handleClose} style={{ color: "black" }}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
         <DialogContent>
           {selectedData && (
@@ -208,14 +293,16 @@ export default function ManageAssesment() {
                 <Grid item xs={4}>
                   <PaperItem>
                     <Typography variant="body1">
-                      <strong>Baby Gender:</strong> {selectedData.BabyGender}
+                      <strong>Baby Gender:</strong>{" "}
+                      {selectedData.BabyGender || "NA"}
                     </Typography>
                   </PaperItem>
                 </Grid>
                 <Grid item xs={4}>
                   <PaperItem>
                     <Typography variant="body1">
-                      <strong>Blood Group:</strong> {selectedData.BloodGroup}
+                      <strong>Blood Group:</strong>{" "}
+                      {selectedData.BloodGroup || "NA"}
                     </Typography>
                   </PaperItem>
                 </Grid>
@@ -349,7 +436,11 @@ export default function ManageAssesment() {
                       onClick={() => onopen(selectedData.UserId, item.DocFile)}
                     >
                       <ArticleIcon
-                        sx={{ fontSize: "4rem", color: "#5C5CFF" }}
+                        sx={{
+                          fontSize: "4rem",
+                          color: "#5C5CFF",
+                          cursor: "pointer",
+                        }}
                       />
                       <CardContent sx={{ flex: 1, overflow: "hidden" }}>
                         <Typography
@@ -359,6 +450,7 @@ export default function ManageAssesment() {
                             height: 35,
                             overflow: "hidden",
                             textOverflow: "ellipsis",
+                            cursor: "pointer",
                           }}
                         >
                           <b>{item.Name}</b>

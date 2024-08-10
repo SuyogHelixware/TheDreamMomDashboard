@@ -556,7 +556,7 @@ const Medical = () => {
         }}
         elevation={7}
       >
-        <Box sx={{ height: 500, width: "100%", elevation: 4 }}>
+        <Box sx={{ height: 501, width: "100%", elevation: 4 }}>
           <DataGrid
             className="datagrid-style"
             rows={imgData}

@@ -271,18 +271,41 @@ const ManagePosts = () => {
       headerName: "Status",
       width: 100,
       sortable: false,
-      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
+      valueGetter: (params) =>
+        params.row.Status === 1 ? "Active" : "Inactive",
       renderCell: (params) => {
         const isActive = params.row.Status === 1;
         return (
-          <span style={{ color: isActive ? 'green' : 'red' }}>
-            {isActive ? 'Active' : 'Inactive'}
-          </span>
+          <button
+            style={isActive ? activeButtonStyle : inactiveButtonStyle}
+            disabled
+          >
+            {isActive ? "Active" : "Inactive"}
+          </button>
         );
       },
     },
     
   ];
+
+  const buttonStyles = {     // Status
+    border: "none",
+    borderRadius: "4px",
+    padding: "4px 8px",
+    fontSize: "12px",
+    cursor: "pointer",
+    color: "#fff",
+  };
+
+  const activeButtonStyle = {     // Status
+    ...buttonStyles,
+    backgroundColor: "green",
+  };
+
+  const inactiveButtonStyle = {     // Status
+    ...buttonStyles,
+    backgroundColor: "red",
+  };
 
   const handleUpdate = (rowData) => {
     setSaveUpdateButton("UPDATE");

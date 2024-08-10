@@ -318,11 +318,12 @@ const PostNatal = () => {
       sortable:true,
     },
     { field: "Name", headerName: "Name", width: 250 ,sortable:false },
-    { field: "Description", headerName: "Description", width: 300 ,sortable:false},
+    { field: "Description", headerName: "Description", flex: 1, sortable: false },
+
     {
       field: "Week",
       headerName: "Week",
-      width: 150,
+      width: 120,
       sortable:false,
       valueGetter: (params) => {
         const FromWeek = params.row.Week.FromWeek;
@@ -330,30 +331,62 @@ const PostNatal = () => {
         return `${FromWeek}-${ToWeek}`;
       },
     },
+   
     // {
     //   field: "Status",
     //   headerName: "Status",
-    //   width: 150,
+    //   width: 100,
     //   sortable: false,
-    //   valueGetter: (params) =>
-    //     params.row.Status === 1 ? "Active" : "Inactive",
-    // },
+    //   valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
+    //   renderCell: (params) => {
+    //     const isActive = params.row.Status === 1;
+    //     return (
+    //       <span style={{ color: isActive ? 'green' : 'red' }}>
+    //         {isActive ? 'Active' : 'Inactive'}
+    //       </span>
+    //     );
+    //   },
+    // }
     {
       field: "Status",
       headerName: "Status",
       width: 100,
       sortable: false,
-      valueGetter: (params) => (params.row.Status === 1 ? "Active" : "Inactive"),
+      valueGetter: (params) =>
+        params.row.Status === 1 ? "Active" : "Inactive",
       renderCell: (params) => {
         const isActive = params.row.Status === 1;
         return (
-          <span style={{ color: isActive ? 'green' : 'red' }}>
-            {isActive ? 'Active' : 'Inactive'}
-          </span>
+          <button
+            style={isActive ? activeButtonStyle : inactiveButtonStyle}
+            disabled
+          >
+            {isActive ? "Active" : "Inactive"}
+          </button>
         );
       },
-    }
+    },
       ];
+
+      const buttonStyles = {
+        border: "none",
+        borderRadius: "4px",
+        padding: "4px 8px",
+        fontSize: "12px",
+        cursor: "pointer",
+        color: "#fff",
+      };
+    
+      const activeButtonStyle = {
+        ...buttonStyles,
+        backgroundColor: "green",
+      };
+    
+      const inactiveButtonStyle = {
+        ...buttonStyles,
+        backgroundColor: "red",
+      };
+      
 
   const receiveDataFromDiet = (data) => {
     setFormData((prevData) => ({
@@ -450,6 +483,9 @@ const PostNatal = () => {
           Post Natal
         </Typography>
       </Grid>
+     
+     
+
 
       <Grid textAlign={"end"} marginBottom={1}>
         <Button

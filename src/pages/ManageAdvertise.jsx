@@ -609,6 +609,7 @@ const ManageAdvertise = () => {
             </Grid>
 
             <Grid item xs={12}>
+              <Typography color={"red"} fontSize={14} >Please upload image with a resolution of 70x90 pixel</Typography>
               <Button
                 fullWidth
                 onChange={handleFileUpload}

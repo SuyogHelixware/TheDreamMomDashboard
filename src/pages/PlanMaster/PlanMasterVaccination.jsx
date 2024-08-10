@@ -140,6 +140,7 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
             item
             width={"70%"}
             fontSize={20}
+          className="slide-in-text"
             sx={{
               display: "flex",
               justifyContent: "center",

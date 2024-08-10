@@ -138,11 +138,13 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
             item
             width={"70%"}
             fontSize={20}
+          className="slide-in-text"
             sx={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               textAlign: "center",
+              
             }}
           >
             <b>Medications Table</b>

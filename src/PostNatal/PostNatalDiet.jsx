@@ -1,5 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import "../Dashboard/Dashboard.css";
+
 import {
   Button,
   Dialog,
@@ -115,6 +117,7 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
           <Grid item my={2} width={"30%"}>
             <Button
               onClick={handleChildDialogOpen}
+              
               sx={{
                 p: 1,
                 color: "white",
@@ -141,6 +144,8 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
             item
             width={"70%"}
             fontSize={20}
+          className="slide-in-text"
+            
             sx={{
               display: "flex",
               justifyContent: "center",

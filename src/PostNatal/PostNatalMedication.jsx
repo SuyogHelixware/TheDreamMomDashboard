@@ -138,7 +138,8 @@ const PostNatalMedication = ({ sendMedicationDataToParent, ...props }) => {
             item
             width={"70%"}
             fontSize={20}
-            sx={{
+          className="slide-in-text"
+                        sx={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",

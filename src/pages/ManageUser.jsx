@@ -191,12 +191,12 @@ export default function ManageUsers() {
     // console.log(saveObj);
 
     Swal.fire({
-      text: "Are you sure you want to delete?",
+      text: "Are you sure you want to remove?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, Remove it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await axios.patch(
@@ -222,7 +222,7 @@ export default function ManageUsers() {
                 Swal.fire({
                   position: "center",
                   icon: "success",
-                  title: "Profile deleted successfully",
+                  title: "Profile Remove successfully",
                   showConfirmButton: false,
                   timer: 1500,
                   toast: true,
@@ -236,7 +236,7 @@ export default function ManageUsers() {
                   icon: "error",
                   toast: true,
                   title: "Failed",
-                  text: "Failed to delete profile",
+                  text: "Failed to Remove profile",
                   showConfirmButton: true,
                 });
               }
@@ -497,7 +497,7 @@ export default function ManageUsers() {
               Swal.fire({
                 position: "center",
                 icon: "success",
-                title: "Data Updated Successfully",
+                title: " Data Updated Successfully",
                 toast: true,
                 showConfirmButton: false,
                 timer: 1500,
@@ -514,7 +514,7 @@ export default function ManageUsers() {
             Swal.fire({
               position: "center",
               icon: "success",
-              title: "Data Updated Successfully",
+              title: " Data Updated Successfully",
               toast: true,
               showConfirmButton: false,
               timer: 1500,
@@ -529,7 +529,7 @@ export default function ManageUsers() {
             Swal.fire({
               position: "center",
               icon: "success",
-              title: "Data Updated Successfully",
+              title: " Data Updated Successfully",
               toast: true,
               showConfirmButton: false,
               timer: 1500,
@@ -563,7 +563,7 @@ export default function ManageUsers() {
     {
       field: "Action",
       headerName: "Action",
-      width: 150,
+      width: 100,
       sortable: false,
       renderCell: (params) => (
         <>
@@ -625,17 +625,43 @@ export default function ManageUsers() {
       width: 150,
       sortable: false,
     },
+
     {
       field: "Address",
       headerName: "Address",
       width: 150,
       sortable: false,
     },
+    // {
+    //   field: "BloodGroup",
+    //   headerName: "Blood Group",
+    //   width: 110,
+    //   sortable: false,
+    // },
+    
+
+    {
+      field: "Email",
+      headerName: "Email",
+      width: 170,
+      sortable: false,
+      
+    },
+ 
     {
       field: "BloodGroup",
       headerName: "Blood Group",
-      width: 110,
+      width: 100,
       sortable: false,
+      renderCell: (params) => {
+        const bloodGroup = params.row.BloodGroup;
+        const color = badgeColors[bloodGroup] || "#6c757d"; // Default gray if no match
+        return (
+          <span style={{ ...badgeStyles, backgroundColor: color , width:35}}>
+            {bloodGroup}
+          </span>
+        );
+      },
     },
     {
       field: "Status",
@@ -647,24 +673,21 @@ export default function ManageUsers() {
       renderCell: (params) => {
         const isActive = params.row.Status === 1;
         return (
-          <span style={{ color: isActive ? "green" : "red" }}>
+          <button
+            style={isActive ? activeButtonStyle : inactiveButtonStyle}
+            disabled
+          >
             {isActive ? "Active" : "Inactive"}
-          </span>
+          </button>
         );
       },
     },
 
     {
-      field: "Email",
-      headerName: "Email",
-      width: 150,
-      sortable: false,
-    },
-    {
       field: "Avatar",
       headerName: "Image",
-      width: 150,
-      sortable:false,
+      width: 100,
+      sortable: false,
       renderCell: (params) => (
         <img
           src={
@@ -673,12 +696,57 @@ export default function ManageUsers() {
               : `${Bunny_Image_URL}/Users/${params.row._id}/${params.row.Avatar}`
           }
           alt="avatar"
-          height={50}
-          width={80}
+          style={{
+            height: "60px",
+            width: "60px",
+            borderRadius: "30%",
+            objectFit: "cover",
+          }}
         />
       ),
     },
   ];
+
+  const badgeStyles = {
+    borderRadius: "12px",
+    padding: "2px 6px",
+    fontSize: "12px",
+    width:"12",
+    color: "#fff",
+    display: "inline-block",
+    textAlign: "center",
+  };
+
+  const badgeColors = {
+    "A+": "#007bff", // Blue for A+
+    "A-": "#0056b3", // Darker Blue for A-
+    "B+": "#28a745", // Green for B+
+    "B-": "#1e7e34", // Darker Green for B-
+    "AB+": "#ffc107", // Yellow for AB+
+    "AB-": "#e0a800", // Darker Yellow for AB-
+    "O+": "#dc3545", // Red for O+
+    "O-": "#c82333", // Darker Red for O-
+  };
+
+  const buttonStyles = {
+    border: "none",
+    borderRadius: "4px",
+    padding: "4px 8px",
+    fontSize: "12px",
+    cursor: "pointer",
+    color: "#fff",
+  };
+
+  const activeButtonStyle = {
+    ...buttonStyles,
+    backgroundColor: "green",
+  };
+
+  const inactiveButtonStyle = {
+    ...buttonStyles,
+    backgroundColor: "red",
+  };
+
   const getUserData = () => {
     axios.get(`${BASE_URL}Users/`).then((response) => {
       setUserData(response.data.values.flat());
