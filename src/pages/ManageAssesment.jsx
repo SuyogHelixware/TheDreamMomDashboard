@@ -202,7 +202,7 @@ export default function ManageAssesment() {
             style={isActive ? activeButtonStyle : inactiveButtonStyle}
             disabled
           >
-            {isActive ? "Active" : "Inactive"}
+            {isActive ? "Active" : "InActive"}
           </button>
         );
       },
@@ -237,6 +237,8 @@ export default function ManageAssesment() {
     fontSize: "12px",
     cursor: "pointer",
     color: "#fff",
+    width:55,
+
   };
 
   const activeButtonStyle = {     // Status
@@ -246,7 +248,8 @@ export default function ManageAssesment() {
 
   const inactiveButtonStyle = {     // Status
     ...buttonStyles,
-    backgroundColor: "red",
+    backgroundColor: "#dc3545",
+
   };
 
   const handleOpenModal = (rowData) => {

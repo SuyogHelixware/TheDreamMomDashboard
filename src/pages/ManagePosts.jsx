@@ -295,6 +295,8 @@ const ManagePosts = () => {
     fontSize: "12px",
     cursor: "pointer",
     color: "#fff",
+    width:55,
+
   };
 
   const activeButtonStyle = {     // Status
@@ -304,7 +306,7 @@ const ManagePosts = () => {
 
   const inactiveButtonStyle = {     // Status
     ...buttonStyles,
-    backgroundColor: "red",
+    backgroundColor: "#dc3545",
   };
 
   const handleUpdate = (rowData) => {

@@ -677,7 +677,7 @@ export default function ManageUsers() {
             style={isActive ? activeButtonStyle : inactiveButtonStyle}
             disabled
           >
-            {isActive ? "Active" : "Inactive"}
+            {isActive ? "Active" : "InActive"}
           </button>
         );
       },
@@ -735,16 +735,18 @@ export default function ManageUsers() {
     fontSize: "12px",
     cursor: "pointer",
     color: "#fff",
+    width:55,
   };
 
   const activeButtonStyle = {
     ...buttonStyles,
     backgroundColor: "green",
+    
   };
 
   const inactiveButtonStyle = {
     ...buttonStyles,
-    backgroundColor: "red",
+    backgroundColor: "#dc3545",
   };
 
   const getUserData = () => {
