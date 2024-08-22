@@ -1,9 +1,10 @@
+import BarChartIcon from "@mui/icons-material/BarChart";
+import PersonIcon from "@mui/icons-material/Person";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { BarChart, LineChart, PieChart } from "@mui/x-charts";
 import * as React from "react";
-
 
 const uData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
 const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
@@ -17,52 +18,73 @@ const xLabels = [
   "Page G",
 ];
 
- 
-
-
 export default function Home() {
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={12} sm={6} md={3}>
-      <Paper
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          borderRadius: 3,
-          height: 130,
-          transition: "background-color 0.3s ease",
-          "&:hover": {
-            // backgroundColor: "#A4C1FF",
-            // color:"white",
-            
-          },
-        }}
-        elevation={7}
-      >
-        Total Unique Pageviews
-        <h2>550K</h2>
-      </Paper>
-    </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Paper
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              borderRadius: 3,
-              height: 130,
-              transition: "background-color 0.3s ease",
-              "&:hover": {
-                // backgroundColor: "#A4C1FF",
-                // color:"white",
-                
-              },
-            }}
-            elevation={7}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                borderRadius: 3,
+                height: 130,
+                transition: "background-color 0.3s ease",
+                "&:hover": {
+                  // backgroundColor: "#A4C1FF",
+                  // color:"white",
+                },
+              }}
+              elevation={7}
             >
+              <BarChartIcon
+                sx={{
+                  color: "#5C5CFF",
+                  borderRadius: 2,
+                  boxShadow: 5,
+                  height: 40,
+                  elevation: 3,
+                  width: 50,
+                  bgcolor: "#9CD8C4",
+                  mb: 2,
+                  ml: 1,
+                }}
+              />
+              Total Unique Pageviews
+              <h2>550K</h2>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                borderRadius: 3,
+                height: 130,
+                transition: "background-color 0.3s ease",
+                "&:hover": {
+                  // backgroundColor: "#A4C1FF",
+                  // color:"white",
+                },
+              }}
+              elevation={7}
+            >
+              <PersonIcon
+                sx={{
+                  color: "white",
+                  borderRadius: 2,
+                  boxShadow: 5,
+                  height: 40,
+                  elevation: 3,
+                  width: 50,
+                  bgcolor: "#02B2AF",
+                  mb: 2,
+                  ml: 1,
+                }}
+              />
               Total Unique Pageviews
               <h2>600K</h2>
             </Paper>
@@ -79,11 +101,23 @@ export default function Home() {
                 "&:hover": {
                   // backgroundColor: "#A4C1FF",
                   // color:"white",
-                  
                 },
               }}
               elevation={7}
             >
+              <BarChartIcon
+                sx={{
+                  color: "#5C5CFF",
+                  borderRadius: 2,
+                  boxShadow: 5,
+                  height: 40,
+                  elevation: 3,
+                  width: 50,
+                  bgcolor: "#9CD8C4",
+                  mb: 2,
+                  ml: 1,
+                }}
+              />
               Total Unique Pageviews
               <h2>650K</h2>
             </Paper>
@@ -100,18 +134,30 @@ export default function Home() {
                 "&:hover": {
                   // backgroundColor: "#A4C1FF",
                   // color:"white",
-                  
                 },
               }}
               elevation={7}
             >
+              <PersonIcon
+                sx={{
+                  color: "white",
+                  borderRadius: 2,
+                  boxShadow: 5,
+                  height: 40,
+                  elevation: 3,
+                  width: 50,
+                  bgcolor: "#02B2AF",
+                  mb: 2,
+                  ml: 1,
+                }}
+              />
               Total Unique Pageviews
               <h2>650K</h2>
             </Paper>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Paper elevation={7} sx={{ borderRadius: 3, py: 3   }} >
+            <Paper elevation={7} sx={{ borderRadius: 3, py: 3 }}>
               <BarChart
                 series={[
                   { data: [35, 44, 30, 45, 30] },
@@ -171,7 +217,7 @@ export default function Home() {
               />
             </Paper>
           </Grid>
-               </Grid>
+        </Grid>
       </Box>
     </>
   );

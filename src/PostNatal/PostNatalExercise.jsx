@@ -81,7 +81,7 @@ const PostNatalExercise = ({ sendExerciseDataToParent, ...props }) => {
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 100,
       sortable:false,
       renderCell: (params) => (
         <>
@@ -98,11 +98,11 @@ const PostNatalExercise = ({ sendExerciseDataToParent, ...props }) => {
       sortable:true,
     },
     { field: "Name", headerName: "Name", width: 250 ,sortable:false },
-    { field: "Description", headerName: "Description", width: 400 ,sortable:false},
+    { field: "Description", headerName: "Description", flex:1 ,sortable:false},
     {
       field: "Image",
       headerName: "Image",
-      width: 250,
+      width: 100,
       sortable:false,
       renderCell: (params) => (
         <img
@@ -179,6 +179,11 @@ const PostNatalExercise = ({ sendExerciseDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -209,11 +214,11 @@ const PostNatalExercise = ({ sendExerciseDataToParent, ...props }) => {
             columns={[
               { field: "id", headerName: "SR.NO", width: 100,sortable:true },
               { field: "Name", headerName: "Name", width: 250 ,sortable:false },
-              { field: "Description", headerName: "Description", width: 300,sortable:false },
+              { field: "Description", headerName: "Description", flex:1,sortable:false },
               {
                 field: "Image",
                 headerName: "Image",
-                width: 250,
+                width: 100,
                 sortable:false,
                 renderCell: (params) => (
                   <img
@@ -241,6 +246,11 @@ const PostNatalExercise = ({ sendExerciseDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

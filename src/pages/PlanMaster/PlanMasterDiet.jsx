@@ -76,7 +76,7 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 100,
       sortable: false,
       renderCell: (params) => (
         <>
@@ -96,14 +96,14 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
     {
       field: "Description",
       headerName: "Description",
-      width: 400,
       sortable: false,
+      flex:1,
     },
     {
       field: "Image",
       headerName: "Image",
       sortable: false,
-      width: 250,
+      width: 100,
       renderCell: (params) => (
         <img
           src={`${Bunny_Image_URL}/Schedule/Diet/${params.row.Image}`}
@@ -180,6 +180,11 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -223,7 +228,7 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
               {
                 field: "Image",
                 headerName: "Image",
-                width: 150,
+                width: 100,
                  sortable:false,
                 renderCell: (params) => (
                   <img
@@ -254,6 +259,11 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
             }}
             pageSizeOptions={[5]}
             getRowId={(row) => row._id}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

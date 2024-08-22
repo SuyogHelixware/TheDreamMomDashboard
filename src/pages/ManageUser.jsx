@@ -36,6 +36,7 @@ import InputTextField, {
 } from "../components/Component";
 import Loader from "../components/Loader";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+import { useTheme } from "@mui/material/styles";
 
 export default function ManageUsers() {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
@@ -246,6 +247,8 @@ export default function ManageUsers() {
     });
   };
 
+  //declare var for icon
+  const theme = useTheme();
   /////////////////////////
   const handleClick = (row) => {
     setSaveUpdateButton("UPDATE");
@@ -638,16 +641,14 @@ export default function ManageUsers() {
     //   width: 110,
     //   sortable: false,
     // },
-    
 
     {
       field: "Email",
       headerName: "Email",
       width: 170,
       sortable: false,
-      
     },
- 
+
     {
       field: "BloodGroup",
       headerName: "Blood Group",
@@ -657,7 +658,7 @@ export default function ManageUsers() {
         const bloodGroup = params.row.BloodGroup;
         const color = badgeColors[bloodGroup] || "#6c757d"; // Default gray if no match
         return (
-          <span style={{ ...badgeStyles, backgroundColor: color , width:35}}>
+          <span style={{ ...badgeStyles, backgroundColor: color, width: 35 }}>
             {bloodGroup}
           </span>
         );
@@ -699,7 +700,7 @@ export default function ManageUsers() {
           style={{
             height: "60px",
             width: "60px",
-            borderRadius: "30%",
+            borderRadius: "50%",
             objectFit: "cover",
           }}
         />
@@ -711,7 +712,7 @@ export default function ManageUsers() {
     borderRadius: "12px",
     padding: "2px 6px",
     fontSize: "12px",
-    width:"12",
+    width: "12",
     color: "#fff",
     display: "inline-block",
     textAlign: "center",
@@ -735,13 +736,12 @@ export default function ManageUsers() {
     fontSize: "12px",
     cursor: "pointer",
     color: "#fff",
-    width:55,
+    width: 55,
   };
 
   const activeButtonStyle = {
     ...buttonStyles,
     backgroundColor: "green",
-    
   };
 
   const inactiveButtonStyle = {
@@ -769,7 +769,7 @@ export default function ManageUsers() {
             width: "90%",
             maxWidth: 600,
             height: 500,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -790,7 +790,7 @@ export default function ManageUsers() {
               position: "absolute",
               top: 8,
               right: 8,
-              color: "black",
+              // color: "black",
             }}
             onClick={handleClose}
           >
@@ -849,7 +849,8 @@ export default function ManageUsers() {
                     bottom: 0,
                     right: 35,
                     transform: "translate(50%, 50%)",
-                    backgroundColor: "white",
+                    backgroundColor:
+                      theme.palette.mode === "light" ? "white" : "",
                     borderRadius: "70%",
                     padding: "1px",
                   }}
@@ -1033,7 +1034,7 @@ export default function ManageUsers() {
             width: "90%",
             maxWidth: 400,
             height: 250,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -1054,7 +1055,6 @@ export default function ManageUsers() {
               position: "absolute",
               top: 8,
               right: 8,
-              color: "black",
             }}
             onClick={handleProfileClose}
           >
@@ -1124,7 +1124,7 @@ export default function ManageUsers() {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -1184,6 +1184,12 @@ export default function ManageUsers() {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+                // color: '#textColor', // Optional: Change the text color
+              },
+            }}
           />
         </Box>
       </Paper>

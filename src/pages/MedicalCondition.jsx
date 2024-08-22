@@ -266,6 +266,7 @@ export default function MedicalCondition() {
       headerName: "Name",
       width: 200,
       sortable: false,
+      
     },
     {
       field: "NameL1",
@@ -363,7 +364,7 @@ export default function MedicalCondition() {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -390,7 +391,7 @@ export default function MedicalCondition() {
             >
               <Typography fontWeight="bold">Add Medical Conditions</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon />
               </IconButton>
             </Grid>
             <Grid item xs={12}>
@@ -496,7 +497,7 @@ export default function MedicalCondition() {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -505,7 +506,7 @@ export default function MedicalCondition() {
       </Grid>
       <Grid textAlign={"end"} marginBottom={1}>
         <Button
-          onClick={handleOnSave}
+          onClick={handleOnSave} 
           type="text"
           size="medium"
           sx={{
@@ -527,7 +528,7 @@ export default function MedicalCondition() {
             },
           }}
         >
-          <AddIcon />
+          <AddIcon/>
           Add Condition
         </Button>
       </Grid>
@@ -542,20 +543,26 @@ export default function MedicalCondition() {
         elevation={7}
       >
         <Box sx={{ height: 502, width: "100%" }}>
-          <DataGrid
-            className="datagrid-style"
-            getRowId={(row) => row._id}
-            rows={userData.map((data, id) => ({ ...data, id: id + 1 }))}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 7,
-                },
-              },
-            }}
-            pageSizeOptions={[7]}
-          />
+        <DataGrid
+  className="datagrid-style"
+  getRowId={(row) => row._id}
+  rows={userData.map((data, id) => ({ ...data, id: id + 1 }))}
+  columns={columns}
+  initialState={{
+    pagination: {
+      paginationModel: {
+        pageSize: 7,
+      },
+    },
+  }}
+  pageSizeOptions={[7]}
+  sx={{
+    '& .MuiDataGrid-columnHeaders': {
+      backgroundColor:theme=>theme.palette.custome.datagridcolor
+    },
+  }}
+/>
+
         </Box>
       </Paper>
     </>

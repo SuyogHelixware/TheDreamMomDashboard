@@ -75,7 +75,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 100,
        sortable:false,
       renderCell: (params) => (
         <>
@@ -92,7 +92,7 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
         sortable:true,
     },
     { field: "Name", headerName: "Name", width: 250  ,  sortable:false },
-    { field: "Description", headerName: "Description", width: 400  ,  sortable:false },
+    { field: "Description", headerName: "Description",flex:1  ,  sortable:false },
   ];
 
   return (
@@ -159,6 +159,11 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -210,6 +215,11 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

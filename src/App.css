@@ -97,8 +97,8 @@
 }
 
 .flash-animation {
-  text-shadow: 4px 4px 4px blue;
-  animation: flash 3s ;
+  text-shadow: 4px 4px 4px rgb(8, 8, 24);
+  animation: flash 4s ;
 }
 
 

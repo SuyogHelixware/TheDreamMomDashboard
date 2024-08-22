@@ -527,7 +527,7 @@ export default function ManageVideos() {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -554,7 +554,7 @@ export default function ManageVideos() {
             >
               <Typography fontWeight="bold">Add Videos</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon  />
               </IconButton>
             </Grid>
             <Grid item xs={12}>
@@ -736,7 +736,7 @@ export default function ManageVideos() {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >

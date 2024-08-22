@@ -27,7 +27,7 @@ import axios from "axios";
 import * as React from "react";
 import { Document, Page } from "react-pdf";
 import "react-quill/dist/quill.snow.css";
-import pdf from "../../src/assets/pdf.png";
+import pdf from "../../src/assets/images.png";
 import Swal from "sweetalert2";
 import {
   BASE_URL,
@@ -808,7 +808,7 @@ const ManageBlog = ({ item }) => {
           sx={{
             width: "90%",
             maxWidth: 800,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -835,7 +835,7 @@ const ManageBlog = ({ item }) => {
             >
               <Typography fontWeight="bold">Add Blog </Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon />
               </IconButton>
             </Grid>
 
@@ -995,7 +995,7 @@ const ManageBlog = ({ item }) => {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -1022,7 +1022,7 @@ const ManageBlog = ({ item }) => {
             >
               <Typography fontWeight="bold">Add Newsletter</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon  />
               </IconButton>
             </Grid>
 
@@ -1199,7 +1199,7 @@ const ManageBlog = ({ item }) => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -1340,7 +1340,7 @@ const ManageBlog = ({ item }) => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -1399,6 +1399,13 @@ const ManageBlog = ({ item }) => {
                       objectFit: "fill",
                       aspectRatio: 5 / 6,
                       paddingTop: 20,
+                      borderRadius: 15,
+                      borderTopRightRadius:30,
+                      borderTopLeftRadius:30,
+ 
+
+
+
                     }}
                   />
 

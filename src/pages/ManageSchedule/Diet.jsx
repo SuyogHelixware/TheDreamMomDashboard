@@ -482,7 +482,7 @@ const ManageDiet = () => {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -509,7 +509,7 @@ const ManageDiet = () => {
             >
               <Typography fontWeight="bold">Add Diet</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon />
               </IconButton>
             </Grid>
 
@@ -696,7 +696,7 @@ const ManageDiet = () => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >

@@ -171,6 +171,11 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -229,6 +234,11 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
             }}
             pageSizeOptions={[5]}
             getRowId={(row) => row._id}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

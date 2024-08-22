@@ -30,7 +30,7 @@ const Medical = () => {
     NameL1: "",
     DescriptionL1: "",
     // Image: "",
-    Category:"en",
+    Category: "en",
   });
   const [on, setOn] = React.useState(false);
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
@@ -42,7 +42,7 @@ const Medical = () => {
     Description: "",
     DescriptionL1: "",
     Id: "",
-    Category:"en",
+    Category: "en",
   });
 
   const clearFormData = () => {
@@ -84,12 +84,12 @@ const Medical = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setData({ 
-        Name: "",
+    setData({
+      Name: "",
       Description: "",
       NameL1: "",
       DescriptionL1: "",
-      Category:"en",
+      Category: "en",
     });
   };
 
@@ -225,7 +225,7 @@ const Medical = () => {
       field: "actions",
       headerName: "Action",
       width: 130,
-      sortable:false,
+      sortable: false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -242,10 +242,20 @@ const Medical = () => {
       ),
     },
     { field: "id", headerName: "SR.No", width: 80, sortable: true },
-    { field: "Name", headerName: "Name", width: 300 ,sortable: false },
-    { field: "NameL1", headerName: "Name", width: 300  ,sortable: false },
-    { field: "Description", headerName: "Description", width: 350 ,sortable: false },
-    { field: "DescriptionL1", headerName: "Description" , width:300,sortable: false },
+    { field: "Name", headerName: "Name", width: 300, sortable: false },
+    { field: "NameL1", headerName: "Name", width: 300, sortable: false },
+    {
+      field: "Description",
+      headerName: "Description",
+      width: 350,
+      sortable: false,
+    },
+    {
+      field: "DescriptionL1",
+      headerName: "Description",
+      width: 300,
+      sortable: false,
+    },
   ];
 
   const handleDelete = (data) => {
@@ -314,7 +324,7 @@ const Medical = () => {
       // Image: data.Image,
       Id: data._id,
       TagsIds: data.TagsIds,
-      Category:"en",
+      Category: "en",
     });
     console.log(data);
   };
@@ -333,7 +343,7 @@ const Medical = () => {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -360,14 +370,16 @@ const Medical = () => {
             >
               <Typography fontWeight="bold">Add Medical Test</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon />
               </IconButton>
             </Grid>
-    
-    <Grid item xs={12}>
-              <FormControl sx={{ width: "110px" }} size="small"
-              disabled={SaveUpdateButton === "SAVE"}
-               >
+
+            <Grid item xs={12}>
+              <FormControl
+                sx={{ width: "110px" }}
+                size="small"
+                disabled={SaveUpdateButton === "SAVE"}
+              >
                 <InputLabel id="demo-select-large-Choose-Lang">
                   Select Lang
                 </InputLabel>
@@ -380,17 +392,11 @@ const Medical = () => {
                   value={data.Category}
                   disabled={SaveUpdateButton === "SAVE"}
                 >
-                  <MenuItem value="en" >
-                    English
-                  </MenuItem>
-                  <MenuItem value="mr" >
-                    Marathi
-                  </MenuItem>
+                  <MenuItem value="en">English</MenuItem>
+                  <MenuItem value="mr">Marathi</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-
-     
 
             <Grid item xs={12}>
               <TextField
@@ -400,8 +406,8 @@ const Medical = () => {
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name={data.Category==="en"? "Name" :"NameL1"}
-                value={data.Category==="en"? data.Name : data.NameL1}
+                name={data.Category === "en" ? "Name" : "NameL1"}
+                value={data.Category === "en" ? data.Name : data.NameL1}
                 onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
@@ -409,8 +415,7 @@ const Medical = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth size="small" 
-              >
+              <FormControl fullWidth size="small">
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
 
                 <Select
@@ -449,9 +454,10 @@ const Medical = () => {
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name={data.Category==="en"? "Description": "DescriptionL1"}
-                value={data.Category==="en"? data.Description : data.DescriptionL1 }
-               
+                name={data.Category === "en" ? "Description" : "DescriptionL1"}
+                value={
+                  data.Category === "en" ? data.Description : data.DescriptionL1
+                }
                 onChange={onchangeHandler}
                 multiline
                 rows={3}
@@ -503,12 +509,12 @@ const Medical = () => {
         elevation={4}
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -523,7 +529,7 @@ const Medical = () => {
           size="medium"
           sx={{
             pr: 2,
-            mb: 2,
+            // mb: 2,
             color: "white",
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
@@ -569,6 +575,11 @@ const Medical = () => {
               },
             }}
             pageSizeOptions={[7]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Box>
       </Paper>

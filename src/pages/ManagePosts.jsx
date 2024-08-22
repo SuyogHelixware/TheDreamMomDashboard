@@ -331,7 +331,7 @@ const ManagePosts = () => {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -358,7 +358,7 @@ const ManagePosts = () => {
             >
               <Typography fontWeight="bold">Add Posts</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon   />
               </IconButton>
             </Grid>
 
@@ -474,7 +474,7 @@ const ManagePosts = () => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -489,7 +489,7 @@ const ManagePosts = () => {
           size="medium"
           sx={{
             pr: 2,
-            mb: 2,
+            // mb: 2,
             color: "white",
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
@@ -536,6 +536,11 @@ const ManagePosts = () => {
               },
             }}
             pageSizeOptions={[7]}
+            sx={{
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor:theme=>theme.palette.custome.datagridcolor
+              },
+            }}
           />
         </Box>
       </Paper>

@@ -92,7 +92,7 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
       field: "Image",
       headerName: "Image",
       sortable:false,
-      width: 250,
+      width: 100,
       renderCell: (params) => (
         <img
           src={`${Bunny_Image_URL}/Schedule/Vaccination/${params.row.Image}`}
@@ -170,6 +170,11 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -205,7 +210,7 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
                 field: "Image",
                 headerName: "Image",
                 sortable:false,
-                width: 250,
+                width: 100,
                 renderCell: (params) => (
                   <img
                     src={`${Bunny_Image_URL}/Schedule/Vaccination/${params.row.Image}`}
@@ -233,6 +238,11 @@ const PostNatalVaccination = ({ sendVaccinationDataToParent,...props}) => {
             }}
             getRowId={(row)=>row._id}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

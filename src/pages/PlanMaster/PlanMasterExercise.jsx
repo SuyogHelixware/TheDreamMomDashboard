@@ -79,7 +79,7 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 100,
      sortable:false,
       renderCell: (params) => (
         <>
@@ -96,12 +96,12 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
        sortable:true,
     },
     { field: "Name", headerName: "Name", width: 250 ,  sortable:false },
-    { field: "Description", headerName: "Description", width: 400  ,  sortable:false },
+    { field: "Description", headerName: "Description", flex:1  ,  sortable:false },
     {
       field: "Image",
       headerName: "Image",
        sortable:false ,
-      width: 250,
+      width: 100,
       renderCell: (params) => (
         <img
           src={`${Bunny_Image_URL}/Schedule/Exercise/${params.row.Image}`}
@@ -177,6 +177,11 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -215,13 +220,18 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
                 field: "Image",
                 headerName: "Image",
              sortable:false,
-                width: 150,
+                width: 100,
                 renderCell: (params) => (
                   <img
                     src={`${Bunny_Image_URL}/Schedule/Exercise/${params.row.Image}`}
                     alt=""
                     height={50}
                     width={80}
+                    sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
                   />
                 ),
               },
@@ -242,6 +252,11 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

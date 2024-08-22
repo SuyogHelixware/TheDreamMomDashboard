@@ -11,9 +11,11 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 // import GroupsIcon from "@mui/icons-material/Groups";
+import LightModeIcon from "@mui/icons-material/LightMode";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MenuIcon from "@mui/icons-material/Menu";
+import ModeNightIcon from "@mui/icons-material/ModeNight";
 import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import NoFoodIcon from "@mui/icons-material/NoFood";
@@ -22,11 +24,13 @@ import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import QuizIcon from "@mui/icons-material/Quiz";
 import RemoveIcon from "@mui/icons-material/Remove";
+import SettingsIcon from "@mui/icons-material/Settings";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import TodayIcon from "@mui/icons-material/Today";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
+
 import {
   Avatar,
   Button,
@@ -35,7 +39,7 @@ import {
   MenuItem,
   Modal,
   Paper,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -52,12 +56,20 @@ import { styled, useTheme } from "@mui/material/styles";
 import * as React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../src/assets/logo.png";
+
 import "../Dashboard/Dashboard.css";
 // import avatar from "../assets/avtar.png";
 import { Bunny_Image_URL } from "../Constant";
 import { isLogin } from "./Auth";
 
 import { Tooltip } from "@mui/material";
+import { useThemeMode } from "./Theme";
+
+import SpeedDial from "@mui/material/SpeedDial";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
+import { keyframes } from "@mui/system";
+import { useState } from "react";
+
 const drawerWidth = 260;
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -143,13 +155,30 @@ const style = {
   marginTop: 7,
 };
 
+const rotateIcon = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+// Styled component with rotation animation
+const RotatingIcon = styled(SettingsIcon)(({ theme }) => ({
+  animation: `${rotateIcon} 5s linear infinite`,
+}));
+
 export default function Dashboard() {
   const [fullscreen, setFullscreen] = React.useState(false);
   const Navigate = useNavigate();
+
   const router = useLocation();
   const [open, setOpen] = React.useState(true);
   const [openList, setOpenList] = React.useState(false);
   const [on, setOn] = React.useState(false);
+  const { themeMode, LightMode, DarkMode } = useThemeMode();
+  const [themestatus, setThemeStatus] = useState();
   // const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [userData, setUserData] = React.useState({
     Name: "",
@@ -236,12 +265,62 @@ export default function Dashboard() {
       Navigate("/");
     }
   });
+  // const themeChange = (e) => {
+  //   const themestatus = e.currentTarget.checked;
+  //   if (themestatus) {
+  //     DarkMode();
+  //   } else {
+  //     LightMode();
+  //   }
+  // };
 
+  const themechange = () => {
+    if (themestatus) {
+      DarkMode();
+
+      setThemeStatus(false);
+    } else {
+      LightMode();
+
+      setThemeStatus(true);
+    }
+  };
+
+  const actions = [
+    {
+      icon: (
+        <IconButton
+          size="large"
+          aria-label="toggle theme"
+          color="inherit"
+          onClick={themechange}
+        >
+          {themeMode === "dark" ? <LightModeIcon /> : <ModeNightIcon />}
+        </IconButton>
+      ),
+      name: "Theme Mode",
+    },
+
+    {
+      icon: (
+        <IconButton onClick={toggleFullscreen}>
+          {fullscreen ? <FullscreenIcon /> : <FullscreenExitIcon />}
+        </IconButton>
+      ),
+    },
+    // { icon: <ShareIcon />, name: "Share" },
+  ];
   return (
-    <Box sx={{ display: "flex", backgroundColor: "#F5F6FA" }}>
+    <Box
+      sx={{
+        display: "flex",
+        //  backgroundColor: "#F5F6FA",
+        backgroundColor: (theme) => theme.palette.background.default,
+      }}
+    >
       <CssBaseline />
       <Modal open={on} onClose={handleClose}>
-        <Paper elevation={10} sx={{ ...style, width: 300, bgcolor: "#EDE7F6" }}>
+        <Paper elevation={10} sx={{ ...style, width: 300 }}>
           <center>
             <Grid
               container
@@ -320,13 +399,17 @@ export default function Dashboard() {
                       boxShadow: 9,
                       borderRadius: 10,
                       backgroundColor: "#70b2d9",
+
                       backgroundImage:
                         "linear-gradient(180deg, #647DEE 0%, #7F53AC 180%)",
+
                       color: "white",
                       fontSize: 10,
+                      fontWeight: "bold",
                     }}
                   >
-                    <b>Log Out</b>
+                    Log Out
+                    {/* <b>Log Out</b> */}
                   </Button>
                 </Grid>
               </Paper>
@@ -334,13 +417,16 @@ export default function Dashboard() {
           </center>
         </Paper>
       </Modal>
-      <AppBar position="fixed"  open={open}>
+      <AppBar position="fixed" open={open}>
         <Toolbar
           sx={{
+            width: "100vw",
+            backgroundColor: (theme) =>
+              theme.palette.customAppbar?.appbarcolor || "defaultColor",
+
             boxShadow: "0px 5px 7px rgba(0, 0, 0, 0.1)",
             elevation: 8,
             display: "flex",
-            
           }}
         >
           <IconButton
@@ -350,6 +436,7 @@ export default function Dashboard() {
             edge="start"
             sx={{
               marginRight: 5,
+              color: "white",
             }}
           >
             <MenuIcon />
@@ -361,12 +448,23 @@ export default function Dashboard() {
             textAlign="center"
             width="100%"
             className="flash-animation"
-            sx={{ elevation: 6 }}
+            sx={{ elevation: 6, color: "white" }}
           >
             The Dream Mom
           </Typography>
-          <Tooltip title={fullscreen ? "Exit Fullscreen" : "Fullscreen"}>
+
+          {/* <IconButton
+            size="large"
+            aria-label="toggle theme"
+            color="inherit"
+            onClick={themechange}
+          >
+            {themeMode === "dark" ? <LightModeIcon /> : <ModeNightIcon />}
+          </IconButton> 
+
+          {/* <Tooltip title={fullscreen ? "Exit Fullscreen" : "Fullscreen"}>
             <IconButton
+              sx={{ color: "white" }}
               size="large"
               edge="end"
               aria-label="toggle fullscreen"
@@ -375,24 +473,11 @@ export default function Dashboard() {
             >
               {fullscreen ? <FullscreenIcon /> : <FullscreenExitIcon />}
             </IconButton>
-          </Tooltip>
-          {/* <IconButton
-          size="large"
-          edge="end"
-          aria-label="account of current user"
-          aria-controls={menuId}
-          aria-haspopup="true"
-          onClick={handleOn}
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton> */}
+          </Tooltip> */}
 
           <Tooltip title={userData.Name}>
             <IconButton
               size="small"
-              edge="end"
-              aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
               onClick={handleOn}
@@ -409,13 +494,7 @@ export default function Dashboard() {
           </Tooltip>
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="permanent"
-        open={open}
-        PaperProps={{ elevation:7}}
-      
-        //  onClick={handleDrawerOpen}
-      >
+      <Drawer variant="permanent" open={open} PaperProps={{ elevation: 7 }}>
         <DrawerHeader>
           <IconButton>
             {theme.direction === "rtl" ? (
@@ -428,20 +507,9 @@ export default function Dashboard() {
         <Grid
           style={{
             height: 90,
-            backgroundColor: "white",
+            // backgroundColor: "white",
           }}
         >
-          {" "}
-          {/* <img
-            src={images}
-            alt="Logo"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              padding: 10,
-            }}
-          /> */}
           <img
             src={logo}
             alt="logo"
@@ -450,15 +518,16 @@ export default function Dashboard() {
               maxHeight: "100%",
               objectFit: "contain",
               paddingTop: 10,
+              // borderRadius:30,
             }}
           />
         </Grid>
         <Grid
           sx={{
             width: "100%",
-            maxWidth: 340,
+            // maxWidth: 340,
             height: "100%",
-            backgroundColor: "White",
+            // backgroundColor: "White",
             overflow: "hidden",
             "&:hover": {
               overflowY: "auto",
@@ -492,10 +561,13 @@ export default function Dashboard() {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <DashboardIcon />
@@ -515,10 +587,13 @@ export default function Dashboard() {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <ManageAccountsIcon />
@@ -532,16 +607,19 @@ export default function Dashboard() {
                 sx={{
                   "&.Mui-selected": {
                     backgroundColor: "#5C5CFF",
-                    // m:0.5,
+
                     borderRadius: 1,
                     "& .MuiListItemIcon-root, & .MuiTypography-root": {
                       color: "#FFFFFF",
                     },
                   },
+                  "& .MuiListItemText-primary": {
+                    color: theme.palette.text.primary,
+                  },
                 }}
               >
                 <ListItemIcon
-                  sx={{ minWidth: "32px", marginRight: "8px" }}
+                  sx={{ minWidth: "33px", marginRight: "8px" }}
                   // onClick={handleDrawerOpen}
                 >
                   <WorkHistoryIcon />
@@ -567,11 +645,13 @@ export default function Dashboard() {
                       sx={{
                         "&.Mui-selected": {
                           backgroundColor: "#5C5CFF",
-                          // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
                             color: "#FFFFFF",
                           },
+                        },
+                        "& .MuiListItemText-primary": {
+                          color: theme.palette.text.primary,
                         },
                       }}
                     >
@@ -593,11 +673,13 @@ export default function Dashboard() {
                       sx={{
                         "&.Mui-selected": {
                           backgroundColor: "#5C5CFF",
-                          // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
                             color: "#FFFFFF",
                           },
+                        },
+                        "& .MuiListItemText-primary": {
+                          color: theme.palette.text.primary,
                         },
                       }}
                     >
@@ -618,11 +700,13 @@ export default function Dashboard() {
                       sx={{
                         "&.Mui-selected": {
                           backgroundColor: "#5C5CFF",
-                          // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
                             color: "#FFFFFF",
                           },
+                        },
+                        "& .MuiListItemText-primary": {
+                          color: theme.palette.text.primary,
                         },
                       }}
                     >
@@ -644,11 +728,13 @@ export default function Dashboard() {
                       sx={{
                         "&.Mui-selected": {
                           backgroundColor: "#5C5CFF",
-                          // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
                             color: "#FFFFFF",
                           },
+                        },
+                        "& .MuiListItemText-primary": {
+                          color: theme.palette.text.primary,
                         },
                       }}
                     >
@@ -670,11 +756,13 @@ export default function Dashboard() {
                       sx={{
                         "&.Mui-selected": {
                           backgroundColor: "#5C5CFF",
-                          // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
                             color: "#FFFFFF",
                           },
+                        },
+                        "& .MuiListItemText-primary": {
+                          color: theme.palette.text.primary,
                         },
                       }}
                     >
@@ -696,11 +784,13 @@ export default function Dashboard() {
                       sx={{
                         "&.Mui-selected": {
                           backgroundColor: "#5C5CFF",
-                          // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
                             color: "#FFFFFF",
                           },
+                        },
+                        "& .MuiListItemText-primary": {
+                          color: theme.palette.text.primary,
                         },
                       }}
                     >
@@ -722,11 +812,13 @@ export default function Dashboard() {
                       sx={{
                         "&.Mui-selected": {
                           backgroundColor: "#5C5CFF",
-                          // m:0.5,
                           borderRadius: 1,
                           "& .MuiListItemIcon-root, & .MuiTypography-root": {
                             color: "#FFFFFF",
                           },
+                        },
+                        "& .MuiListItemText-primary": {
+                          color: theme.palette.text.primary,
                         },
                       }}
                     >
@@ -745,16 +837,18 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <ApprovalIcon />
@@ -770,16 +864,18 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <TodayIcon />
@@ -795,16 +891,18 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <NoteAltIcon />
@@ -822,16 +920,18 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <MonitorHeartIcon />
@@ -848,16 +948,18 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <NoFoodIcon />
@@ -872,16 +974,21 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
+                      // backgroundColor: (theme) => theme.palette.customAppbar?.appbarcolor || 'defaultColor',
+
                       // m:0.5,
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <VideoSettingsIcon />
@@ -902,10 +1009,13 @@ export default function Dashboard() {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <PostAddIcon />
@@ -920,16 +1030,19 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
+
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <QuizIcon />
@@ -947,16 +1060,19 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
+
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <SubscriptionsIcon />
@@ -971,16 +1087,19 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
+
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <NoteAddIcon />
@@ -995,16 +1114,19 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
+
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <AppSettingsAltIcon />
@@ -1019,16 +1141,19 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
+
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <NewspaperIcon />
@@ -1073,6 +1198,9 @@ export default function Dashboard() {
                       color: "#FFFFFF",
                     },
                   },
+                   "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                 }}
               >
                 <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
@@ -1095,9 +1223,12 @@ export default function Dashboard() {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: "32px", marginRight: "8px" }}>
+                  <ListItemIcon sx={{ minWidth: "33px", marginRight: "8px" }}>
                     <AdUnitsOutlinedIcon />
                   </ListItemIcon>
                   <ListItemText primary="Manage Banners" />
@@ -1111,16 +1242,19 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
+
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <VaccinesIcon />
@@ -1135,16 +1269,19 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-                      // m:0.5,
+
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",
                       },
                     },
+                    "& .MuiListItemText-primary": {
+                      color: theme.palette.text.primary,
+                    },
                   }}
                 >
                   <ListItemIcon
-                    sx={{ minWidth: "32px", marginRight: "8px" }}
+                    sx={{ minWidth: "33px", marginRight: "8px" }}
                     onClick={handleDrawerOpen}
                   >
                     <LocalOfferIcon />
@@ -1172,6 +1309,31 @@ export default function Dashboard() {
         }}
       >
         <DrawerHeader />
+        <Grid
+          style={{
+            position: "fixed",
+            bottom: "55px",
+            right: "0px",
+            transform: "translateZ(4px)",
+            flexGrow: 1,
+            zIndex: 999,
+          }}
+        >
+          <SpeedDial
+            ariaLabel="SpeedDial"
+            sx={{ position: "absolute", bottom: 16, right: 16 }}
+            icon={<RotatingIcon />}
+          >
+            {actions.map((action) => (
+              <SpeedDialAction
+                key={action.name}
+                icon={action.icon}
+                tooltipTitle={action.name}
+              />
+            ))}
+          </SpeedDial>
+        </Grid>
+
         <Outlet />
       </Box>
     </Box>

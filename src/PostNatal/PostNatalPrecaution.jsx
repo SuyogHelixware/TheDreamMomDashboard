@@ -78,7 +78,7 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 100,
       sortable:false,
       renderCell: (params) => (
         <>
@@ -95,11 +95,11 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
       sortable:true,
     },
     { field: "Name", headerName: "Name", width: 250,sortable:false },
-    { field: "Description", headerName: "Description", width: 400,sortable:false },
+    { field: "Description", headerName: "Description", width: 400,flex:1,sortable:false },
     {
       field: "Image",
       headerName: "Image",
-      width: 250,
+      width: 100,
       sortable:false,
       renderCell: (params) => (
         <img
@@ -176,6 +176,11 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -212,7 +217,7 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
               {
                 field: "Image",
                 headerName: "Image",
-                width: 250,
+                width: 100,
                 sortable:false,
                 renderCell: (params) => (
                   <img
@@ -241,6 +246,11 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

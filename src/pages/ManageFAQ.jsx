@@ -322,7 +322,7 @@ const ManageFAQ = () => {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -349,7 +349,7 @@ const ManageFAQ = () => {
             >
               <Typography fontWeight="bold">Add FAQS</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon   />
               </IconButton>
             </Grid>
 
@@ -499,7 +499,7 @@ const ManageFAQ = () => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -514,7 +514,7 @@ const ManageFAQ = () => {
           size="medium"
           sx={{
             pr: 2,
-            mb: 2,
+            // mb: 2,
             color: "white",
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
@@ -561,6 +561,11 @@ const ManageFAQ = () => {
               },
             }}
             pageSizeOptions={[7]}
+            sx={{
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor:theme=>theme.palette.custome.datagridcolor
+              },
+            }}
           />
         </Box>
       </Paper>

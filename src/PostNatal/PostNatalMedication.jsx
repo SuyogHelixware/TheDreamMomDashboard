@@ -83,7 +83,7 @@ const PostNatalMedication = ({ sendMedicationDataToParent, ...props }) => {
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 100,
       sortable:false,
       renderCell: (params) => (
         <>
@@ -170,6 +170,11 @@ const PostNatalMedication = ({ sendMedicationDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -226,6 +231,11 @@ const PostNatalMedication = ({ sendMedicationDataToParent, ...props }) => {
             }}
             pageSizeOptions={[5]}
             getRowId={(row) => row._id}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

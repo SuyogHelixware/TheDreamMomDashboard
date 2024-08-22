@@ -295,7 +295,7 @@ const PostNatal = () => {
       field: "actions",
       headerName: "Action",
       width: 150,
-      sortable:false,
+      sortable: false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleClick(params.row)}>
@@ -315,23 +315,28 @@ const PostNatal = () => {
       field: "id",
       headerName: "Sr.No",
       width: 100,
-      sortable:true,
+      sortable: true,
     },
-    { field: "Name", headerName: "Name", width: 250 ,sortable:false },
-    { field: "Description", headerName: "Description", flex: 1, sortable: false },
+    { field: "Name", headerName: "Name", width: 250, sortable: false },
+    {
+      field: "Description",
+      headerName: "Description",
+      flex: 1,
+      sortable: false,
+    },
 
     {
       field: "Week",
       headerName: "Week",
       width: 120,
-      sortable:false,
+      sortable: false,
       valueGetter: (params) => {
         const FromWeek = params.row.Week.FromWeek;
         const ToWeek = params.row.Week.ToWeek;
         return `${FromWeek}-${ToWeek}`;
       },
     },
-   
+
     // {
     //   field: "Status",
     //   headerName: "Status",
@@ -366,27 +371,26 @@ const PostNatal = () => {
         );
       },
     },
-      ];
+  ];
 
-      const buttonStyles = {
-        border: "none",
-        borderRadius: "4px",
-        padding: "4px 8px",
-        fontSize: "12px",
-        cursor: "pointer",
-        color: "#fff",
-      };
-    
-      const activeButtonStyle = {
-        ...buttonStyles,
-        backgroundColor: "green",
-      };
-    
-      const inactiveButtonStyle = {
-        ...buttonStyles,
-        backgroundColor: "red",
-      };
-      
+  const buttonStyles = {
+    border: "none",
+    borderRadius: "4px",
+    padding: "4px 8px",
+    fontSize: "12px",
+    cursor: "pointer",
+    color: "#fff",
+  };
+
+  const activeButtonStyle = {
+    ...buttonStyles,
+    backgroundColor: "green",
+  };
+
+  const inactiveButtonStyle = {
+    ...buttonStyles,
+    backgroundColor: "red",
+  };
 
   const receiveDataFromDiet = (data) => {
     setFormData((prevData) => ({
@@ -476,16 +480,13 @@ const PostNatal = () => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
           Post Natal
         </Typography>
       </Grid>
-     
-     
-
 
       <Grid textAlign={"end"} marginBottom={1}>
         <Button
@@ -531,6 +532,11 @@ const PostNatal = () => {
             },
           }}
           pageSizeOptions={[7]}
+          sx={{
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+            },
+          }}
         />
       </Grid>
 
@@ -544,7 +550,13 @@ const PostNatal = () => {
         aria-describedby="parent-dialog-description"
         fullScreen
       >
-        <DialogTitle style={{ color: "white", backgroundColor: "#5C5CFF" }}>
+        <DialogTitle
+          sx={{
+            color: "white",
+            backgroundColor: (theme) =>
+              theme.palette.customAppbar?.appbarcolor || "#5C5CFF",
+          }}
+        >
           <b>Post Natal</b>
           <IconButton
             aria-label="close"
@@ -554,6 +566,7 @@ const PostNatal = () => {
             <CloseIcon
               style={{
                 backgroundColor: "white",
+                color: "black",
                 borderRadius: 50,
                 height: 32,
                 width: 32,
@@ -565,7 +578,8 @@ const PostNatal = () => {
 
         <DialogContent
           sx={{
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
+            backgroundColor: (theme) => theme.palette.background.default,
             overflowY: { xs: "scroll", md: "auto" },
             "&::-webkit-scrollbar": {
               display: "none",
@@ -625,63 +639,73 @@ const PostNatal = () => {
                 </FormControl>
               </Grid> */}
               {/* --------------------------------------------- */}
-              <Grid item xs={12} sm={4} width={200}>
-      <Paper elevation={0} style={{ padding: '0rem', textAlign: 'center' }}>
-        <Grid container spacing={1} justifyContent="center" alignItems="center">
-          <Grid item>
-            <FormControl style={{ width: 120 }} size="small">
-              <InputLabel id="from-select-label">From week</InputLabel>
-              <Select
-                type="number"
-                fullWidth
-                id="FromWeek"
-                label="From"
-                name="FromWeek"
-                value={formData.Week.FromWeek}
-                onChange={handleFromWeekChange}
-                MenuProps={{
-                  PaperProps: { style: { maxHeight: 150 } },
-                }}
-              >
-                {[...Array(42).keys()].map((index) => (
-                  <MenuItem key={index + 1} value={index + 1}>
-                    {index + 1}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item>
-            <FormControl style={{ width: 120 }} size="small">
-              <InputLabel id="to-select-label">To week</InputLabel>
-              <Select
-                type="number"
-                fullWidth
-                id="ToWeek"
-                label="To"
-                name="ToWeek"
-                value={formData.Week.ToWeek}
-                onChange={handleToWeekChange}
-                disabled={!formData.Week.FromWeek}
-                MenuProps={{
-                  PaperProps: { style: { maxHeight: 150 } },
-                }}
-              >
-                {[...Array(42).keys()].map((index) => (
-                  <MenuItem
-                    key={index + 1}
-                    value={index + 1}
-                    disabled={index + 1 < formData.Week.FromWeek}
+              <Grid item xs={12} sm={4} width={200} >
+                {/* <Paper
+                  elevation={0}
+                  style={{ padding: "0rem", textAlign: "center" , backgroundColor:"yellow" }}
+                > */}
+                  <Grid
+                    container
+                    spacing={1}
+                    justifyContent="center"
+                    alignItems="center"
                   >
-                    {index + 1}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-      </Paper>
-    </Grid>
+                    <Grid item>
+                      <FormControl style={{ width: 120 }} size="small">
+                        <InputLabel id="from-select-label">
+                          From week
+                        </InputLabel>
+                        <Select
+                          type="number"
+                          fullWidth
+                          id="FromWeek"
+                          label="From"
+                          name="FromWeek"
+                          value={formData.Week.FromWeek}
+                          onChange={handleFromWeekChange}
+                          MenuProps={{
+                            PaperProps: { style: { maxHeight: 150 } },
+                          }}
+                        >
+                          {[...Array(42).keys()].map((index) => (
+                            <MenuItem key={index + 1} value={index + 1}>
+                              {index + 1}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item>
+                      <FormControl style={{ width: 120 }} size="small">
+                        <InputLabel id="to-select-label">To week</InputLabel>
+                        <Select
+                          type="number"
+                          fullWidth
+                          id="ToWeek"
+                          label="To"
+                          name="ToWeek"
+                          value={formData.Week.ToWeek}
+                          onChange={handleToWeekChange}
+                          disabled={!formData.Week.FromWeek}
+                          MenuProps={{
+                            PaperProps: { style: { maxHeight: 150 } },
+                          }}
+                        >
+                          {[...Array(42).keys()].map((index) => (
+                            <MenuItem
+                              key={index + 1}
+                              value={index + 1}
+                              disabled={index + 1 < formData.Week.FromWeek}
+                            >
+                              {index + 1}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                {/* </Paper> */}
+              </Grid>
               {/* --------------------------------------------- */}
               <Grid item xs={12} sm={4}>
                 <InputDescriptionField

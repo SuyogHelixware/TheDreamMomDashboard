@@ -1,154 +1,38 @@
 import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
+// import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
+import { Chip, InputAdornment } from "@material-ui/core";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { IconButton, Modal, Paper } from "@mui/material";
+import {
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Modal,
+  Paper,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
 import * as React from "react";
 import Swal from "sweetalert2";
-import { DatePickerField } from "../components/Component";
-import CloseIcon from "@mui/icons-material/Close";
-import axios from "axios";
-import { BASE_URL } from "../Constant";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Loader from "../components/Loader";
-import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { BASE_URL } from "../Constant";
+// import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import CancelIcon from "@mui/icons-material/Cancel";
+import Stack from "@mui/material/Stack";
 
 export default function ManageSubscription() {
-  // const [on, setOn] = React.useState(false);
-  // const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
-  // const columns = [
-  //   {
-  //     field: "Action",
-  //     headerName: "Action",
-  //     width: 150,
-  //     sortable: false,
-  //     renderCell: (params) => (
-  //       <>
-  //         <IconButton color="primary" onClick={() => handleClick(params.row)}>
-  //           <EditNoteIcon />
-  //         </IconButton>
-
-  //         <IconButton color="error" onClick={deldata}>
-  //           <DeleteForeverSharpIcon />
-  //         </IconButton>
-  //       </>
-  //     ),
-  //   },
-  //   {
-  //     field: "id",
-  //     headerName: "Sr.No",
-  //     width: 170,
-  //     sortable: false,
-  //   },
-
-  //   {
-  //     field: "firstName",
-  //     headerName: "Name",
-  //     width: 180,
-  //     sortable: false,
-  //   },
-  //   {
-  //     field: "lastName",
-  //     headerName: "Description",
-  //     width: 300,
-  //     sortable: false,
-  //   },
-
-  //   {
-  //     field: "feature",
-  //     headerName: "Features",
-  //     width: 200,
-  //     sortable: false,
-  //   },
-
-  //   {
-  //     field: "price",
-  //     headerName: "Price",
-  //     width: 200,
-  //     sortable: false,
-  //   },
-
-  //   {
-  //     field: "start",
-  //     headerName: "Start-Date",
-  //     width: 200,
-  //     sortable: false,
-  //   },
-
-  //   {
-  //     field: "end",
-  //     headerName: "End-Date",
-  //     width: 200,
-  //     sortable: false,
-  //   },
-  // ];
-
-  // const rows = [
-  //   { id: 1, lastName: "Snow", firstName: "Jon", age: 14 },
-  //   { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-  //   { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-  //   { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-  //   { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  //   { id: 6, lastName: "Melisandre", firstName: "devin", age: 150 },
-  //   { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  //   { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-  //   { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  // ];
-
-  // const deldata = (id) => {
-  //   Swal.fire({
-  //     text: "Are you sure you want to delete?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#d33",
-  //     cancelButtonColor: "#3085d6",
-  //     confirmButtonText: "Yes, delete it!",
-  //   }).then((result) => {
-  //     // if (result.isConfirmed) {
-  //     //   axios
-  //     //     .delete(`${BASE_URL}videos/${id}`)
-  //     //     .then((response) => {
-  //     //       if (response.data.status === true) {
-  //     //         setVideos(Videos.filter((video) => video._id !== id));
-  //     //         Swal.fire({
-  //     //           position: "center",
-  //     //           icon: "success",
-  //     //           toast: true,
-  //     //           title: "Video deleted Successfully",
-  //     //           showConfirmButton: false,
-  //     //           timer: 2500,
-  //     //         });
-  //     //       }
-  //     //     })
-  //     //     .catch((error) => {
-  //     //       alert("error");
-  //     //     });
-  //     // }
-  //   });
-  // };
-
-  // const handleClose = () => {
-  //   setOn(false);
-  // };
-
-  // const handleClick = (row) => {
-  //   setSaveUpdateButton("Update");
-  //   setOn(true);
-  // };
-
-  // const handleOnSave = () => {
-  //   setSaveUpdateButton("Save");
-  //   setOn(true);
-  // };
-
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [imgData, setImgData] = React.useState([]);
   const [on, setOn] = React.useState(false);
+  const [features, setFeatures] = React.useState([]);
+  const [inputValue, setInputValue] = React.useState("");
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [data, setData] = React.useState({
     Name: "",
@@ -156,26 +40,29 @@ export default function ManageSubscription() {
     NameL1: "",
     DescriptionL1: "",
     Id: "",
-    Category: "en",
-    Duration: "",
     Features: "",
     FeaturesL1: "",
+    Category: "en",
     CreatedDate: "",
+    ModifiedDate: "",
+    // Status:"",
+    Price: "",
   });
 
   const clearFormData = () => {
     setData({
-      Id: "",
       Name: "",
       Description: "",
       NameL1: "",
       DescriptionL1: "",
-      Status: 1,
-      Category: "en",
+      Id: "",
       Features: "",
       FeaturesL1: "",
-      Duration: "",
+      Category: "en",
       CreatedDate: "",
+      ModifiedDate: "",
+      Status: 1,
+      Price: "",
     });
   };
 
@@ -188,24 +75,31 @@ export default function ManageSubscription() {
     setOn(true);
     clearFormData();
     setData({
+      Id: "",
       Name: "",
       Description: "",
       NameL1: "",
       DescriptionL1: "",
-      Id: "",
-      Duration: "",
       Features: "",
       FeaturesL1: "",
       Category: "en",
       CreatedDate: "",
+      ModifiedDate: "",
+      Status: 1,
+      Price: "",
     });
   };
 
   const onChangeHandler = (event) => {
-    setData({
-      ...data,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value } = event.target || {};
+    if (name) {
+      setData({
+        ...data,
+        [name]: value,
+      });
+    } else {
+      console.error("Event target is undefined or missing 'name' property");
+    }
   };
 
   const validationAlert = (message) => {
@@ -228,7 +122,6 @@ export default function ManageSubscription() {
       validationAlert("Please fill in all required fields");
       return;
     }
-
     const saveObj = {
       Name: data.Name,
       Description: data.Description,
@@ -237,6 +130,10 @@ export default function ManageSubscription() {
       Features: data.Features,
       FeaturesL1: data.FeaturesL1,
       CreatedDate: data.CreatedDate,
+      ModifiedDate: data.ModifiedDate,
+      Price: data.Price,
+
+      Status: data.Status,
     };
     const UpdateObj = {
       Name: data.Name,
@@ -245,8 +142,11 @@ export default function ManageSubscription() {
       DescriptionL1: data.DescriptionL1,
       Features: data.Features,
       FeaturesL1: data.FeaturesL1,
-      Duration: data.Duration,
       CreatedDate: data.CreatedDate,
+      ModifiedDate: data.ModifiedDate,
+      Price: data.Price,
+
+      Status: data.Status,
     };
 
     setLoaderOpen(true);
@@ -283,8 +183,8 @@ export default function ManageSubscription() {
             toast: true,
             title:
               SaveUpdateButton === "SAVE"
-                ? "Post Added Successfully"
-                : "Post Updated Successfully",
+                ? "Plan Added Successfully"
+                : "Plan Updated Successfully",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -347,7 +247,7 @@ export default function ManageSubscription() {
                 position: "center",
                 icon: "success",
                 toast: true,
-                title: "Post deleted successfully",
+                title: "Plan Deleted Successfully",
                 showConfirmButton: false,
                 timer: 1500,
               });
@@ -397,7 +297,7 @@ export default function ManageSubscription() {
           <Button
             size="medium"
             sx={{ color: "red" }}
-            // onClick={() => handleDelete(params.row)}
+            onClick={() => handleDelete(params.row)}
           >
             <DeleteForeverIcon />
           </Button>
@@ -405,15 +305,19 @@ export default function ManageSubscription() {
       ),
     },
 
-    { field: "id", headerName: "SR.NO", width: 90, sortable: false },
-    { field: "Name", headerName: "Name", width: 250 },
-    { field: "NameL1", headerName: "Name", width: 250 },
-    { field: "Description", headerName: "Description", width: 300 },
-    { field: "DescriptionL1", headerName: "Description", width: 300 },
-    { field: "Features", headerName: "Features", width: 200 },
-    { field: "FeaturesL1", headerName: "Features", width: 300 },
-    { field: "Price", headerName: "Price", width: 100 },
-    { field: "Duration", headerName: "Duration", width: 100 },
+    { field: "id", headerName: "SR.NO", width: 90, sortable: true },
+    { field: "Name", headerName: "Name", width: 250, sortable: false },
+    // { field: "NameL1", headerName: "Name", width: 250 ,sortable: false},
+    {
+      field: "Description",
+      headerName: "Description",
+      width: 300,
+      sortable: false,
+    },
+    // { field: "DescriptionL1", headerName: "Description", width: 300 ,sortable: false},
+    { field: "Features", headerName: "Features", width: 200, sortable: false },
+    // { field: "FeaturesL1", headerName: "Features", width: 300 ,sortable: false},
+    { field: "Price", headerName: "Price", width: 100, sortable: false },
 
     {
       field: "Status",
@@ -444,10 +348,27 @@ export default function ManageSubscription() {
       Price: rowData.Price,
       DescriptionL1: rowData.DescriptionL1,
       Id: rowData._id,
-      Duration: rowData.Duration,
       CreatedDate: rowData.CreatedDate,
       Category: "en",
     });
+  };
+
+  const handleFeatureAdd = () => {
+    if (inputValue.trim() !== "") {
+      setFeatures((prevFeatures) => [...prevFeatures, inputValue.trim()]);
+      setInputValue("");
+    }
+  };
+
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+    onChangeHandler(e);
+  };
+
+  const handlefeactureDelete = (featureToDelete) => {
+    setFeatures((prevFeatures) =>
+      prevFeatures.filter((feature) => feature !== featureToDelete)
+    );
   };
 
   return (
@@ -458,8 +379,8 @@ export default function ManageSubscription() {
           elevation={10}
           sx={{
             width: "90%",
-            maxWidth: 400,
-            bgcolor: "#E6E6FA",
+            maxWidth: 450,
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -485,12 +406,13 @@ export default function ManageSubscription() {
             >
               <Typography fontWeight="bold">Add Plans</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon   />
               </IconButton>
             </Grid>
+            {/* ----------------------------------------------------- */}
             {/* <Grid item xs={12}>
               <FormControl
-                sx={{ width: "100px" , alignItems:"start" }}
+                // sx={{ width: "100px"  }}
                 size="small"
                 disabled={SaveUpdateButton === "SAVE"}
               >
@@ -515,7 +437,7 @@ export default function ManageSubscription() {
                 </Select>
               </FormControl>
             </Grid> */}
-
+            {/* ------------------------------------------------------ */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -530,21 +452,6 @@ export default function ManageSubscription() {
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                required
-                label="Add Feature"
-                id="Features"
-                size="small"
-                name={data.Category === "en" ? "Features" : "NameL1"}
-                value={data.Category === "en" ? data.Features : data.NameL1}
-                onChange={onChangeHandler}
-                style={{ borderRadius: 10, width: "100%" }}
-              />
-            </Grid>
-
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -560,22 +467,75 @@ export default function ManageSubscription() {
               />
             </Grid>
 
+            
             <Grid item xs={12}>
               <TextField
-                fullWidth
-                required
-                size="small"
-                id="Duration"
-                type="number"
-                label="Enter Duration"
-                name={data.Category === "en" ? "Duration" : "NameL1"}
-                value={data.Category === "en" ? data.Duration : data.NameL1}
-                onChange={onChangeHandler}
                 style={{ borderRadius: 10, width: "100%" }}
+                fullWidth
+                multiline
+                label="Add Feature"
+                id="Features"
+                size="small"
+                name={data.Category === "en" ? "Features" : "NameL1"}
+                value={inputValue}
+                onChange={handleChange}
+                onKeyPress={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    handleFeatureAdd();
+                  }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleFeatureAdd}>
+                        <AddIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
+
+              {features.length > 0 && (
+                <Box
+                  sx={{
+                    maxHeight: 100,
+                    overflowY: "auto",
+                    marginTop: 2,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: 1,
+                    width: "100%",
+                  }}
+                >
+                  <List>
+                    {features.map((feature, index) => (
+                      <ListItem key={index} sx={{ padding: 0 }}>
+                        <ListItemText
+                          primary={
+                            <Stack
+                              direction="row"
+                              spacing={0}
+                              sx={{ width: "100%" }}
+                            >
+                              <Chip
+                                label={feature}
+                                onDelete={() => handlefeactureDelete(feature)}
+                                deleteIcon={<CancelIcon />}
+                              />
+                            </Stack>
+                          }
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
             </Grid>
 
-            <Grid item xs={6}>
+            
+
+            {/* <Grid item xs={6}>
               <DatePickerField
                 id="CreatedDate"
                 label="Start Date"
@@ -586,7 +546,7 @@ export default function ManageSubscription() {
             </Grid>
             <Grid item xs={6}>
               <DatePickerField id="DocumentDate" label="End Date" />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <TextField
@@ -594,7 +554,7 @@ export default function ManageSubscription() {
                 fullWidth
                 label="Enter Description"
                 id="Description"
-                rows={4}
+                rows={3}
                 name={data.Category === "en" ? "Description" : "DescriptionL1"}
                 value={
                   data.Category === "en" ? data.Description : data.DescriptionL1
@@ -654,7 +614,7 @@ export default function ManageSubscription() {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -716,6 +676,11 @@ export default function ManageSubscription() {
               },
             }}
             pageSizeOptions={[7]}
+            sx={{
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor:theme=>theme.palette.custome.datagridcolor
+              },
+            }}
           />
         </Box>
       </Paper>

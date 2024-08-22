@@ -8,13 +8,15 @@
 }
 .dashboard-menu .Mui-selected{
   background-color: #5C5CFF !important;
+  
   margin: 0.5;
 }
 .active-link{
   background-color:#5C5CFF !important;
-  color:red !important;
+  /* color:red !important; */
 }
 
+ 
 
 
 

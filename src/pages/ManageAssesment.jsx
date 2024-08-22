@@ -1,7 +1,7 @@
 import ArticleIcon from "@mui/icons-material/Article";
+import CloseIcon from "@mui/icons-material/Close";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Card,
@@ -159,10 +159,10 @@ export default function ManageAssesment() {
       headerName: "Maternity History",
       width: 100,
       sortable: false,
-      valueGetter: (params) => 
-        params.row.MaternityHistory? params.row.MaternityHistory : "0",
+      valueGetter: (params) =>
+        params.row.MaternityHistory ? params.row.MaternityHistory : "0",
     },
-    
+
     // {
     //   field: "Status",
     //   headerName: "Status",
@@ -208,8 +208,9 @@ export default function ManageAssesment() {
       },
     },
   ];
- 
-  const badgeStyles = {         // Blood Group
+
+  const badgeStyles = {
+    // Blood Group
     borderRadius: "12px",
     padding: "2px 6px",
     fontSize: "12px",
@@ -219,7 +220,8 @@ export default function ManageAssesment() {
     textAlign: "center",
   };
 
-  const badgeColors = {          // Blood Group
+  const badgeColors = {
+    // Blood Group
     "A+": "#007bff", // Blue for A+
     "A-": "#0056b3", // Darker Blue for A-
     "B+": "#28a745", // Green for B+
@@ -230,26 +232,27 @@ export default function ManageAssesment() {
     "O-": "#c82333", // Darker Red for O-
   };
 
-  const buttonStyles = {     // Status
+  const buttonStyles = {
+    // Status
     border: "none",
     borderRadius: "4px",
     padding: "4px 8px",
     fontSize: "12px",
     cursor: "pointer",
     color: "#fff",
-    width:55,
-
+    width: 55,
   };
 
-  const activeButtonStyle = {     // Status
+  const activeButtonStyle = {
+    // Status
     ...buttonStyles,
     backgroundColor: "green",
   };
 
-  const inactiveButtonStyle = {     // Status
+  const inactiveButtonStyle = {
+    // Status
     ...buttonStyles,
     backgroundColor: "#dc3545",
-
   };
 
   const handleOpenModal = (rowData) => {
@@ -284,7 +287,7 @@ export default function ManageAssesment() {
           }}
         >
           <b style={{ flexGrow: 1 }}>Assessment Details</b>
-          <IconButton onClick={handleClose} style={{ color: "black" }}>
+          <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -376,21 +379,21 @@ export default function ManageAssesment() {
               <b>Complications</b>
             </Typography>
             <Divider />
-            <Grid
-              container
-              spacing={2}
-              // sx={{ justifyContent: "center", textAlign: "center" }}
-            >
+            <Grid container spacing={2}>
               <Grid item>
                 <List dense>
                   {selectedData.MedConIds.length > 0 ? (
                     selectedData.MedConIds.map((data, index) => (
                       <ListItem key={index}>
-                        <FiberManualRecordIcon
-                          sx={{ color: "#1B1212", fontSize: "0.8rem" }}
-                        />
+                        <FiberManualRecordIcon sx={{ fontSize: "0.8rem" }} />
                         &nbsp;&nbsp;
-                        <ListItemText primary={data.Name} />
+                        <ListItemText
+                          style={{
+                            backgroundColor: "white",
+                            fontWeight: "bold",
+                          }}
+                          primary={data.Name}
+                        />
                       </ListItem>
                     ))
                   ) : (
@@ -501,7 +504,7 @@ export default function ManageAssesment() {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -533,6 +536,11 @@ export default function ManageAssesment() {
               },
             }}
             pageSizeOptions={[7]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Box>
       </Paper>

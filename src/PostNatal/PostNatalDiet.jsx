@@ -76,7 +76,7 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 100,
       sortable:false,
       renderCell: (params) => (
         <>
@@ -93,12 +93,12 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
       sortable:true,
     },
     { field: "Name", headerName: "Name", width: 250 ,sortable:false },
-    { field: "Description", headerName: "Description", width: 400 ,sortable:false },
+    { field: "Description", headerName: "Description", flex:1 ,sortable:false },
     {
       field: "Image",
       headerName: "Image",
       sortable:false,
-      width: 250,
+      width: 100,
       renderCell: (params) => (
         <img
           src={`${Bunny_Image_URL}/Schedule/Diet/${params.row.Image}`}
@@ -177,6 +177,11 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -206,13 +211,12 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
             columns={[
               { field: "id", headerName: "SR.NO", width: 100 ,sortable:true},
               { field: "Name", headerName: "Name", width: 250 ,sortable:false},
-              { field: "Description", headerName: "Description", width: 300,sortable:false },
+              { field: "Description", headerName: "Description", flex:1,sortable:false },
               {
                 field: "Image",
                 headerName: "Image",
                 sortable:false,
-                width: 250,
-                flex:1,
+                width: 100,
                 renderCell: (params) => (
                   <img
                     src={`${Bunny_Image_URL}/Schedule/Diet/${params.row.Image}`}
@@ -242,6 +246,11 @@ const PostNatalDiet = ({ sendDataToParent, ...props }) => {
             }}
             pageSizeOptions={[5]}
             getRowId={(row) => row._id}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

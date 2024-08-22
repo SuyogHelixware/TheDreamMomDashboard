@@ -72,7 +72,7 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 100,
       sortable:false,
       renderCell: (params) => (
         <>
@@ -90,12 +90,12 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
 
     },
     { field: "Name", headerName: "Name", width: 250 ,sortable:false },
-    { field: "Description", headerName: "Description", width: 400 ,sortable:false},
+    { field: "Description", headerName: "Description",flex:1 ,sortable:false},
     {
       field: "Image",
       headerName: "Image",
       sortable:false,
-      width: 250,
+      width: 100,
       renderCell: (params) => (
         <img
           src={`${Bunny_Image_URL}/Schedule/Vaccination/${params.row.Image}`}
@@ -172,6 +172,11 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
               },
             }}
             pageSizeOptions={[5]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </Grid>
       </Grid>
@@ -209,7 +214,7 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
                 field: "Image",
                 headerName: "Image",
                  sortable:false,
-                width: 150,
+                width: 100,
                 renderCell: (params) => (
                   <img
                     src={`${Bunny_Image_URL}/Schedule/Vaccination/${params.row.Image}`}
@@ -237,6 +242,11 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
             }}
             pageSizeOptions={[5]}
             getRowId={(row) => row._id}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
           />
         </DialogContent>
 

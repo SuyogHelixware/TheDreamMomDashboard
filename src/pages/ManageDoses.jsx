@@ -285,7 +285,7 @@ const ManageDoses = () => {
           sx={{
             width: "90%",
             maxWidth: 400,
-            bgcolor: "#E6E6FA",
+            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -312,7 +312,7 @@ const ManageDoses = () => {
             >
               <Typography fontWeight="bold">Add Dosage</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon style={{ color: "black" }} />
+                <CloseIcon  />
               </IconButton>
             </Grid>
             <Grid item xs={12}>
@@ -424,7 +424,7 @@ const ManageDoses = () => {
           textAlign="center"
           textTransform="uppercase"
           fontWeight="bold"
-          color={"#5C5CFF"}
+          // color={"#5C5CFF"}
           padding={1}
           noWrap
         >
@@ -439,7 +439,7 @@ const ManageDoses = () => {
           size="medium"
           sx={{
             pr: 2,
-            mb: 2,
+            // mb: 2,
             color: "white",
             backgroundColor: "#5C5CFF",
             boxShadow: 5,
@@ -485,7 +485,12 @@ const ManageDoses = () => {
               },
             }}
             pageSizeOptions={[7]}
-            autoHeight
+            // autoHeight
+            sx={{
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor:theme=>theme.palette.custome.datagridcolor
+              },
+            }}
           />
         </Box>
       </Paper>
