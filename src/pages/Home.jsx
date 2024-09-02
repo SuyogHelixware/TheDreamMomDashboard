@@ -1,5 +1,3 @@
-import BarChartIcon from "@mui/icons-material/BarChart";
-import PersonIcon from "@mui/icons-material/Person";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -39,19 +37,7 @@ export default function Home() {
               }}
               elevation={7}
             >
-              <BarChartIcon
-                sx={{
-                  color: "#5C5CFF",
-                  borderRadius: 2,
-                  boxShadow: 5,
-                  height: 40,
-                  elevation: 3,
-                  width: 50,
-                  bgcolor: "#9CD8C4",
-                  mb: 2,
-                  ml: 1,
-                }}
-              />
+            
               Total Unique Pageviews
               <h2>550K</h2>
             </Paper>
@@ -72,19 +58,7 @@ export default function Home() {
               }}
               elevation={7}
             >
-              <PersonIcon
-                sx={{
-                  color: "white",
-                  borderRadius: 2,
-                  boxShadow: 5,
-                  height: 40,
-                  elevation: 3,
-                  width: 50,
-                  bgcolor: "#02B2AF",
-                  mb: 2,
-                  ml: 1,
-                }}
-              />
+              
               Total Unique Pageviews
               <h2>600K</h2>
             </Paper>
@@ -105,19 +79,7 @@ export default function Home() {
               }}
               elevation={7}
             >
-              <BarChartIcon
-                sx={{
-                  color: "#5C5CFF",
-                  borderRadius: 2,
-                  boxShadow: 5,
-                  height: 40,
-                  elevation: 3,
-                  width: 50,
-                  bgcolor: "#9CD8C4",
-                  mb: 2,
-                  ml: 1,
-                }}
-              />
+              
               Total Unique Pageviews
               <h2>650K</h2>
             </Paper>
@@ -138,19 +100,7 @@ export default function Home() {
               }}
               elevation={7}
             >
-              <PersonIcon
-                sx={{
-                  color: "white",
-                  borderRadius: 2,
-                  boxShadow: 5,
-                  height: 40,
-                  elevation: 3,
-                  width: 50,
-                  bgcolor: "#02B2AF",
-                  mb: 2,
-                  ml: 1,
-                }}
-              />
+              
               Total Unique Pageviews
               <h2>650K</h2>
             </Paper>

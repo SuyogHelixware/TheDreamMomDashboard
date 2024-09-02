@@ -38,7 +38,7 @@ const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: { main: "#1976D2" },
-    // secondary: { main: '#f48fb1' },
+    secondary: { main: '#f48fb1' },
     background: { default: "#171821", paper: "#21222D" },
     text: { primary: "#ffffff", secondary: "#bbbbbb" },
     divider: "#555555",
