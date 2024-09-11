@@ -298,7 +298,7 @@ export default function Dashboard() {
           {themeMode === "dark" ? <LightModeIcon /> : <ModeNightIcon />}
         </IconButton>
       ),
-      name: "Theme Mode",
+      name: "Change Theme",
     },
 
     {
@@ -307,6 +307,8 @@ export default function Dashboard() {
           {fullscreen ? <FullscreenIcon /> : <FullscreenExitIcon />}
         </IconButton>
       ),
+      name: "Screen",
+
     },
     // { icon: <ShareIcon />, name: "Share" },
   ];

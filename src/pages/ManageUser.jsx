@@ -635,13 +635,7 @@ export default function ManageUsers() {
       width: 150,
       sortable: false,
     },
-    // {
-    //   field: "BloodGroup",
-    //   headerName: "Blood Group",
-    //   width: 110,
-    //   sortable: false,
-    // },
-
+   
     {
       field: "Email",
       headerName: "Email",
