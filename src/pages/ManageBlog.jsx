@@ -1244,7 +1244,16 @@ const ManageBlog = ({ item }) => {
             .slice(startIndex, endIndex)
             .map((item, index) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                <Card sx={{ width: "100%" }}>
+                <Card 
+                 sx={{
+                  width: "100%",
+                  width: "100%" ,
+                  transition: "transform 0.3s ease-in-out",
+                  "&:hover": {
+                    transform: "translateY(-10px)", // Moves the card up by 10px on hover
+                  },
+                }}
+                >
                   <img
                     style={{
                       width: "100%",
@@ -1385,7 +1394,17 @@ const ManageBlog = ({ item }) => {
             .slice(startIndexPage, endIndexPage)
             .map((item, index) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                <Card sx={{ width: "100%" }}>
+                <Card  
+                 sx={{
+                  
+                  width: "100%",
+                  width: "100%" ,
+                  transition: "transform 0.3s ease-in-out",
+                  "&:hover": {
+                    transform: "translateY(-10px)", // Moves the card up by 10px on hover
+                  },
+                }}
+                >
                   <img
                     src={pdf}
                     alt="NewsIcon"
