@@ -23,7 +23,7 @@ import * as React from "react";
 import Swal from "sweetalert2";
 import Loader from "../components/Loader";
 import { BASE_URL } from "../Constant";
-// import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Stack from "@mui/material/Stack";
 
@@ -34,6 +34,12 @@ export default function ManageSubscription() {
   const [features, setFeatures] = React.useState([]);
   const [inputValue, setInputValue] = React.useState("");
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
+  const [AddUpdateFeactures, setAddUpdateFeactures] = React.useState("EDIT ");
+
+  const [innerModalOpen, setInnerModalOpen] = React.useState(false);
+  const handleInnerModalClose = () => setInnerModalOpen(false);
+  const [open, setOpen] = React.useState(false);
+
   const [data, setData] = React.useState({
     Name: "",
     Description: "",
@@ -44,6 +50,7 @@ export default function ManageSubscription() {
     FeaturesL1: "",
     Category: "en",
     CreatedDate: "",
+    Duration: "",
     ModifiedDate: "",
     // Status:"",
     Price: "",
@@ -61,9 +68,11 @@ export default function ManageSubscription() {
       Category: "en",
       CreatedDate: "",
       ModifiedDate: "",
+      Duration: "",
       Status: 1,
       Price: "",
     });
+    setFeatures([]);
   };
 
   const handleClose = () => {
@@ -72,6 +81,7 @@ export default function ManageSubscription() {
 
   const handleOnSave = () => {
     setSaveUpdateButton("SAVE");
+    setAddUpdateFeactures("Add Feacture");
     setOn(true);
     clearFormData();
     setData({
@@ -80,13 +90,14 @@ export default function ManageSubscription() {
       Description: "",
       NameL1: "",
       DescriptionL1: "",
-      Features: "",
-      FeaturesL1: "",
+      Features: [],
+      FeaturesL1: [],
       Category: "en",
       CreatedDate: "",
       ModifiedDate: "",
       Status: 1,
       Price: "",
+      Duration: "",
     });
   };
 
@@ -114,9 +125,13 @@ export default function ManageSubscription() {
   };
 
   const handleSubmitForm = () => {
-    const requiredFields = ["Name", "Description"];
+    const requiredFields = ["Name", "Description", "Duration", "Price"];
     const emptyRequiredFields = requiredFields.filter(
-      (field) => !data[field].trim()
+      // (field) => !data[field].trim()
+      (field) => {
+        const value = data[field];
+        return typeof value === "string" && !value.trim();
+      }
     );
     if (emptyRequiredFields.length > 0) {
       validationAlert("Please fill in all required fields");
@@ -127,27 +142,32 @@ export default function ManageSubscription() {
       Description: data.Description,
       NameL1: data.NameL1,
       DescriptionL1: data.DescriptionL1,
-      Features: data.Features,
-      FeaturesL1: data.FeaturesL1,
+      Features: features,
+      FeaturesL1: [],
       CreatedDate: data.CreatedDate,
       ModifiedDate: data.ModifiedDate,
+      Duration: data.Duration,
       Price: data.Price,
-
       Status: data.Status,
     };
+
     const UpdateObj = {
       Name: data.Name,
       Description: data.Description,
       NameL1: data.NameL1,
       DescriptionL1: data.DescriptionL1,
-      Features: data.Features,
-      FeaturesL1: data.FeaturesL1,
+      Features: data.Category === "en" ? features : data.Features,
+      FeaturesL1: data.Category === "mr" ?  features: data.FeaturesL1,
       CreatedDate: data.CreatedDate,
       ModifiedDate: data.ModifiedDate,
+      Duration: data.Duration,
       Price: data.Price,
-
       Status: data.Status,
     };
+console.log(UpdateObj);
+
+
+    return;
 
     setLoaderOpen(true);
 
@@ -171,6 +191,7 @@ export default function ManageSubscription() {
               throw new Error("Update cancelled");
             }
           });
+    console.log("ktn plan", saveObj);
 
     axiosRequest
       .then((response) => {
@@ -185,6 +206,7 @@ export default function ManageSubscription() {
               SaveUpdateButton === "SAVE"
                 ? "Plan Added Successfully"
                 : "Plan Updated Successfully",
+
             showConfirmButton: false,
             timer: 1500,
           });
@@ -280,6 +302,9 @@ export default function ManageSubscription() {
     });
   };
 
+  const handleProfileClose = () => {
+    setOpen(false);
+  };
   React.useEffect(() => {
     getAllImgList();
   }, []);
@@ -288,7 +313,7 @@ export default function ManageSubscription() {
     {
       field: "actions",
       headerName: "Action",
-      width: 150,
+      width: 120,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -305,18 +330,29 @@ export default function ManageSubscription() {
       ),
     },
 
-    { field: "id", headerName: "SR.NO", width: 90, sortable: true },
-    { field: "Name", headerName: "Name", width: 250, sortable: false },
-    // { field: "NameL1", headerName: "Name", width: 250 ,sortable: false},
+    { field: "id", headerName: "SR.NO", width: 100, sortable: true },
+    { field: "Name", headerName: "Name", width: 180, sortable: false },
+    { field: "NameL1", headerName: "Name", width: 180, sortable: false },
     {
       field: "Description",
       headerName: "Description",
+      width: 250,
+      sortable: false,
+    },
+    {
+      field: "DescriptionL1",
+      headerName: "Description",
+      width: 250,
+      sortable: false,
+    },
+    { field: "Features", headerName: "Features", width: 200, sortable: false },
+    {
+      field: "FeaturesL1",
+      headerName: "Features",
       width: 300,
       sortable: false,
     },
-    // { field: "DescriptionL1", headerName: "Description", width: 300 ,sortable: false},
-    { field: "Features", headerName: "Features", width: 200, sortable: false },
-    // { field: "FeaturesL1", headerName: "Features", width: 300 ,sortable: false},
+    { field: "Duration", headerName: "Duration", width: 100 },
     { field: "Price", headerName: "Price", width: 100, sortable: false },
 
     {
@@ -329,28 +365,57 @@ export default function ManageSubscription() {
       renderCell: (params) => {
         const isActive = params.row.Status === 1;
         return (
-          <span style={{ color: isActive ? "green" : "red" }}>
+          <button
+            style={isActive ? activeButtonStyle : inactiveButtonStyle}
+            disabled
+          >
             {isActive ? "Active" : "Inactive"}
-          </span>
+          </button>
         );
       },
     },
   ];
 
+  const buttonStyles = {
+    border: "none",
+    borderRadius: "4px",
+    padding: "4px 8px",
+    fontSize: "12px",
+    cursor: "pointer",
+    color: "#fff",
+  };
+
+  const activeButtonStyle = {
+    ...buttonStyles,
+    backgroundColor: "green",
+  };
+
+  const inactiveButtonStyle = {
+    ...buttonStyles,
+    backgroundColor: "red",
+  };
+
   const handleUpdate = (rowData) => {
+    console.log(rowData);
+
     setSaveUpdateButton("UPDATE");
+    setAddUpdateFeactures("Edit Feactures");
     setOn(true);
     setData({
       Name: rowData.Name,
       Description: rowData.Description,
       NameL1: rowData.NameL1,
       Features: rowData.Features,
+      FeaturesL1: rowData.FeaturesL1,
+
+      Duration: rowData.Duration,
       Price: rowData.Price,
       DescriptionL1: rowData.DescriptionL1,
       Id: rowData._id,
       CreatedDate: rowData.CreatedDate,
       Category: "en",
     });
+    setFeatures(rowData.Features);
   };
 
   const handleFeatureAdd = () => {
@@ -378,24 +443,21 @@ export default function ManageSubscription() {
         <Paper
           elevation={10}
           sx={{
-            width: "90%",
+            width: "100%",
             maxWidth: 450,
-            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            // padding: 4,
             justifyContent: "center",
           }}
         >
           <Grid
             container
             p={3}
-            rowSpacing={2.2}
-            columnSpacing={2}
-            textAlign={"center"}
+            rowSpacing={2}
             justifyContent="center"
+            flexDirection={"column"}
           >
             <Grid
               item
@@ -404,22 +466,17 @@ export default function ManageSubscription() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography fontWeight="bold">Add Plans</Typography>
+              <Typography fontWeight="bold">Add Subscription Plan</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon   />
+                <CloseIcon />
               </IconButton>
             </Grid>
-            {/* ----------------------------------------------------- */}
-            {/* <Grid item xs={12}>
-              <FormControl
-                // sx={{ width: "100px"  }}
-                size="small"
-                disabled={SaveUpdateButton === "SAVE"}
-              >
+
+            <Grid item xs={12}>
+              <FormControl size="small" disabled={SaveUpdateButton === "SAVE"}>
                 <InputLabel id="demo-select-large-Choose-Lang">
                   Select Lang
                 </InputLabel>
-
                 <Select
                   id="Category"
                   label="Category"
@@ -436,8 +493,8 @@ export default function ManageSubscription() {
                   </MenuItem>
                 </Select>
               </FormControl>
-            </Grid> */}
-            {/* ------------------------------------------------------ */}
+            </Grid>
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -460,14 +517,118 @@ export default function ManageSubscription() {
                 id="Price"
                 type="number"
                 label="Enter Price"
-                name={data.Category === "en" ? "Price" : "NameL1"}
-                value={data.Category === "en" ? data.Price : data.NameL1}
+                name={data.Category === "en" ? "Price" : "Price"}
+                value={data.Category === "en" ? data.Price : data.Price}
                 onChange={onChangeHandler}
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
 
-            
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                required
+                size="small"
+                id="Duration"
+                type="number"
+                label="Enter Duration(in Days)"
+                name={data.Category === "en" ? "Duration" : "Duration"}
+                value={data.Category === "en" ? data.Duration : data.Duration}
+                onChange={onChangeHandler}
+                style={{ borderRadius: 10, width: "100%" }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+             
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                label="Enter Description"
+                id="Description"
+                rows={3}
+                name={data.Category === "en" ? "Description" : "DescriptionL1"}
+                value={
+                  data.Category === "en" ? data.Description : data.DescriptionL1
+                }
+                onChange={onChangeHandler}
+                multiline
+                placeholder="Enter your Description..."
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                size="small"
+                endIcon={<AddIcon sx={{ color: "white" }} />}
+                onClick={() => setInnerModalOpen(true)}
+                sx={{
+                  marginTop: 1,
+                  p: 1,
+                  width: 160,
+                  color: "white",
+                  boxShadow: 3,
+                  backgroundColor: "#7C7CFF",
+                  "&:hover": {
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
+                  },
+                }}
+              >
+                {AddUpdateFeactures}
+                {/* Add Features */}
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={12} textAlign={"end"}>
+              <Button
+                type="submit"
+                size="small"
+                onClick={handleSubmitForm}
+                sx={{
+                  marginTop: 1,
+                  p: 1,
+                  width: 80,
+                  color: "white",
+                  boxShadow: 5,
+                  backgroundColor: "#5C5CFF",
+                  "&:hover": {
+                    backgroundColor: "#E6E6FA",
+                    border: "1px solid #5C5CFF",
+                    color: "#5C5CFF",
+                  },
+                }}
+              >
+                {SaveUpdateButton}
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Modal>
+
+      <Modal open={innerModalOpen} onClose={handleInnerModalClose}>
+        <Paper
+          elevation={10}
+          sx={{
+            width: "80%",
+            maxWidth: 400,
+            p: 2,
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            justifyContent: "center",
+          }}
+        >
+          <Grid
+            container
+            p={3}
+            rowSpacing={2.2}
+            justifyContent="center"
+            flexDirection={"column"}
+          >
+            <Typography fontWeight="bold">Add Feactures</Typography>
             <Grid item xs={12}>
               <TextField
                 style={{ borderRadius: 10, width: "100%" }}
@@ -476,8 +637,12 @@ export default function ManageSubscription() {
                 label="Add Feature"
                 id="Features"
                 size="small"
-                name={data.Category === "en" ? "Features" : "NameL1"}
-                value={inputValue}
+                name={inputValue.Category === "en" ? "Features" : "FeaturesL1"}
+                value={
+                  inputValue.Category === "en"
+                    ? inputValue.Features
+                    : inputValue.FeaturesL1
+                }
                 onChange={handleChange}
                 onKeyPress={(event) => {
                   if (event.key === "Enter") {
@@ -532,66 +697,56 @@ export default function ManageSubscription() {
                 </Box>
               )}
             </Grid>
-
-            
-
-            {/* <Grid item xs={6}>
-              <DatePickerField
-                id="CreatedDate"
-                label="Start Date"
-                name={data.Category.CreatedDate}
-                value={data.Category.CreatedDate}
-                onChange={onChangeHandler}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <DatePickerField id="DocumentDate" label="End Date" />
-            </Grid> */}
-
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                label="Enter Description"
-                id="Description"
-                rows={3}
-                name={data.Category === "en" ? "Description" : "DescriptionL1"}
-                value={
-                  data.Category === "en" ? data.Description : data.DescriptionL1
-                }
-                onChange={onChangeHandler}
-                multiline
-                placeholder="Enter your Description..."
-              />
-            </Grid>
-
-            <Grid item xs={12} md={12} textAlign={"end"}>
-              <Button
-                type="submit"
-                size="small"
-                onClick={handleSubmitForm}
+            <Grid item sx={12}>
+              <Box
                 sx={{
-                  marginTop: 1,
-                  p: 1,
-                  width: 80,
-                  color: "white",
-                  boxShadow: 5,
-                  backgroundColor: "#5C5CFF",
-                  "&:hover": {
-                    backgroundColor: "#E6E6FA",
-                    border: "1px solid #5C5CFF",
-                    color: "#5C5CFF",
-                  },
+                  display: "flex",
+                  justifyContent: "space-between",
                 }}
               >
-                {SaveUpdateButton}
-              </Button>
+                <Button
+                  sx={{
+                    marginTop: 1,
+                    p: 1,
+                    width: 75,
+                    color: "white",
+                    boxShadow: 3,
+                    backgroundColor: "#E06666",
+                    "&:hover": {
+                      backgroundColor: "#E6E6FA",
+                      border: "1px solid #E06666",
+                      color: "#E06666",
+                    },
+                  }}
+                  // variant="contained"
+                  onClick={handleInnerModalClose}
+                >
+                  Close
+                </Button>
+                <Button
+                  sx={{
+                    marginTop: 1,
+                    p: 1,
+                    width: 75,
+                    color: "white",
+                    boxShadow: 3,
+                    backgroundColor: "#7C7CFF",
+                    "&:hover": {
+                      backgroundColor: "#E6E6FA",
+                      border: "1px solid #5C5CFF",
+                      color: "#5C5CFF",
+                    },
+                  }}
+                  variant="contained"
+                  onClick={handleInnerModalClose}
+                >
+                  SAVE
+                </Button>
+              </Box>
             </Grid>
-            <Grid />
           </Grid>
         </Paper>
       </Modal>
-
       <Grid
         container
         md={12}
@@ -677,8 +832,8 @@ export default function ManageSubscription() {
             }}
             pageSizeOptions={[7]}
             sx={{
-              '& .MuiDataGrid-columnHeaders': {
-                backgroundColor:theme=>theme.palette.custome.datagridcolor
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
               },
             }}
           />
