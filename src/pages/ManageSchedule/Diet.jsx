@@ -34,7 +34,6 @@ import {
 } from "../../Constant";
 import Loader from "../../components/Loader";
 
-
 const styles = {
   typography: {
     overflow: "hidden",
@@ -46,7 +45,8 @@ const styles = {
   },
 };
 
-const ManageDiet = () => {
+export default function ManageDiet(){
+
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [uploadedImg, setUploadedImg] = React.useState("");
   const [imgData, setImgData] = React.useState([]);
@@ -78,10 +78,24 @@ const ManageDiet = () => {
       TagsIds: [],
       Status: 1,
       Category: "en",
-
     });
     setSelectedTags([]);
     setUploadedImg("");
+  };
+
+  const handleOnSave = () => {
+    setSaveUpdateButton("SAVE");
+    setOn(true);
+    clearFormData();
+    setData({
+      Name: "",
+      Description: "",
+      NameL1: "",
+      DescriptionL1: "",
+      Image: "",
+      Id: "",
+      Category: "en",
+    });
   };
 
   const handleChange = (event) => {
@@ -100,12 +114,6 @@ const ManageDiet = () => {
       );
     }
   };
-
-  // const handleFileUpload = (event) => {
-  //   const file = event.target.files[0];
-  //   console.log("Uploaded file:", file);
-  //   setUploadedImg(file);
-  // };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -127,20 +135,7 @@ const ManageDiet = () => {
     setOn(false);
   };
 
-  const handleOnSave = () => {
-    setSaveUpdateButton("SAVE");
-    setOn(true);
-    clearFormData();
-    setData({
-      Name: "",
-      Description: "",
-      NameL1: "",
-      DescriptionL1: "",
-      Image: "",
-      Id: "",
-      Category: "en",
-    });
-  };
+ 
 
   const onchangeHandler = (event) => {
     setData({
@@ -471,18 +466,22 @@ const ManageDiet = () => {
     width: 6,
   });
 
-   
-
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal
+        open={on}
+        onClose={handleClose}
+        sx={{
+          backdropFilter: "blur(5px)",
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+        }}
+      >
         <Paper
           elevation={10}
           sx={{
             width: "90%",
             maxWidth: 400,
-            // bgcolor: "#E6E6FA",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -497,7 +496,7 @@ const ManageDiet = () => {
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
-            padding={4}
+            padding={3}
             justifyContent={"center"}
           >
             <Grid
@@ -549,7 +548,7 @@ const ManageDiet = () => {
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name={data.Category === "en"?"Name":"NameL1"}
+                name={data.Category === "en" ? "Name" : "NameL1"}
                 value={data.Category === "en" ? data.Name : data.NameL1}
                 onChange={onchangeHandler}
                 autoFocus
@@ -602,7 +601,7 @@ const ManageDiet = () => {
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name={data.Category === "en"?"Description":"DescriptionL1"}
+                name={data.Category === "en" ? "Description" : "DescriptionL1"}
                 value={
                   data.Category === "en" ? data.Description : data.DescriptionL1
                 }
@@ -738,15 +737,15 @@ const ManageDiet = () => {
         {Array.isArray(imgData) &&
           imgData.slice(startIndex, endIndex).map((item, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-               <Card
-          sx={{
-            width: "100%",
-            transition: "transform 0.3s ease-in-out",
-            "&:hover": {
-              transform: "translateY(-10px)", // Moves the card up by 10px on hover
-            },
-          }}
-        >
+              <Card
+                sx={{
+                  width: "100%",
+                  transition: "transform 0.3s ease-in-out",
+                  "&:hover": {
+                    transform: "translateY(-10px)", // Moves the card up by 10px on hover
+                  },
+                }}
+              >
                 <img
                   style={{
                     width: "100%",
@@ -822,5 +821,3 @@ const ManageDiet = () => {
     </>
   );
 };
-
-export default ManageDiet;

@@ -474,7 +474,12 @@ const ManageAdvertise = () => {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal open={on} onClose={handleClose}
+      sx={{
+        backdropFilter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+      }}
+      >
         <Paper
           elevation={10}
           sx={{
@@ -740,7 +745,6 @@ const ManageAdvertise = () => {
                sx={{
                 minHeight: 300 ,
                 width: "100%",
-                width: "100%" ,
                 transition: "transform 0.3s ease-in-out",
                 "&:hover": {
                   transform: "translateY(-10px)", // Moves the card up by 10px on hover

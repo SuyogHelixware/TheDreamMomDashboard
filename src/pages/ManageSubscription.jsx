@@ -1,20 +1,26 @@
 import AddIcon from "@mui/icons-material/Add";
 // import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
 import { Chip, InputAdornment } from "@material-ui/core";
+import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
+  FormControl,
   IconButton,
+  InputLabel,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
   Modal,
   Paper,
+  Select,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
@@ -23,9 +29,6 @@ import * as React from "react";
 import Swal from "sweetalert2";
 import Loader from "../components/Loader";
 import { BASE_URL } from "../Constant";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import CancelIcon from "@mui/icons-material/Cancel";
-import Stack from "@mui/material/Stack";
 
 export default function ManageSubscription() {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
@@ -439,7 +442,12 @@ console.log(UpdateObj);
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal open={on} onClose={handleClose}
+      sx={{
+        backdropFilter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+      }}
+      >
         <Paper
           elevation={10}
           sx={{

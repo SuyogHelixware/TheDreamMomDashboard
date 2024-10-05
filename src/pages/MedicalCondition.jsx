@@ -37,7 +37,7 @@ export default function MedicalCondition() {
     NameL1: "",
     DescriptionL1: "",
     Status: 1,
-    Category:"en",
+    Category: "en",
   });
 
   const clearFormData = () => {
@@ -48,7 +48,7 @@ export default function MedicalCondition() {
       NameL1: "",
       DescriptionL1: "",
       Status: 1,
-      Category:"en",
+      Category: "en",
     });
   };
 
@@ -235,7 +235,7 @@ export default function MedicalCondition() {
       NameL1: rowData.NameL1,
       DescriptionL1: rowData.DescriptionL1,
       Id: rowData._id,
-      Category:"en"
+      Category: "en",
     });
   };
 
@@ -243,7 +243,7 @@ export default function MedicalCondition() {
     {
       field: "actions",
       headerName: "Action",
-      sortable:false,
+      sortable: false,
       width: 150,
       renderCell: (params) => (
         <strong>
@@ -266,7 +266,6 @@ export default function MedicalCondition() {
       headerName: "Name",
       width: 200,
       sortable: false,
-      
     },
     {
       field: "NameL1",
@@ -279,16 +278,14 @@ export default function MedicalCondition() {
       headerName: "Description",
       width: 500,
       sortable: false,
-      
     },
     {
       field: "DescriptionL1",
       headerName: "Description",
       width: 400,
       sortable: false,
-      
     },
-    
+
     // {
     //   field: "Status",
     //   headerName: "Status",
@@ -323,7 +320,6 @@ export default function MedicalCondition() {
         );
       },
     },
-    
   ];
 
   const buttonStyles = {
@@ -345,7 +341,6 @@ export default function MedicalCondition() {
     backgroundColor: "red",
   };
 
-  
   const getUserData = () => {
     axios.get(`${BASE_URL}medicalconditions/`).then((response) => {
       setUserData(response.data.values.flat());
@@ -358,7 +353,14 @@ export default function MedicalCondition() {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal
+        open={on}
+        onClose={handleClose}
+        sx={{
+          backdropFilter: "blur(5px)",
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+        }}
+      >
         <Paper
           elevation={10}
           sx={{
@@ -379,7 +381,7 @@ export default function MedicalCondition() {
             spacing={4}
             display={"flex"}
             flexDirection={"column"}
-            padding={4}
+            padding={3}
             justifyContent={"center"}
           >
             <Grid
@@ -395,9 +397,11 @@ export default function MedicalCondition() {
               </IconButton>
             </Grid>
             <Grid item xs={12}>
-              <FormControl sx={{ width: "110px" }} size="small"
-              disabled={SaveUpdateButton === "SAVE"}
-               >
+              <FormControl
+                sx={{ width: "110px" }}
+                size="small"
+                disabled={SaveUpdateButton === "SAVE"}
+              >
                 <InputLabel id="demo-select-large-Choose-Lang">
                   Select Lang
                 </InputLabel>
@@ -410,18 +414,13 @@ export default function MedicalCondition() {
                   value={data.Category}
                   disabled={SaveUpdateButton === "SAVE"}
                 >
-                  <MenuItem value="en" >
-                    English
-                  </MenuItem>
-                  <MenuItem value="mr" >
-                    Marathi
-                  </MenuItem>
+                  <MenuItem value="en">English</MenuItem>
+                  <MenuItem value="mr">Marathi</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12}>
               <TextField
-              
                 // required
                 size="small"
                 id="Name"
@@ -429,8 +428,8 @@ export default function MedicalCondition() {
                 style={{ borderRadius: 10, width: "100%" }}
                 autoFocus
                 onChange={onchangeHandler}
-                  name={data.Category==="en"? "Name" : "NameL1" }
-                  value={data.Category==="en" ? data.Name: data.NameL1}
+                name={data.Category === "en" ? "Name" : "NameL1"}
+                value={data.Category === "en" ? data.Name : data.NameL1}
               />
             </Grid>
             <Grid item xs={12}>
@@ -439,8 +438,10 @@ export default function MedicalCondition() {
                 label="Enter Description"
                 id="Description"
                 style={{ borderRadius: 10, width: "100%" }}
-                name={data.Category==="en"? "Description": "DescriptionL1"}
-                value={data.Category==="en"? data.Description : data.DescriptionL1 }
+                name={data.Category === "en" ? "Description" : "DescriptionL1"}
+                value={
+                  data.Category === "en" ? data.Description : data.DescriptionL1
+                }
                 multiline
                 rows={5}
                 onChange={onchangeHandler}
@@ -492,7 +493,7 @@ export default function MedicalCondition() {
         elevation="4"
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -506,7 +507,7 @@ export default function MedicalCondition() {
       </Grid>
       <Grid textAlign={"end"} marginBottom={1}>
         <Button
-          onClick={handleOnSave} 
+          onClick={handleOnSave}
           type="text"
           size="medium"
           sx={{
@@ -528,7 +529,7 @@ export default function MedicalCondition() {
             },
           }}
         >
-          <AddIcon/>
+          <AddIcon />
           Add Condition
         </Button>
       </Grid>
@@ -543,26 +544,25 @@ export default function MedicalCondition() {
         elevation={7}
       >
         <Box sx={{ height: 502, width: "100%" }}>
-        <DataGrid
-  className="datagrid-style"
-  getRowId={(row) => row._id}
-  rows={userData.map((data, id) => ({ ...data, id: id + 1 }))}
-  columns={columns}
-  initialState={{
-    pagination: {
-      paginationModel: {
-        pageSize: 7,
-      },
-    },
-  }}
-  pageSizeOptions={[7]}
-  sx={{
-    '& .MuiDataGrid-columnHeaders': {
-      backgroundColor:theme=>theme.palette.custome.datagridcolor
-    },
-  }}
-/>
-
+          <DataGrid
+            className="datagrid-style"
+            getRowId={(row) => row._id}
+            rows={userData.map((data, id) => ({ ...data, id: id + 1 }))}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 7,
+                },
+              },
+            }}
+            pageSizeOptions={[7]}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
+              },
+            }}
+          />
         </Box>
       </Paper>
     </>

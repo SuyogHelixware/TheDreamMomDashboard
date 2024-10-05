@@ -137,10 +137,10 @@ const MedDetails = () => {
         .map((item, index) => ({
           _id: item._id,
           id: index + 1,
-          Medication: item.MedId?.Name || '',
-          MedicationId: item.MedId?._id || '',
-          Dosage: item.DosageId?.Name || '',
-          DosageId: item.DosageId?._id || '',
+          Medication: item.MedId?.Name || "",
+          MedicationId: item.MedId?._id || "",
+          Dosage: item.DosageId?.Name || "",
+          DosageId: item.DosageId?._id || "",
         }));
       setImgData(updatedMedicationData);
     });
@@ -220,7 +220,7 @@ const MedDetails = () => {
       field: "actions",
       headerName: "Action",
       width: 150,
-      sortable:false,
+      sortable: false,
       renderCell: (params) => (
         <strong>
           <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
@@ -237,8 +237,13 @@ const MedDetails = () => {
       ),
     },
     { field: "id", headerName: "SR.NO", width: 90, sortable: true },
-    { field: "Medication", headerName: "Medication", width: 400  ,sortable:false},
-    { field: "Dosage", headerName: "Dosage", width: 400,sortable:false },
+    {
+      field: "Medication",
+      headerName: "Medication",
+      width: 400,
+      sortable: false,
+    },
+    { field: "Dosage", headerName: "Dosage", width: 400, sortable: false },
   ];
 
   const handleUpdate = (rowData) => {
@@ -254,7 +259,14 @@ const MedDetails = () => {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal
+        open={on}
+        onClose={handleClose}
+        sx={{
+          backdropFilter: "blur(5px)",
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+        }}
+      >
         <Paper
           elevation={10}
           sx={{
@@ -275,7 +287,7 @@ const MedDetails = () => {
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
-            padding={4}
+            padding={3}
             justifyContent={"center"}
           >
             <Grid
@@ -458,8 +470,8 @@ const MedDetails = () => {
             }}
             pageSizeOptions={[7]}
             sx={{
-              '& .MuiDataGrid-columnHeaders': {
-                backgroundColor:theme=>theme.palette.custome.datagridcolor
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
               },
             }}
           />

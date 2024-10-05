@@ -756,7 +756,11 @@ export default function ManageUsers() {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal open={on} onClose={handleClose}
+      sx={{
+        backdropFilter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+      }}>
         <Paper
           elevation={10}
           sx={{
@@ -768,7 +772,7 @@ export default function ManageUsers() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            padding: 4,
+            padding: 3,
             justifyContent: "center",
             textAlign: "center",
             overflowY: { xs: "scroll", md: "auto" },

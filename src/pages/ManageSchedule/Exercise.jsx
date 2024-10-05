@@ -464,7 +464,13 @@ const Exercise = () => {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal open={on} onClose={handleClose}  
+        sx={{
+          backdropFilter: "blur(5px)",
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+        }}
+      
+      >
         <Paper
           elevation={10}
           sx={{
@@ -485,7 +491,7 @@ const Exercise = () => {
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
-            padding={4}
+            padding={3}
             justifyContent={"center"}
           >
             <Grid
@@ -722,7 +728,7 @@ const Exercise = () => {
         {Array.isArray(imgData) &&
           imgData.slice(startIndex, endIndex).map((item, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card sx={{ width: "100%",  width: "100%",
+              <Card sx={{ width: "100%",  
                  minHeight: 300 ,
                 transition: "transform 0.3s ease-in-out",
                 "&:hover": {

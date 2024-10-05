@@ -325,7 +325,12 @@ const ManagePosts = () => {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal open={on} onClose={handleClose}
+      sx={{
+        backdropFilter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+      }}
+      >
         <Paper
           elevation={10}
           sx={{
@@ -346,7 +351,7 @@ const ManagePosts = () => {
             spacing={4}
             display={"flex"}
             flexDirection={"column"}
-            padding={4}
+            padding={3}
             justifyContent={"center"}
           >
             <Grid

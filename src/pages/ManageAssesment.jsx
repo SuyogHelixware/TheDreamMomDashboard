@@ -269,6 +269,10 @@ export default function ManageAssesment() {
   return (
     <>
       <Dialog
+      sx={{
+        backdropFilter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+      }}
         open={open}
         onClose={handleClose}
         aria-labelledby="dialog-title"

@@ -1,8 +1,8 @@
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import CloseIcon from "@mui/icons-material/Close";
 import {
   Card,
   Chip,
@@ -25,14 +25,14 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
+import Swal from "sweetalert2";
+import Loader from "../../components/Loader";
 import {
   BASE_URL,
   Bunny_Image_URL,
   Bunny_Storage_Access_Key,
   Bunny_Storage_URL,
 } from "../../Constant";
-import Swal from "sweetalert2";
-import Loader from "../../components/Loader";
 
 const styles = {
   typography: {
@@ -471,7 +471,12 @@ const Vaccination = () => {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal open={on} onClose={handleClose}
+      sx={{
+        backdropFilter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+      }}
+      >
         <Paper
           elevation={10}
           sx={{
@@ -492,7 +497,7 @@ const Vaccination = () => {
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
-            padding={4}
+            padding={3}
             justifyContent={"center"}
           >
             <Grid
@@ -736,7 +741,6 @@ const Vaccination = () => {
               <Card  
                sx={{
                 width: "100%",
-                width: "100%" ,
                 transition: "transform 0.3s ease-in-out",
                 "&:hover": {
                   transform: "translateY(-10px)", // Moves the card up by 10px on hover

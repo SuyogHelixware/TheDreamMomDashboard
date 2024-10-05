@@ -521,7 +521,11 @@ export default function ManageVideos() {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}>
+      <Modal open={on} onClose={handleClose}
+      sx={{
+        backdropFilter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+      }}>
         <Paper
           elevation={10}
           sx={{
@@ -542,7 +546,7 @@ export default function ManageVideos() {
             spacing={2}
             display={"flex"}
             flexDirection={"column"}
-            padding={4}
+            padding={3}
             justifyContent={"center"}
           >
             <Grid
@@ -780,7 +784,6 @@ export default function ManageVideos() {
             <Card  
              sx={{
               width: "100%",
-              width: "100%" ,
               transition: "transform 0.3s ease-in-out",
               "&:hover": {
                 transform: "translateY(-10px)", // Moves the card up by 10px on hover

@@ -190,6 +190,10 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
       </Grid>
 
       <Dialog
+      sx={{
+        backdropFilter: "blur(5px)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+      }}
         open={childDialogOpen}
         onClose={handleChildDialogClose}
         fullWidth
