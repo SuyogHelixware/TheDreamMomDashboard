@@ -732,7 +732,10 @@ const Exercise = () => {
                  minHeight: 300 ,
                 transition: "transform 0.3s ease-in-out",
                 "&:hover": {
-                  transform: "translateY(-10px)", // Moves the card up by 10px on hover
+                  transform: "translateY(-10px)",
+
+                   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.6)", 
+
                 },}}
                >
                 <img

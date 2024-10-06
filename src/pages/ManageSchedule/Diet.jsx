@@ -738,11 +738,20 @@ export default function ManageDiet(){
           imgData.slice(startIndex, endIndex).map((item, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
               <Card
+                // sx={{
+                //   width: "100%",
+                //   transition: "transform 0.3s ease-in-out",
+                //   "&:hover": {
+                //     // transform: "translateY(-10px)", 
+                //     },
+                // }}
                 sx={{
                   width: "100%",
-                  transition: "transform 0.3s ease-in-out",
+                  transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
                   "&:hover": {
-                    transform: "translateY(-10px)", // Moves the card up by 10px on hover
+                    transform: "translateY(-10px)",
+                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.6)", 
+                    
                   },
                 }}
               >
