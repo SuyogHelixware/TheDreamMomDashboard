@@ -515,6 +515,9 @@ const Medication = () => {
               '& .MuiDataGrid-columnHeaders': {
                 backgroundColor:theme=>theme.palette.custome.datagridcolor
               },
+              "& .MuiDataGrid-row:hover": {
+                boxShadow: "0px 4px 20px rgba(0, 0, 0.2, 0.2)", 
+             },
             }}
           />
         </Box>
