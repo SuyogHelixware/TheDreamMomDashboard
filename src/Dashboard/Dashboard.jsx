@@ -70,7 +70,7 @@ import SpeedDialAction from "@mui/material/SpeedDialAction";
 import { keyframes } from "@mui/system";
 import { useState } from "react";
 
-const drawerWidth = 260;
+const drawerWidth = 250;
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -310,7 +310,6 @@ export default function Dashboard() {
       name: "Screen",
 
     },
-    // { icon: <ShareIcon />, name: "Share" },
   ];
   return (
     <Box
@@ -357,7 +356,6 @@ export default function Dashboard() {
                     "linear-gradient(360deg, #647DEE 0%, #7F53AC 74%)",
                 }}
               />
-
               <Paper
                 style={{
                   width: "270px",
@@ -411,8 +409,7 @@ export default function Dashboard() {
                     }}
                   >
                     Log Out
-                    {/* <b>Log Out</b> */}
-                  </Button>
+                   </Button>
                 </Grid>
               </Paper>
             </Grid>
@@ -425,7 +422,6 @@ export default function Dashboard() {
             width: "100vw",
             backgroundColor: (theme) =>
               theme.palette.customAppbar?.appbarcolor || "defaultColor",
-
             boxShadow: "0px 5px 7px rgba(0, 0, 0, 0.1)",
             elevation: 8,
             display: "flex",
@@ -455,29 +451,7 @@ export default function Dashboard() {
             The Dream Mom
           </Typography>
 
-          {/* <IconButton
-            size="large"
-            aria-label="toggle theme"
-            color="inherit"
-            onClick={themechange}
-          >
-            {themeMode === "dark" ? <LightModeIcon /> : <ModeNightIcon />}
-          </IconButton> 
-
-          {/* <Tooltip title={fullscreen ? "Exit Fullscreen" : "Fullscreen"}>
-            <IconButton
-              sx={{ color: "white" }}
-              size="large"
-              edge="end"
-              aria-label="toggle fullscreen"
-              onClick={toggleFullscreen}
-              color="inherit"
-            >
-              {fullscreen ? <FullscreenIcon /> : <FullscreenExitIcon />}
-            </IconButton>
-          </Tooltip> */}
-
-          <Tooltip title={userData.Name}>
+                  <Tooltip title={userData.Name}>
             <IconButton
               size="small"
               aria-controls={menuId}
