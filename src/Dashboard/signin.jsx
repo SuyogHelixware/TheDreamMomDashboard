@@ -56,7 +56,9 @@ function Signin() {
               Email: data.Email,
               BloodGroup: data.BloodGroup,
               Avatar: data.Avatar,
-              _id:data._id
+              _id:data._id,
+              Token:data.Token
+
             };
             sessionStorage.setItem("userId", userId);
             sessionStorage.setItem("userData", JSON.stringify(userData));

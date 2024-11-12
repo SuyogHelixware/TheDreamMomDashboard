@@ -32,7 +32,15 @@ export default function ManageTags() {
       Description: "",
     });
   };
-
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
   const onchangeHandler = (event) => {
     setData({
       ...data,
@@ -91,11 +99,25 @@ export default function ManageTags() {
     clearFormData();
   };
 
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags/`).then((response) => {
-      setTagsData(response.data.values.flat());
+  // const getTagData = () => {
+  //   axios.get(`${BASE_URL}tags/`).then((response) => {
+  //     setTagsData(response.data.values.flat());
+  //   });
+  // };
+
+  const getTagData = async() => {
+    const token = await getApiToken();
+    const response = await axios.get(`${BASE_URL}/tags`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    
+
     });
+    setTagsData(response.data.values.flat());
   };
+
 
   const validationAlert = (message) => {
     Swal.fire({
