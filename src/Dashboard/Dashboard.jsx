@@ -56,7 +56,6 @@ import { styled, useTheme } from "@mui/material/styles";
 import * as React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../src/assets/logo.png";
-
 import "../Dashboard/Dashboard.css";
 // import avatar from "../assets/avtar.png";
 import { Bunny_Image_URL } from "../Constant";
@@ -178,7 +177,11 @@ export default function Dashboard() {
   const [openList, setOpenList] = React.useState(false);
   const [on, setOn] = React.useState(false);
   const { themeMode, LightMode, DarkMode } = useThemeMode();
-  const [themestatus, setThemeStatus] = useState();
+  const [loading, setLoading] = React.useState(true);
+  const [themestatus, setThemeStatus] = useState(() => {
+    const CurrentTheme = localStorage.getItem("Theme");
+    return CurrentTheme === "dark" ? false : true; 
+  });
   // const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [userData, setUserData] = React.useState({
     Name: "",
@@ -227,6 +230,37 @@ export default function Dashboard() {
     }
   }, [isMobile]);
 
+
+
+//Use for Theme Storage
+React.useEffect(() => {
+  const CurrentTheme = localStorage.getItem("Theme");
+
+  if (CurrentTheme === "dark") {
+    setThemeStatus(false);
+    DarkMode(); // Apply dark mode immediately
+  } else {
+    setThemeStatus(true);
+    LightMode(); // Apply light mode immediately
+  }
+
+  setLoading(false);
+}, [DarkMode, LightMode]);
+
+const themechange = () => {
+  if (themestatus) {
+    localStorage.setItem("Theme", "dark");
+    DarkMode();
+    setThemeStatus(false);
+  } else {
+    localStorage.setItem("Theme", "light");
+    LightMode();
+    setThemeStatus(true);
+  }
+};
+
+
+
   const location = useLocation();
 
   const handleDrawerOpen = () => {
@@ -274,17 +308,8 @@ export default function Dashboard() {
   //   }
   // };
 
-  const themechange = () => {
-    if (themestatus) {
-      DarkMode();
-
-      setThemeStatus(false);
-    } else {
-      LightMode();
-
-      setThemeStatus(true);
-    }
-  };
+  
+ 
 
   const actions = [
     {
@@ -311,6 +336,7 @@ export default function Dashboard() {
 
     },
   ];
+  
   return (
     <Box
       sx={{
@@ -416,6 +442,7 @@ export default function Dashboard() {
           </center>
         </Paper>
       </Modal>
+        
       <AppBar position="fixed" open={open}>
         <Toolbar
           sx={{
@@ -1056,7 +1083,7 @@ export default function Dashboard() {
                   <ListItemText primary="Manage Subscription" />
                 </ListItemButton>
               </Link>
-              <Link to="manage-report" className="link_style">
+              {/* <Link to="manage-report" className="link_style">
                 <ListItemButton
                   onClick={handleClickTransaction}
                   selected={location.pathname === "/dashboard/manage-report"}
@@ -1082,7 +1109,7 @@ export default function Dashboard() {
                   </ListItemIcon>
                   <ListItemText primary="Manage Report" />
                 </ListItemButton>
-              </Link>
+              </Link> */}
               <Link to="manage-advertise" className="link_style">
                 <ListItemButton
                   onClick={handleClickTransaction}
@@ -1090,7 +1117,6 @@ export default function Dashboard() {
                   sx={{
                     "&.Mui-selected": {
                       backgroundColor: "#5C5CFF",
-
                       borderRadius: 1,
                       "& .MuiListItemIcon-root, & .MuiTypography-root": {
                         color: "#FFFFFF",

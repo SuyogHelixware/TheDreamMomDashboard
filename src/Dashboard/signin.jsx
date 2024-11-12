@@ -67,7 +67,6 @@ function Signin() {
               showConfirmButton: false,
               timer: 1500,
               icon:"success",
-
             });
             Navigate("/dashboard/home");
           } else {

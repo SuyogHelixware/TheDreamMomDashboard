@@ -59,7 +59,7 @@ const ManageAdvertise = () => {
     Description: "",
     NameL1: "",
     DescriptionL1: "",
-    Category:"en",
+    Category: "en",
     Image: "",
     Id: "",
     Tag: "",
@@ -72,7 +72,7 @@ const ManageAdvertise = () => {
       Description: "",
       NameL1: "",
       DescriptionL1: "",
-      Category:"en",      
+      Category: "en",
       Image: "",
       TagsIds: [],
       Status: 1,
@@ -123,11 +123,12 @@ const ManageAdvertise = () => {
     setSaveUpdateButton("SAVE");
     setOn(true);
     clearFormData();
-    setData({  Name: "",
+    setData({
+      Name: "",
       Description: "",
       NameL1: "",
       DescriptionL1: "",
-      Category:"en",
+      Category: "en",
       Image: "",
       Id: "",
       Tag: "",
@@ -432,7 +433,7 @@ const ManageAdvertise = () => {
       DescriptionL1: data.DescriptionL1,
       Image: data.Image,
       TagsIds: data.TagsIds,
-      Category:"en",
+      Category: "en",
     });
   };
 
@@ -474,11 +475,13 @@ const ManageAdvertise = () => {
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}
-      sx={{
-        backdropFilter: "blur(5px)",
-        backgroundColor: "rgba(0, 0, 0, 0.3)",
-      }}
+      <Modal
+        open={on}
+        onClose={handleClose}
+        sx={{
+          backdropFilter: "blur(5px)",
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+        }}
       >
         <Paper
           elevation={10}
@@ -512,7 +515,7 @@ const ManageAdvertise = () => {
             >
               <Typography fontWeight="bold">Add Advertisement</Typography>
               <IconButton onClick={handleClose}>
-                <CloseIcon   />
+                <CloseIcon />
               </IconButton>
             </Grid>
 
@@ -551,8 +554,8 @@ const ManageAdvertise = () => {
                 fullWidth
                 id="Name"
                 label="Enter Name"
-                name={data.Category==="en"?"Name":"NameL1"}
-                value={data.Category==="en"? data.Name:data.NameL1}
+                name={data.Category === "en" ? "Name" : "NameL1"}
+                value={data.Category === "en" ? data.Name : data.NameL1}
                 onChange={onchangeHandler}
                 autoFocus
                 style={{ borderRadius: 10, width: "100%" }}
@@ -560,8 +563,10 @@ const ManageAdvertise = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth size="small" 
-              // required
+              <FormControl
+                fullWidth
+                size="small"
+                // required
               >
                 <InputLabel id="demo-select-small-label">Select Tag</InputLabel>
                 <Select
@@ -602,7 +607,7 @@ const ManageAdvertise = () => {
                 fullWidth
                 id="Description"
                 label="Enter Description"
-                name={data.Category === "en"?"Description":"DescriptionL1"}
+                name={data.Category === "en" ? "Description" : "DescriptionL1"}
                 value={
                   data.Category === "en" ? data.Description : data.DescriptionL1
                 }
@@ -647,6 +652,9 @@ const ManageAdvertise = () => {
                 </Typography>
                 <VisuallyHiddenInput type="file" />
               </Button>
+              <Typography fontSize={"small"} color={"red"}textAlign={"center"}>
+                Please upload an image with in 192:19 aspect ratio
+              </Typography>
             </Grid>
 
             <Grid item xs={12} md={12} textAlign={"end"}>
@@ -694,7 +702,7 @@ const ManageAdvertise = () => {
         elevation={4}
       >
         <Typography
-        className="slide-in-text"
+          className="slide-in-text"
           width={"100%"}
           textAlign="center"
           textTransform="uppercase"
@@ -741,18 +749,17 @@ const ManageAdvertise = () => {
         {Array.isArray(imgData) &&
           imgData.slice(startIndex, endIndex).map((item, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card 
-               sx={{
-                minHeight: 300 ,
-                width: "100%",
-                transition: "transform 0.3s ease-in-out",
-                "&:hover": {
-                  transform: "translateY(-10px)",
+              <Card
+                sx={{
+                  minHeight: 300,
+                  width: "100%",
+                  transition: "transform 0.3s ease-in-out",
+                  "&:hover": {
+                    transform: "translateY(-10px)",
 
-                  boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.6)", 
-
-                 },
-              }}
+                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.6)",
+                  },
+                }}
               >
                 <img
                   style={{

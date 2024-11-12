@@ -66,7 +66,7 @@ export default function ManageSubscription() {
       NameL1: "",
       DescriptionL1: "",
       Id: "",
-      Features: "",
+      Features: "",  
       FeaturesL1: "",
       Category: "en",
       CreatedDate: "",
@@ -645,12 +645,8 @@ console.log(UpdateObj);
                 label="Add Feature"
                 id="Features"
                 size="small"
-                name={inputValue.Category === "en" ? "Features" : "FeaturesL1"}
-                value={
-                  inputValue.Category === "en"
-                    ? inputValue.Features
-                    : inputValue.FeaturesL1
-                }
+                name={data.Category  === "en" ? "Features" : "FeaturesL1"}
+                value={data.Category  === "en" ? data.Features: data.FeaturesL1  }   
                 onChange={handleChange}
                 onKeyPress={(event) => {
                   if (event.key === "Enter") {

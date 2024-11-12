@@ -511,8 +511,11 @@ const ManageManner = () => {
                     ? uploadedImg.name
                     : "Upload File"}
                 </Typography>
-                <VisuallyHiddenInput type="file" />
+                <VisuallyHiddenInput type="file"/>
               </Button>
+              <Typography fontSize={"small"} color={"red"}textAlign={"center"}>
+                Please upload an image with in 16:9 aspect ratio
+              </Typography>
             </Grid>
 
             <Grid item xs={12} md={12} textAlign={"end"}>

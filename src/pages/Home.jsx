@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { BarChart, LineChart, PieChart } from "@mui/x-charts";
 import * as React from "react";
+import CountUp from "react-countup";
 
 const uData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
 const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
@@ -37,9 +38,10 @@ export default function Home() {
               }}
               elevation={7}
             >
-            
               Total Unique Pageviews
-              <h2>550K</h2>
+              <h2>
+                <CountUp start={0} end={550} duration={2.75} separator="," />K
+              </h2>{" "}
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -58,9 +60,10 @@ export default function Home() {
               }}
               elevation={7}
             >
-              
               Total Unique Pageviews
-              <h2>600K</h2>
+              <h2>
+                <CountUp start={0} end={600} duration={2.75} separator="," />K
+              </h2>{" "}
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -79,9 +82,10 @@ export default function Home() {
               }}
               elevation={7}
             >
-              
-              Total Unique Pageviews
-              <h2>650K</h2>
+               Total Unique Pageviews
+              <h2>
+                <CountUp start={0} end={650} duration={2.75} separator="," />K
+              </h2>{" "}
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -100,9 +104,10 @@ export default function Home() {
               }}
               elevation={7}
             >
-              
-              Total Unique Pageviews
-              <h2>650K</h2>
+             Total Unique Pageviews
+              <h2>
+                <CountUp start={0} end={680} duration={2.75} separator="," />K
+              </h2>{" "}
             </Paper>
           </Grid>
 
