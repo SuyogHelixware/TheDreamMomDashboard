@@ -19,7 +19,6 @@ import ModeNightIcon from "@mui/icons-material/ModeNight";
 import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import NoFoodIcon from "@mui/icons-material/NoFood";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import QuizIcon from "@mui/icons-material/Quiz";
