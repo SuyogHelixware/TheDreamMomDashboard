@@ -4,6 +4,9 @@ import { Chip, InputAdornment } from "@material-ui/core";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+
 import {
   CardActions,
   CardContent,
@@ -228,7 +231,6 @@ export default function ManageSubscription() {
             }
           });
     console.log("ktn plan", saveObj);
-
     axiosRequest
       .then((response) => {
         setLoaderOpen(false);
@@ -786,28 +788,26 @@ export default function ManageSubscription() {
       <Grid container spacing={5} justifyContent="start">
         {Array.isArray(imgData) &&
           imgData.slice(startIndex, endIndex).map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3.5} key={index} 
-            >
-              
+            <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
               <Grid
                 sx={{
+                  backgroundColor: (theme) =>
+                    theme.palette.customAppbar?.appbarcolor || "",
                   width: "100%",
                   display: "flex",
                   flexDirection: "column",
                   height: "100%",
                   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-                  borderRadius:"15px",
+                  borderRadius: "10px",
                   textAlign: "center",
-                  border:"1px solid gray",
+                  border: "1px solid gray",
                   transition: "transform 0.3s ease-in-out",
                   "&:hover": {
-                  transform: "translateY(-10px)",
-                  boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.6)",     
-
-                 },
+                    transform: "translateY(-10px)",
+                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.6)",
+                  },
                 }}
-              > 
-                
+              >
                 <CardContent>
                   <Typography
                     noWrap
@@ -823,7 +823,6 @@ export default function ManageSubscription() {
                     xs={12}
                     sx={{ display: "flex", justifyContent: "space-between" }}
                   >
-                  
                     <Grid2
                       item
                       xs={6}
@@ -865,7 +864,7 @@ export default function ManageSubscription() {
                       </Typography>
                     </Grid2>
                   </Grid2>
-                  <Divider sx={{marginTop:2}} />
+                  <Divider sx={{ marginTop: 2 }} />
                   <Typography
                     variant="body2"
                     style={styles.typography}
@@ -875,7 +874,7 @@ export default function ManageSubscription() {
                   >
                     {item.Description}
                   </Typography>
-                   
+
                   <List sx={{ paddingLeft: 2, paddingRight: 2 }}>
                     {item.Features &&
                       Array.isArray(item.Features) &&
@@ -911,27 +910,32 @@ export default function ManageSubscription() {
                     color="primary"
                     onClick={() => handleUpdate(item)}
                   >
-                    <Button sx={{ borderRadius: "25px",backgroundColor:"green" }} variant="contained">
+                    <Button sx={{ borderRadius: "20px" }} variant="contained">
+                    <EditNoteIcon />
+
                       Update
                     </Button>
                   </IconButton>
 
-                  <Button
+                        <IconButton
+
                     size="medium"
                     sx={{ color: "red" }}
                     onClick={() => handleDelete(item)}
                   >
-                    <Button variant="contained" sx={{ borderRadius: "25px" }}>
+
+                    <Button variant="contained" sx={{ borderRadius: "20px" }}>
+                    <DeleteForeverIcon />
+
                       Delete
                     </Button>
-                  </Button>
+                  </IconButton>
                 </CardActions>
               </Grid>
             </Grid>
-          ))
-          }
+          ))}
       </Grid>
-      
+
       <Grid container spacing={3} width="100%" pt={5}>
         <Grid
           item
@@ -946,7 +950,6 @@ export default function ManageSubscription() {
           />
         </Grid>
       </Grid>
-
     </>
   );
 }
