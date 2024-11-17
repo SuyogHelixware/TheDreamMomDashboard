@@ -309,7 +309,7 @@ const ManageFAQ = () => {
   React.useEffect(() => {
     getTagData();
     getAllImgList();
-  }, []);
+  });
 
   const columns = [
     {

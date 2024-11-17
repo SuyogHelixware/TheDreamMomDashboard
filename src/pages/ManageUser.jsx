@@ -793,7 +793,7 @@ export default function ManageUsers() {
 
   useEffect(() => {
     getUserData();
-  }, []);
+  });
 
   return (
     <>

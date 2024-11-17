@@ -71,7 +71,7 @@ export default function ManageAssesment() {
 
   React.useEffect(() => {
     getUserData();
-  }, []);
+  });
   const genderMap = {
     M: "Male",
     F: "Female",

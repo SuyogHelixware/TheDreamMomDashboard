@@ -244,7 +244,7 @@ React.useEffect(() => {
     LightMode(); // Apply light mode immediately
   }
 
-}, []);
+}, [DarkMode, LightMode]);
 
 React.useEffect(() => {
   const timer = setTimeout(() => {

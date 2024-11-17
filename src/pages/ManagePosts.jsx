@@ -270,7 +270,7 @@ const ManagePosts = () => {
 
   React.useEffect(() => {
     getAllImgList();
-  }, []);
+  });
 
   const columns = [
     {

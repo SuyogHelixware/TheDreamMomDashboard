@@ -263,7 +263,7 @@ const ManageAvoidFood = () => {
 
   React.useEffect(() => {
     getAllImgList();
-  }, []);
+  });
 
   const columns = [
     {

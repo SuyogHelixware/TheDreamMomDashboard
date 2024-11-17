@@ -93,7 +93,7 @@ export default function ManageVideos() {
   React.useEffect(() => {
     getAllVideoList();
     getTagData();
-  }, []);
+  });
   const handleClose = () => {
     setOn(false);
   };

@@ -1,10 +1,8 @@
 import AddIcon from "@mui/icons-material/Add";
 // import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
-import { Card, Chip, InputAdornment, useTheme } from "@material-ui/core";
+import { Chip, InputAdornment } from "@material-ui/core";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditNoteIcon from "@mui/icons-material/EditNote";
 import CheckIcon from "@mui/icons-material/Check";
 import {
   CardActions,
@@ -57,10 +55,8 @@ export default function ManageSubscription() {
 
   const [innerModalOpen, setInnerModalOpen] = React.useState(false);
   const handleInnerModalClose = () => setInnerModalOpen(false);
-  const [open, setOpen] = React.useState(false);
+  
 
-  const theme = useTheme();
-  const isDarkMode = theme.palette.mode === "dark";
 
   const [data, setData] = React.useState({
     Name: "",
@@ -358,31 +354,12 @@ export default function ManageSubscription() {
     });
   };
 
-  const handleProfileClose = () => {
-    setOpen(false);
-  };
+ 
   React.useEffect(() => {
     getAllImgList();
-  }, []);
+  });
 
-  const buttonStyles = {
-    border: "none",
-    borderRadius: "4px",
-    padding: "4px 8px",
-    fontSize: "12px",
-    cursor: "pointer",
-    color: "#fff",
-  };
-
-  const activeButtonStyle = {
-    ...buttonStyles,
-    backgroundColor: "green",
-  };
-
-  const inactiveButtonStyle = {
-    ...buttonStyles,
-    backgroundColor: "red",
-  };
+ 
 
   const handleUpdate = (rowData) => {
     console.log(rowData);

@@ -480,11 +480,11 @@ const ManageAdvertise = () => {
 
   React.useEffect(() => {
     getAllImgList();
-  }, []);
+  });
 
   React.useEffect(() => {
     getTagData();
-  }, []);
+  });
 
   const handlePageChange = (event, value) => {
     setPage(value);

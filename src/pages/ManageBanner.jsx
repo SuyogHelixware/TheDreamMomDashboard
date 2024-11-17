@@ -226,7 +226,6 @@ const ManageManner = () => {
           );
 
           if (response.data.status && uploadedImg !== "") {
-            const token = await getApiToken();
             const res = await axios.request({
               method: "PUT",
               maxBodyLength: Infinity,
@@ -412,7 +411,7 @@ const ManageManner = () => {
 
   React.useEffect(() => {
     getAllImgList();
-  }, []);
+  });
 
   const handlePageChange = (event, value) => {
     setPage(value);

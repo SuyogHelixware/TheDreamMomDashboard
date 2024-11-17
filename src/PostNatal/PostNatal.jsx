@@ -90,7 +90,7 @@ const PostNatal = () => {
 
   useEffect(() => {
     getAllPostNatalData();
-  }, []);
+  });
 
   const handleParentDialogOpen = () => {
     setOpen(true);

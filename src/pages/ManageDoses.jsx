@@ -117,7 +117,7 @@ const ManageDoses = () => {
   };
   React.useEffect(() => {
     getAllImgList();
-  }, []);
+  });
 
   const handleSubmitForm = async() => {
     const requiredFields = ["Name", "Description"];

@@ -846,7 +846,7 @@ const ManageBlog = ({ item }) => {
 
   React.useEffect(() => {
     getAllImgList();
-  }, []);
+  });
 
   const handleBlogPageChange = (event, value) => {
     setBlogPage(value);
@@ -864,7 +864,7 @@ const ManageBlog = ({ item }) => {
 
   React.useEffect(() => {
     getTagData();
-  }, []);
+  });
 
   return (
     <>

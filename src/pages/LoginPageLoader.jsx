@@ -1,6 +1,5 @@
 // Create ne w file
 import React from 'react';
-import { motion } from 'framer-motion';
 import loaderImage  from '../assets/loader.png'
 const LoginPageLoader = () => {
   return (

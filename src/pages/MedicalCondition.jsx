@@ -383,7 +383,7 @@ export default function MedicalCondition() {
   };
   useEffect(() => {
     getUserData();
-  }, []);
+  });
 
   return (
     <>

@@ -212,7 +212,7 @@ export default function ManageTags() {
 
   React.useEffect(() => {
     getTagData();
-  }, []);
+  });
 
   return (
     <>
