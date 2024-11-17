@@ -20,22 +20,50 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
   const [childData, setChildData] = useState([]);
   const [MedicationData, setMedicationData] = useState([]);
   const [selectedMedicationRows, setSelectedMedicationRows] = useState([]);
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
 
   useEffect(() => {
-    axios.get(`${BASE_URL}medicationdet/`).then((response) => {
-      const updatedMedicationData = response.data.values
-        .flat()
-        .map((item, index) => ({
-          _id: item._id,
-          id: index + 1,
-          Name: item.MedId?.Name || '',
-          Description: item.MedId?.Description || '',
-          DosageName: item.DosageId?.Name || '',
-          DosageDescription: item.DosageId?.Description || '',
-        }));
-      setMedicationData(updatedMedicationData);
-      setChildData(props.medicationData || []);
-    });
+    const fetchMedicationData = async () => {
+      try {
+        const token = await getApiToken(); 
+  
+        const response = await axios.get(`${BASE_URL}medicationdet/`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+  
+        const updatedMedicationData = response.data.values
+          .flat()
+          .map((item, index) => ({
+            _id: item._id,
+            id: index + 1, 
+            Name: item.MedId?.Name || '', 
+            Description: item.MedId?.Description || '', 
+            DosageName: item.DosageId?.Name || '',
+            DosageDescription: item.DosageId?.Description || '',
+          }));
+  
+        setMedicationData(updatedMedicationData); 
+
+        setChildData(props.medicationData || []); 
+      } catch (error) {
+        console.error('Error fetching medication data:', error);
+      
+      }
+    };
+  
+    fetchMedicationData(); 
   }, [props.medicationData]);
 
   const handleChildDialogOpen = () => {
@@ -210,7 +238,7 @@ const PlanMasterMedication = ({ sendMedicationDataToParent, ...props }) => {
             className="datagrid-style"
             // rowHeight={80}
             columns={[
-              { field: "id", headerName: "SR.NO", width: 250   ,  sortable:true},
+              { field: "id", headerName: "SR.NO", width: 70   ,  sortable:true},
               { field: "Name", headerName: "Name", width: 250 ,  sortable:false },
               { field: "Description", headerName: "Description", width: 300 ,  sortable:false },
               { field: "DosageName", headerName: "Dosage Name", width: 250 ,  sortable:false },

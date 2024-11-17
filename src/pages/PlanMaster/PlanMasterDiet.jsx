@@ -21,17 +21,49 @@ const PlanMasterDiet = ({ sendDataToParent, ...props }) => {
   const [dietData, setDietData] = useState([]);
   const [selectedDietRows, setSelectedDietRows] = useState([]);
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
+
   useEffect(() => {
-    axios.get(`${BASE_URL}diet/`).then((response) => {
-      const updatedDietData = response.data.values.flat().map((item) => ({
-        _id: item._id,
-        Name: item.Name,
-        Description: item.Description,
-        Image: item.Image,
-      }));
-      setDietData(updatedDietData);
-      setChildData(props.dietData);
-    });
+    const fetchDietData = async () => {
+      try {
+        const token = await getApiToken();
+  
+        const response = await axios.get(`${BASE_URL}diet/`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+
+        const updatedDietData = response.data.values
+          .flat()
+          .map((item) => ({
+            _id: item._id,
+            Name: item.Name,
+            Description: item.Description,
+            Image: item.Image,
+          }));
+  
+        setDietData(updatedDietData);
+        setChildData(props.dietData || []);  
+  
+      } catch (error) {
+        console.error('Error fetching diet data:', error);
+      
+      }
+    };
+  
+    fetchDietData();
+  
   }, [props.dietData]);
 
   const handleChildDialogOpen = () => {

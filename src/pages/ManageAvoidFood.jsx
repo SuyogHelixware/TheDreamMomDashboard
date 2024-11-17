@@ -50,6 +50,16 @@ const ManageAvoidFood = () => {
     });
   };
 
+   // ========================
+   const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const handleClose = () => {
     setOn(false);
   };
@@ -85,7 +95,8 @@ const ManageAvoidFood = () => {
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async() => {
+    const token = await getApiToken();
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !data[field].trim()
@@ -112,7 +123,12 @@ const ManageAvoidFood = () => {
 
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}avoidablethings`, saveObj)
+        ? axios.post(`${BASE_URL}avoidablethings`, saveObj, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
         : Swal.fire({
             text: "Do you want to Update?",
             icon: "warning",
@@ -124,7 +140,13 @@ const ManageAvoidFood = () => {
             if (result.isConfirmed) {
               return axios.patch(
                 `${BASE_URL}avoidablethings/${data.Id}`,
-                UpdateObj
+                UpdateObj,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token,
+                  },
+                }
               );
             } else {
               throw new Error("Update cancelled");
@@ -176,8 +198,14 @@ const ManageAvoidFood = () => {
       });
   };
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}avoidablethings/`).then((response) => {
+  const getAllImgList = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}avoidablethings/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       const updatedImgData = response.data.values.flat().map((item, index) => ({
         ...item,
         id: index + 1,
@@ -186,7 +214,8 @@ const ManageAvoidFood = () => {
     });
   };
 
-  const handleDelete = (rowData) => {
+  const handleDelete = async(rowData) => {
+    const token = await getApiToken();
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -198,7 +227,12 @@ const ManageAvoidFood = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}avoidablethings/${rowData._id}`)
+          .delete(`${BASE_URL}avoidablethings/${rowData._id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             setLoaderOpen(false);
             Swal.fire({

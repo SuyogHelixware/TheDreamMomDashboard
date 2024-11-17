@@ -41,6 +41,16 @@ const MedDetails = () => {
     });
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const handleClose = () => {
     setOn(false);
   };
@@ -58,7 +68,8 @@ const MedDetails = () => {
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async() => {
+    const token = await getApiToken();
     const saveObj = {
       MedId: data.medication,
       DosageId: data.Dosage,
@@ -68,7 +79,12 @@ const MedDetails = () => {
 
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}medicationdet`, saveObj)
+        ? axios.post(`${BASE_URL}medicationdet`, saveObj,{
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
         : Swal.fire({
             text: "Do you want to Update...?",
             icon: "warning",
@@ -80,7 +96,13 @@ const MedDetails = () => {
             if (result.isConfirmed) {
               return axios.patch(
                 `${BASE_URL}medicationdet/${data.Id}`,
-                saveObj
+                saveObj,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token,
+                  },
+                }
               );
             } else {
               throw new Error("Update cancelled");
@@ -130,8 +152,14 @@ const MedDetails = () => {
       });
   };
 
-  const getAllMedDetails = () => {
-    axios.get(`${BASE_URL}medicationdet/`).then((response) => {
+  const getAllMedDetails = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}medicationdet/`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       const updatedMedicationData = response.data.values
         .flat()
         .map((item, index) => ({
@@ -146,7 +174,8 @@ const MedDetails = () => {
     });
   };
 
-  const handleDelete = (rowData) => {
+  const handleDelete = async(rowData) => {
+    const token = await getApiToken();
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -158,7 +187,12 @@ const MedDetails = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}medicationdet/${rowData._id}`)
+          .delete(`${BASE_URL}medicationdet/${rowData._id}`,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               Swal.fire({
@@ -197,14 +231,26 @@ const MedDetails = () => {
     });
   };
 
-  const getMedicationData = () => {
-    axios.get(`${BASE_URL}medications`).then((response) => {
+  const getMedicationData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}medications`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setMedications(response.data.values);
     });
   };
 
-  const getDosageData = () => {
-    axios.get(`${BASE_URL}dosagedet`).then((response) => {
+  const getDosageData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}dosagedet`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setDosage(response.data.values);
     });
   };

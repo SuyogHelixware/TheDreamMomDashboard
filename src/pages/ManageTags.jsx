@@ -112,8 +112,6 @@ export default function ManageTags() {
         'Content-Type': 'application/json',
         Authorization: token,
       },
-    
-
     });
     setTagsData(response.data.values.flat());
   };
@@ -129,7 +127,7 @@ export default function ManageTags() {
       timer: 1500,
     });
   };
-  const updateUser = (id) => {
+  const updateUser = async (id) => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !data[field].trim()
@@ -141,9 +139,14 @@ export default function ManageTags() {
     }
 
     setLoaderOpen(true);
+    const token =await getApiToken();
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}tags`, data)
+        ? axios.post(`${BASE_URL}tags` ,
+           data, {headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          }})
         : Swal.fire({
             text: "Do you want to Update...?",
             icon: "warning",
@@ -153,7 +156,10 @@ export default function ManageTags() {
             confirmButtonText: "Yes, Update it!",
           }).then((result) => {
             if (result.isConfirmed) {
-              return axios.patch(`${BASE_URL}tags/${id}`, data);
+              return axios.patch(`${BASE_URL}tags/${id}`, data,{headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              }});
             } else {
               throw new Error("Update cancelled");
             }

@@ -48,6 +48,16 @@ export default function ManageUsers() {
   const [Image, setImage] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
+   // ========================
+   const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -153,6 +163,7 @@ export default function ManageUsers() {
   // };
 
   const onchangeHandler = (event) => {
+    
     const { name, value } = event.target;
 
     if (name === "password") {
@@ -186,6 +197,7 @@ export default function ManageUsers() {
   };
   ///////////////////////////////////////
   const handleProfile = async () => {
+    const token = await getApiToken();
     const saveObj = {
       Avatar: "",
     };
@@ -202,7 +214,13 @@ export default function ManageUsers() {
       if (result.isConfirmed) {
         const response = await axios.patch(
           `${BASE_URL}Users/${data._id}`,
-          saveObj
+          saveObj,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          }
         );
 
         if (response.data.status) {
@@ -270,7 +288,8 @@ export default function ManageUsers() {
     setOn(true);
     clearFormData();
   };
-  const deluser = (id) => {
+  const deluser = async(id) => {
+    const token = await getApiToken();
     setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -282,7 +301,12 @@ export default function ManageUsers() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${BASE_URL}Users/${id}`)
+          .delete(`${BASE_URL}Users/${id}`,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);
@@ -331,6 +355,7 @@ export default function ManageUsers() {
     });
   };
   const updateUser = async (id) => {
+    const token = await getApiToken();
     const requiredFields = [
       "Firstname",
       "Lastname",
@@ -403,7 +428,12 @@ export default function ManageUsers() {
     }
 
     if (SaveUpdateButton === "SAVE") {
-      const response = await axios.post(`${BASE_URL}Users`, saveObj);
+      const response = await axios.post(`${BASE_URL}Users`, saveObj,{
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+     });
       if (response.data.status) {
         if (uploadedImg !== "") {
           const res = await axios.request({
@@ -471,7 +501,13 @@ export default function ManageUsers() {
         try {
           const response = await axios.patch(
             `${BASE_URL}Users/${data._id}`,
-            UpdateObj
+            UpdateObj,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
           );
           if (response.data.status && uploadedImg !== "") {
             const res = await axios.request({
@@ -743,8 +779,14 @@ export default function ManageUsers() {
     backgroundColor: "#dc3545",
   };
 
-  const getUserData = () => {
-    axios.get(`${BASE_URL}Users/`).then((response) => {
+  const getUserData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}Users/`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setUserData(response.data.values.flat());
     });
   };

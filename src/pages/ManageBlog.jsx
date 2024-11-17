@@ -90,6 +90,16 @@ const ManageBlog = ({ item }) => {
     setUploadedImg("");
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const [open, setOpen] = React.useState(false);
   const [isopen, setisopen] = React.useState(false);
   const errorMessage = (message) => {
@@ -206,8 +216,16 @@ const ManageBlog = ({ item }) => {
     });
   };
 
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
+  const getTagData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}tags`,  {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    
+
+    }).then((response) => {
       setTags(response.data.values);
     });
   };
@@ -274,7 +292,13 @@ const ManageBlog = ({ item }) => {
         });
 
         if (res.data.HttpCode === 201) {
-          const response = await axios.post(`${BASE_URL}blogs`, saveObj);
+          const token = await getApiToken();
+          const response = await axios.post(`${BASE_URL}blogs`, saveObj,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          });
           if (response.data.status) {
             setLoaderOpen(false);
             Swal.fire({
@@ -318,9 +342,16 @@ const ManageBlog = ({ item }) => {
 
       if (result.isConfirmed) {
         try {
+          const token = await getApiToken();
           const response = await axios.patch(
             `${BASE_URL}blogs/${newData.Id}`,
-            UpdateObj
+            UpdateObj,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              }, 
+            }
           );
 
           if (response.data.status && uploadedImg !== "") {
@@ -443,9 +474,16 @@ const ManageBlog = ({ item }) => {
         });
 
         if (res.data.HttpCode === 201) {
+          const token = await getApiToken();
           const response = await axios.post(
             `${BASE_URL}blogs`,
-            saveNewletterObj
+            saveNewletterObj,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
           );
           if (response.data.status) {
             setLoaderOpen(false);
@@ -490,9 +528,16 @@ const ManageBlog = ({ item }) => {
 
       if (result.isConfirmed) {
         try {
+          const token = await getApiToken();
           const response = await axios.patch(
             `${BASE_URL}blogs/${newData.Id}`,
-            UpdateNewletterObj
+            UpdateNewletterObj,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
           );
 
           if (response.data.status && uploadedImg !== "") {
@@ -563,7 +608,9 @@ const ManageBlog = ({ item }) => {
     }
   };
 
-  const handleDelete = (data) => {
+  const handleDelete =async (data) => {
+    const token = await getApiToken();
+
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -576,7 +623,14 @@ const ManageBlog = ({ item }) => {
         setLoaderOpen(true);
 
         axios
-          .delete(`${BASE_URL}blogs/${data._id}`)
+          .delete(`${BASE_URL}blogs/${data._id}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
+          )
           .then((response) => {
             if (response.data.status) {
               axios
@@ -644,7 +698,9 @@ const ManageBlog = ({ item }) => {
     });
   };
 
-  const handleLeterDelete = (data) => {
+  const handleLeterDelete = async(data) => {
+    const token = await getApiToken();
+
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -657,7 +713,12 @@ const ManageBlog = ({ item }) => {
         setLoaderOpen(true);
 
         axios
-          .delete(`${BASE_URL}blogs/${data._id}`)
+          .delete(`${BASE_URL}blogs/${data._id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               axios
@@ -771,8 +832,14 @@ const ManageBlog = ({ item }) => {
     width: 6,
   });
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}blogs/`).then((response) => {
+  const getAllImgList = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}blogs/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setImgData(response.data.values.flat());
     });
   };

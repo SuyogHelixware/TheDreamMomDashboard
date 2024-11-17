@@ -70,6 +70,16 @@ const ManageFAQ = () => {
     setSelectedTags([]);
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const handleClose = () => {
     setOn(false);
   };
@@ -106,7 +116,8 @@ const ManageFAQ = () => {
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async() => {
+    const token = await getApiToken();
     const requiredFields = ["Question", "Answer"];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !data[field].trim()
@@ -132,10 +143,15 @@ const ManageFAQ = () => {
     };
 
     setLoaderOpen(true);
-
+    
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}faqs`, saveObj)
+        ? axios.post(`${BASE_URL}faqs`, saveObj,{
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
         : Swal.fire({
             text: "Do you want to Update...?",
             icon: "warning",
@@ -144,8 +160,14 @@ const ManageFAQ = () => {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Update it!",
           }).then((result) => {
+            
             if (result.isConfirmed) {
-              return axios.patch(`${BASE_URL}faqs/${data.Id}`, UpdateObj);
+              return axios.patch(`${BASE_URL}faqs/${data.Id}`, UpdateObj, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: token,
+                },
+              });
             } else {
               throw new Error("Update cancelled");
             }
@@ -196,8 +218,14 @@ const ManageFAQ = () => {
       });
   };
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}faqs/`).then((response) => {
+  const getAllImgList = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}faqs/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       const updatedImgData = response.data.values.flat().map((item, index) => ({
         ...item,
         id: index + 1,
@@ -206,7 +234,8 @@ const ManageFAQ = () => {
     });
   };
 
-  const handleDelete = (rowData) => {
+  const handleDelete = async(rowData) => {
+    const token = await getApiToken();
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -218,7 +247,14 @@ const ManageFAQ = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}faqs/${rowData._id}`)
+          .delete(`${BASE_URL}faqs/${rowData._id}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
+          )
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);
@@ -259,8 +295,14 @@ const ManageFAQ = () => {
     });
   };
 
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
+  const getTagData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}tags`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setTags(response.data.values);
     });
   };

@@ -80,6 +80,16 @@ export default function ManageVideos() {
     setUploadedVideo("");
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   React.useEffect(() => {
     getAllVideoList();
     getTagData();
@@ -190,7 +200,8 @@ export default function ManageVideos() {
     setPlay(id);
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async() => {
+    const token = await getApiToken();
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !formData[field] || !formData[field].trim()
@@ -249,7 +260,12 @@ export default function ManageVideos() {
       }).then((result) => {
         if (result.isConfirmed) {
           axios
-            .patch(`${BASE_URL}videos/${formData.Id}`, UpdateObj)
+            .patch(`${BASE_URL}videos/${formData.Id}`, UpdateObj,{
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            })
             .then((response) => {
               console.log(response);
               if (response.data.status) {
@@ -309,7 +325,7 @@ export default function ManageVideos() {
         if (res.data.success) {
           setLoaderOpen(false);
           axios
-            .post(`${BASE_URL}videos`, {
+            .post(`${BASE_URL}videos/`, {
               Name: formData.Name,
               Description: formData.Description,
               NameL1: formData.NameL1,
@@ -367,13 +383,25 @@ export default function ManageVideos() {
       });
   };
 
-  const getAllVideoList = () => {
-    axios.get(`${BASE_URL}videos/`).then((response) => {
+  const getAllVideoList = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}videos/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setVideos(response.data.values);
     });
   };
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
+  const getTagData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}tags`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setTags(response.data.values);
     });
   };
@@ -382,7 +410,8 @@ export default function ManageVideos() {
     setPage(value);
   };
 
-  const deleteVideo = (data) => {
+  const deleteVideo = async(data) => {
+    const token = await getApiToken();
     console.log(data);
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -396,7 +425,14 @@ export default function ManageVideos() {
         if (result.isConfirmed) {
           setLoaderOpen(true);
           axios
-            .delete(`${BASE_URL}videos/${data._id}`)
+            .delete(`${BASE_URL}videos/${data._id}`,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: token,
+                },
+              }
+            )
             .then((response) => {
               if (response.data.status) {
                 axios

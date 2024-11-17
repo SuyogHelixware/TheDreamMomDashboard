@@ -66,8 +66,24 @@ const PostNatal = () => {
     });
   };
 
-  const getAllPostNatalData = () => {
-    axios.get(`${BASE_URL}postnatal`).then((response) => {
+    // ========================
+    const getApiToken = async () => {
+      const data = sessionStorage.getItem('userData');
+      if (data !== null) {
+        const fetchedData = JSON.parse(data);
+        return fetchedData.Token;
+      }
+    };
+    // ========================
+
+  const getAllPostNatalData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}postnatal`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setData(response.data.values);
     });
   };
@@ -87,6 +103,7 @@ const PostNatal = () => {
   };
 
   const handleSave = async () => {
+    const token = await getApiToken();
     const formattedData = {
       ...formData,
       DietIds: formData.DietIds ? formData.DietIds.map((diet) => diet._id) : [],
@@ -109,7 +126,12 @@ const PostNatal = () => {
     if (SaveUpdateButton === "SAVE") {
       handleParentDialogClose();
       axios
-        .post(`${BASE_URL}postnatal/`, formattedData)
+        .post(`${BASE_URL}postnatal/`, formattedData, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
         .then((response) => {
           if (response.data.status) {
             setLoaderOpen(false);
@@ -161,7 +183,12 @@ const PostNatal = () => {
       if (result.isConfirmed) {
         const response = await axios.patch(
           `${BASE_URL}postnatal/${formData._id}`,
-          formattedData
+          formattedData,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          }
         );
         if (response.data.status) {
           clearFormData();
@@ -234,7 +261,8 @@ const PostNatal = () => {
     });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async(id) => {
+    const token = await getApiToken();
     setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -246,7 +274,12 @@ const PostNatal = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${BASE_URL}PostNatal/${id}`)
+          .delete(`${BASE_URL}PostNatal/${id}`,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);

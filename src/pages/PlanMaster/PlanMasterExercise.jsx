@@ -21,18 +21,49 @@ const PlanMasterExercise = ({ sendExerciseDataToParent, ...props }) => {
   const [exerciseData, setExerciseData] = useState([]);
   const [selectedExerciseRows, setSelectedExerciseRows] = useState([]);
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
+
   useEffect(() => {
-    axios.get(`${BASE_URL}Exercise/`).then((response) => {
-      const updatedExerciseData = response.data.values.flat().map((item) => ({
-        _id: item._id,
-        Name: item.Name,
-        Description: item.Description,
-        Image: item.Image,
-      }));
-      setExerciseData(updatedExerciseData);
-      setChildData(props.exerciseData);
-    });
-  }, [props.exerciseData]);
+    const fetchExerciseData = async () => {
+      try {
+        const token = await getApiToken(); 
+        
+        const response = await axios.get(`${BASE_URL}Exercise/`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+  
+
+        const updatedExerciseData = response.data.values
+          .flat()
+          .map((item) => ({
+            _id: item._id,
+            Name: item.Name,
+            Description: item.Description,
+            Image: item.Image,
+          }));
+
+        setExerciseData(updatedExerciseData);
+        setChildData(props.exerciseData || []);  
+  
+      } catch (error) {
+        console.error('Error fetching exercise data:', error);
+      }
+    };
+  
+    fetchExerciseData(); 
+  }, [props.exerciseData]); 
 
   const handleChildDialogOpen = () => {
     setChildDialogOpen(true);

@@ -68,6 +68,7 @@ import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import { keyframes } from "@mui/system";
 import { useState } from "react";
+import LoginPageLoader from "../pages/LoginPageLoader";
 
 const drawerWidth = 250;
 const openedMixin = (theme) => ({
@@ -244,8 +245,15 @@ React.useEffect(() => {
     LightMode(); // Apply light mode immediately
   }
 
-  setLoading(false);
-}, [DarkMode, LightMode]);
+}, []);
+
+React.useEffect(() => {
+  const timer = setTimeout(() => {
+    setLoading(false);  
+  }, 1000); 
+
+  return () => clearTimeout(timer);
+}, [DarkMode, LightMode]); 
 
 const themechange = () => {
   if (themestatus) {
@@ -338,6 +346,10 @@ const themechange = () => {
   ];
   
   return (
+    <>
+ {loading ? (
+        <LoginPageLoader />
+      ) : (
     <Box
       sx={{
         display: "flex",
@@ -1339,5 +1351,7 @@ const themechange = () => {
         <Outlet />
       </Box>
     </Box>
+      )}
+    </>
   );
 }

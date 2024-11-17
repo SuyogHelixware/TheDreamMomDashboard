@@ -56,6 +56,16 @@ const Medication = () => {
     });
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const handleClose = () => {
     setOn(false);
   };
@@ -92,7 +102,8 @@ const Medication = () => {
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async() => {
+    const token = await getApiToken();
     const requiredFileds = ["Name", "Description"];
     const emptyRequiredFields = requiredFileds.filter(
       (field) => !data[field] || !data[field].trim()
@@ -118,7 +129,12 @@ const Medication = () => {
     setLoaderOpen(true);
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}medications`, saveObj)
+        ? axios.post(`${BASE_URL}medications`, saveObj,{
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
         : Swal.fire({
             text: "Do you want to Update?",
             icon: "warning",
@@ -130,7 +146,13 @@ const Medication = () => {
             if (result.isConfirmed) {
               return axios.patch(
                 `${BASE_URL}medications/${data.Id}`,
-                UpdateObj
+                UpdateObj,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token,
+                  },
+                }
               );
             } else {
               throw new Error("Update cancelled");
@@ -181,8 +203,14 @@ const Medication = () => {
       });
   };
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}Medications/`).then((response) => {
+  const getAllImgList = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}Medications/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       const updatedImgData = response.data.values.flat().map((item, index) => ({
         ...item,
         id: index + 1,
@@ -191,7 +219,8 @@ const Medication = () => {
     });
   };
 
-  const handleDelete = (data) => {
+  const handleDelete = async(data) => {
+    const token = await getApiToken();
     setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -203,7 +232,12 @@ const Medication = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${BASE_URL}Medications/${data._id}`)
+          .delete(`${BASE_URL}Medications/${data._id}`,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);

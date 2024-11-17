@@ -49,6 +49,16 @@ const ManagePosts = () => {
     });
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const handleClose = () => {
     setOn(false);
   };
@@ -84,7 +94,8 @@ const ManagePosts = () => {
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async() => {
+    const token = await getApiToken();
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !data[field].trim()
@@ -111,7 +122,12 @@ const ManagePosts = () => {
 
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}posts`, saveObj)
+        ? axios.post(`${BASE_URL}posts`, saveObj, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
         : Swal.fire({
             text: "Do you want to Update...?",
             icon: "warning",
@@ -121,7 +137,12 @@ const ManagePosts = () => {
             confirmButtonText: "Yes, Update it!",
           }).then((result) => {
             if (result.isConfirmed) {
-              return axios.patch(`${BASE_URL}posts/${data.Id}`, UpdateObj);
+              return axios.patch(`${BASE_URL}posts/${data.Id}`, UpdateObj, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: token,
+                },
+              });
             } else {
               throw new Error("Update cancelled");
             }
@@ -172,8 +193,14 @@ const ManagePosts = () => {
       });
   };
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}posts/`).then((response) => {
+  const getAllImgList = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}posts/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       const updatedImgData = response.data.values.flat().map((item, index) => ({
         ...item,
         id: index + 1,
@@ -182,7 +209,8 @@ const ManagePosts = () => {
     });
   };
 
-  const handleDelete = (rowData) => {
+  const handleDelete = async(rowData) => {
+    const token = await getApiToken();
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -194,7 +222,12 @@ const ManagePosts = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}posts/${rowData._id}`)
+          .delete(`${BASE_URL}posts/${rowData._id}`,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+      })
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);

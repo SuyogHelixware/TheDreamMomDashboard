@@ -49,6 +49,16 @@ const ManageDoses = () => {
     });
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const handleClose = () => {
     setOn(false);
   };
@@ -83,8 +93,21 @@ const ManageDoses = () => {
       timer: 1500,
     });
   };
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}dosagedet/`).then((response) => {
+  const getAllImgList = async() => {
+    const token = await getApiToken();
+
+    console.log("token");
+    
+    console.log(token);
+    
+    axios.get(`${BASE_URL}dosagedet/`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    
+
+    }).then((response) => {
       const updatedImgData = response.data.values.flat().map((item, index) => ({
         ...item,
         id: index + 1,
@@ -96,7 +119,7 @@ const ManageDoses = () => {
     getAllImgList();
   }, []);
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async() => {
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !data[field] || !data[field].trim()
@@ -120,10 +143,16 @@ const ManageDoses = () => {
     };
 
     setLoaderOpen(true);
-
+    const token =await  getApiToken();
     const axiosRequest =
+    
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}dosagedet`, saveObj)
+        ? axios.post(`${BASE_URL}dosagedet`, saveObj,
+          {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          }})
         : Swal.fire({
             text: "Do you want to Update...?",
             icon: "warning",
@@ -133,7 +162,14 @@ const ManageDoses = () => {
             confirmButtonText: "Yes, Update it!",
           }).then((result) => {
             if (result.isConfirmed) {
-              return axios.patch(`${BASE_URL}dosagedet/${data.Id}`, UpdateObj);
+              return axios.patch(`${BASE_URL}dosagedet/${data.Id}`, UpdateObj,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token,
+                  },
+                }
+              );
             } else {
               throw new Error("Update cancelled");
             }
@@ -184,7 +220,8 @@ const ManageDoses = () => {
       });
   };
 
-  const handleDelete = (data) => {
+  const handleDelete =async (data) => {
+    const token = await  getApiToken();
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -196,7 +233,11 @@ const ManageDoses = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}dosagedet/${data._id}`)
+          .delete(`${BASE_URL}dosagedet/${data._id}`,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            }})
           .then((res) => {
             if (res.data.status) {
               setLoaderOpen(false);

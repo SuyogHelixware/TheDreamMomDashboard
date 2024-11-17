@@ -1,11 +1,15 @@
 import AddIcon from "@mui/icons-material/Add";
 // import DeleteForeverSharpIcon from "@mui/icons-material/DeleteForeverSharp";
-import { Chip, InputAdornment } from "@material-ui/core";
+import { Card, Chip, InputAdornment, useTheme } from "@material-ui/core";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import CheckIcon from "@mui/icons-material/Check";
 import {
+  CardActions,
+  CardContent,
+  Divider,
   FormControl,
   IconButton,
   InputLabel,
@@ -14,6 +18,7 @@ import {
   ListItemText,
   MenuItem,
   Modal,
+  Pagination,
   Paper,
   Select,
 } from "@mui/material";
@@ -23,13 +28,23 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import * as React from "react";
 import Swal from "sweetalert2";
 import Loader from "../components/Loader";
 import { BASE_URL } from "../Constant";
+import Grid2 from "@mui/material/Unstable_Grid2";
 
+const styles = {
+  typography: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    height: 40,
+  },
+};
 export default function ManageSubscription() {
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [imgData, setImgData] = React.useState([]);
@@ -38,10 +53,14 @@ export default function ManageSubscription() {
   const [inputValue, setInputValue] = React.useState("");
   const [SaveUpdateButton, setSaveUpdateButton] = React.useState("UPDATE");
   const [AddUpdateFeactures, setAddUpdateFeactures] = React.useState("EDIT ");
+  const [page, setPage] = React.useState(1);
 
   const [innerModalOpen, setInnerModalOpen] = React.useState(false);
   const handleInnerModalClose = () => setInnerModalOpen(false);
   const [open, setOpen] = React.useState(false);
+
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === "dark";
 
   const [data, setData] = React.useState({
     Name: "",
@@ -66,7 +85,7 @@ export default function ManageSubscription() {
       NameL1: "",
       DescriptionL1: "",
       Id: "",
-      Features: "",  
+      Features: "",
       FeaturesL1: "",
       Category: "en",
       CreatedDate: "",
@@ -77,6 +96,16 @@ export default function ManageSubscription() {
     });
     setFeatures([]);
   };
+
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem("userData");
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
 
   const handleClose = () => {
     setOn(false);
@@ -127,7 +156,8 @@ export default function ManageSubscription() {
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async () => {
+    const token = await getApiToken();
     const requiredFields = ["Name", "Description", "Duration", "Price"];
     const emptyRequiredFields = requiredFields.filter(
       // (field) => !data[field].trim()
@@ -160,23 +190,24 @@ export default function ManageSubscription() {
       NameL1: data.NameL1,
       DescriptionL1: data.DescriptionL1,
       Features: data.Category === "en" ? features : data.Features,
-      FeaturesL1: data.Category === "mr" ?  features: data.FeaturesL1,
+      FeaturesL1: data.Category === "mr" ? features : data.FeaturesL1,
       CreatedDate: data.CreatedDate,
       ModifiedDate: data.ModifiedDate,
       Duration: data.Duration,
       Price: data.Price,
       Status: data.Status,
     };
-console.log(UpdateObj);
-
-
-    return;
-
+    console.log(UpdateObj);
     setLoaderOpen(true);
 
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}subscriptionplan`, saveObj)
+        ? axios.post(`${BASE_URL}subscriptionplan`, saveObj, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+          })
         : Swal.fire({
             text: "Do you want to Update...?",
             icon: "warning",
@@ -188,7 +219,13 @@ console.log(UpdateObj);
             if (result.isConfirmed) {
               return axios.patch(
                 `${BASE_URL}subscriptionplan/${data.Id}`,
-                UpdateObj
+                UpdateObj,
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                  },
+                }
               );
             } else {
               throw new Error("Update cancelled");
@@ -242,17 +279,28 @@ console.log(UpdateObj);
       });
   };
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}subscriptionplan/`).then((response) => {
-      const updatedImgData = response.data.values.flat().map((item, index) => ({
-        ...item,
-        id: index + 1,
-      }));
-      setImgData(updatedImgData);
-    });
+  const getAllImgList = async () => {
+    const token = await getApiToken();
+    axios
+      .get(`${BASE_URL}subscriptionplan/`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      })
+      .then((response) => {
+        const updatedImgData = response.data.values
+          .flat()
+          .map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+        setImgData(updatedImgData);
+      });
   };
 
-  const handleDelete = (rowData) => {
+  const handleDelete = async (rowData) => {
+    const token = await getApiToken();
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -264,7 +312,12 @@ console.log(UpdateObj);
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}subscriptionplan/${rowData._id}`)
+          .delete(`${BASE_URL}subscriptionplan/${rowData._id}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);
@@ -311,73 +364,6 @@ console.log(UpdateObj);
   React.useEffect(() => {
     getAllImgList();
   }, []);
-
-  const columns = [
-    {
-      field: "actions",
-      headerName: "Action",
-      width: 120,
-      renderCell: (params) => (
-        <strong>
-          <IconButton color="primary" onClick={() => handleUpdate(params.row)}>
-            <EditNoteIcon />
-          </IconButton>
-          <Button
-            size="medium"
-            sx={{ color: "red" }}
-            onClick={() => handleDelete(params.row)}
-          >
-            <DeleteForeverIcon />
-          </Button>
-        </strong>
-      ),
-    },
-
-    { field: "id", headerName: "SR.NO", width: 100, sortable: true },
-    { field: "Name", headerName: "Name", width: 180, sortable: false },
-    { field: "NameL1", headerName: "Name", width: 180, sortable: false },
-    {
-      field: "Description",
-      headerName: "Description",
-      width: 250,
-      sortable: false,
-    },
-    {
-      field: "DescriptionL1",
-      headerName: "Description",
-      width: 250,
-      sortable: false,
-    },
-    { field: "Features", headerName: "Features", width: 200, sortable: false },
-    {
-      field: "FeaturesL1",
-      headerName: "Features",
-      width: 300,
-      sortable: false,
-    },
-    { field: "Duration", headerName: "Duration", width: 100 },
-    { field: "Price", headerName: "Price", width: 100, sortable: false },
-
-    {
-      field: "Status",
-      headerName: "Status",
-      width: 100,
-      sortable: false,
-      valueGetter: (params) =>
-        params.row.Status === 1 ? "Active" : "Inactive",
-      renderCell: (params) => {
-        const isActive = params.row.Status === 1;
-        return (
-          <button
-            style={isActive ? activeButtonStyle : inactiveButtonStyle}
-            disabled
-          >
-            {isActive ? "Active" : "Inactive"}
-          </button>
-        );
-      },
-    },
-  ];
 
   const buttonStyles = {
     border: "none",
@@ -439,14 +425,24 @@ console.log(UpdateObj);
     );
   };
 
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+  const cardsPerPage = 3;
+
+  const startIndex = (page - 1) * cardsPerPage;
+  const endIndex = startIndex + cardsPerPage;
+
   return (
     <>
       {loaderOpen && <Loader open={loaderOpen} />}
-      <Modal open={on} onClose={handleClose}
-      sx={{
-        backdropFilter: "blur(5px)",
-        backgroundColor: "rgba(0, 0, 0, 0.3)",
-      }}
+      <Modal
+        open={on}
+        onClose={handleClose}
+        sx={{
+          backdropFilter: "blur(5px)",
+          // backgroundColor: "rgba(0, 0, 0, 0.3)",
+        }}
       >
         <Paper
           elevation={10}
@@ -546,9 +542,7 @@ console.log(UpdateObj);
                 style={{ borderRadius: 10, width: "100%" }}
               />
             </Grid>
-            <Grid item xs={12}>
-             
-            </Grid>
+            <Grid item xs={12}></Grid>
             <Grid item xs={12}>
               <TextField
                 required
@@ -586,7 +580,6 @@ console.log(UpdateObj);
                 }}
               >
                 {AddUpdateFeactures}
-                {/* Add Features */}
               </Button>
             </Grid>
             <Grid item xs={12} md={12} textAlign={"end"}>
@@ -639,14 +632,15 @@ console.log(UpdateObj);
             <Typography fontWeight="bold">Add Feactures</Typography>
             <Grid item xs={12}>
               <TextField
-                style={{ borderRadius: 10, width: "100%" }}
+                style={{ borderRadius: 10, width: "100%", display: "flex" }}
                 fullWidth
                 multiline
                 label="Add Feature"
                 id="Features"
                 size="small"
-                name={data.Category  === "en" ? "Features" : "FeaturesL1"}
-                value={data.Category  === "en" ? data.Features: data.FeaturesL1  }   
+                name={data.Category === "en" ? "Features" : "FeaturesL1"}
+                // value={data.Category === "en" ? data.Features : data.FeaturesL1}
+                value={inputValue}
                 onChange={handleChange}
                 onKeyPress={(event) => {
                   if (event.key === "Enter") {
@@ -812,40 +806,170 @@ console.log(UpdateObj);
         </Button>
       </Grid>
 
-      <Paper
-        sx={{
-          marginTop: 3,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          bgcolor: "#",
-        }}
-        elevation={7}
-      >
-        <Box sx={{ height: 510, width: "100%", elevation: 4 }}>
-          <DataGrid
-            className="datagrid-style"
-            rows={imgData}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 7,
-                },
-              },
-            }}
-            pageSizeOptions={[7]}
-            sx={{
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: (theme) => theme.palette.custome.datagridcolor,
-              },
-              "& .MuiDataGrid-row:hover": {
-                boxShadow: "0px 4px 20px rgba(0, 0, 0.2, 0.2)", 
-             },
-            }}
+      <Grid container spacing={5} justifyContent="start">
+        {Array.isArray(imgData) &&
+          imgData.slice(startIndex, endIndex).map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3.5} key={index} 
+            >
+              
+              <Grid
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+                  borderRadius:"15px",
+                  textAlign: "center",
+                  border:"1px solid gray",
+                  transition: "transform 0.3s ease-in-out",
+                  "&:hover": {
+                  transform: "translateY(-10px)",
+                  boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.6)",     
+
+                 },
+                }}
+              > 
+                
+                <CardContent>
+                  <Typography
+                    noWrap
+                    height={25}
+                    gutterBottom
+                    component="div"
+                    fontSize={"22px"}
+                  >
+                    <b>{item.Name}</b>
+                  </Typography>
+                  <Grid2
+                    container
+                    xs={12}
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                  
+                    <Grid2
+                      item
+                      xs={6}
+                      sx={{
+                        display: "grid",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                      }}
+                    >
+                      <Typography>Price</Typography>
+                      <Typography
+                        variant="body5"
+                        style={styles.typography}
+                        color="textSecondary"
+                        component="div"
+                        fontSize={30}
+                      >
+                        <b>{item.Price}</b>
+                      </Typography>
+                    </Grid2>
+                    <Grid2
+                      item
+                      xs={6}
+                      sx={{
+                        display: "grid",
+                        flexDirection: "column",
+                        textAlign: "right",
+                      }}
+                    >
+                      <Typography>Days</Typography>
+                      <Typography
+                        variant="body2"
+                        style={styles.typography}
+                        color="textSecondary"
+                        component="div"
+                        fontSize={30}
+                      >
+                        {item.Duration}
+                      </Typography>
+                    </Grid2>
+                  </Grid2>
+                  <Divider sx={{marginTop:2}} />
+                  <Typography
+                    variant="body2"
+                    style={styles.typography}
+                    color="textSecondary"
+                    component="div"
+                    marginTop={2}
+                  >
+                    {item.Description}
+                  </Typography>
+                   
+                  <List sx={{ paddingLeft: 2, paddingRight: 2 }}>
+                    {item.Features &&
+                      Array.isArray(item.Features) &&
+                      item.Features.map((feature, index) => (
+                        <ListItem key={index} sx={{ padding: 0 }}>
+                          <IconButton color="primary">
+                            <CheckIcon />
+                          </IconButton>
+                          <ListItemText
+                            primary={
+                              <Typography variant="body2">{feature}</Typography>
+                            }
+                          />
+                        </ListItem>
+                      ))}
+                  </List>
+                  <Typography
+                    variant="body2"
+                    style={styles.typography}
+                    color="textSecondary"
+                    component="div"
+                  ></Typography>
+                </CardContent>
+                <CardActions
+                  sx={{
+                    pt: "0",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "auto",
+                  }}
+                >
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleUpdate(item)}
+                  >
+                    <Button sx={{ borderRadius: "25px",backgroundColor:"green" }} variant="contained">
+                      Update
+                    </Button>
+                  </IconButton>
+
+                  <Button
+                    size="medium"
+                    sx={{ color: "red" }}
+                    onClick={() => handleDelete(item)}
+                  >
+                    <Button variant="contained" sx={{ borderRadius: "25px" }}>
+                      Delete
+                    </Button>
+                  </Button>
+                </CardActions>
+              </Grid>
+            </Grid>
+          ))
+          }
+      </Grid>
+      
+      <Grid container spacing={3} width="100%" pt={5}>
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <Pagination
+            count={Math.ceil(imgData.length / 8)}
+            color="primary"
+            page={page}
+            onChange={handlePageChange}
           />
-        </Box>
-      </Paper>
+        </Grid>
+      </Grid>
+
     </>
   );
 }

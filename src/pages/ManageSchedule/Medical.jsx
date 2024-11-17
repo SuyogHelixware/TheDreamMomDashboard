@@ -59,6 +59,16 @@ const Medical = () => {
     setSelectedTags([]);
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const handleChange = (event) => {
     const selectedTags = event.target.value;
     const uniqueSelectedTags = selectedTags.filter(
@@ -111,7 +121,8 @@ const Medical = () => {
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async() => {
+    const token = await getApiToken();
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !data[field] || !data[field].trim()
@@ -140,7 +151,12 @@ const Medical = () => {
 
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}medicaltests`, saveObj)
+        ? axios.post(`${BASE_URL}medicaltests`, saveObj,{
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
         : Swal.fire({
             text: "Do you want to Update...?",
             icon: "warning",
@@ -152,7 +168,13 @@ const Medical = () => {
             if (result.isConfirmed) {
               return axios.patch(
                 `${BASE_URL}medicaltests/${data.Id}`,
-                UpdateObj
+                UpdateObj,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token,
+                  },
+                }
               );
             } else {
               throw new Error("Update cancelled");
@@ -204,8 +226,14 @@ const Medical = () => {
       });
   };
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}medicaltests/`).then((response) => {
+  const getAllImgList = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}medicaltests/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       const updatedImgData = response.data.values.flat().map((item, index) => ({
         ...item,
         id: index + 1,
@@ -214,8 +242,14 @@ const Medical = () => {
     });
   };
 
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
+  const getTagData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}tags`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setTags(response.data.values);
     });
   };
@@ -258,7 +292,8 @@ const Medical = () => {
     },
   ];
 
-  const handleDelete = (data) => {
+  const handleDelete = async(data) => {
+    const token = await getApiToken();
     setLoaderOpen(true);
     Swal.fire({
       text: "Are you sure you want to delete?",
@@ -270,7 +305,12 @@ const Medical = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${BASE_URL}medicaltests/${data._id}`)
+          .delete(`${BASE_URL}medicaltests/${data._id}`,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);

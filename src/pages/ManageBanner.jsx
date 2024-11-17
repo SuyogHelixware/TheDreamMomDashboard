@@ -67,6 +67,13 @@ const ManageManner = () => {
     setUploadedImg("");
   };
 
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -152,10 +159,18 @@ const ManageManner = () => {
             AccessKey: Bunny_Storage_Access_Key,
           },
           data: uploadedImg,
-        });
+        
+          }
+        );
 
         if (res.data.HttpCode === 201) {
-          const response = await axios.post(`${BASE_URL}banner`, saveObj);
+          const token = await getApiToken();
+          const response = await axios.post(`${BASE_URL}banner`, saveObj,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          });
           if (response.data.status) {
             setLoaderOpen(false);
             Swal.fire({
@@ -199,12 +214,19 @@ const ManageManner = () => {
 
       if (result.isConfirmed) {
         try {
+          const token = await getApiToken();
           const response = await axios.patch(
             `${BASE_URL}banner/${data.Id}`,
-            UpdateObj
+            UpdateObj,{
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
           );
 
           if (response.data.status && uploadedImg !== "") {
+            const token = await getApiToken();
             const res = await axios.request({
               method: "PUT",
               maxBodyLength: Infinity,
@@ -272,14 +294,22 @@ const ManageManner = () => {
     }
   };
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}banner/`).then((response) => {
+  const getAllImgList =async () => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}banner/`,  {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
    
       setImgData(response.data.values.flat());
     });
   };
 
-  const handleDelete = (data) => {
+  const handleDelete = async(data) => {
+    const token = await getApiToken();
+
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -291,7 +321,12 @@ const ManageManner = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}banner/${data._id}`)
+          .delete(`${BASE_URL}banner/${data._id}`,  {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               axios

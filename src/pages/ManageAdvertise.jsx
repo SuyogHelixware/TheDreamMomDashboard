@@ -82,6 +82,16 @@ const ManageAdvertise = () => {
     setUploadedImg("");
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
   const handleChange = (event) => {
     const selectedTags = event.target.value;
     const uniqueSelectedTags = selectedTags.filter(
@@ -203,9 +213,15 @@ const ManageAdvertise = () => {
         });
 
         if (res.data.HttpCode === 201) {
+          const token = await getApiToken();
           const response = await axios.post(
             `${BASE_URL}advertisement`,
-            saveObj
+            saveObj,{
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
           );
           if (response.data.status) {
             setLoaderOpen(false);
@@ -249,10 +265,17 @@ const ManageAdvertise = () => {
       });
 
       if (result.isConfirmed) {
+        const token = await getApiToken();
         try {
           const response = await axios.patch(
             `${BASE_URL}advertisement/${data.Id}`,
-            UpdateObj
+            UpdateObj,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
           );
 
           if (response.data.status && uploadedImg !== "") {
@@ -325,19 +348,32 @@ const ManageAdvertise = () => {
     }
   };
 
-  const getAllImgList = () => {
-    axios.get(`${BASE_URL}advertisement/`).then((response) => {
+  const getAllImgList = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}advertisement/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setImgData(response.data.values.flat());
     });
   };
 
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
+  const getTagData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}tags`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setTags(response.data.values);
     });
   };
 
-  const handleDelete = (data) => {
+  const handleDelete = async(data) => {
+    const token = await getApiToken();
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -349,7 +385,12 @@ const ManageAdvertise = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}advertisement/${data._id}`)
+          .delete(`${BASE_URL}advertisement/${data._id}`,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               axios

@@ -101,8 +101,24 @@ const PlanMaster = () => {
     });
   };
 
-  const getAllPlanMasterData = () => {
-    axios.get(`${BASE_URL}planmaster/`).then((response) => {
+   // ========================
+   const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
+  const getAllPlanMasterData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}planmaster/`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setData(response.data.values);
     });
   };
@@ -122,6 +138,7 @@ const PlanMaster = () => {
   };
 
   const handleSave = async () => {
+    const token = await getApiToken();
     const formattedData = {
       ...formData,
       DietIds: formData.DietIds ? formData.DietIds.map((diet) => diet._id) : [],
@@ -144,7 +161,12 @@ const PlanMaster = () => {
     if (SaveUpdateButton === "SAVE") {
       handleParentDialogClose();
       axios
-        .post(`${BASE_URL}planmaster/`, formattedData)
+        .post(`${BASE_URL}planmaster/`, formattedData,{
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
         .then((response) => {
           if (response.data.status) {
             setLoaderOpen(false);
@@ -195,7 +217,13 @@ const PlanMaster = () => {
       if (result.isConfirmed) {
         const response = await axios.patch(
           `${BASE_URL}planmaster/${formData._id}`,
-          formattedData
+          formattedData,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          }
         );
         if (response.data.status) {
           ClearForm();
@@ -271,56 +299,67 @@ const PlanMaster = () => {
     });
   };
 
-  const handleDelete = (id) => {
-    setLoaderOpen(true);
-    Swal.fire({
-      text: "Are you sure you want to delete?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+  const handleDelete = async (id) => {
+    try {
+      const token = await getApiToken(); // Ensure token is fetched properly
+      setLoaderOpen(true); // Show loader
+  
+      // Show confirmation dialog
+      const result = await Swal.fire({
+        text: "Are you sure you want to delete?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+      });
+  
       if (result.isConfirmed) {
-        axios
-          .delete(`${BASE_URL}planmaster/${id}`)
-          .then((response) => {
-            if (response.data.status) {
-              setLoaderOpen(false);
-              setData(data.filter((user) => user._id !== id));
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                toast: true,
-                title: "Plan Master deleted Successfully",
-                showConfirmButton: false,
-                timer: 1500,
-              });
-            } else {
-              setLoaderOpen(false);
-              Swal.fire({
-                icon: "error",
-                toast: true,
-                title: "Failed",
-                text: "Failed to Delete Plan Master",
-                showConfirmButton: true,
-              });
-            }
-          })
-          .catch((error) => {
-            setLoaderOpen(false);
-            Swal.fire({
-              icon: "error",
-              toast: true,
-              title: "Failed",
-              text: error,
-              showConfirmButton: true,
-            });
+        // Proceed with the deletion if the user confirms
+        const response = await axios.delete(`${BASE_URL}planmaster/${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+  
+        if (response.data.status) {
+          // If delete was successful
+          setData((prevData) => prevData.filter((user) => user._id !== id)); // Update the state by filtering out the deleted item
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            toast: true,
+            title: "Plan Master deleted successfully",
+            showConfirmButton: false,
+            timer: 1500,
           });
+        } else {
+          // If deletion failed
+          Swal.fire({
+            icon: "error",
+            toast: true,
+            title: "Failed",
+            text: "Failed to delete Plan Master",
+            showConfirmButton: true,
+          });
+        }
       }
-      setLoaderOpen(false);
-    });
+    } catch (error) {
+      // Handle any errors from token fetch, axios request, or anything else
+      console.error("Error during delete operation:", error);
+      Swal.fire({
+        icon: "error",
+        toast: true,
+        title: "Failed",
+        text: error.message || "Something went wrong",
+        showConfirmButton: true,
+      });
+    } finally {
+      setLoaderOpen(false); // Hide loader, regardless of success or failure
+    }
   };
+  
 
   const columns = [
     {

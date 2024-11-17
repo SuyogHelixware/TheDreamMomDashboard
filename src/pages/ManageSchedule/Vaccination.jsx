@@ -81,6 +81,15 @@ const Vaccination = () => {
     setSelectedTags([]);
     setUploadedImg("");
   };
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
 
   const handleChange = (event) => {
     const selectedTags = event.target.value;
@@ -152,6 +161,7 @@ const Vaccination = () => {
   };
 
   const handleSubmitForm = async () => {
+    const token = await getApiToken();
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !data[field] || !data[field].trim()
@@ -201,7 +211,12 @@ const Vaccination = () => {
         });
 
         if (res.data.HttpCode === 201) {
-          const response = await axios.post(`${BASE_URL}vaccination`, saveObj);
+          const response = await axios.post(`${BASE_URL}vaccination`, saveObj,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          });
           if (response.data.status) {
             setLoaderOpen(false);
             Swal.fire({
@@ -247,7 +262,13 @@ const Vaccination = () => {
         try {
           const response = await axios.patch(
             `${BASE_URL}vaccination/${data.Id}`,
-            UpdateObj
+            UpdateObj,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
           );
 
           if (response.data.status && uploadedImg !== "") {
@@ -321,18 +342,31 @@ const Vaccination = () => {
     }
   };
 
-  const getAllVaccination = () => {
-    axios.get(`${BASE_URL}vaccination/`).then((response) => {
+  const getAllVaccination = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}vaccination/`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setVaccinationData(response.data.values.flat());
     });
   };
 
-  const getTagData = () => {
-    axios.get(`${BASE_URL}tags`).then((response) => {
+  const getTagData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}tags`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setTags(response.data.values);
     });
   };
-  const handleDelete = (data) => {
+  const handleDelete = async(data) => {
+    const token = await getApiToken();
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -344,7 +378,12 @@ const Vaccination = () => {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}vaccination/${data._id}`)
+          .delete(`${BASE_URL}vaccination/${data._id}`,{
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          })
           .then((response) => {
             if (response.data.status) {
               axios

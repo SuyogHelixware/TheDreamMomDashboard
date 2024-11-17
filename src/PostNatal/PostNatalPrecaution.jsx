@@ -21,17 +21,47 @@ const PostNatalPrecaution = ({ sendPrecautionDataToParent, ...props }) => {
   const [PrecautionData, setPrecautionData] = useState([]);
   const [selectedPrecautionRows, setSelectedPrecautionRows] = useState([]);
 
+   // ========================
+   const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
+
   useEffect(() => {
-    axios.get(`${BASE_URL}precaution/`).then((response) => {
-      const updatedPrecautionData = response.data.values.flat().map((item) => ({
-        _id: item._id,
-        Name: item.Name,
-        Description: item.Description,
-        Image: item.Image,
-      }));
-      setPrecautionData(updatedPrecautionData);
-      setChildData(props.PrecautionData);
-    });
+    const fetchPrecautionData = async () => {
+      try {
+        const token = await getApiToken(); 
+  
+        const response = await axios.get(`${BASE_URL}precaution/`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+  
+        const updatedPrecautionData = response.data.values
+          .flat()
+          .map((item) => ({
+            _id: item._id,
+            Name: item.Name,
+            Description: item.Description,
+            Image: item.Image,
+          }));
+  
+        setPrecautionData(updatedPrecautionData);
+        setChildData(props.PrecautionData || []);  
+      } catch (error) {
+        console.error('Error fetching precaution data:', error);
+      }
+    };
+  
+    fetchPrecautionData(); 
+  
   }, [props.PrecautionData]);
 
   const handleChildDialogOpen = () => {

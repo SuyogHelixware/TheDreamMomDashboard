@@ -26,6 +26,16 @@ import * as React from "react";
 import { BASE_URL, Bunny_Image_URL } from "../Constant";
 
 export default function ManageAssesment() {
+
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
   const PaperItem = ({ children }) => (
     <Paper
       variant="outlined"
@@ -45,8 +55,14 @@ export default function ManageAssesment() {
 
   const [data, setData] = React.useState([]);
 
-  const getUserData = () => {
-    axios.get(`${BASE_URL}assesment/`).then((response) => {
+  const getUserData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}assesment/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setData(response.data.values || []);
       // const medCon = response.data.values[0]?.MedConIds?.[0]?.Name || '';
       // setMedConName(medCon);

@@ -21,11 +21,11 @@ import Medication from "../pages/ManageSchedule/Medication";
 import Vaccination from "../pages/ManageSchedule/Vaccination";
 // import Login from "../Dashboard/Login";
 import Signin from "../Dashboard/signin";
-// import PNDiet from "../pages/PostNatal/PNDiet";
-// import PNExercise from "../pages/PostNatal/PNExercise";
-// import PNPrecaution from "../pages/PostNatal/PNPrecaution";
-// import PNMedication from "../pages/PostNatal/PNMedication";
-// import PNVaccination from "../pages/PostNatal/PNVaccination";
+// import PNDiet from "../PostNatal/PostNatalDiet"
+// import PNExercise from "../PostNatal/PostNatalExercise"
+// import PNPrecaution from "../PostNatal/PostNatalPrecaution";
+// import PNMedication from "../PostNatal/PostNatalMedication";
+// import PNVaccination from "../PostNatal/PostNatalVaccination"
 import MedicalCondition from "../pages/MedicalCondition";
 import ManageTags from "../pages/ManageTags";
 import PlanMaster from "../pages/PlanMaster/PlanMaster";

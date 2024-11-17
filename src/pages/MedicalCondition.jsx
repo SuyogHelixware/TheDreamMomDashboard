@@ -52,6 +52,15 @@ export default function MedicalCondition() {
     });
   };
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
   const onchangeHandler = (event) => {
     setData({
       ...data,
@@ -80,7 +89,8 @@ export default function MedicalCondition() {
     });
   };
 
-  const updateUser = (id) => {
+  const updateUser = async(id) => {
+    const token = await getApiToken();
     const requiredFields = ["Name", "Description"];
     const emptyRequiredFields = requiredFields.filter(
       (field) => !data[field].trim()
@@ -109,7 +119,12 @@ export default function MedicalCondition() {
 
     const axiosRequest =
       SaveUpdateButton === "SAVE"
-        ? axios.post(`${BASE_URL}medicalconditions`, saveObj)
+        ? axios.post(`${BASE_URL}medicalconditions`, saveObj, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
         : Swal.fire({
             text: "Do you want to Update...?",
             icon: "warning",
@@ -121,7 +136,13 @@ export default function MedicalCondition() {
             if (result.isConfirmed) {
               return axios.patch(
                 `${BASE_URL}medicalconditions/${data.Id}`,
-                UpdateObj
+                UpdateObj,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token,
+                  },
+                }
               );
             } else {
               throw new Error("Update cancelled");
@@ -173,7 +194,8 @@ export default function MedicalCondition() {
       });
   };
 
-  const handleDelete = (rowData) => {
+  const handleDelete = async(rowData) => {
+    const token = await getApiToken();
     Swal.fire({
       text: "Are you sure you want to delete?",
       icon: "warning",
@@ -185,7 +207,14 @@ export default function MedicalCondition() {
       if (result.isConfirmed) {
         setLoaderOpen(true);
         axios
-          .delete(`${BASE_URL}medicalconditions/${rowData._id}`)
+          .delete(`${BASE_URL}medicalconditions/${rowData._id}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+              },
+            }
+          )
           .then((response) => {
             if (response.data.status) {
               setLoaderOpen(false);
@@ -341,8 +370,14 @@ export default function MedicalCondition() {
     backgroundColor: "red",
   };
 
-  const getUserData = () => {
-    axios.get(`${BASE_URL}medicalconditions/`).then((response) => {
+  const getUserData = async() => {
+    const token = await getApiToken();
+    axios.get(`${BASE_URL}medicalconditions/`,{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    }).then((response) => {
       setUserData(response.data.values.flat());
     });
   };

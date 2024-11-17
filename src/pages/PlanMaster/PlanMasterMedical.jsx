@@ -20,17 +20,46 @@ const PlanMasterMedical = ({ sendMedicalTestDataToParent, ...props }) => {
   const [childData, setChildData] = useState([]);
   const [medicalData, setMedicalData] = useState([]);
   const [selectedMedicalRows, setSelectedMedicalRows] = useState([]);
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
 
   useEffect(() => {
-    axios.get(`${BASE_URL}medicaltests/`).then((response) => {
-      const updatedMedicalData = response.data.values.flat().map((item) => ({
-        _id: item._id,
-        Name: item.Name,
-        Description: item.Description,
-      }));
-      setMedicalData(updatedMedicalData);
-      setChildData(props.medTestData);
-    });
+    const fetchMedicalTests = async () => {
+      try {
+        const token = await getApiToken(); 
+  
+        const response = await axios.get(`${BASE_URL}medicaltests/`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+  
+        const updatedMedicalData = response.data.values
+          .flat()
+          .map((item) => ({
+            _id: item._id,
+            Name: item.Name,
+            Description: item.Description,
+          }));
+  
+        setMedicalData(updatedMedicalData);
+        setChildData(props.medTestData || []);
+  
+      } catch (error) {
+        console.error('Error fetching medical test data:', error);
+      }
+    };
+  
+    fetchMedicalTests(); 
   }, [props.medTestData]);
 
   const handleChildDialogOpen = () => {

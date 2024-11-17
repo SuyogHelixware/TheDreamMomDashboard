@@ -21,11 +21,38 @@ const PlanMasterVaccination = ({ sendVaccinationDataToParent, ...props }) => {
   const [vaccinationData, setVaccinationData] = useState([]);
   const [selectedVaccinationRows, setSelectedVaccinationRows] = useState([]);
 
+  // ========================
+  const getApiToken = async () => {
+    const data = sessionStorage.getItem('userData');
+    if (data !== null) {
+      const fetchedData = JSON.parse(data);
+      return fetchedData.Token;
+    }
+  };
+  // ========================
+
+
   useEffect(() => {
-    axios.get(`${BASE_URL}vaccination/`).then((response) => {
-      setVaccinationData(response.data.values);
-      setChildData(props.vaccinationData);
-    });
+    const fetchVaccinationData = async () => {
+      try {
+        const token = await getApiToken(); 
+  
+        const response = await axios.get(`${BASE_URL}vaccination/`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+  
+        setVaccinationData(response.data.values); 
+        setChildData(props.vaccinationData || []); 
+  
+      } catch (error) {
+        console.error('Error fetching vaccination data:', error);
+      }
+    };
+  
+    fetchVaccinationData(); 
   }, [props.vaccinationData]);
 
   const handleChildDialogOpen = () => {
