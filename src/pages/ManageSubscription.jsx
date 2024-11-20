@@ -134,6 +134,15 @@ export default function ManageSubscription() {
 
   const onChangeHandler = (event) => {
     const { name, value } = event.target || {};
+    console.log(value);
+    if(value==="en"){
+      setFeatures(data.Features);
+
+    }else if(value==="mr"){
+      setFeatures(data.FeaturesL1);
+
+    }
+    
     if (name) {
       setData({
         ...data,
@@ -197,6 +206,7 @@ export default function ManageSubscription() {
       Status: data.Status,
     };
     console.log(UpdateObj);
+  
     setLoaderOpen(true);
 
     const axiosRequest =
