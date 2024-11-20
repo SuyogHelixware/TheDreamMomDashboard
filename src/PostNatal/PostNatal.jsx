@@ -101,7 +101,6 @@ const PostNatal = () => {
     clearFormData();
     setOpen(false);
   };
-
   const handleSave = async () => {
     const token = await getApiToken();
     const formattedData = {

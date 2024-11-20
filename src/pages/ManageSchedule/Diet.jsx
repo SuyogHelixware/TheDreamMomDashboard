@@ -477,7 +477,7 @@ export default function ManageDiet(){
   React.useEffect(() => {
     getAllImgList();
     getTagData();
-  }, []);
+  });
 
   const handlePageChange = (event, value) => {
     setPage(value);

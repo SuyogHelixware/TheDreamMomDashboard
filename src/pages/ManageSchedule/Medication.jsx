@@ -322,7 +322,7 @@ const Medication = () => {
 
   React.useEffect(() => {
     getAllImgList();
-  }, []);
+  });
 
   // const HandleEnglish = () => {};
 

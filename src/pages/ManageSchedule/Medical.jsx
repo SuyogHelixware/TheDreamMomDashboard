@@ -372,7 +372,7 @@ const Medical = () => {
   React.useEffect(() => {
     getAllImgList();
     getTagData();
-  }, []);
+  });
 
   return (
     <>

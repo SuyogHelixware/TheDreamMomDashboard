@@ -259,7 +259,7 @@ const MedDetails = () => {
     getMedicationData();
     getDosageData();
     getAllMedDetails();
-  }, []);
+  });
 
   const columns = [
     {

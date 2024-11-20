@@ -477,7 +477,7 @@ const Precaution = () => {
     getAllImgList();
     getTagData();
 
-  }, []);
+  });
 
    
 

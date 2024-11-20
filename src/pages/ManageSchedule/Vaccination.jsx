@@ -475,11 +475,11 @@ const Vaccination = () => {
 
   React.useEffect(() => {
     getAllVaccination();
-  }, []);
+  },);
 
   React.useEffect(() => {
     getTagData();
-  }, []);
+  },);
 
   const handlePageChange = (event, value) => {
     setPage(value);
